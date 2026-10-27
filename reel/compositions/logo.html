@@ -1,0 +1,46 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+    }
+    /* El blanco lo pone el footage (fundido a blanco en build.py); aquí solo el logo */
+    #logo-wrap {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #logo-img {
+      width: 900px;
+      height: auto;
+      display: block;
+    }
+    #logo-handles {
+      margin-top: 70px;
+      font-size: 34px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: #5b6170;
+    }
+  </style>
+  <div id="root" data-composition-id="logo" data-width="1080" data-height="1920">
+    <div id="logo-wrap">
+      <img id="logo-img" src="assets/brand/somos-naturaleza.png" alt="SOMOS Naturaleza · La fuerza que nos une" />
+      <div id="logo-handles">@somos__mh · @eduardocontro</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#logo-img", { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 1.6, ease: "power2.out" }, 0.45);
+    tl.to("#logo-img", { scale: 0.97, duration: 1.14, ease: "none" }, 2.05);
+    tl.fromTo("#logo-handles", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.95);
+    window.__timelines["logo"] = tl;
+  </script>
+</template>

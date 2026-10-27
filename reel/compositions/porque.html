@@ -12,7 +12,7 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 35%, rgba(14, 26, 53, 0.7) 62%, rgba(14, 26, 53, 0.85) 100%);
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 30%, rgba(14, 26, 53, 0.72) 56%, rgba(14, 26, 53, 0.88) 100%);
     }
     #porque-block {
       position: absolute;
@@ -36,7 +36,7 @@
       width: 64px;
       height: 7px;
       border-radius: 4px;
-      background: #ec1c7f;
+      background: #e6087a;
     }
     .porque-head {
       font-size: 82px;
@@ -46,7 +46,7 @@
       text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }
     .porque-head .pink {
-      color: #ec1c7f;
+      color: #ff3d9a;
     }
     .porque-body {
       margin-top: 22px;
@@ -66,11 +66,11 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo("#porque-scrim", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0);
-    tl.fromTo("#porque-k", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.15);
-    tl.fromTo("#porque-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3);
-    tl.fromTo("#porque-b", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.6);
-    tl.to("#porque-block", { opacity: 0, y: -20, duration: 0.22, ease: "power2.in" }, 3.75);
+    tl.fromTo("#porque-scrim", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 0);
+    tl.fromTo("#porque-k", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.35);
+    tl.fromTo("#porque-h", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.5);
+    tl.fromTo("#porque-b", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.5);
+    tl.to("#porque-block", { opacity: 0, y: -24, duration: 0.24, ease: "power2.in" }, 3.46);
     window.__timelines["porque"] = tl;
   </script>
 </template>

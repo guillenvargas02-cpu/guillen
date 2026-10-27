@@ -1,0 +1,74 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #territorio-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 30%, rgba(14, 26, 53, 0.72) 56%, rgba(14, 26, 53, 0.88) 100%);
+    }
+    #territorio-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 980px;
+      padding: 0 90px;
+    }
+    .territorio-kicker {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+    }
+    .territorio-kicker::before {
+      content: "";
+      width: 64px;
+      height: 7px;
+      border-radius: 4px;
+      background: #e6087a;
+    }
+    .territorio-head {
+      font-size: 82px;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .territorio-head .pink {
+      color: #ff3d9a;
+    }
+    .territorio-body {
+      margin-top: 22px;
+      font-size: 48px;
+      line-height: 1.25;
+      font-weight: 500;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <div id="root" data-composition-id="territorio" data-width="1080" data-height="1920">
+    <div id="territorio-scrim"></div>
+    <div id="territorio-block">
+      <div id="territorio-k" class="territorio-kicker">25 oct · Iztaccíhuatl</div>
+      <div id="territorio-h" class="territorio-head">Conocer nuestro territorio es entender <span class="pink">cómo está cambiando</span>.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#territorio-scrim", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 0);
+    tl.fromTo("#territorio-k", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.12);
+    tl.fromTo("#territorio-h", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.25);
+    tl.to("#territorio-block", { opacity: 0, y: -24, duration: 0.24, ease: "power2.in" }, 3.49);
+    window.__timelines["territorio"] = tl;
+  </script>
+</template>

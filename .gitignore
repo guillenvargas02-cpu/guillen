@@ -3,3 +3,7 @@ node_modules/
 reel/.transcode-cache/
 reel/renders/.*
 reel/renders/work-*/
+reel/renders/overlay/
+reel/renders/base.mp4
+reel/renders/*.wav
+__pycache__/

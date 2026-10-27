@@ -8,72 +8,224 @@
     }
     #hook-scrim {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(14, 26, 53, 0.55) 0%, rgba(14, 26, 53, 0.25) 45%, rgba(14, 26, 53, 0.65) 100%);
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0.78) 0%, rgba(14, 26, 53, 0.5) 42%, rgba(14, 26, 53, 0) 70%);
     }
-    #hook-block {
+    /* Regla de altitud que sube mientras corre el contador */
+    #hook-ruler {
+      position: absolute;
+      left: 0;
+      top: 200px;
+      width: 150px;
+      height: 1100px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+    }
+    #hook-ticks {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 150px;
+    }
+    .hook-tick {
+      position: relative;
+      height: 50px;
+    }
+    .hook-tick::before {
+      content: "";
+      position: absolute;
+      left: 40px;
+      top: 0;
+      width: 22px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.55);
+    }
+    .hook-tick.major::before {
+      width: 46px;
+      background: #fff;
+    }
+    .hook-tick span {
+      position: absolute;
+      left: 40px;
+      top: 10px;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    #hook-marker {
+      position: absolute;
+      left: 26px;
+      top: 742px;
+      width: 0;
+      height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 22px solid #e6087a;
+    }
+    #hook-brand {
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 560px;
-      padding: 0 90px;
+      top: 230px;
+      text-align: center;
     }
-    #hook-kicker {
-      font-size: 34px;
-      font-weight: 600;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      margin-bottom: 28px;
+    #hook-somos {
+      width: 640px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
     }
-    #hook-kicker span {
-      color: #ec1c7f;
+    #hook-natura {
+      margin-top: 6px;
+      font-size: 76px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #fff;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
     }
-    .hook-line {
-      font-size: 172px;
-      line-height: 0.95;
+    #hook-alt {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 720px;
+      text-align: center;
+      line-height: 1;
+    }
+    #hook-num-row {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    #hook-plus {
+      font-size: 150px;
+      font-weight: 800;
+      color: #e6087a;
+      margin-right: 6px;
+      margin-top: 18px;
+    }
+    #hook-num {
+      font-size: 250px;
       font-weight: 800;
       font-style: italic;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+    }
+    #hook-unit {
+      font-size: 110px;
+      font-weight: 800;
+      font-style: italic;
+      margin-left: 14px;
+      margin-top: 112px;
+    }
+    #hook-label {
+      margin-top: 18px;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
-      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
     }
-    #hook-l2 .pink {
-      color: #ec1c7f;
+    #hook-line {
+      margin: 30px auto 0;
+      width: 560px;
+      height: 6px;
+      border-radius: 3px;
+      background: #e6087a;
+      transform-origin: center;
     }
-    #hook-sub {
-      margin-top: 36px;
-      font-size: 58px;
+    #hook-pill {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 1130px;
+      text-align: center;
+    }
+    #hook-pill span {
+      display: inline-block;
+      padding: 16px 40px;
+      border-radius: 60px;
+      background: #e6087a;
+      font-size: 46px;
       font-weight: 700;
       font-style: italic;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
-    }
-    #hook-rule {
-      margin-top: 18px;
-      width: 420px;
-      height: 8px;
-      border-radius: 4px;
-      background: #ec1c7f;
-      transform-origin: left center;
     }
   </style>
   <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
     <div id="hook-scrim"></div>
-    <div id="hook-block">
-      <div id="hook-kicker">25 OCT <span>·</span> +4,000 m</div>
-      <div id="hook-l1" class="hook-line">Somos</div>
-      <div id="hook-l2" class="hook-line">de <span class="pink">altura</span></div>
-      <div id="hook-sub">Ascenso al Iztaccíhuatl</div>
-      <div id="hook-rule"></div>
+    <div id="hook-ruler" data-layout-allow-overflow data-layout-ignore>
+      <div id="hook-ticks">
+        <div class="hook-tick major"><span>4,400</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>4,300</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>4,200</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>4,100</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>4,000</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,900</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,800</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,700</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,600</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,500</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,400</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,300</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,200</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,100</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>3,000</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,900</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,800</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,700</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,600</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,500</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,400</span></div><div class="hook-tick"></div>
+        <div class="hook-tick major"><span>2,300</span></div><div class="hook-tick"></div>
+      </div>
+      <div id="hook-marker"></div>
     </div>
+    <div id="hook-brand">
+      <img id="hook-somos" src="assets/brand/somos-cutout.png" alt="SOMOS" />
+      <div id="hook-natura">Naturaleza</div>
+    </div>
+    <div id="hook-alt">
+      <div id="hook-num-row"><span id="hook-plus">+</span><span id="hook-num">2,300</span><span id="hook-unit">m</span></div>
+      <div id="hook-label">sobre el nivel del mar</div>
+      <div id="hook-line"></div>
+    </div>
+    <div id="hook-pill"><span>Ascenso al Iztaccíhuatl</span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    // El título ya está en pantalla en el frame 0 (miniatura del reel)
-    tl.fromTo("#hook-block", { scale: 1.06, y: 10 }, { scale: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0);
-    tl.fromTo("#hook-sub", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.35);
-    tl.fromTo("#hook-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.5);
-    tl.to("#hook-block", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, 2.7);
-    tl.to("#hook-scrim", { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.7);
+    const num = document.querySelector("#hook-num");
+    const alt = { v: 2300 };
+    const fmt = (v) => Math.round(v / 10) * 10;
+    // Contador de altitud 2,300 → 4,000 m; la regla baja al mismo ritmo (100 m = 100 px)
+    tl.fromTo(
+      alt,
+      { v: 2300 },
+      {
+        v: 4000,
+        duration: 2.0,
+        ease: "expo.out",
+        onUpdate: () => {
+          num.textContent = fmt(alt.v).toLocaleString("en-US");
+        },
+      },
+      0.06,
+    );
+    // La marca rosa (y=742) apunta siempre a la altitud del contador: y = 742 - (4400 - altitud)
+    tl.fromTo("#hook-ticks", { y: 742 - 2100 }, { y: 742 - 400, duration: 2.0, ease: "expo.out" }, 0.06);
+    tl.to("#hook-ticks", { y: 742 - 360, duration: 2.76, ease: "none" }, 2.06);
+    tl.fromTo("#hook-plus", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.5)" }, 1.33);
+    tl.fromTo("#hook-num-row", { scale: 1 }, { scale: 1.06, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 1.33);
+    tl.fromTo("#hook-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.4);
+    tl.fromTo("#hook-line", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 1.5);
+    tl.fromTo("#hook-pill", { opacity: 0, y: 40, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 1.96);
+    tl.fromTo("#hook-brand", { scale: 1.04 }, { scale: 1, duration: 1.2, ease: "power3.out" }, 0);
+    // Salida en el beat del corte al selfie
+    tl.to(["#hook-brand", "#hook-alt", "#hook-pill", "#hook-ruler"], { opacity: 0, y: -40, duration: 0.22, ease: "power2.in", stagger: 0.02 }, 4.82);
+    tl.to("#hook-scrim", { opacity: 0, duration: 0.25, ease: "power2.in" }, 4.85);
     window.__timelines["hook"] = tl;
   </script>
 </template>
