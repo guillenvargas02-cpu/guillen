@@ -1,0 +1,90 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #cierre-bg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: rgba(14, 26, 53, 0.82);
+    }
+    #cierre-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 470px;
+      padding: 0 90px;
+    }
+    #cierre-lead {
+      font-size: 54px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+    #cierre-big {
+      margin-top: 20px;
+      font-size: 132px;
+      line-height: 1;
+      font-weight: 800;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      color: #ec1c7f;
+    }
+    #cierre-rule {
+      margin: 70px 0 50px;
+      width: 900px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+    #cierre-brand {
+      font-size: 96px;
+      font-weight: 800;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      color: #ec1c7f;
+      line-height: 1;
+    }
+    #cierre-tag {
+      margin-top: 12px;
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    #cierre-handles {
+      margin-top: 40px;
+      font-size: 36px;
+      line-height: 1.5;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  </style>
+  <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
+    <div id="cierre-bg"></div>
+    <div id="cierre-block">
+      <div id="cierre-lead">En Somos queremos que las generaciones futuras sepan que</div>
+      <div id="cierre-big">sí lo hicimos.</div>
+      <div id="cierre-rule"></div>
+      <div id="cierre-brand">SOMOS</div>
+      <div id="cierre-tag">De altura · Iztaccíhuatl</div>
+      <div id="cierre-handles">@somos__mh · @eduardocontro<br />@somosimpactomx · @somosimpactocdmx</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#cierre-bg", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0);
+    tl.fromTo("#cierre-lead", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.25);
+    tl.fromTo("#cierre-big", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 1.1);
+    tl.fromTo("#cierre-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 2.0);
+    tl.fromTo("#cierre-brand", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.2);
+    tl.fromTo("#cierre-tag", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.35);
+    tl.fromTo("#cierre-handles", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 2.6);
+    window.__timelines["cierre"] = tl;
+  </script>
+</template>

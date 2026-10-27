@@ -1,0 +1,76 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #porque-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 35%, rgba(14, 26, 53, 0.7) 62%, rgba(14, 26, 53, 0.85) 100%);
+    }
+    #porque-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 940px;
+      padding: 0 90px;
+    }
+    .porque-kicker {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+    }
+    .porque-kicker::before {
+      content: "";
+      width: 64px;
+      height: 7px;
+      border-radius: 4px;
+      background: #ec1c7f;
+    }
+    .porque-head {
+      font-size: 82px;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .porque-head .pink {
+      color: #ec1c7f;
+    }
+    .porque-body {
+      margin-top: 22px;
+      font-size: 48px;
+      line-height: 1.25;
+      font-weight: 500;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <div id="root" data-composition-id="porque" data-width="1080" data-height="1920">
+    <div id="porque-scrim"></div>
+    <div id="porque-block">
+      <div id="porque-k" class="porque-kicker">Por eso subimos</div>
+      <div id="porque-h" class="porque-head">Para ver lo que el <span class="pink">cambio climático</span> le quitó al Izta</div>
+      <div id="porque-b" class="porque-body">…y hablar de cómo cuidarlo.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#porque-scrim", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0);
+    tl.fromTo("#porque-k", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.15);
+    tl.fromTo("#porque-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3);
+    tl.fromTo("#porque-b", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.6);
+    tl.to("#porque-block", { opacity: 0, y: -20, duration: 0.22, ease: "power2.in" }, 3.75);
+    window.__timelines["porque"] = tl;
+  </script>
+</template>

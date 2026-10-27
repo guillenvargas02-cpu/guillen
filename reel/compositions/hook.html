@@ -1,0 +1,79 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #hook-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0.55) 0%, rgba(14, 26, 53, 0.25) 45%, rgba(14, 26, 53, 0.65) 100%);
+    }
+    #hook-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 560px;
+      padding: 0 90px;
+    }
+    #hook-kicker {
+      font-size: 34px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    #hook-kicker span {
+      color: #ec1c7f;
+    }
+    .hook-line {
+      font-size: 172px;
+      line-height: 0.95;
+      font-weight: 800;
+      font-style: italic;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+    }
+    #hook-l2 .pink {
+      color: #ec1c7f;
+    }
+    #hook-sub {
+      margin-top: 36px;
+      font-size: 58px;
+      font-weight: 700;
+      font-style: italic;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    }
+    #hook-rule {
+      margin-top: 18px;
+      width: 420px;
+      height: 8px;
+      border-radius: 4px;
+      background: #ec1c7f;
+      transform-origin: left center;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="hook-scrim"></div>
+    <div id="hook-block">
+      <div id="hook-kicker">25 OCT <span>·</span> +4,000 m</div>
+      <div id="hook-l1" class="hook-line">Somos</div>
+      <div id="hook-l2" class="hook-line">de <span class="pink">altura</span></div>
+      <div id="hook-sub">Ascenso al Iztaccíhuatl</div>
+      <div id="hook-rule"></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // El título ya está en pantalla en el frame 0 (miniatura del reel)
+    tl.fromTo("#hook-block", { scale: 1.06, y: 10 }, { scale: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0);
+    tl.fromTo("#hook-sub", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.35);
+    tl.fromTo("#hook-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.5);
+    tl.to("#hook-block", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, 2.7);
+    tl.to("#hook-scrim", { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.7);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

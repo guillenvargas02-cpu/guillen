@@ -1,0 +1,91 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #placa-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 35%, rgba(14, 26, 53, 0.7) 62%, rgba(14, 26, 53, 0.85) 100%);
+    }
+    #placa-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 860px;
+      padding: 0 90px;
+    }
+    .placa-kicker {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+    }
+    .placa-kicker::before {
+      content: "";
+      width: 64px;
+      height: 7px;
+      border-radius: 4px;
+      background: #ec1c7f;
+    }
+    .placa-head {
+      font-size: 82px;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .placa-head .pink {
+      color: #ec1c7f;
+    }
+    .placa-body {
+      margin-top: 22px;
+      font-size: 48px;
+      line-height: 1.25;
+      font-weight: 500;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .placa-quote {
+      font-size: 46px;
+      line-height: 1.3;
+      font-weight: 500;
+      font-style: italic;
+      margin-bottom: 30px;
+      padding-left: 30px;
+      border-left: 7px solid #ec1c7f;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+    }
+    #placa-h {
+      font-style: italic;
+      padding-left: 37px;
+    }
+  </style>
+  <div id="root" data-composition-id="placa" data-width="1080" data-height="1920">
+    <div id="placa-scrim"></div>
+    <div id="placa-block">
+      <div id="placa-k" class="placa-kicker">En 2021, la UNAM dejó una placa</div>
+      <div id="placa-q" class="placa-quote">«Esta placa es para dejar constancia de que sabíamos lo que estaba sucediendo y lo que era necesario hacer.</div>
+      <div id="placa-h" class="placa-head">Solo ustedes sabrán si <span class="pink">lo hicimos</span>.»</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#placa-scrim", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0);
+    tl.fromTo("#placa-k", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.15);
+    tl.fromTo("#placa-q", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.4);
+    tl.fromTo("#placa-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 2.3);
+    tl.to("#placa-block", { opacity: 0, y: -20, duration: 0.22, ease: "power2.in" }, 5.75);
+    window.__timelines["placa"] = tl;
+  </script>
+</template>

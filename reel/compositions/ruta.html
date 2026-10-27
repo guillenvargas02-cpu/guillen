@@ -1,0 +1,76 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #ruta-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 35%, rgba(14, 26, 53, 0.7) 62%, rgba(14, 26, 53, 0.85) 100%);
+    }
+    #ruta-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 1000px;
+      padding: 0 90px;
+    }
+    .ruta-kicker {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+    }
+    .ruta-kicker::before {
+      content: "";
+      width: 64px;
+      height: 7px;
+      border-radius: 4px;
+      background: #ec1c7f;
+    }
+    .ruta-head {
+      font-size: 82px;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .ruta-head .pink {
+      color: #ec1c7f;
+    }
+    .ruta-body {
+      margin-top: 22px;
+      font-size: 48px;
+      line-height: 1.25;
+      font-weight: 500;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <div id="root" data-composition-id="ruta" data-width="1080" data-height="1920">
+    <div id="ruta-scrim"></div>
+    <div id="ruta-block">
+      <div id="ruta-k" class="ruta-kicker">Domingo 25 oct</div>
+      <div id="ruta-h" class="ruta-head">Dos rutas:<br /><span class="pink">cumbre</span> e iniciación</div>
+      <div id="ruta-b" class="ruta-body">Sin dejar rastro.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#ruta-scrim", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0);
+    tl.fromTo("#ruta-k", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.15);
+    tl.fromTo("#ruta-h", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3);
+    tl.fromTo("#ruta-b", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.9);
+    tl.to("#ruta-block", { opacity: 0, y: -20, duration: 0.22, ease: "power2.in" }, 3.75);
+    window.__timelines["ruta"] = tl;
+  </script>
+</template>

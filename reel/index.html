@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Paleta de la tarjeta "Somos de Altura" */
+      :root {
+        --ground: #0e1a35;
+        --ink: #ffffff;
+        --brand: #ec1c7f;
+        --font-display: "Poppins", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: var(--font-display);
+        overflow: hidden;
+      }
+      #root > video {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="33.5"
+      data-width="1080"
+      data-height="1920"
+    >
+      <!-- Footage: el orden del reel -->
+      <video id="v-hook" class="clip" src="assets/IMG_1046.mp4" data-start="0" data-duration="3" data-media-start="0.2" data-track-index="0" muted playsinline style="z-index: 1"></video>
+      <video id="v-talk1" class="clip" src="assets/IMG_1015.mp4" data-start="3" data-duration="4.7" data-media-start="0.25" data-track-index="0" data-has-audio="true" data-volume="1" data-fade-in="0.05" data-fade-out="0.05" playsinline style="z-index: 2"></video>
+      <video id="v-talk2" class="clip" src="assets/IMG_1015.mp4" data-start="7.7" data-duration="0.9" data-media-start="6.05" data-track-index="0" data-has-audio="true" data-volume="1" data-fade-in="0.05" data-fade-out="0.05" playsinline style="z-index: 3"></video>
+      <video id="v-talk3" class="clip" src="assets/IMG_1015.mp4" data-start="8.6" data-duration="1.15" data-media-start="8.85" data-track-index="0" data-has-audio="true" data-volume="1" data-fade-in="0.05" data-fade-out="0.1" playsinline style="z-index: 4"></video>
+      <video id="v-ruta" class="clip" src="assets/IMG_1033.mp4" data-start="9.75" data-duration="4" data-media-start="2.85" data-track-index="0" muted playsinline style="z-index: 5"></video>
+      <video id="v-glaciar" class="clip" src="assets/IMG_1018.mp4" data-start="13.75" data-duration="4" data-media-start="1.3" data-track-index="0" muted playsinline style="z-index: 6"></video>
+      <video id="v-placa" class="clip" src="assets/IMG_1046.mp4" data-start="17.75" data-duration="6" data-media-start="4.5" data-track-index="0" muted playsinline style="z-index: 7"></video>
+      <video id="v-porque" class="clip" src="assets/IMG_1049.mp4" data-start="23.75" data-duration="4" data-media-start="0.2" data-track-index="0" muted playsinline style="z-index: 8"></video>
+      <video id="v-cierre" class="clip" src="assets/IMG_1046.mp4" data-start="27.75" data-duration="5.75" data-media-start="0" data-playback-rate="0.5" data-track-index="0" muted playsinline style="z-index: 9"></video>
+
+      <!-- Escenas de texto -->
+      <div id="hook" class="clip" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="3" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 20"></div>
+      <div id="captions" class="clip" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="3" data-duration="6.75" data-track-index="2" data-track-kind="captions" data-width="1080" data-height="1920" style="z-index: 21"></div>
+      <div id="ruta" class="clip" data-composition-id="ruta" data-composition-src="compositions/ruta.html" data-start="9.75" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 22"></div>
+      <div id="glaciar" class="clip" data-composition-id="glaciar" data-composition-src="compositions/glaciar.html" data-start="13.75" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 23"></div>
+      <div id="placa" class="clip" data-composition-id="placa" data-composition-src="compositions/placa.html" data-start="17.75" data-duration="6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 24"></div>
+      <div id="porque" class="clip" data-composition-id="porque" data-composition-src="compositions/porque.html" data-start="23.75" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 25"></div>
+      <div id="cierre" class="clip" data-composition-id="cierre" data-composition-src="compositions/cierre.html" data-start="27.75" data-duration="5.75" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 26"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // Empuje lento sobre cada toma (Ken Burns) y punch-in alterno en los cortes del selfie
+      const push = (id, start, dur, from, to) =>
+        tl.fromTo(id, { scale: from }, { scale: to, duration: dur, ease: "none" }, start);
+      push("#v-hook", 0, 3, 1.12, 1.0);
+      push("#v-talk1", 3, 4.7, 1.0, 1.05);
+      push("#v-talk2", 7.7, 0.9, 1.16, 1.18);
+      push("#v-talk3", 8.6, 1.15, 1.04, 1.07);
+      push("#v-ruta", 9.75, 4, 1.0, 1.08);
+      push("#v-glaciar", 13.75, 4, 1.06, 1.0);
+      push("#v-placa", 17.75, 6, 1.0, 1.1);
+      push("#v-porque", 23.75, 4, 1.08, 1.0);
+      push("#v-cierre", 27.75, 5.75, 1.15, 1.25);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
