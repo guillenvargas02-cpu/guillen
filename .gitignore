@@ -1,2 +1,5 @@
 reel/.hyperframes/
 node_modules/
+reel/.transcode-cache/
+reel/renders/.*
+reel/renders/work-*/
