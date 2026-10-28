@@ -89,6 +89,87 @@
       object-fit: cover;
       display: block;
     }
+    #ci-tdark {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 980px;
+      height: 653px;
+      background: linear-gradient(90deg, rgba(14, 26, 53, 0.25) 0%, rgba(14, 26, 53, 0.82) 48%, rgba(14, 26, 53, 0.9) 100%);
+    }
+    #ci-ttitle {
+      position: absolute;
+      left: 380px;
+      top: 70px;
+      width: 580px;
+      text-align: right;
+      font-size: 74px;
+      line-height: 1;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+    }
+    #ci-tsub {
+      position: absolute;
+      left: 380px;
+      top: 250px;
+      width: 580px;
+      text-align: right;
+    }
+    #ci-tsub span {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #e6087a;
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    #ci-thosts {
+      position: absolute;
+      left: 30px;
+      top: 440px;
+      width: 920px;
+      text-align: right;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #ffd1e6;
+    }
+    #ci-tbar {
+      position: absolute;
+      left: 0;
+      top: 513px;
+      width: 980px;
+      height: 140px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding: 0 36px;
+      color: #111;
+      font-size: 64px;
+    }
+    #ci-tbar b {
+      font-weight: 800;
+      flex: 1;
+    }
+    #ci-tsomos {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      border: 3px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      font-style: italic;
+      color: #e6087a;
+    }
     #ci-shine {
       position: absolute;
       left: -400px;
@@ -99,23 +180,21 @@
       transform: rotate(18deg);
     }
     #ci-play {
-      position: absolute;
-      left: 420px;
-      top: 256px;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: rgba(230, 8, 122, 0.92);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      width: 130px;
+      height: 92px;
+      border-radius: 24px;
+      background: #ff1f3d;
+      flex: none;
     }
     #ci-play::after {
       content: "";
       position: absolute;
-      left: 54px;
-      top: 38px;
-      border-top: 32px solid transparent;
-      border-bottom: 32px solid transparent;
-      border-left: 50px solid #fff;
+      left: 50px;
+      top: 24px;
+      border-top: 22px solid transparent;
+      border-bottom: 22px solid transparent;
+      border-left: 36px solid #fff;
     }
     #ci-when {
       position: absolute;
@@ -176,7 +255,15 @@
   <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
     <div id="ci-bg"></div>
     <div id="ci-kick" class="kick">Nuevo episodio</div>
-    <div id="ci-thumb"><img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="Miniatura del episodio Infiernos ambientales de SOMOS Naturaleza" /><div id="ci-play"></div><div id="ci-shine" data-layout-ignore></div></div>
+    <div id="ci-thumb">
+      <img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="El set de SOMOS Naturaleza" />
+      <div id="ci-tdark"></div>
+      <div id="ci-ttitle">Infiernos<br />ambientales:</div>
+      <div id="ci-tsub"><span>Cuando el lugar donde<br />vives te enferma</span></div>
+      <div id="ci-thosts">Jarumy Méndez · Eduardo Contro · Israel Rivas</div>
+      <div id="ci-tbar"><span id="ci-tsomos">SOMOS</span><b>SOMOS TV</b><div id="ci-play"></div></div>
+      <div id="ci-shine" data-layout-ignore></div>
+    </div>
     <div id="ci-when"><span id="ci-hoy">Hoy</span><span id="ci-hora">7:00 PM</span></div>
     <div id="ci-yt">Sale hoy por <b>SOMOS TV</b> en<i></i><b>YouTube</b></div>
   </div>
@@ -185,8 +272,11 @@
     // Golpe de la canción: todo entra de una
     tl.fromTo("#ci-bg", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0);
     tl.fromTo("#ci-thumb", { opacity: 0, scale: 0.6, rotationY: -70, y: 40 }, { opacity: 1, scale: 1, rotationY: 0, y: 0, duration: 0.6, ease: "expo.out" }, 0);
-    tl.fromTo("#ci-thumb-img", { scale: 1.12 }, { scale: 1, duration: 5.2, ease: "power1.out" }, 0);
-    tl.fromTo("#ci-play", { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(2.5)" }, 0.35);
+    tl.fromTo("#ci-thumb-img", { scale: 1.12, x: -60 }, { scale: 1.12, x: -110, duration: 5.2, ease: "none" }, 0);
+    tl.fromTo("#ci-play", { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(2.5)" }, 0.5);
+    tl.fromTo("#ci-ttitle", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.3);
+    tl.fromTo("#ci-tsub span", { scaleX: 0, transformOrigin: "100% 50%" }, { scaleX: 1, duration: 0.35, ease: "expo.out" }, 0.45);
+    tl.fromTo("#ci-thosts", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
     tl.fromTo("#ci-shine", { x: 0 }, { x: 1700, duration: 0.7, ease: "power2.inOut" }, 0.55);
     tl.to("#ci-shine", { x: 3400, duration: 0.7, ease: "power2.inOut" }, 3.5);
     tl.fromTo("#ci-kick", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.25);
