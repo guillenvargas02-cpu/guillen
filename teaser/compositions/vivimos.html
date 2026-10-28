@@ -1,0 +1,93 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0e1a35;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+    .shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
+    }
+    .big {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
+    }
+    .big .w,
+    .big .l {
+      display: inline-block;
+    }
+    .pink {
+      color: #ff3d9a;
+    }
+    .kick {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
+    }
+
+
+    .low {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 42%, rgba(14, 26, 53, 0.72) 60%, rgba(14, 26, 53, 0.72) 76%, rgba(14, 26, 53, 0) 92%);
+    }
+
+    #vv-k { top: 960px; }
+    #vv-a { top: 1030px; font-size: 124px; }
+  </style>
+  <div id="root" data-composition-id="vivimos" data-width="1080" data-height="1920">
+    <div class="low"></div>
+    <div id="vv-k" class="kick">Esta noche</div>
+    <div id="vv-a" class="big"><span class="w">Te</span> <span class="w">contamos</span> <span class="w pink">lo</span> <span class="w pink">que</span> <span class="w pink">vivimos</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(".low", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+    tl.fromTo("#vv-k", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.05);
+    tl.fromTo("#vv-a .w", { opacity: 0, y: 120, scale: 1.3 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "expo.out", stagger: 0.29 }, 0.12);
+    tl.to(["#vv-k", "#vv-a"], { opacity: 0, scale: 1.15, duration: 0.16, ease: "power2.in" }, 2.18);
+    window.__timelines["vivimos"] = tl;
+  </script>
+</template>

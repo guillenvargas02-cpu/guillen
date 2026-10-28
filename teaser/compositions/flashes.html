@@ -3,124 +3,26 @@
     #root {
       position: absolute;
       inset: 0;
-      font-family: "Space Mono", monospace;
-      color: #f3efe6;
-      overflow: hidden;
     }
-    .hl {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      padding: 0 70px;
-      text-align: center;
-      font-family: "League Gothic", sans-serif;
-      font-weight: 400;
-      line-height: 0.88;
-      letter-spacing: 0.01em;
-      text-transform: uppercase;
-      color: #f3efe6;
-      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
-    }
-    .hl .pk {
-      color: #ff2f93;
-    }
-    .hl .ln {
-      display: block;
-    }
-    .mono {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      text-align: center;
-      font-family: "Space Mono", monospace;
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
-    }
-    .tag {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      text-align: center;
-    }
-    .tag span {
-      display: inline-block;
-      padding: 8px 18px;
-      background: #ff2f93;
-      color: #0b0f0e;
-      font-family: "Space Mono", monospace;
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .grad {
+    #flash-white {
       position: absolute;
       left: 0;
       top: 0;
       width: 1080px;
       height: 1920px;
-    }
-    .topo {
-      position: absolute;
-      left: -200px;
-      top: -200px;
-      width: 1480px;
-      height: 2320px;
-      background: #0b0f0e;
-    }
-    .slats {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-    }
-    .slat {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      height: 321px;
-      background: #0b0f0e;
-    }
-    .ph {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      overflow: hidden;
-    }
-    .ph img {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      object-fit: cover;
-    }
-
-    #fl-leak {
-      position: absolute;
-      left: -300px;
-      top: 200px;
-      width: 1680px;
-      height: 1520px;
-      background: radial-gradient(ellipse at 50% 50%, rgba(255, 190, 120, 0.95) 0%, rgba(255, 47, 147, 0.6) 45%, rgba(255, 47, 147, 0) 75%);
+      background: #fff;
       opacity: 0;
     }
   </style>
   <div id="root" data-composition-id="flashes" data-width="1080" data-height="1920">
-    <div id="fl-leak" data-layout-ignore></div>
+    <div id="flash-white" data-layout-ignore></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.set("#fl-leak", { opacity: 0 }, 0);
-    [2.35, 4.69, 7.06, 11.75, 16.44, 24.71].forEach((t) => {
-      tl.set("#fl-leak", { opacity: 0.85 }, t);
-      tl.to("#fl-leak", { opacity: 0, duration: 0.3, ease: "power2.out" }, t + 0.001);
+    tl.set("#flash-white", { opacity: 0 }, 0);
+    [2.35, 4.69, 7.06, 8.23, 9.41, 14.12, 16.44, 29.1].forEach((t) => {
+      tl.set("#flash-white", { opacity: 0.8 }, t);
+      tl.to("#flash-white", { opacity: 0, duration: 0.26, ease: "power2.out" }, t + 0.001);
     });
     window.__timelines["flashes"] = tl;
   </script>

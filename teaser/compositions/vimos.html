@@ -1,0 +1,84 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0e1a35;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+    .shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
+    }
+    .big {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
+    }
+    .big .w,
+    .big .l {
+      display: inline-block;
+    }
+    .pink {
+      color: #ff3d9a;
+    }
+    .kick {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
+    }
+
+
+    #vm-a { top: 700px; font-size: 118px; }
+    #vm-b { top: 870px; font-size: 136px; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="vimos" data-width="1080" data-height="1920">
+    <div class="shade"></div>
+    <div id="vm-a" class="big"><span class="w">Y</span> <span class="w">lo</span> <span class="w">que</span> <span class="w">vimos</span></div>
+    <div id="vm-b" class="big pink"><span class="l">a</span><span class="l">l</span><span class="l">l</span><span class="l">á</span><span class="l">&nbsp;</span><span class="l">a</span><span class="l">r</span><span class="l">r</span><span class="l">i</span><span class="l">b</span><span class="l">a</span><span class="l">…</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(".shade", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+    tl.fromTo("#vm-a .w", { opacity: 0, y: 100, scale: 1.3 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "expo.out", stagger: 0.1 }, 0.04);
+    tl.fromTo("#vm-b .l", { opacity: 0, y: -160 }, { opacity: 1, y: 0, duration: 0.4, ease: "bounce.out", stagger: 0.035 }, 0.55);
+    tl.to(["#vm-a", "#vm-b"], { opacity: 0, scale: 1.15, duration: 0.16, ease: "power2.in" }, 1.62);
+    window.__timelines["vimos"] = tl;
+  </script>
+</template>

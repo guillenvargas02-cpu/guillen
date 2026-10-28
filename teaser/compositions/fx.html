@@ -1,0 +1,65 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    /* Barrido de marca: una franja rosa inclinada tapa el corte entre secciones */
+    .fx-wipe {
+      position: absolute;
+      left: -300px;
+      top: -200px;
+      width: 900px;
+      height: 2320px;
+      background: #e6087a;
+      transform: skewX(-14deg) translateX(-1500px);
+    }
+    .fx-wipe-w {
+      background: #fff;
+      width: 160px;
+    }
+    /* Destello de luz cálida que cruza las fotos más emotivas */
+    .fx-leak {
+      position: absolute;
+      left: -400px;
+      top: 300px;
+      width: 1100px;
+      height: 1100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 170, 90, 0.55) 0%, rgba(255, 61, 154, 0.25) 40%, rgba(255, 61, 154, 0) 70%);
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="fx" data-width="1080" data-height="1920">
+    <div id="fx-leak1" class="fx-leak" data-layout-ignore></div>
+    <div id="fx-leak2" class="fx-leak" data-layout-ignore></div>
+    <div id="fx-wipe1" class="fx-wipe" data-layout-ignore></div>
+    <div id="fx-wipe1w" class="fx-wipe fx-wipe-w" data-layout-ignore></div>
+    <div id="fx-wipe2" class="fx-wipe" data-layout-ignore></div>
+    <div id="fx-wipe2w" class="fx-wipe fx-wipe-w" data-layout-ignore></div>
+    <div id="fx-wipe3" class="fx-wipe" data-layout-ignore></div>
+    <div id="fx-wipe3w" class="fx-wipe fx-wipe-w" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Barridos centrados en los cortes de sección (cuerda, estudio, ráfaga)
+    [
+      ["#fx-wipe1", 11.75],
+      ["#fx-wipe2", 18.23],
+      ["#fx-wipe3", 24.71],
+    ].forEach(([id, t]) => {
+      tl.fromTo(id, { xPercent: 0, x: -1500 }, { x: 1900, duration: 0.42, ease: "power3.inOut" }, t - 0.21);
+      tl.fromTo(`${id}w`, { x: -1700 }, { x: 2100, duration: 0.46, ease: "power3.inOut" }, t - 0.19);
+    });
+    // Luz cálida sobre el equipo (inicio) y sobre el valle
+    [
+      ["#fx-leak1", 0.1, 2.2],
+      ["#fx-leak2", 4.75, 2.2],
+    ].forEach(([id, t, d]) => {
+      tl.fromTo(id, { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 500, y: -200, duration: d * 0.5, ease: "sine.out" }, t);
+      tl.to(id, { opacity: 0, x: 900, y: -350, duration: d * 0.5, ease: "sine.in" }, t + d * 0.5);
+    });
+    window.__timelines["fx"] = tl;
+  </script>
+</template>
