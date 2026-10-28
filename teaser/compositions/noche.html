@@ -72,17 +72,29 @@
       height: 1920px;
       background: radial-gradient(ellipse 70% 40% at 50% 48%, #3a0a26 0%, #0b0f1e 70%);
     }
-    #nc-a { top: 800px; font-size: 128px; white-space: nowrap; }
+    #nc-a, .nc-ghost { top: 800px; font-size: 128px; white-space: nowrap; }
+    .nc-ghost { opacity: 0; text-shadow: none; }
+    #nc-c { color: #00e5ff; }
+    #nc-p { color: #ff2f93; }
   </style>
   <div id="root" data-composition-id="noche" data-width="1080" data-height="1920">
     <div id="nc-bg"></div>
+    <div id="nc-c" class="big nc-ghost" data-layout-ignore>ESTA NOCHE</div>
+    <div id="nc-p" class="big nc-ghost" data-layout-ignore>ESTA NOCHE</div>
     <div id="nc-a" class="big"><span class="l">E</span><span class="l">s</span><span class="l">t</span><span class="l">a</span><span class="l">&nbsp;</span><span class="l">n</span><span class="l">o</span><span class="l">c</span><span class="l">h</span><span class="l">e</span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#nc-bg", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0);
     tl.fromTo("#nc-a .l", { opacity: 0 }, { opacity: 1, duration: 0.05, stagger: 0.09 }, 0.1);
-    tl.fromTo("#nc-a", { scale: 1 }, { scale: 1.12, duration: 1.9, ease: "power1.in" }, 0.1);
+    tl.fromTo(["#nc-a", ".nc-ghost"], { scale: 1 }, { scale: 1.12, duration: 1.9, ease: "power1.in" }, 0.1);
+    // Glitch: las copias de color se separan a saltos sobre el pulso
+    [0.95, 1.25, 1.55, 1.75, 1.9].forEach((t, i) => {
+      const d = 8 + i * 5;
+      tl.set("#nc-c", { opacity: 0.85, x: -d, y: i % 2 ? 4 : -4 }, t);
+      tl.set("#nc-p", { opacity: 0.85, x: d, y: i % 2 ? -4 : 4 }, t);
+      tl.set(".nc-ghost", { opacity: 0 }, t + 0.08);
+    });
     window.__timelines["noche"] = tl;
   </script>
 </template>

@@ -72,36 +72,36 @@
       height: 1920px;
       background: radial-gradient(ellipse 90% 50% at 50% 42%, #2a1240 0%, #0e1a35 62%, #070b18 100%);
     }
-    #ci-logo {
-      position: absolute;
-      left: 290px;
-      top: 190px;
-      width: 500px;
-      height: auto;
-      border-radius: 26px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-    }
-    #ci-kick { top: 540px; color: #ff3d9a; }
+    #ci-kick { top: 300px; color: #ff3d9a; }
     #ci-thumb {
       position: absolute;
-      left: 90px;
-      top: 610px;
-      width: 900px;
-      height: 506px;
-      border-radius: 26px;
+      left: 50px;
+      top: 590px;
+      width: 980px;
+      height: 653px;
+      border-radius: 28px;
       overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 5px rgba(255, 255, 255, 0.9);
+      box-shadow: 0 30px 90px rgba(230, 8, 122, 0.45), 0 0 0 5px rgba(255, 255, 255, 0.95);
     }
     #ci-thumb img {
-      width: 900px;
-      height: 506px;
+      width: 980px;
+      height: 653px;
       object-fit: cover;
       display: block;
     }
+    #ci-shine {
+      position: absolute;
+      left: -400px;
+      top: -100px;
+      width: 220px;
+      height: 900px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%);
+      transform: rotate(18deg);
+    }
     #ci-play {
       position: absolute;
-      left: 380px;
-      top: 183px;
+      left: 420px;
+      top: 256px;
       width: 140px;
       height: 140px;
       border-radius: 50%;
@@ -121,7 +121,7 @@
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 1150px;
+      top: 380px;
       text-align: center;
       font-weight: 800;
       font-style: italic;
@@ -144,7 +144,7 @@
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 1320px;
+      top: 1290px;
       text-align: center;
       font-size: 44px;
       font-weight: 700;
@@ -175,20 +175,20 @@
   </style>
   <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
     <div id="ci-bg"></div>
-    <img id="ci-logo" src="assets/brand/somos-naturaleza.png" alt="SOMOS Naturaleza · La fuerza que nos une" />
     <div id="ci-kick" class="kick">Nuevo episodio</div>
-    <div id="ci-thumb"><img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="Miniatura del episodio de SOMOS Naturaleza" /><div id="ci-play"></div></div>
+    <div id="ci-thumb"><img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="Miniatura del episodio Infiernos ambientales de SOMOS Naturaleza" /><div id="ci-play"></div><div id="ci-shine" data-layout-ignore></div></div>
     <div id="ci-when"><span id="ci-hoy">Hoy</span><span id="ci-hora">7:00 PM</span></div>
-    <div id="ci-yt">Por <b>SOMOS TV</b> en<i></i><b>YouTube</b></div>
+    <div id="ci-yt">Sale hoy por <b>SOMOS TV</b> en<i></i><b>YouTube</b></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     // Golpe de la canción: todo entra de una
     tl.fromTo("#ci-bg", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0);
-    tl.fromTo("#ci-thumb", { opacity: 0, scale: 1.35, rotationX: 25, y: 60 }, { opacity: 1, scale: 1, rotationX: 0, y: 0, duration: 0.55, ease: "expo.out" }, 0);
+    tl.fromTo("#ci-thumb", { opacity: 0, scale: 0.6, rotationY: -70, y: 40 }, { opacity: 1, scale: 1, rotationY: 0, y: 0, duration: 0.6, ease: "expo.out" }, 0);
     tl.fromTo("#ci-thumb-img", { scale: 1.12 }, { scale: 1, duration: 5.2, ease: "power1.out" }, 0);
     tl.fromTo("#ci-play", { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(2.5)" }, 0.35);
-    tl.fromTo("#ci-logo", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 0.12);
+    tl.fromTo("#ci-shine", { x: 0 }, { x: 1700, duration: 0.7, ease: "power2.inOut" }, 0.55);
+    tl.to("#ci-shine", { x: 3400, duration: 0.7, ease: "power2.inOut" }, 3.5);
     tl.fromTo("#ci-kick", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.25);
     tl.fromTo("#ci-hoy", { opacity: 0, scale: 2.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 0.3);
     tl.fromTo("#ci-hora", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.45);
