@@ -7,3 +7,4 @@ reel/renders/overlay/
 reel/renders/base.mp4
 reel/renders/*.wav
 __pycache__/
+reel/renders/*.mp4
