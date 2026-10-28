@@ -216,7 +216,7 @@
     );
     // La marca rosa (y=742) apunta siempre a la altitud del contador: y = 742 - (4400 - altitud)
     tl.fromTo("#hook-ticks", { y: 742 - 2100 }, { y: 742 - 400, duration: 1.45, ease: "expo.out" }, 0.05);
-    tl.to("#hook-ticks", { y: 742 - 370, duration: 2.0, ease: "none" }, 1.5);
+    tl.to("#hook-ticks", { y: 742 - 375, duration: 1.4, ease: "none" }, 1.5);
     tl.fromTo("#hook-plus", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.35, ease: "back.out(2.5)" }, 0.95);
     tl.fromTo("#hook-num-row", { scale: 1 }, { scale: 1.06, duration: 0.1, ease: "power2.out", yoyo: true, repeat: 1 }, 0.95);
     tl.fromTo("#hook-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 1.0);
@@ -224,8 +224,8 @@
     tl.fromTo("#hook-pill", { opacity: 0, y: 40, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 1.25);
     tl.fromTo("#hook-brand", { scale: 1.04 }, { scale: 1, duration: 1.0, ease: "power3.out" }, 0);
     // Salida en el beat del corte al selfie
-    tl.to(["#hook-brand", "#hook-alt", "#hook-pill", "#hook-ruler"], { opacity: 0, y: -40, duration: 0.2, ease: "power2.in", stagger: 0.02 }, 3.5);
-    tl.to("#hook-scrim", { opacity: 0, duration: 0.22, ease: "power2.in" }, 3.52);
+    tl.to(["#hook-brand", "#hook-alt", "#hook-pill", "#hook-ruler"], { opacity: 0, y: -40, duration: 0.2, ease: "power2.in", stagger: 0.02 }, 2.9);
+    tl.to("#hook-scrim", { opacity: 0, duration: 0.22, ease: "power2.in" }, 2.92);
     window.__timelines["hook"] = tl;
   </script>
 </template>

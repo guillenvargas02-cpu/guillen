@@ -138,7 +138,7 @@
     const pad = (n) => String(n).padStart(2, "0");
     const p = { v: 0 };
     tl.fromTo("#cima-img", { scale: 1.2 }, { scale: 1.07, duration: 0.35, ease: "expo.out" }, 0);
-    tl.to("#cima-img", { scale: 1.0, duration: 2.18, ease: "none" }, 0.35);
+    tl.to("#cima-img", { scale: 1.0, duration: 1.54, ease: "none" }, 0.35);
     // Mira que se fija sobre la montaña
     tl.fromTo("#cima-target", { scale: 1.8, opacity: 0, rotation: -45 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.45, ease: "expo.out" }, 0.1);
     tl.fromTo("#cima-ring", { strokeDasharray: 440, strokeDashoffset: 440 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 0.12);
@@ -153,7 +153,7 @@
       { v: 0 },
       {
         v: 1,
-        duration: 0.9,
+        duration: 0.75,
         ease: "expo.out",
         onUpdate: () => {
           coords.textContent = `19°08'${pad(Math.round(48 * p.v))}" N · 98°39'${pad(Math.round(18 * p.v))}" O`;
@@ -162,8 +162,8 @@
       },
       0.32,
     );
-    // Sale para descubrir las nubes de "sí lo hicimos"
-    tl.to("#cima-photo", { opacity: 0, duration: 0.2, ease: "power2.in" }, 2.33);
+    // Sale para descubrir la niebla del glaciar
+    tl.to("#cima-photo", { opacity: 0, duration: 0.2, ease: "power2.in" }, 1.69);
     window.__timelines["cima"] = tl;
   </script>
 </template>

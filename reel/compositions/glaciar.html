@@ -12,13 +12,13 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-      background: linear-gradient(180deg, rgba(14, 26, 53, 0.15) 0%, rgba(14, 26, 53, 0.62) 38%, rgba(14, 26, 53, 0.62) 70%, rgba(14, 26, 53, 0.1) 100%);
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0.2) 0%, rgba(14, 26, 53, 0.66) 26%, rgba(14, 26, 53, 0.66) 72%, rgba(14, 26, 53, 0.15) 100%);
     }
     #glaciar-block {
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 640px;
+      top: 470px;
       text-align: center;
     }
     #glaciar-kicker {
@@ -26,7 +26,7 @@
       font-weight: 700;
       letter-spacing: 0.34em;
       text-transform: uppercase;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
     /* La palabra se dibuja dos veces: contorno fijo y relleno de hielo que se vacía */
     #glaciar-word {
@@ -49,35 +49,33 @@
       text-shadow: 0 0 40px rgba(170, 225, 255, 0.55);
     }
     #glaciar-name {
-      margin-top: 8px;
-      font-size: 64px;
+      margin-top: 4px;
+      font-size: 54px;
       font-weight: 700;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-    #glaciar-year {
-      margin-top: 40px;
-      font-size: 52px;
-      font-weight: 600;
+    #glaciar-name span {
+      color: #9fd8ff;
     }
-    #glaciar-year b {
+    #glaciar-text {
+      margin: 56px auto 0;
+      width: 900px;
+      font-size: 60px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    #glaciar-l2 {
+      margin-top: 10px;
+    }
+    #glaciar-num {
       display: inline-block;
-      font-size: 110px;
+      font-size: 118px;
       font-weight: 800;
       font-style: italic;
       color: #ff3d9a;
-      vertical-align: -12px;
-      margin-left: 14px;
-    }
-    #glaciar-drip {
-      position: absolute;
-      left: 538px;
-      top: 0;
-      width: 4px;
-      height: 70px;
-      border-radius: 2px;
-      background: #d8f1ff;
-      opacity: 0;
+      vertical-align: -14px;
+      margin: 0 10px;
     }
   </style>
   <div id="root" data-composition-id="glaciar" data-width="1080" data-height="1920">
@@ -88,8 +86,11 @@
         <div id="glaciar-outline" data-layout-ignore>GLACIAR</div>
         <div id="glaciar-ice">GLACIAR</div>
       </div>
-      <div id="glaciar-name">Ayoloco</div>
-      <div id="glaciar-year">desapareció en <b id="glaciar-num">2018</b></div>
+      <div id="glaciar-name">Ayoloco <span>·</span> Iztaccíhuatl</div>
+      <div id="glaciar-text">
+        <div id="glaciar-l1">El cambio climático lo derritió</div>
+        <div id="glaciar-l2">y en <span id="glaciar-num">2018</span> desapareció.</div>
+      </div>
     </div>
   </div>
   <script>
@@ -98,15 +99,15 @@
     tl.fromTo("#glaciar-kicker", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.08);
     tl.fromTo("#glaciar-word", { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out" }, 0.12);
     tl.fromTo("#glaciar-name", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.4);
-    // El hielo se derrite: el relleno baja de arriba a abajo hasta quedar solo el contorno
-    tl.fromTo("#glaciar-ice", { clipPath: "inset(0% 0% 0% 0%)" }, { clipPath: "inset(100% 0% 0% 0%)", duration: 1.55, ease: "power2.in" }, 0.75);
-    tl.fromTo("#glaciar-ice", { y: 0 }, { y: 18, duration: 1.55, ease: "power2.in" }, 0.75);
-    tl.fromTo("#glaciar-outline", { opacity: 1 }, { opacity: 0.55, duration: 1.55, ease: "none" }, 0.75);
-    tl.fromTo("#glaciar-year", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 1.95);
-    tl.fromTo("#glaciar-num", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, 2.26);
-    tl.fromTo("#glaciar-block", { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 3 }, 2.36);
-    tl.to("#glaciar-block", { opacity: 0, y: -30, duration: 0.24, ease: "power2.in" }, 3.5);
-    tl.to("#glaciar-scrim", { opacity: 0, duration: 0.24, ease: "power2.in" }, 3.52);
+    // El hielo se derrite: el relleno baja hasta quedar solo el contorno, mientras se explica por qué
+    tl.fromTo("#glaciar-ice", { clipPath: "inset(0% 0% 0% 0%)", y: 0 }, { clipPath: "inset(100% 0% 0% 0%)", y: 18, duration: 1.9, ease: "power2.in" }, 0.75);
+    tl.fromTo("#glaciar-outline", { opacity: 1 }, { opacity: 0.5, duration: 1.9, ease: "none" }, 0.75);
+    tl.fromTo("#glaciar-l1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.0);
+    tl.fromTo("#glaciar-l2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.2);
+    tl.fromTo("#glaciar-num", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, 2.52);
+    tl.fromTo("#glaciar-block", { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 3 }, 2.62);
+    tl.to("#glaciar-block", { opacity: 0, y: -30, duration: 0.24, ease: "power2.in" }, 4.14);
+    tl.to("#glaciar-scrim", { opacity: 0, duration: 0.24, ease: "power2.in" }, 4.16);
     window.__timelines["glaciar"] = tl;
   </script>
 </template>

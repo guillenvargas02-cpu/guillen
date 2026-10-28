@@ -8,7 +8,7 @@
 
 Uso:
   python3 build.py base audio          # solo footage y audio
-  npx hyperframes render --format png-sequence --fps 30000/1001 -o renders/overlay
+  npx hyperframes render --format png-sequence --fps 30000/1001 --resolution portrait-4k -o renders/overlay
   python3 build.py final               # composición final
 """
 import subprocess
@@ -19,30 +19,31 @@ ROOT = Path(__file__).resolve().parent
 A = ROOT / "assets"
 OUT = ROOT / "renders"
 FPS = "30000/1001"
-TOTAL = 33.20
+TOTAL = 34.90
 
 # (fuente, entrada en la fuente, inicio en el reel, fin en el reel, transición de entrada, punch-in, velocidad)
-# Todo cae en la rejilla de beats de la canción (~96 BPM, 0.63 s); el drop entra en 9.47 s.
+# Todo cae en la rejilla de beats de la canción (~96 BPM, 0.63 s); el drop entra en 8.85 s.
 # Las fotos (escalada, rapel, cima) van en la capa de Hyperframes: debajo queda 1049 y negro.
 EDL = [
-    ("IMG_1032", 0.40, 0.00, 3.78, None, 1.0, 1.0),  # valle: intro con la altitud
-    ("IMG_1015", 1.28, 3.78, 7.43, "cut", 1.0, 1.0),  # selfie (sin silencios)
-    ("IMG_1015", 6.05, 7.43, 8.33, "cut", 1.15, 1.0),
-    ("IMG_1015", 8.85, 8.33, 9.47, "cut", 1.06, 1.0),
-    ("IMG_1033", 3.90, 9.47, 11.35, "cut", 1.0, 1.25),  # DROP: sendero hacia los picos
-    ("IMG_1018", 1.30, 11.35, 13.26, "zoomin", 1.0, 1.2),  # niebla: glaciar
-    ("IMG_1046", 4.50, 13.26, 18.30, "smoothleft", 1.0, 1.0),  # cresta entre nubes: placa
-    ("IMG_1049", 0.20, 18.30, 22.40, "cut", 1.0, 1.0),  # cuerda (luego fotos encima)
-    ("black", 0.00, 22.40, 25.89, "cut", 1.0, 1.0),  # bajo las fotos de rapel y cima
-    ("IMG_1046", 0.10, 25.89, 29.68, "cut", 1.0, 1.0),  # nubes: sí lo hicimos
-    ("white", 0.00, 29.68, TOTAL, "fadewhite", 1.0, 1.0),  # cierre con logo
+    ("IMG_1032", 0.40, 0.00, 3.16, None, 1.0, 1.0),  # valle: intro con la altitud
+    ("IMG_1015", 1.28, 3.16, 6.81, "cut", 1.0, 1.0),  # selfie (sin silencios)
+    ("IMG_1015", 6.05, 6.81, 7.71, "cut", 1.15, 1.0),
+    ("IMG_1015", 8.85, 7.71, 8.85, "cut", 1.06, 1.0),
+    ("IMG_1033", 3.90, 8.85, 10.73, "cut", 1.0, 1.25),  # DROP: sendero hacia los picos
+    ("IMG_1049", 0.20, 10.73, 14.93, "cut", 1.0, 1.0),  # cuerda (luego fotos encima)
+    ("black", 0.00, 14.93, 17.68, "cut", 1.0, 1.0),  # bajo las fotos de rapel y cima
+    ("IMG_1018", 0.60, 17.68, 22.11, "cut", 1.0, 1.0),  # niebla: el glaciar
+    ("IMG_1046", 4.50, 22.11, 27.80, "fade", 1.0, 1.0),  # cresta entre nubes: la placa
+    ("IMG_1033_60fps", 0.00, 27.80, 32.21, "fade", 1.0, 0.77),  # cámara lenta (fuente a 60 fps): SOMOS
+    ("white", 0.00, 32.21, TOTAL, "fadewhite", 1.0, 1.0),  # cierre con logo
 ]
-XFADE = {"zoomin": 0.30, "smoothleft": 0.30, "fadewhite": 0.60}
+XFADE = {"fade": 0.30, "zoomin": 0.30, "smoothleft": 0.30, "fadewhite": 0.60}
 
 # Voz: tramos del selfie (los mismos que EDL) y música
-VOICE = [(1.28, 3.78, 7.43), (6.05, 7.43, 8.33), (8.85, 8.33, 9.47)]
-MUSIC_OFFSET = 74.84  # puente tranquilo de la canción; el drop (1:24.3) cae en 9.47 s
-DUCK = (3.62, 9.45)  # la música baja mientras se habla y vuelve de golpe en el drop
+VOICE = [(1.28, 3.16, 6.81), (6.05, 6.81, 7.71), (8.85, 7.71, 8.85)]
+MUSIC_OFFSET = 75.46  # puente tranquilo de la canción; el drop (1:24.3) cae en 8.85 s
+DUCK = (3.0, 8.83)  # la música baja mientras se habla y vuelve de golpe en el drop
+SCALE = 2  # entrega en 4K (2160x3840): footage reescalado con lanczos y capa gráfica a DPR 2
 
 
 def run(cmd):
@@ -135,11 +136,17 @@ def build_final():
     run(
         ["ffmpeg", "-v", "error", "-y", "-i", OUT / "base.mp4",
          "-framerate", FPS, "-start_number", start, "-i", pattern, "-i", OUT / "audio.wav",
-         "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto:shortest=0,format=yuv420p[v]",
+         "-filter_complex",
+         f"[0:v]scale={1080 * SCALE}:{1920 * SCALE}:flags=lanczos[b];"
+         "[b][1:v]overlay=0:0:format=auto:shortest=0,format=yuv420p,"
+         "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709[v]",
          "-map", "[v]", "-map", "2:a", "-r", FPS, "-t", str(TOTAL),
-         "-c:v", "libx264", "-crf", "17", "-preset", "slow", "-profile:v", "high", "-pix_fmt", "yuv420p",
-         "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart",
-         OUT / "somos-naturaleza-reel.mp4"]
+         # Formato Reels: H.264 High 5.1, yuv420p, 29.97 fps, AAC 48 kHz estéreo, moov al inicio
+         "-c:v", "libx264", "-crf", "16", "-preset", "slow", "-profile:v", "high", "-level", "5.1",
+         "-pix_fmt", "yuv420p", "-maxrate", "60M", "-bufsize", "120M",
+         "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
+         "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2", "-movflags", "+faststart",
+         OUT / "somos-naturaleza-reel-4k.mp4"]
     )
 
 

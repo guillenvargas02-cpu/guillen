@@ -88,10 +88,48 @@
       height: 1920px;
     }
     #climb-esc-shade {
-      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 45%, rgba(14, 26, 53, 0.65) 80%);
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0.25) 0%, rgba(14, 26, 53, 0.6) 14%, rgba(14, 26, 53, 0.55) 30%, rgba(14, 26, 53, 0) 46%);
     }
     #climb-rap-shade {
-      background: linear-gradient(180deg, rgba(14, 26, 53, 0.6) 0%, rgba(14, 26, 53, 0) 35%);
+      background: linear-gradient(90deg, rgba(14, 26, 53, 0.72) 0%, rgba(14, 26, 53, 0.35) 30%, rgba(14, 26, 53, 0) 48%);
+    }
+    .climb-move {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    #climb-rap-move {
+      transform-origin: 610px 862px;
+    }
+    /* RAPEL en vertical: cada letra cae a su sitio, como bajando por la cuerda */
+    #climb-rap-word {
+      position: absolute;
+      left: 70px;
+      top: 300px;
+      width: 220px;
+      text-align: center;
+      font-size: 168px;
+      line-height: 0.92;
+      font-weight: 800;
+      font-style: italic;
+      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
+    }
+    #climb-rap-word .l {
+      display: block;
+    }
+    #climb-rap-tag {
+      position: absolute;
+      left: 80px;
+      top: 1110px;
+      width: 420px;
+      font-size: 34px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
     }
     .climb-word {
       position: absolute;
@@ -110,10 +148,7 @@
       display: inline-block;
     }
     #climb-esc-word {
-      top: 1120px;
-    }
-    #climb-rap-word {
-      top: 250px;
+      top: 300px;
     }
     .climb-tag {
       position: absolute;
@@ -127,10 +162,7 @@
       text-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
     }
     #climb-esc-tag {
-      top: 1310px;
-    }
-    #climb-rap-tag {
-      top: 440px;
+      top: 490px;
     }
     /* Cuerda: una línea rosa que se dibuja hacia arriba (escalada) o hacia abajo (rapel) */
     .climb-rope {
@@ -149,24 +181,30 @@
       <div class="climb-item" id="climb-c3"><div class="climb-box"><div class="climb-tick"></div></div>Cuerda</div>
     </div>
 
-    <div id="climb-esc" class="climb-photo clip" data-start="1.27" data-duration="1.88" data-layout-ignore>
-      <img id="climb-esc-img" src="assets/photos/escalada.jpg" alt="Escalada en la cresta del Iztaccíhuatl" />
+    <div id="climb-esc" class="climb-photo clip" data-start="1.28" data-duration="1.88" data-layout-ignore>
+      <div id="climb-esc-move" class="climb-move">
+        <img id="climb-esc-img" src="assets/photos/escalada.jpg" alt="Escalada en la cresta del Iztaccíhuatl" />
+        <svg id="climb-esc-rope" class="climb-rope" viewBox="0 0 1080 1920">
+          <path id="climb-esc-path" d="M 489 1920 L 490 1740 L 492 1560 L 502 1425" fill="none" stroke="#ff3d9a" stroke-width="9" stroke-linecap="round" />
+        </svg>
+      </div>
       <div id="climb-esc-shade" class="climb-shade"></div>
-      <svg id="climb-esc-rope" class="climb-rope" viewBox="0 0 1080 1920">
-        <path id="climb-esc-path" d="M 445 1920 C 452 1700, 440 1500, 455 1300 S 470 1050, 430 900" fill="none" stroke="#ff3d9a" stroke-width="10" stroke-linecap="round" />
-      </svg>
       <div id="climb-esc-word" class="climb-word"><span class="l">E</span><span class="l">S</span><span class="l">C</span><span class="l">A</span><span class="l">L</span><span class="l">A</span><span class="l">D</span><span class="l">A</span></div>
       <div id="climb-esc-tag" class="climb-tag">Paso a paso, cuerda arriba</div>
     </div>
 
-    <div id="climb-rap" class="climb-photo clip" data-start="3.15" data-duration="1.91" data-layout-ignore>
-      <img id="climb-rap-img" src="assets/photos/rapel.jpg" alt="Rapel en la roca del Iztaccíhuatl" />
+    <div id="climb-rap" class="climb-photo clip" data-start="3.16" data-duration="1.9" data-layout-ignore>
+      <div id="climb-rap-move" class="climb-move">
+        <img id="climb-rap-img" src="assets/photos/rapel.jpg" alt="Rapel en la roca del Iztaccíhuatl" />
+        <!-- Las dos cuerdas reales de la foto, resaltadas desde las manos hacia abajo -->
+        <svg id="climb-rap-rope" class="climb-rope" viewBox="0 0 1080 1920">
+          <path id="climb-rap-a" d="M 570 1308 L 495 1470 L 450 1620 L 398 1770 L 338 1920" fill="none" stroke="#ff3d9a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+          <path id="climb-rap-b" d="M 780 1602 L 675 1770 L 525 1920" fill="none" stroke="#ff3d9a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
       <div id="climb-rap-shade" class="climb-shade"></div>
-      <svg id="climb-rap-rope" class="climb-rope" viewBox="0 0 1080 1920">
-        <path id="climb-rap-path" d="M 545 1060 C 520 1300, 470 1550, 380 1920" fill="none" stroke="#ff3d9a" stroke-width="10" stroke-linecap="round" />
-      </svg>
-      <div id="climb-rap-word" class="climb-word"><span class="l">R</span><span class="l">A</span><span class="l">P</span><span class="l">E</span><span class="l">L</span></div>
-      <div id="climb-rap-tag" class="climb-tag">Y de vuelta, en caída controlada</div>
+      <div id="climb-rap-word"><span class="l">R</span><span class="l">A</span><span class="l">P</span><span class="l">E</span><span class="l">L</span></div>
+      <div id="climb-rap-tag">Bajar también<br />es parte del reto</div>
     </div>
   </div>
   <script>
@@ -180,21 +218,22 @@
     });
     tl.to("#climb-checks", { opacity: 0, x: 60, duration: 0.18, ease: "power2.in" }, 1.08);
 
-    // 2) ESCALADA: la foto entra con golpe de zoom y sube; la cuerda se dibuja hacia arriba
-    const escLen = 1100;
-    tl.fromTo("#climb-esc-img", { scale: 1.22, y: 40 }, { scale: 1.08, y: 0, duration: 0.35, ease: "expo.out" }, 1.27);
-    tl.to("#climb-esc-img", { scale: 1.0, y: -40, duration: 1.53, ease: "none" }, 1.62);
-    tl.fromTo("#climb-esc-path", { strokeDasharray: escLen, strokeDashoffset: escLen }, { strokeDashoffset: 0, duration: 1.1, ease: "power2.out" }, 1.35);
-    tl.fromTo("#climb-esc-word .l", { y: 200, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out", stagger: 0.03 }, 1.32);
+    // 2) ESCALADA: golpe de zoom, la toma sube con el escalador y se marca su cuerda real
+    const escLen = 520;
+    tl.fromTo("#climb-esc-move", { scale: 1.22, y: 40 }, { scale: 1.08, y: 0, duration: 0.35, ease: "expo.out" }, 1.28);
+    tl.to("#climb-esc-move", { scale: 1.0, y: -40, duration: 1.53, ease: "none" }, 1.63);
+    tl.fromTo("#climb-esc-path", { strokeDasharray: escLen, strokeDashoffset: escLen }, { strokeDashoffset: 0, duration: 0.8, ease: "power2.out" }, 1.4);
+    tl.fromTo("#climb-esc-word .l", { y: 160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out", stagger: 0.03 }, 1.33);
     tl.fromTo("#climb-esc-tag", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 1.7);
 
-    // 3) RAPEL: entra desde arriba, las letras caen y la cuerda baja
-    const rapLen = 900;
-    tl.fromTo("#climb-rap-img", { scale: 1.2, y: -50 }, { scale: 1.07, y: 0, duration: 0.35, ease: "expo.out" }, 3.15);
-    tl.to("#climb-rap-img", { scale: 1.0, y: 50, duration: 1.56, ease: "none" }, 3.5);
-    tl.fromTo("#climb-rap-path", { strokeDasharray: rapLen, strokeDashoffset: rapLen }, { strokeDashoffset: 0, duration: 1.0, ease: "power2.inOut" }, 3.25);
-    tl.fromTo("#climb-rap-word .l", { y: -220, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "bounce.out", stagger: 0.04 }, 3.18);
-    tl.fromTo("#climb-rap-tag", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 3.6);
+    // 3) RAPEL: la foto "baja" desde arriba, empuja hacia su cara y las cuerdas reales se dibujan hacia abajo
+    tl.fromTo("#climb-rap-move", { y: -420, scale: 1.18 }, { y: 0, scale: 1.06, duration: 0.5, ease: "expo.out" }, 3.16);
+    tl.to("#climb-rap-move", { scale: 1.16, duration: 1.4, ease: "power1.inOut" }, 3.66);
+    tl.fromTo("#climb-rap-a", { strokeDasharray: 700, strokeDashoffset: 700 }, { strokeDashoffset: 0, duration: 0.75, ease: "power2.inOut" }, 3.4);
+    tl.fromTo("#climb-rap-b", { strokeDasharray: 400, strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, 3.55);
+    tl.fromTo("#climb-rap-shade", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.2);
+    tl.fromTo("#climb-rap-word .l", { y: -260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, ease: "bounce.out", stagger: 0.06 }, 3.22);
+    tl.fromTo("#climb-rap-tag", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 3.75);
     window.__timelines["climb"] = tl;
   </script>
 </template>

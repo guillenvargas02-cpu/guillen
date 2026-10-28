@@ -34,13 +34,24 @@
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 640px;
+      top: 560px;
       padding: 0 90px;
     }
     #hicimos-lead {
-      font-size: 56px;
+      font-size: 62px;
+      line-height: 1.18;
+      font-weight: 800;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    #hicimos-lead .pink {
+      color: #ff3d9a;
+      font-style: italic;
+    }
+    #hicimos-mid {
+      margin-top: 34px;
+      font-size: 46px;
       line-height: 1.25;
-      font-weight: 600;
+      font-weight: 500;
       text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }
     #hicimos-big {
@@ -58,7 +69,8 @@
   <div id="root" data-composition-id="hicimos" data-width="1080" data-height="1920">
     <div id="hicimos-shade"></div>
     <div id="hicimos-block">
-      <div id="hicimos-lead">En Somos queremos que las generaciones futuras sepan que</div>
+      <div id="hicimos-lead">En <span class="pink">SOMOS</span> queremos proponer soluciones para el cuidado del medio ambiente,</div>
+      <div id="hicimos-mid">para que las generaciones futuras sepan que</div>
       <div id="hicimos-big">sí lo hicimos.</div>
     </div>
     <div id="hicimos-top" class="hicimos-bar"></div>
@@ -69,11 +81,12 @@
     tl.fromTo("#hicimos-shade", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0);
     tl.fromTo(".hicimos-bar", { scaleY: 0 }, { scaleY: 1, duration: 0.9, ease: "power3.inOut" }, 0);
     tl.fromTo("#hicimos-lead", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.25);
-    tl.fromTo("#hicimos-big", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 1.26);
-    // El footage se funde a blanco en 3.79 s: el texto sale y las franjas se abren sobre el blanco
-    tl.to("#hicimos-block", { opacity: 0, duration: 0.35, ease: "power2.in" }, 3.49);
-    tl.to("#hicimos-shade", { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 3.34);
-    tl.to(".hicimos-bar", { scaleY: 0, duration: 0.6, ease: "power3.inOut" }, 3.76);
+    tl.fromTo("#hicimos-mid", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.6);
+    tl.fromTo("#hicimos-big", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)" }, 2.52);
+    // El footage se funde a blanco en 4.41 s: el texto sale y las franjas se abren sobre el blanco
+    tl.to("#hicimos-block", { opacity: 0, duration: 0.35, ease: "power2.in" }, 4.11);
+    tl.to("#hicimos-shade", { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 3.96);
+    tl.to(".hicimos-bar", { scaleY: 0, duration: 0.6, ease: "power3.inOut" }, 4.38);
     window.__timelines["hicimos"] = tl;
   </script>
 </template>
