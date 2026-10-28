@@ -1,0 +1,129 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0e1a35;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+    .shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
+    }
+    .big {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
+    }
+    .big .w,
+    .big .l {
+      display: inline-block;
+    }
+    .pink {
+      color: #ff3d9a;
+    }
+    .kick {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    #hook-top {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0.75) 0%, rgba(14, 26, 53, 0.25) 28%, rgba(14, 26, 53, 0) 45%, rgba(14, 26, 53, 0) 62%, rgba(14, 26, 53, 0.7) 100%);
+    }
+    #hook-brand {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 210px;
+      text-align: center;
+    }
+    #hook-somos {
+      width: 560px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    #hook-natura {
+      font-size: 78px;
+      font-weight: 700;
+      margin-top: 4px;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    #hook-pill {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 1170px;
+      text-align: center;
+    }
+    #hook-pill span {
+      display: inline-block;
+      padding: 18px 46px;
+      border-radius: 60px;
+      background: #e6087a;
+      font-size: 54px;
+      font-weight: 800;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="hook-p" class="ph clip" data-start="0" data-duration="2.35" data-layout-ignore><img id="hook-p-img" src="assets/photos/equipo.jpg" alt="El equipo celebrando con el Popocatépetl al fondo" style="object-position: 61% 50%" /></div>
+    <div id="hook-top"></div>
+    <div id="hook-brand"><img id="hook-somos" src="assets/brand/somos-cutout.png" alt="SOMOS" /><div id="hook-natura">Naturaleza</div></div>
+    <div id="hook-pill"><span>Nuevo episodio</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#hook-p-img", { scale: 1.12, y: 0 }, { scale: 1.06, y: 0, duration: 0.3, ease: "expo.out" }, 0);
+    tl.to("#hook-p-img", { scale: 1.0, y: 0, duration: 2.05, ease: "none" }, 0.3);
+    tl.fromTo("#hook-brand", { scale: 1.08 }, { scale: 1, duration: 0.8, ease: "expo.out" }, 0);
+    tl.fromTo("#hook-pill", { scale: 0.9 }, { scale: 1, duration: 0.5, ease: "back.out(2)" }, 0);
+    tl.fromTo("#hook-pill span", { scale: 1 }, { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 1.19);
+    tl.to(["#hook-brand", "#hook-pill"], { opacity: 0, y: -30, duration: 0.15, ease: "power2.in" }, 2.2);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

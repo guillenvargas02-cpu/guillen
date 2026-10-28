@@ -1,0 +1,29 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #flash-white {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #fff;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="flashes" data-width="1080" data-height="1920">
+    <div id="flash-white" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.set("#flash-white", { opacity: 0 }, 0);
+    [2.35, 4.69, 7.06, 9.41, 12.94, 15.28, 24.71, 29.1].forEach((t) => {
+      tl.set("#flash-white", { opacity: 0.8 }, t);
+      tl.to("#flash-white", { opacity: 0, duration: 0.26, ease: "power2.out" }, t + 0.001);
+    });
+    window.__timelines["flashes"] = tl;
+  </script>
+</template>

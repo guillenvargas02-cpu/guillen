@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Capa gráfica del teaser. El footage y la canción los arma build.py con ffmpeg
+         y luego compone esta capa encima. */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="34.5" data-width="1080" data-height="1920">
+      <!-- Cortes en los beats de la canción (103 BPM); el golpe de 1:40.15 cae en 29.10 s -->
+      <div id="hook" class="clip" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="2.35" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 1"></div>
+      <div id="exped" class="clip" data-composition-id="exped" data-composition-src="compositions/exped.html" data-start="2.35" data-duration="10.59" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="glaciar" class="clip" data-composition-id="glaciar" data-composition-src="compositions/glaciar.html" data-start="12.94" data-duration="2.34" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="estudio" class="clip" data-composition-id="estudio" data-composition-src="compositions/estudio.html" data-start="15.28" data-duration="9.43" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 4"></div>
+      <div id="rafaga" class="clip" data-composition-id="rafaga" data-composition-src="compositions/rafaga.html" data-start="24.71" data-duration="2.34" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="noche" class="clip" data-composition-id="noche" data-composition-src="compositions/noche.html" data-start="27.05" data-duration="2.05" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 6"></div>
+      <div id="cierre" class="clip" data-composition-id="cierre" data-composition-src="compositions/cierre.html" data-start="29.1" data-duration="5.4" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 7"></div>
+      <div id="flashes" class="clip" data-composition-id="flashes" data-composition-src="compositions/flashes.html" data-start="0" data-duration="34.5" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 20"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

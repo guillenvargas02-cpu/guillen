@@ -1,0 +1,201 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0e1a35;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+    .shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
+    }
+    .big {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
+    }
+    .big .w,
+    .big .l {
+      display: inline-block;
+    }
+    .pink {
+      color: #ff3d9a;
+    }
+    .kick {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    #ci-bg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 90% 50% at 50% 42%, #2a1240 0%, #0e1a35 62%, #070b18 100%);
+    }
+    #ci-logo {
+      position: absolute;
+      left: 290px;
+      top: 190px;
+      width: 500px;
+      height: auto;
+      border-radius: 26px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+    #ci-kick { top: 540px; color: #ff3d9a; }
+    #ci-thumb {
+      position: absolute;
+      left: 90px;
+      top: 610px;
+      width: 900px;
+      height: 506px;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 5px rgba(255, 255, 255, 0.9);
+    }
+    #ci-thumb img {
+      width: 900px;
+      height: 506px;
+      object-fit: cover;
+      display: block;
+    }
+    #ci-play {
+      position: absolute;
+      left: 380px;
+      top: 183px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(230, 8, 122, 0.92);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    #ci-play::after {
+      content: "";
+      position: absolute;
+      left: 54px;
+      top: 38px;
+      border-top: 32px solid transparent;
+      border-bottom: 32px solid transparent;
+      border-left: 50px solid #fff;
+    }
+    #ci-when {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 1150px;
+      text-align: center;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    #ci-hoy {
+      display: inline-block;
+      font-size: 150px;
+      color: #ff3d9a;
+      margin-right: 26px;
+    }
+    #ci-hora {
+      display: inline-block;
+      font-size: 150px;
+      letter-spacing: -0.02em;
+    }
+    #ci-yt {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 1320px;
+      text-align: center;
+      font-size: 44px;
+      font-weight: 700;
+    }
+    #ci-yt b {
+      font-weight: 800;
+      color: #fff;
+    }
+    #ci-yt i {
+      display: inline-block;
+      position: relative;
+      width: 64px;
+      height: 44px;
+      border-radius: 12px;
+      background: #ff1f3d;
+      vertical-align: -6px;
+      margin: 0 12px 0 6px;
+    }
+    #ci-yt i::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      top: 11px;
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+      border-left: 18px solid #fff;
+    }
+  </style>
+  <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
+    <div id="ci-bg"></div>
+    <img id="ci-logo" src="assets/brand/somos-naturaleza.png" alt="SOMOS Naturaleza · La fuerza que nos une" />
+    <div id="ci-kick" class="kick">Nuevo episodio</div>
+    <div id="ci-thumb"><img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="Miniatura del episodio de SOMOS Naturaleza" /><div id="ci-play"></div></div>
+    <div id="ci-when"><span id="ci-hoy">Hoy</span><span id="ci-hora">7:00 PM</span></div>
+    <div id="ci-yt">Por <b>SOMOS TV</b> en<i></i><b>YouTube</b></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Golpe de la canción: todo entra de una
+    tl.fromTo("#ci-bg", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0);
+    tl.fromTo("#ci-thumb", { opacity: 0, scale: 1.35, rotationX: 25, y: 60 }, { opacity: 1, scale: 1, rotationX: 0, y: 0, duration: 0.55, ease: "expo.out" }, 0);
+    tl.fromTo("#ci-thumb-img", { scale: 1.12 }, { scale: 1, duration: 5.2, ease: "power1.out" }, 0);
+    tl.fromTo("#ci-play", { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(2.5)" }, 0.35);
+    tl.fromTo("#ci-logo", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 0.12);
+    tl.fromTo("#ci-kick", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.25);
+    tl.fromTo("#ci-hoy", { opacity: 0, scale: 2.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 0.3);
+    tl.fromTo("#ci-hora", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.45);
+    tl.fromTo("#ci-yt", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.75);
+    // Segundo golpe (1:43.65): late el HOY y el botón de play
+    tl.fromTo("#ci-when", { scale: 1 }, { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 3.5);
+    tl.to("#ci-play", { scale: 1.18, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 3.5);
+    window.__timelines["cierre"] = tl;
+  </script>
+</template>

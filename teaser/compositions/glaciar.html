@@ -1,0 +1,84 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0e1a35;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+    .shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
+    }
+    .big {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-weight: 800;
+      font-style: italic;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
+    }
+    .big .w,
+    .big .l {
+      display: inline-block;
+    }
+    .pink {
+      color: #ff3d9a;
+    }
+    .kick {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    #gl-a { top: 700px; font-size: 128px; }
+    #gl-b { top: 850px; font-size: 104px; }
+  </style>
+  <div id="root" data-composition-id="glaciar" data-width="1080" data-height="1920">
+    <div class="shade"></div>
+    <div id="gl-a" class="big"><span class="w">Y</span> <span class="w">un</span> <span class="w">glaciar</span></div>
+    <div id="gl-b" class="big pink"><span class="w">que</span> <span class="w">ya</span> <span class="w">no</span> <span class="w">está</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(".shade", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+    tl.fromTo("#gl-a .w", { opacity: 0, y: 120, scale: 1.3 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "expo.out", stagger: 0.12 }, 0.04);
+    tl.fromTo("#gl-b .w", { opacity: 0, y: 0, scale: 1 }, { opacity: 1, duration: 0.5, ease: "power2.out", stagger: 0.15 }, 1.19);
+    tl.to("#gl-b .w", { opacity: 0.25, duration: 0.5, ease: "power2.in", stagger: 0.08 }, 1.85);
+    tl.to(["#gl-a", "#gl-b"], { opacity: 0, scale: 1.15, duration: 0.16, ease: "power2.in" }, 2.18);
+    window.__timelines["glaciar"] = tl;
+  </script>
+</template>
