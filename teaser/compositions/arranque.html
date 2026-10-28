@@ -1,0 +1,125 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
+      overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+
+    #ar-g { background: linear-gradient(180deg, rgba(11, 15, 14, 0) 45%, rgba(11, 15, 14, 0.75) 66%, rgba(11, 15, 14, 0.2) 92%); }
+    #ar-tag { top: 880px; }
+    #ar-t { top: 940px; font-size: 168px; }
+  </style>
+  <div id="root" data-composition-id="arranque" data-width="1080" data-height="1920">
+    <div id="ar-g" class="grad"></div>
+    <div id="ar-tag" class="tag"><span>Registro 01 · 10:14 h</span></div>
+    <div id="ar-t" class="hl"><span class="ln">Arrancamos a</span><span class="ln pk"><span id="ar-n">3,000</span> m</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#ar-g", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0);
+    tl.fromTo("#ar-tag", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, 0.05);
+    tl.fromTo("#ar-t .ln", { opacity: 0, yPercent: 60 }, { opacity: 1, yPercent: 0, duration: 0.4, ease: "expo.out", stagger: 0.12 }, 0.12);
+    const n = document.querySelector("#ar-n");
+    const a = { v: 3000 };
+    tl.fromTo(a, { v: 3000 }, { v: 3987, duration: 1.1, ease: "expo.out", onUpdate: () => { n.textContent = Math.round(a.v).toLocaleString("en-US"); } }, 0.25);
+    tl.to(["#ar-tag", "#ar-t"], { opacity: 0, y: -30, duration: 0.18, ease: "power2.in" }, 2.16);
+    window.__timelines["arranque"] = tl;
+  </script>
+</template>

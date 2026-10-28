@@ -24,22 +24,17 @@ SCALE = 2  # 4K
 
 # (fuente, entrada, inicio en el teaser, fin, velocidad) — cortes en los beats (103 BPM, 0.58 s)
 EDL = [
-    ("black", 0.0, 0.00, 2.35, 1.0),  # foto del equipo (capa)
-    ("IMG_1032", 0.40, 2.35, 4.69, 1.0),  # valle: UNA EXPEDICIÓN
-    ("black", 0.0, 4.69, 7.06, 1.0),  # campamento y ladera (capa)
-    ("IMG_1033", 3.00, 7.06, 8.22, 1.3),  # picos
-    ("IMG_1046", 0.30, 8.22, 9.41, 1.0),  # nubes: +4,000 m
-    ("black", 0.0, 9.41, 12.94, 1.0),  # escalada, rapel, cima (capa)
-    ("IMG_1018", 1.00, 12.94, 15.28, 1.0),  # niebla: el glaciar
-    ("black", 0.0, 15.28, 17.63, 1.0),  # estudio (capa)
-    ("IMG_1015", 6.70, 17.63, 19.99, 1.0),  # Eduardo en la montaña
-    ("IMG_1049", 0.20, 19.99, 22.36, 1.0),  # cuerda
-    ("black", 0.0, 22.36, 24.71, 1.0),  # estudio (capa)
-    ("IMG_1032", 4.50, 24.71, 25.29, 1.0),  # ráfaga de un beat cada una
-    ("IMG_1046", 6.00, 25.29, 25.89, 1.0),
-    ("IMG_1033", 0.30, 25.89, 26.47, 1.0),
-    ("IMG_1018", 3.60, 26.47, 27.05, 1.0),
-    ("black", 0.0, 27.05, TOTAL, 1.0),  # ESTA NOCHE + cierre (capa)
+    # Solo tramos que el reel NO usó (el reel usa 1032 0.4–3.56, 1015 1.28–4.93/6.05–6.95/8.85–10,
+    # 1033 completo, 1049 0.2–1.47, 1018 0.6–5.33 y 1046 4.5–10.5)
+    ("IMG_1046", 0.20, 0.00, 2.35, 1.0),  # 12:51 · 4,161 m: nubes, apertura
+    ("IMG_1015", 4.95, 2.35, 3.45, 1.0),  # 10:14 · 3,987 m: pausa sonriendo
+    ("IMG_1015", 6.95, 3.45, 4.69, 1.0),
+    ("IMG_1032", 3.60, 4.69, 7.06, 1.0),  # 10:30: final de la panorámica del valle
+    ("black", 0.0, 7.06, 11.75, 1.0),  # bitácora de fotos (capa)
+    ("IMG_1049", 1.50, 11.75, 14.12, 1.0),  # 13:10 · 4,093 m: final de la toma de cuerda
+    ("black", 0.0, 14.12, 16.44, 1.0),  # bandera (capa)
+    ("IMG_1046", 2.60, 16.44, 18.23, 1.0),  # nubes: "no cabe en un reel"
+    ("black", 0.0, 18.23, TOTAL, 1.0),  # estudio, +4,000, esta noche y cierre (capa)
 ]
 MUSIC_OFFSET = 71.05
 

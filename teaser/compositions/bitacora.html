@@ -1,0 +1,178 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
+      overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+
+    .print {
+      position: absolute;
+      padding: 20px 20px 0;
+      background: #f3efe6;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+    }
+    .print img {
+      display: block;
+      object-fit: cover;
+    }
+    .print .cap {
+      height: 76px;
+      line-height: 76px;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #0b0f0e;
+    }
+    #bt-stack {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    #bt-k { top: 230px; }
+    #bt-t { top: 280px; font-size: 190px; }
+  </style>
+  <div id="root" data-composition-id="bitacora" data-width="1080" data-height="1920">
+    <div id="bt-topo" class="topo" data-layout-ignore><svg class="topo-svg" viewBox="0 0 1480 2320" width="1480" height="2320" style="position:absolute;left:0;top:0">
+        <g fill="none" stroke="#2e4a3e" stroke-width="3">
+          <path d="M 740 380 C 980 360 1180 560 1150 820 C 1120 1080 900 1180 700 1150 C 470 1110 330 930 380 700 C 420 500 560 395 740 380 Z" />
+          <path d="M 740 300 C 1060 280 1290 540 1240 860 C 1190 1180 920 1280 680 1240 C 400 1190 240 960 300 680 C 350 440 520 315 740 300 Z" />
+          <path d="M 745 220 C 1130 200 1390 520 1330 900 C 1270 1280 940 1380 660 1330 C 330 1270 150 990 220 660 C 280 380 480 235 745 220 Z" />
+          <path d="M 750 460 C 900 450 1060 600 1050 790 C 1040 980 880 1060 720 1050 C 560 1040 460 900 480 740 C 500 580 610 470 750 460 Z" />
+          <path d="M 755 560 C 860 555 960 650 950 780 C 940 900 840 950 740 945 C 640 940 580 860 590 760 C 600 650 670 565 755 560 Z" />
+          <path d="M 760 140 C 1200 120 1480 500 1420 940 C 1360 1380 960 1480 640 1420 C 260 1350 60 1020 140 640 C 210 320 440 155 760 140 Z" />
+          <path d="M 300 1500 C 600 1430 900 1560 1200 1490 C 1350 1460 1440 1520 1480 1560" />
+          <path d="M 0 1650 C 380 1580 760 1720 1100 1640 C 1290 1600 1400 1660 1480 1700" />
+          <path d="M 0 1800 C 420 1730 800 1880 1160 1790 C 1330 1750 1420 1800 1480 1840" />
+          <path d="M 0 1960 C 460 1890 840 2040 1200 1950 C 1350 1910 1430 1960 1480 1990" />
+        </g>
+        <g fill="none" stroke="#ff2f93" stroke-width="3" stroke-dasharray="10 14" opacity="0.7">
+          <path d="M 200 2200 C 400 1900 520 1600 600 1300 C 660 1080 700 900 750 650" />
+        </g>
+      </svg></div>
+    <div id="bt-k" class="mono">Más de</div>
+    <div id="bt-t" class="hl"><span class="pk">4,000</span> metros</div>
+    <div id="bt-stack" data-layout-allow-overlap>
+      <div id="bt-p1" class="print" style="left: 300px; top: 560px; width: 500px"><img src="assets/photos/campamento.jpg" alt="Campamento" style="width: 460px; height: 613px" /><div class="cap">Campamento</div></div>
+      <div id="bt-p2" class="print" style="left: 190px; top: 740px; width: 760px"><img src="assets/photos/ladera.jpg" alt="La ladera" style="width: 720px; height: 540px" /><div class="cap">La ladera</div></div>
+      <div id="bt-p3" class="print" style="left: 180px; top: 880px; width: 760px"><img src="assets/photos/equipo.jpg" alt="El equipo" style="width: 720px; height: 540px" /><div class="cap">El equipo</div></div>
+      <div id="bt-p4" class="print" style="left: 310px; top: 650px; width: 500px"><img src="assets/photos/cima-placa.jpg" alt="La cumbre" style="width: 460px; height: 613px" /><div class="cap">La cumbre</div></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#bt-topo", { scale: 1.1, rotation: -2 }, { scale: 1.0, rotation: 2, duration: 4.69, ease: "none" }, 0);
+    tl.fromTo("#bt-k", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.05);
+    tl.fromTo("#bt-t", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 0.05);
+    tl.fromTo("#bt-p1", { opacity: 0, y: -900, rotation: -24, scale: 1.25 }, { opacity: 1, y: 0, rotation: -6, scale: 1, duration: 0.45, ease: "expo.out" }, 0.0);
+    tl.fromTo("#bt-stack", { x: 0, y: 0 }, { x: 8, y: -6, duration: 0.04, yoyo: true, repeat: 3, ease: "none" }, 0.3);
+    tl.fromTo("#bt-p2", { opacity: 0, y: -900, rotation: 20, scale: 1.25 }, { opacity: 1, y: 0, rotation: 5, scale: 1, duration: 0.45, ease: "expo.out" }, 1.16);
+    tl.fromTo("#bt-stack", { x: 0, y: 0 }, { x: 8, y: -6, duration: 0.04, yoyo: true, repeat: 3, ease: "none" }, 1.46);
+    tl.fromTo("#bt-p3", { opacity: 0, y: -900, rotation: -12, scale: 1.25 }, { opacity: 1, y: 0, rotation: -3, scale: 1, duration: 0.45, ease: "expo.out" }, 2.35);
+    tl.fromTo("#bt-stack", { x: 0, y: 0 }, { x: 8, y: -6, duration: 0.04, yoyo: true, repeat: 3, ease: "none" }, 2.65);
+    tl.fromTo("#bt-p4", { opacity: 0, y: -900, rotation: 16, scale: 1.25 }, { opacity: 1, y: 0, rotation: 4, scale: 1, duration: 0.45, ease: "expo.out" }, 3.51);
+    tl.fromTo("#bt-stack", { x: 0, y: 0 }, { x: 8, y: -6, duration: 0.04, yoyo: true, repeat: 3, ease: "none" }, 3.81);
+    tl.to("#bt-stack", { y: 1300, rotation: 8, duration: 0.3, ease: "power3.in" }, 4.39);
+    tl.to(["#bt-k", "#bt-t"], { opacity: 0, duration: 0.15 }, 4.5);
+    window.__timelines["bitacora"] = tl;
+  </script>
+</template>

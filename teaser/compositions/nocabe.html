@@ -1,0 +1,136 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
+      overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+
+    #nc-g { background: radial-gradient(ellipse 100% 32% at 50% 46%, rgba(11, 15, 14, 0.65), rgba(11, 15, 14, 0) 100%); }
+    #nc-a { top: 640px; font-size: 270px; }
+    #nc-b { top: 880px; font-size: 200px; }
+    #nc-bar {
+      position: absolute;
+      left: 140px;
+      top: 885px;
+      width: 800px;
+      height: 186px;
+      background: #ff2f93;
+      transform-origin: left center;
+    }
+    #nc-b { color: #0b0f0e; text-shadow: none; }
+  </style>
+  <div id="root" data-composition-id="nocabe" data-width="1080" data-height="1920">
+    <div id="nc-g" class="grad"></div>
+    <div id="nc-a" class="hl">No cabe</div>
+    <div id="nc-bar"></div>
+    <div id="nc-b" class="hl">en un reel.</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#nc-g", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0);
+    tl.fromTo("#nc-a", { opacity: 0, scale: 2.2 }, { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out" }, 0.02);
+    tl.fromTo("#nc-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "expo.out" }, 0.58);
+    tl.fromTo("#nc-b", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.25, ease: "expo.out" }, 0.62);
+    tl.fromTo("#root", { x: 0, y: 0 }, { x: 12, y: -8, duration: 0.04, yoyo: true, repeat: 3, ease: "none" }, 0.62);
+    tl.set("#root", { x: 0, y: 0 }, 0.8);
+    tl.to(["#nc-a", "#nc-bar", "#nc-b"], { opacity: 0, duration: 0.12 }, 1.66);
+    window.__timelines["nocabe"] = tl;
+  </script>
+</template>

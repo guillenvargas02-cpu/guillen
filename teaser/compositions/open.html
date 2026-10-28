@@ -1,0 +1,135 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
+      overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+
+    #op-g { background: radial-gradient(ellipse 100% 34% at 50% 48%, rgba(11, 15, 14, 0.6), rgba(11, 15, 14, 0) 100%); }
+    #op-k { top: 690px; }
+    #op-t { top: 745px; font-size: 230px; }
+    #op-s { top: 970px; font-size: 28px; }
+  </style>
+  <div id="root" data-composition-id="open" data-width="1080" data-height="1920">
+    <div id="op-g" class="grad"></div>
+    <div id="op-k" class="mono" data-layout-allow-overlap>Bitácora de expedición</div>
+    <div id="op-t" class="hl">Iztaccíhuatl</div>
+    <div id="op-s" class="mono">25.10.2026 · SOMOS Naturaleza</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Texto que se "decodifica" letra por letra (determinista)
+    const scramble = (el, text, start, dur) => {
+      const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/";
+      const p = { v: 0 };
+      tl.fromTo(p, { v: 0 }, { v: 1, duration: dur, ease: "none", onUpdate: () => {
+        const n = Math.floor(p.v * text.length);
+        const step = Math.floor(p.v * 24);
+        el.textContent = text.split("").map((c, i) => (i < n || c === " " ? c : glyphs[(i * 7 + step * 13) % glyphs.length])).join("");
+      } }, start);
+    };
+    scramble(document.querySelector("#op-k"), "BITÁCORA DE EXPEDICIÓN", 0, 0.7);
+    tl.fromTo("#op-t", { scaleY: 0.2, opacity: 0.4 }, { scaleY: 1, opacity: 1, duration: 0.5, ease: "expo.out" }, 0);
+    tl.fromTo("#op-t", { scale: 1 }, { scale: 1.06, duration: 2.2, ease: "none" }, 0.1);
+    tl.fromTo("#op-s", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0.6);
+    tl.to(["#op-k", "#op-t", "#op-s"], { opacity: 0, y: -30, duration: 0.18, ease: "power2.in" }, 2.18);
+    window.__timelines["open"] = tl;
+  </script>
+</template>

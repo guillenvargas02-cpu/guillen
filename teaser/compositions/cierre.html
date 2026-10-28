@@ -3,9 +3,87 @@
     #root {
       position: absolute;
       inset: 0;
-      font-family: "Poppins", sans-serif;
-      color: #fff;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
       overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
     }
     .ph {
       position: absolute;
@@ -14,7 +92,6 @@
       width: 1080px;
       height: 1920px;
       overflow: hidden;
-      background: #0e1a35;
     }
     .ph img {
       position: absolute;
@@ -24,104 +101,66 @@
       height: 1920px;
       object-fit: cover;
     }
-    .shade {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
-    }
-    .big {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      padding: 0 70px;
-      text-align: center;
-      font-weight: 800;
-      font-style: italic;
-      line-height: 0.98;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
-    }
-    .big .w,
-    .big .l {
-      display: inline-block;
-    }
-    .pink {
-      color: #ff3d9a;
-    }
-    .kick {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      text-align: center;
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: 0.34em;
-      text-transform: uppercase;
-      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
-    }
 
-    #ci-bg {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      background: radial-gradient(ellipse 90% 50% at 50% 42%, #2a1240 0%, #0e1a35 62%, #070b18 100%);
-    }
-    #ci-kick { top: 300px; color: #ff3d9a; }
+    #ci-k { top: 200px; color: #ff2f93; }
+    #ci-when { top: 260px; font-size: 230px; white-space: nowrap; }
     #ci-thumb {
       position: absolute;
-      left: 50px;
-      top: 590px;
-      width: 980px;
-      height: 653px;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 30px 90px rgba(230, 8, 122, 0.45), 0 0 0 5px rgba(255, 255, 255, 0.95);
+      left: 60px;
+      top: 560px;
+      width: 960px;
+      padding: 18px 18px 0;
+      background: #f3efe6;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
     }
-    #ci-thumb img {
-      width: 980px;
-      height: 653px;
+    #ci-in {
+      position: relative;
+      width: 924px;
+      height: 616px;
+      overflow: hidden;
+    }
+    #ci-in img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 924px;
+      height: 616px;
       object-fit: cover;
-      display: block;
     }
     #ci-tdark {
       position: absolute;
       left: 0;
       top: 0;
-      width: 980px;
-      height: 653px;
+      width: 924px;
+      height: 616px;
       background: linear-gradient(90deg, rgba(14, 26, 53, 0.25) 0%, rgba(14, 26, 53, 0.82) 48%, rgba(14, 26, 53, 0.9) 100%);
     }
     #ci-ttitle {
       position: absolute;
-      left: 380px;
-      top: 70px;
-      width: 580px;
+      left: 340px;
+      top: 64px;
+      width: 560px;
       text-align: right;
-      font-size: 74px;
+      font-family: "Poppins", sans-serif;
+      font-size: 70px;
       line-height: 1;
       font-weight: 800;
       text-transform: uppercase;
-      color: #fff;
       text-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
     }
     #ci-tsub {
       position: absolute;
-      left: 380px;
-      top: 250px;
-      width: 580px;
+      left: 340px;
+      top: 236px;
+      width: 560px;
       text-align: right;
     }
     #ci-tsub span {
       display: inline-block;
-      padding: 8px 16px;
+      padding: 8px 14px;
       background: #e6087a;
-      font-size: 34px;
+      font-family: "Poppins", sans-serif;
+      font-size: 32px;
       line-height: 1.15;
       font-weight: 800;
       text-transform: uppercase;
@@ -129,163 +168,125 @@
     }
     #ci-thosts {
       position: absolute;
-      left: 30px;
-      top: 440px;
-      width: 920px;
+      left: 24px;
+      top: 420px;
+      width: 876px;
       text-align: right;
-      font-size: 26px;
+      font-family: "Poppins", sans-serif;
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: #ffd1e6;
     }
     #ci-tbar {
       position: absolute;
       left: 0;
-      top: 513px;
-      width: 980px;
-      height: 140px;
+      top: 484px;
+      width: 924px;
+      height: 132px;
       background: #fff;
       display: flex;
       align-items: center;
-      gap: 26px;
-      padding: 0 36px;
+      gap: 24px;
+      padding: 0 32px;
       color: #111;
-      font-size: 64px;
+      font-family: "Poppins", sans-serif;
+      font-size: 60px;
     }
     #ci-tbar b {
-      font-weight: 800;
       flex: 1;
+      font-weight: 800;
     }
-    #ci-tsomos {
-      width: 104px;
-      height: 104px;
+    #ci-somos {
+      width: 122px;
+      height: 122px;
       border-radius: 50%;
       border: 3px solid #eee;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 800;
       font-style: italic;
       color: #e6087a;
     }
-    #ci-shine {
-      position: absolute;
-      left: -400px;
-      top: -100px;
-      width: 220px;
-      height: 900px;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%);
-      transform: rotate(18deg);
-    }
     #ci-play {
       position: relative;
-      width: 130px;
-      height: 92px;
-      border-radius: 24px;
+      width: 122px;
+      height: 86px;
+      border-radius: 22px;
       background: #ff1f3d;
       flex: none;
     }
     #ci-play::after {
       content: "";
       position: absolute;
-      left: 50px;
-      top: 24px;
-      border-top: 22px solid transparent;
-      border-bottom: 22px solid transparent;
-      border-left: 36px solid #fff;
+      left: 47px;
+      top: 22px;
+      border-top: 21px solid transparent;
+      border-bottom: 21px solid transparent;
+      border-left: 34px solid #fff;
     }
-    #ci-when {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      top: 380px;
-      text-align: center;
-      font-weight: 800;
-      font-style: italic;
-      line-height: 1;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    #ci-hoy {
-      display: inline-block;
-      font-size: 150px;
-      color: #ff3d9a;
-      margin-right: 26px;
-    }
-    #ci-hora {
-      display: inline-block;
-      font-size: 150px;
-      letter-spacing: -0.02em;
-    }
-    #ci-yt {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      top: 1290px;
-      text-align: center;
-      font-size: 44px;
+    #ci-cap {
+      height: 72px;
+      line-height: 72px;
+      font-size: 28px;
       font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #0b0f0e;
     }
-    #ci-yt b {
-      font-weight: 800;
-      color: #fff;
-    }
-    #ci-yt i {
-      display: inline-block;
-      position: relative;
-      width: 64px;
-      height: 44px;
-      border-radius: 12px;
-      background: #ff1f3d;
-      vertical-align: -6px;
-      margin: 0 12px 0 6px;
-    }
-    #ci-yt i::after {
-      content: "";
-      position: absolute;
-      left: 24px;
-      top: 11px;
-      border-top: 11px solid transparent;
-      border-bottom: 11px solid transparent;
-      border-left: 18px solid #fff;
-    }
+    #ci-yt { top: 1290px; font-size: 34px; }
+    #ci-yt b { color: #ff2f93; }
   </style>
   <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
-    <div id="ci-bg"></div>
-    <div id="ci-kick" class="kick">Nuevo episodio</div>
+    <div id="ci-topo" class="topo" data-layout-ignore><svg class="topo-svg" viewBox="0 0 1480 2320" width="1480" height="2320" style="position:absolute;left:0;top:0">
+        <g fill="none" stroke="#2e4a3e" stroke-width="3">
+          <path d="M 740 380 C 980 360 1180 560 1150 820 C 1120 1080 900 1180 700 1150 C 470 1110 330 930 380 700 C 420 500 560 395 740 380 Z" />
+          <path d="M 740 300 C 1060 280 1290 540 1240 860 C 1190 1180 920 1280 680 1240 C 400 1190 240 960 300 680 C 350 440 520 315 740 300 Z" />
+          <path d="M 745 220 C 1130 200 1390 520 1330 900 C 1270 1280 940 1380 660 1330 C 330 1270 150 990 220 660 C 280 380 480 235 745 220 Z" />
+          <path d="M 750 460 C 900 450 1060 600 1050 790 C 1040 980 880 1060 720 1050 C 560 1040 460 900 480 740 C 500 580 610 470 750 460 Z" />
+          <path d="M 755 560 C 860 555 960 650 950 780 C 940 900 840 950 740 945 C 640 940 580 860 590 760 C 600 650 670 565 755 560 Z" />
+          <path d="M 760 140 C 1200 120 1480 500 1420 940 C 1360 1380 960 1480 640 1420 C 260 1350 60 1020 140 640 C 210 320 440 155 760 140 Z" />
+          <path d="M 300 1500 C 600 1430 900 1560 1200 1490 C 1350 1460 1440 1520 1480 1560" />
+          <path d="M 0 1650 C 380 1580 760 1720 1100 1640 C 1290 1600 1400 1660 1480 1700" />
+          <path d="M 0 1800 C 420 1730 800 1880 1160 1790 C 1330 1750 1420 1800 1480 1840" />
+          <path d="M 0 1960 C 460 1890 840 2040 1200 1950 C 1350 1910 1430 1960 1480 1990" />
+        </g>
+        <g fill="none" stroke="#ff2f93" stroke-width="3" stroke-dasharray="10 14" opacity="0.7">
+          <path d="M 200 2200 C 400 1900 520 1600 600 1300 C 660 1080 700 900 750 650" />
+        </g>
+      </svg></div>
+    <div id="ci-k" class="mono">Nuevo episodio // SOMOS Naturaleza</div>
+    <div id="ci-when" class="hl"><span class="pk">Hoy</span> 7:00 PM</div>
     <div id="ci-thumb">
-      <img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="El set de SOMOS Naturaleza" />
-      <div id="ci-tdark"></div>
-      <div id="ci-ttitle">Infiernos<br />ambientales:</div>
-      <div id="ci-tsub"><span>Cuando el lugar donde<br />vives te enferma</span></div>
-      <div id="ci-thosts">Jarumy Méndez · Eduardo Contro · Israel Rivas</div>
-      <div id="ci-tbar"><span id="ci-tsomos">SOMOS</span><b>SOMOS TV</b><div id="ci-play"></div></div>
-      <div id="ci-shine" data-layout-ignore></div>
+      <div id="ci-in">
+        <img id="ci-img" src="assets/photos/miniatura.jpg" alt="El set de SOMOS Naturaleza" />
+        <div id="ci-tdark"></div>
+        <div id="ci-ttitle">Infiernos<br />ambientales:</div>
+        <div id="ci-tsub"><span>Cuando el lugar donde<br />vives te enferma</span></div>
+        <div id="ci-thosts">Jarumy Méndez · Eduardo Contro · Israel Rivas</div>
+        <div id="ci-tbar"><span id="ci-somos">SOMOS</span><b>SOMOS TV</b><div id="ci-play"></div></div>
+      </div>
+      <div id="ci-cap">Expedición Izta · +4,000 m</div>
     </div>
-    <div id="ci-when"><span id="ci-hoy">Hoy</span><span id="ci-hora">7:00 PM</span></div>
-    <div id="ci-yt">Sale hoy por <b>SOMOS TV</b> en<i></i><b>YouTube</b></div>
+    <div id="ci-yt" class="mono">Por <b>SOMOS TV</b> en YouTube</div>
+    <div id="ci-sl" class="slats" data-layout-ignore><div class="slat" style="top: 0px; height: 322px"></div><div class="slat" style="top: 320px; height: 322px"></div><div class="slat" style="top: 640px; height: 322px"></div><div class="slat" style="top: 960px; height: 322px"></div><div class="slat" style="top: 1280px; height: 322px"></div><div class="slat" style="top: 1600px; height: 322px"></div></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    // Golpe de la canción: todo entra de una
-    tl.fromTo("#ci-bg", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0);
-    tl.fromTo("#ci-thumb", { opacity: 0, scale: 0.6, rotationY: -70, y: 40 }, { opacity: 1, scale: 1, rotationY: 0, y: 0, duration: 0.6, ease: "expo.out" }, 0);
-    tl.fromTo("#ci-thumb-img", { scale: 1.12, x: -60 }, { scale: 1.12, x: -110, duration: 5.2, ease: "none" }, 0);
-    tl.fromTo("#ci-play", { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(2.5)" }, 0.5);
-    tl.fromTo("#ci-ttitle", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.3);
-    tl.fromTo("#ci-tsub span", { scaleX: 0, transformOrigin: "100% 50%" }, { scaleX: 1, duration: 0.35, ease: "expo.out" }, 0.45);
-    tl.fromTo("#ci-thosts", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
-    tl.fromTo("#ci-shine", { x: 0 }, { x: 1700, duration: 0.7, ease: "power2.inOut" }, 0.55);
-    tl.to("#ci-shine", { x: 3400, duration: 0.7, ease: "power2.inOut" }, 3.5);
-    tl.fromTo("#ci-kick", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.25);
-    tl.fromTo("#ci-hoy", { opacity: 0, scale: 2.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 0.3);
-    tl.fromTo("#ci-hora", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.45);
-    tl.fromTo("#ci-yt", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.75);
-    // Segundo golpe (1:43.65): late el HOY y el botón de play
-    tl.fromTo("#ci-when", { scale: 1 }, { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 3.5);
-    tl.to("#ci-play", { scale: 1.18, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 3.5);
+    tl.fromTo("#ci-sl .slat:nth-child(odd)", { scaleX: 1, transformOrigin: "0% 50%" }, { scaleX: 0, duration: 0.38, ease: "expo.inOut", stagger: 0.04 }, 0);
+    tl.fromTo("#ci-sl .slat:nth-child(even)", { scaleX: 1, transformOrigin: "100% 50%" }, { scaleX: 0, duration: 0.38, ease: "expo.inOut", stagger: 0.04 }, 0);
+    tl.fromTo("#ci-topo", { scale: 1.15 }, { scale: 1.0, duration: 5.4, ease: "none" }, 0);
+    tl.fromTo("#ci-when", { opacity: 0, scaleY: 0.2 }, { opacity: 1, scaleY: 1, duration: 0.4, ease: "expo.out" }, 0.15);
+    tl.fromTo("#ci-k", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.3);
+    tl.fromTo("#ci-thumb", { opacity: 0, y: -1000, rotation: -16, scale: 1.2 }, { opacity: 1, y: 0, rotation: -2, scale: 1, duration: 0.55, ease: "expo.out" }, 0.3);
+    tl.fromTo("#ci-play", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(2.5)" }, 0.8);
+    tl.fromTo("#ci-img", { scale: 1.12, x: -60 }, { scale: 1.12, x: -110, duration: 5.4, ease: "none" }, 0);
+    tl.fromTo("#ci-yt", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.75);
+    // Segundo golpe (1:43.65): late el HOY y la impresión se endereza
+    tl.to("#ci-when", { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 3.5);
+    tl.to("#ci-thumb", { rotation: 0, duration: 0.3, ease: "back.out(2)" }, 3.5);
     window.__timelines["cierre"] = tl;
   </script>
 </template>

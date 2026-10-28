@@ -1,0 +1,165 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
+      overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
+    }
+    .ph {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+    .ph img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+
+    #va-g { background: radial-gradient(ellipse 100% 30% at 50% 42%, rgba(11, 15, 14, 0.55), rgba(11, 15, 14, 0) 100%); }
+    #va-tag { top: 600px; }
+    #va-t { top: 660px; font-size: 250px; }
+    #va-alt {
+      position: absolute;
+      left: 860px;
+      top: 330px;
+      width: 160px;
+      height: 900px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 20%, #000 80%, transparent);
+      mask-image: linear-gradient(180deg, transparent, #000 20%, #000 80%, transparent);
+    }
+    #va-ticks {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 160px;
+    }
+    .va-tk {
+      position: relative;
+      height: 60px;
+      border-top: 3px solid rgba(243, 239, 230, 0.7);
+      width: 40px;
+      margin-left: 110px;
+    }
+    .va-tk b {
+      position: absolute;
+      right: 52px;
+      top: -20px;
+      font-size: 24px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    #va-mark {
+      position: absolute;
+      left: 130px;
+      top: 436px;
+      width: 30px;
+      height: 6px;
+      background: #ff2f93;
+    }
+  </style>
+  <div id="root" data-composition-id="valle" data-width="1080" data-height="1920">
+    <div id="va-g" class="grad"></div>
+    <div id="va-tag" class="tag"><span>Registro 02 · 10:30 h</span></div>
+    <div id="va-t" class="hl">Y subimos<span class="pk">.</span></div>
+    <div id="va-alt" data-layout-ignore><div id="va-ticks"><div class="va-tk"><b>4,300</b></div><div class="va-tk"><b>4,250</b></div><div class="va-tk"><b>4,200</b></div><div class="va-tk"><b>4,150</b></div><div class="va-tk"><b>4,100</b></div><div class="va-tk"><b>4,050</b></div><div class="va-tk"><b>4,000</b></div><div class="va-tk"><b>3,950</b></div><div class="va-tk"><b>3,900</b></div><div class="va-tk"><b>3,850</b></div></div><div id="va-mark"></div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#va-g", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+    tl.fromTo("#va-tag", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, 0.05);
+    tl.fromTo("#va-t", { opacity: 0, y: 160 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.1);
+    // Altímetro: la marca rosa (y=436) pasa de 3,950 a 4,100 m
+    tl.fromTo("#va-ticks", { y: 436 - 420 }, { y: 436 - 240, duration: 2.1, ease: "power2.inOut" }, 0.1);
+    tl.fromTo("#va-alt", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.1);
+    tl.to(["#va-tag", "#va-t", "#va-alt"], { opacity: 0, y: -30, duration: 0.18, ease: "power2.in" }, 2.18);
+    window.__timelines["valle"] = tl;
+  </script>
+</template>

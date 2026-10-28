@@ -3,9 +3,87 @@
     #root {
       position: absolute;
       inset: 0;
-      font-family: "Poppins", sans-serif;
-      color: #fff;
+      font-family: "Space Mono", monospace;
+      color: #f3efe6;
       overflow: hidden;
+    }
+    .hl {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      padding: 0 70px;
+      text-align: center;
+      font-family: "League Gothic", sans-serif;
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #f3efe6;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hl .pk {
+      color: #ff2f93;
+    }
+    .hl .ln {
+      display: block;
+    }
+    .mono {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+      font-family: "Space Mono", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    }
+    .tag {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .tag span {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #ff2f93;
+      color: #0b0f0e;
+      font-family: "Space Mono", monospace;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grad {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .topo {
+      position: absolute;
+      left: -200px;
+      top: -200px;
+      width: 1480px;
+      height: 2320px;
+      background: #0b0f0e;
+    }
+    .slats {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .slat {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 321px;
+      background: #0b0f0e;
     }
     .ph {
       position: absolute;
@@ -14,7 +92,6 @@
       width: 1080px;
       height: 1920px;
       overflow: hidden;
-      background: #0e1a35;
     }
     .ph img {
       position: absolute;
@@ -24,77 +101,43 @@
       height: 1920px;
       object-fit: cover;
     }
-    .shade {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      background: radial-gradient(ellipse 95% 38% at 50% 46%, rgba(14, 26, 53, 0.62), rgba(14, 26, 53, 0) 100%);
-    }
-    .big {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      padding: 0 70px;
-      text-align: center;
-      font-weight: 800;
-      font-style: italic;
-      line-height: 0.98;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      text-shadow: 0 8px 36px rgba(0, 0, 0, 0.5);
-    }
-    .big .w,
-    .big .l {
-      display: inline-block;
-    }
-    .pink {
-      color: #ff3d9a;
-    }
-    .kick {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      text-align: center;
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: 0.34em;
-      text-transform: uppercase;
-      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6);
-    }
 
-    #nc-bg {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      background: radial-gradient(ellipse 70% 40% at 50% 48%, #3a0a26 0%, #0b0f1e 70%);
+    #nn-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #0b0f0e; }
+    #nn-t { top: 780px; font-size: 250px; text-align: left; padding-left: 110px; white-space: nowrap; }
+    #nn-cur {
+      display: inline-block;
+      width: 26px;
+      height: 200px;
+      background: #ff2f93;
+      margin-left: 14px;
+      vertical-align: -20px;
     }
-    #nc-a, .nc-ghost { top: 800px; font-size: 128px; white-space: nowrap; }
-    .nc-ghost { opacity: 0; text-shadow: none; }
-    #nc-c { color: #00e5ff; }
-    #nc-p { color: #ff2f93; }
+    #nn-rec { top: 700px; text-align: left; left: 115px; color: #ff2f93; }
   </style>
   <div id="root" data-composition-id="noche" data-width="1080" data-height="1920">
-    <div id="nc-bg"></div>
-    <div id="nc-c" class="big nc-ghost" data-layout-ignore>ESTA NOCHE</div>
-    <div id="nc-p" class="big nc-ghost" data-layout-ignore>ESTA NOCHE</div>
-    <div id="nc-a" class="big"><span class="l">E</span><span class="l">s</span><span class="l">t</span><span class="l">a</span><span class="l">&nbsp;</span><span class="l">n</span><span class="l">o</span><span class="l">c</span><span class="l">h</span><span class="l">e</span></div>
+    <div id="nn-bg"></div>
+    <div id="nn-rec" class="mono">● Rec</div>
+    <div id="nn-t" class="hl"><span id="nn-txt">Esta noche</span><span id="nn-cur"></span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo("#nc-bg", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0);
-    tl.fromTo("#nc-a .l", { opacity: 0 }, { opacity: 1, duration: 0.05, stagger: 0.09 }, 0.1);
-    tl.fromTo(["#nc-a", ".nc-ghost"], { scale: 1 }, { scale: 1.12, duration: 1.9, ease: "power1.in" }, 0.1);
-    // Glitch: las copias de color se separan a saltos sobre el pulso
-    [0.95, 1.25, 1.55, 1.75, 1.9].forEach((t, i) => {
-      const d = 8 + i * 5;
-      tl.set("#nc-c", { opacity: 0.85, x: -d, y: i % 2 ? 4 : -4 }, t);
-      tl.set("#nc-p", { opacity: 0.85, x: d, y: i % 2 ? -4 : 4 }, t);
-      tl.set(".nc-ghost", { opacity: 0 }, t + 0.08);
-    });
+    // Texto que se "decodifica" letra por letra (determinista)
+    const scramble = (el, text, start, dur) => {
+      const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const p = { v: 0 };
+      tl.fromTo(p, { v: 0 }, { v: 1, duration: dur, ease: "none", onUpdate: () => {
+        const n = Math.floor(p.v * text.length);
+        const step = Math.floor(p.v * 24);
+        el.textContent = text.split("").map((c, i) => (i < n || c === " " ? c : glyphs[(i * 7 + step * 13) % glyphs.length])).join("");
+      } }, start);
+    };
+    const el = document.querySelector("#nn-txt");
+    const full = "ESTA NOCHE";
+    const q = { v: 0 };
+    tl.fromTo(q, { v: 0 }, { v: 1, duration: 1.0, ease: "none", onUpdate: () => { el.textContent = full.slice(0, Math.round(q.v * full.length)); } }, 0.15);
+    tl.fromTo("#nn-cur", { opacity: 1 }, { opacity: 0, duration: 0.14, ease: "steps(1)", yoyo: true, repeat: 6 }, 0.1);
+    tl.fromTo("#nn-rec", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "steps(1)", yoyo: true, repeat: 4 }, 0.0);
+    tl.fromTo("#nn-t", { scale: 1 }, { scale: 1.06, duration: 1.9, ease: "power1.in" }, 0.1);
     window.__timelines["noche"] = tl;
   </script>
 </template>
