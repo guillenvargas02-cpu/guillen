@@ -1,0 +1,66 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    #drop-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 80% 30% at 50% 47%, rgba(14, 26, 53, 0.55), rgba(14, 26, 53, 0) 100%);
+    }
+    #drop-block {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 770px;
+      text-align: center;
+    }
+    #drop-word {
+      font-size: 132px;
+      line-height: 1;
+      font-weight: 800;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      text-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);
+    }
+    #drop-word .l {
+      display: inline-block;
+    }
+    #drop-sub {
+      margin-top: 22px;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.5);
+    }
+    #drop-sub span {
+      color: #ff3d9a;
+    }
+  </style>
+  <div id="root" data-composition-id="drop" data-width="1080" data-height="1920">
+    <div id="drop-scrim"></div>
+    <div id="drop-block">
+      <div id="drop-word"><span class="l">I</span><span class="l">Z</span><span class="l">T</span><span class="l">A</span><span class="l">C</span><span class="l">C</span><span class="l">Í</span><span class="l">H</span><span class="l">U</span><span class="l">A</span><span class="l">T</span><span class="l">L</span></div>
+      <div id="drop-sub">La mujer dormida <span>·</span> 25.10.26</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Entra con el drop: letras que caen y frenan en seco
+    tl.fromTo("#drop-scrim", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+    tl.fromTo("#drop-word .l", { y: -140, opacity: 0, scale: 1.4 }, { y: 0, opacity: 1, scale: 1, duration: 0.42, ease: "expo.out", stagger: 0.025 }, 0.02);
+    tl.fromTo("#drop-sub", { opacity: 0, scaleX: 1.4 }, { opacity: 1, scaleX: 1, duration: 0.55, ease: "expo.out" }, 0.3);
+    tl.fromTo("#drop-word", { scale: 1 }, { scale: 1.05, duration: 1.3, ease: "none" }, 0.4);
+    tl.to("#drop-word .l", { y: 120, opacity: 0, duration: 0.22, ease: "power3.in", stagger: 0.012 }, 1.55);
+    tl.to(["#drop-sub", "#drop-scrim"], { opacity: 0, duration: 0.2, ease: "power2.in" }, 1.62);
+    window.__timelines["drop"] = tl;
+  </script>
+</template>

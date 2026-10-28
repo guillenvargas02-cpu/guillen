@@ -1,0 +1,169 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    #cima-photo {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+    #cima-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      object-fit: cover;
+    }
+    #cima-shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, rgba(14, 26, 53, 0) 50%, rgba(14, 26, 53, 0.75) 78%, rgba(14, 26, 53, 0.4) 100%);
+    }
+    /* HUD con los datos GPS reales de la foto */
+    #cima-hud {
+      position: absolute;
+      left: 90px;
+      top: 1050px;
+      width: 900px;
+      height: 290px;
+      padding: 34px 40px;
+    }
+    .cima-corner {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-color: #ff3d9a;
+      border-style: solid;
+      border-width: 0;
+    }
+    #cima-tl {
+      left: 0;
+      top: 0;
+      border-left-width: 6px;
+      border-top-width: 6px;
+    }
+    #cima-tr {
+      right: 0;
+      top: 0;
+      border-right-width: 6px;
+      border-top-width: 6px;
+    }
+    #cima-bl {
+      left: 0;
+      bottom: 0;
+      border-left-width: 6px;
+      border-bottom-width: 6px;
+    }
+    #cima-br {
+      right: 0;
+      bottom: 0;
+      border-right-width: 6px;
+      border-bottom-width: 6px;
+    }
+    #cima-label {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #ff3d9a;
+    }
+    #cima-coords {
+      margin-top: 12px;
+      font-size: 56px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    #cima-alt {
+      margin-top: 6px;
+      font-size: 84px;
+      line-height: 1.05;
+      font-weight: 800;
+      font-style: italic;
+      font-variant-numeric: tabular-nums;
+    }
+    #cima-alt span {
+      font-size: 44px;
+      font-style: normal;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    #cima-target {
+      position: absolute;
+      left: 800px;
+      top: 170px;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+  <div id="root" data-composition-id="cima" data-width="1080" data-height="1920">
+    <div id="cima-photo">
+      <img id="cima-img" src="assets/photos/cima.jpg" alt="En la cima de la ruta, 25 de octubre" />
+      <div id="cima-shade"></div>
+      <svg id="cima-target" viewBox="0 0 200 200" data-layout-ignore>
+        <circle id="cima-ring" cx="100" cy="100" r="70" fill="none" stroke="#fff" stroke-width="5" />
+        <circle id="cima-dot" cx="100" cy="100" r="9" fill="#ff3d9a" />
+        <line class="cima-hair" x1="100" y1="0" x2="100" y2="38" stroke="#fff" stroke-width="5" />
+        <line class="cima-hair" x1="100" y1="162" x2="100" y2="200" stroke="#fff" stroke-width="5" />
+        <line class="cima-hair" x1="0" y1="100" x2="38" y2="100" stroke="#fff" stroke-width="5" />
+        <line class="cima-hair" x1="162" y1="100" x2="200" y2="100" stroke="#fff" stroke-width="5" />
+      </svg>
+      <div id="cima-hud">
+        <div id="cima-tl" class="cima-corner"></div>
+        <div id="cima-tr" class="cima-corner"></div>
+        <div id="cima-bl" class="cima-corner"></div>
+        <div id="cima-br" class="cima-corner"></div>
+        <div id="cima-label">Cima · 25.10.2026 · 13:23</div>
+        <div id="cima-coords">19°08'48" N · 98°39'18" O</div>
+        <div id="cima-alt">4,124<span>m s. n. m.</span></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const coords = document.querySelector("#cima-coords");
+    const alt = document.querySelector("#cima-alt");
+    const pad = (n) => String(n).padStart(2, "0");
+    const p = { v: 0 };
+    tl.fromTo("#cima-img", { scale: 1.2 }, { scale: 1.07, duration: 0.35, ease: "expo.out" }, 0);
+    tl.to("#cima-img", { scale: 1.0, duration: 2.18, ease: "none" }, 0.35);
+    // Mira que se fija sobre la montaña
+    tl.fromTo("#cima-target", { scale: 1.8, opacity: 0, rotation: -45 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.45, ease: "expo.out" }, 0.1);
+    tl.fromTo("#cima-ring", { strokeDasharray: 440, strokeDashoffset: 440 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 0.12);
+    tl.fromTo("#cima-dot", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 0.45);
+    // Esquinas del HUD y datos que corren hasta su valor (lectura del GPS de la foto)
+    tl.fromTo(".cima-corner", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "expo.out", stagger: 0.04 }, 0.15);
+    tl.fromTo("#cima-label", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 0.25);
+    tl.fromTo("#cima-coords", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.32);
+    tl.fromTo("#cima-alt", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.38);
+    tl.fromTo(
+      p,
+      { v: 0 },
+      {
+        v: 1,
+        duration: 0.9,
+        ease: "expo.out",
+        onUpdate: () => {
+          coords.textContent = `19°08'${pad(Math.round(48 * p.v))}" N · 98°39'${pad(Math.round(18 * p.v))}" O`;
+          alt.firstChild.textContent = Math.round(4124 * p.v).toLocaleString("en-US");
+        },
+      },
+      0.32,
+    );
+    // Sale para descubrir las nubes de "sí lo hicimos"
+    tl.to("#cima-photo", { opacity: 0, duration: 0.2, ease: "power2.in" }, 2.33);
+    window.__timelines["cima"] = tl;
+  </script>
+</template>

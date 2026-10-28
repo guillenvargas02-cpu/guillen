@@ -19,28 +19,30 @@ ROOT = Path(__file__).resolve().parent
 A = ROOT / "assets"
 OUT = ROOT / "renders"
 FPS = "30000/1001"
-TOTAL = 34.82
+TOTAL = 33.20
 
-# (fuente, entrada en la fuente, inicio en el reel, fin en el reel, transición de entrada, punch-in)
-# Los cortes caen en los beats de la música (~96 BPM).
+# (fuente, entrada en la fuente, inicio en el reel, fin en el reel, transición de entrada, punch-in, velocidad)
+# Todo cae en la rejilla de beats de la canción (~96 BPM, 0.63 s); el drop entra en 9.47 s.
+# Las fotos (escalada, rapel, cima) van en la capa de Hyperframes: debajo queda 1049 y negro.
 EDL = [
-    ("IMG_1032", 0.40, 0.00, 5.12, None, 1.0),  # valle: intro con la altitud
-    ("IMG_1015", 0.06, 5.12, 10.01, "cut", 1.0),  # selfie (sin los silencios)
-    ("IMG_1015", 6.05, 10.01, 10.91, "cut", 1.15),
-    ("IMG_1015", 8.85, 10.91, 12.06, "cut", 1.06),
-    ("IMG_1033", 2.80, 12.06, 15.85, "cut", 1.0),  # sendero hacia los picos
-    ("IMG_1018", 1.20, 15.85, 19.63, "dissolve", 1.0),  # niebla: glaciar Ayoloco
-    ("IMG_1046", 4.50, 19.63, 24.72, "dissolve", 1.0),  # cresta entre nubes: placa
-    ("IMG_1049", 0.15, 24.72, 28.48, "dissolve", 1.0),  # cuerda: por eso subimos
-    ("IMG_1046", 0.10, 28.48, 31.63, "dissolve", 1.0),  # nubes: sí lo hicimos
-    ("white", 0.00, 31.63, TOTAL, "fadewhite", 1.0),  # cierre con logo
+    ("IMG_1032", 0.40, 0.00, 3.78, None, 1.0, 1.0),  # valle: intro con la altitud
+    ("IMG_1015", 1.28, 3.78, 7.43, "cut", 1.0, 1.0),  # selfie (sin silencios)
+    ("IMG_1015", 6.05, 7.43, 8.33, "cut", 1.15, 1.0),
+    ("IMG_1015", 8.85, 8.33, 9.47, "cut", 1.06, 1.0),
+    ("IMG_1033", 3.90, 9.47, 11.35, "cut", 1.0, 1.25),  # DROP: sendero hacia los picos
+    ("IMG_1018", 1.30, 11.35, 13.26, "zoomin", 1.0, 1.2),  # niebla: glaciar
+    ("IMG_1046", 4.50, 13.26, 18.30, "smoothleft", 1.0, 1.0),  # cresta entre nubes: placa
+    ("IMG_1049", 0.20, 18.30, 22.40, "cut", 1.0, 1.0),  # cuerda (luego fotos encima)
+    ("black", 0.00, 22.40, 25.89, "cut", 1.0, 1.0),  # bajo las fotos de rapel y cima
+    ("IMG_1046", 0.10, 25.89, 29.68, "cut", 1.0, 1.0),  # nubes: sí lo hicimos
+    ("white", 0.00, 29.68, TOTAL, "fadewhite", 1.0, 1.0),  # cierre con logo
 ]
-XFADE = {"dissolve": 0.30, "fadewhite": 0.60}
+XFADE = {"zoomin": 0.30, "smoothleft": 0.30, "fadewhite": 0.60}
 
 # Voz: tramos del selfie (los mismos que EDL) y música
-VOICE = [(0.06, 5.12, 10.01), (6.05, 10.01, 10.91), (8.85, 10.91, 12.06)]
-MUSIC_OFFSET = 1.48  # primer golpe de la canción en t=0.05 del reel
-DUCK = (4.95, 12.15)  # la música baja mientras se habla
+VOICE = [(1.28, 3.78, 7.43), (6.05, 7.43, 8.33), (8.85, 8.33, 9.47)]
+MUSIC_OFFSET = 74.84  # puente tranquilo de la canción; el drop (1:24.3) cae en 9.47 s
+DUCK = (3.62, 9.45)  # la música baja mientras se habla y vuelve de golpe en el drop
 
 
 def run(cmd):
@@ -50,11 +52,11 @@ def run(cmd):
 
 def build_base():
     inputs, parts = [], []
-    for i, (src, s_in, t0, t1, _tin, punch) in enumerate(EDL):
+    for i, (src, s_in, t0, t1, _tin, punch, speed) in enumerate(EDL):
         nxt = EDL[i + 1][4] if i + 1 < len(EDL) else None
         dur = (t1 - t0) + XFADE.get(nxt, 0)
-        if src == "white":
-            inputs += ["-f", "lavfi", "-i", f"color=c=white:s=1080x1920:r={FPS}:d={dur:.3f}"]
+        if src in ("white", "black"):
+            inputs += ["-f", "lavfi", "-i", f"color=c={src}:s=1080x1920:r={FPS}:d={dur:.3f}"]
             chain = f"[{i}:v]format=yuv420p,setsar=1,settb=1001/30000"
         else:
             inputs += ["-i", A / f"{src}.mp4"]
@@ -63,7 +65,7 @@ def build_base():
                 w, h = round(1080 / punch / 2) * 2, round(1920 / punch / 2) * 2
                 crop = f"crop={w}:{h},scale=1080:1920:flags=lanczos,"
             chain = (
-                f"[{i}:v]trim=start={s_in:.3f}:duration={dur:.3f},setpts=PTS-STARTPTS,"
+                f"[{i}:v]trim=start={s_in:.3f}:duration={dur * speed:.3f},setpts=(PTS-STARTPTS)/{speed},"
                 f"{crop}fps={FPS},format=yuv420p,setsar=1,settb=1001/30000"
             )
         parts.append(f"{chain}[s{i}]")
@@ -76,7 +78,7 @@ def build_base():
             graph.append(f"[{cur}][s{i}]concat=n=2:v=1:a=0,settb=1001/30000[{out}]")
         else:
             graph.append(
-                f"[{cur}][s{i}]xfade=transition={'fade' if kind == 'dissolve' else 'fadewhite'}"
+                f"[{cur}][s{i}]xfade=transition={kind}"
                 f":duration={XFADE[kind]}:offset={t0:.3f},settb=1001/30000[{out}]"
             )
         cur = out
@@ -102,15 +104,15 @@ def build_audio():
         f"volume=1.6,apad=whole_dur={TOTAL}[voice]"
     )
     a, b = DUCK
-    r = 0.35  # rampa del ducking
+    r, rel = 0.35, 0.06  # bajada suave, subida seca para que el drop pegue
     duck = (
         f"if(lt(t,{a - r}),1,if(lt(t,{a}),1-0.8*(t-{a - r})/{r},"
-        f"if(lt(t,{b}),0.2,if(lt(t,{b + r}),0.2+0.8*(t-{b})/{r},1))))"
+        f"if(lt(t,{b}),0.2,if(lt(t,{b + rel}),0.2+0.8*(t-{b})/{rel},1))))"
     )
     f.append(
         f"[1:a]atrim=start={MUSIC_OFFSET}:duration={TOTAL},asetpts=PTS-STARTPTS,"
         f"volume='{duck}':eval=frame,volume=0.55,"
-        f"afade=t=in:d=0.08,afade=t=out:st={TOTAL - 2.6:.2f}:d=2.6[music]"
+        f"afade=t=in:d=0.08,afade=t=out:st={TOTAL - 2.9:.2f}:d=2.9[music]"
     )
     f.append("[voice][music]amix=inputs=2:normalize=0,alimiter=limit=0.89[mix]")
     run(
