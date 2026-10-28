@@ -72,11 +72,20 @@
       height: 1920px;
       background: radial-gradient(ellipse 90% 50% at 50% 42%, #2a1240 0%, #0e1a35 62%, #070b18 100%);
     }
-    #ci-kick { top: 300px; color: #ff3d9a; }
+    #ci-logo {
+      position: absolute;
+      left: 375px;
+      top: 175px;
+      width: 330px;
+      height: auto;
+      filter: drop-shadow(0 16px 40px rgba(0, 0, 0, 0.45));
+    }
+    #ci-kick { top: 480px; color: #ff3d9a; }
     #ci-thumb {
       position: absolute;
-      left: 50px;
-      top: 590px;
+      left: 140px;
+      top: 862px;
+      zoom: 0.857;
       width: 980px;
       height: 653px;
       border-radius: 28px;
@@ -200,7 +209,7 @@
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 380px;
+      top: 535px;
       text-align: center;
       font-weight: 800;
       font-style: italic;
@@ -223,7 +232,7 @@
       position: absolute;
       left: 0;
       width: 1080px;
-      top: 1290px;
+      top: 1312px;
       text-align: center;
       font-size: 44px;
       font-weight: 700;
@@ -254,6 +263,7 @@
   </style>
   <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
     <div id="ci-bg"></div>
+    <img id="ci-logo" src="assets/brand/somos-naturaleza-logo.png" alt="SOMOS Naturaleza" />
     <div id="ci-kick" class="kick">Nuevo episodio</div>
     <div id="ci-thumb">
       <img id="ci-thumb-img" src="assets/photos/miniatura.jpg" alt="El set de SOMOS Naturaleza" />
@@ -279,6 +289,7 @@
     tl.fromTo("#ci-thosts", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
     tl.fromTo("#ci-shine", { x: 0 }, { x: 1700, duration: 0.7, ease: "power2.inOut" }, 0.55);
     tl.to("#ci-shine", { x: 3400, duration: 0.7, ease: "power2.inOut" }, 3.5);
+    tl.fromTo("#ci-logo", { opacity: 0, y: -40, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 0.12);
     tl.fromTo("#ci-kick", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.25);
     tl.fromTo("#ci-hoy", { opacity: 0, scale: 2.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 0.3);
     tl.fromTo("#ci-hora", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.45);

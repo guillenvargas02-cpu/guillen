@@ -80,6 +80,7 @@
     #st-2 img, #st-3 img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
     .st-name { top: 0; font-size: 92px; }
     #st-c { top: 1040px; font-size: 118px; }
+    #st-c .st-l { display: block; white-space: nowrap; }
   </style>
   <div id="root" data-composition-id="estudio" data-width="1080" data-height="1920">
     <div id="st-p1" class="ph clip" data-start="0" data-duration="2.34" data-layout-ignore><img id="st-p1-img" src="assets/photos/estudio.jpg" alt="Grabación de SOMOS Naturaleza en el estudio" style="object-position: 50% 55%" /></div>
@@ -91,7 +92,7 @@
     <div id="st-n1" class="big st-name" style="top: 940px">Jarumy <span class="pink">Méndez</span></div>
     <div id="st-n2" class="big st-name" style="top: 1080px">Eduardo <span class="pink">Contro</span></div>
     <div id="st-n3" class="big st-name" style="top: 1220px">Israel <span class="pink">Rivas</span></div>
-    <div id="st-c" class="big"><span class="w">Nuevo</span> <span class="w">episodio</span> <span class="w pink">SOMOS</span> <span class="w pink">Naturaleza</span></div>
+    <div id="st-c" class="big"><span class="w st-l">Nuevo episodio</span><span class="w st-l pink">esta noche</span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
