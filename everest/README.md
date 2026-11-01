@@ -36,6 +36,8 @@ Navegador ──HTTP──▶ Next.js 16 (App Router, TypeScript, Node) ──SQ
 
 ### Postal: un solo módulo para previsualizar y exportar
 
+**Diseño — “la palabra como montaña”.** Inspirada en las postales retro de letras monumentales, pero propia de EVEREST. Las letras son una rotulación de cordillera: conservan su ancho y su altura sube de los extremos a una **cima en la R**, con contorno negro, profundidad sólida y filete interior rosa. Detrás tienen un sol de rayos en rosa muy pálido. Debajo va una **cinta retro** con “Nuestra cima, nuestro futuro”. Completan la pieza un **timbre perforado** (CDMX · 2026) con su **matasellos** rosa, curvas de nivel topográficas, textura de papel blanco cálido (determinista), un marco de doble filete y el logotipo oficial en una etiqueta blanca. El nombre y la frase se ajustan solos en tamaño y líneas para caber en su zona.
+
 `src/postcard/compose.ts` define tipografía, máscara, encuadre, posiciones y tiempos. Lo usan:
 
 - **Previsualización** (navegador): `<video>` ligero (720p, 600 KB) posicionado en el rectángulo *cover* + `<canvas>` con la capa gráfica.
@@ -106,7 +108,8 @@ Alternativa autocontenida: `docker compose up -d --build` (app + PostgreSQL).
 npm run typecheck
 npm run test:unit                    # palabras, firma, texto, encuadre, fechas
 npm run test:e2e                     # ⚠ reinicia los datos de participación de DATABASE_URL
-npx tsx tests/tools/render-sample.ts /tmp/postal vertical "Nombre" "Frase"
+npx tsx tests/tools/render-sample.ts /tmp/postal vertical "Nombre" "Frase"   # MP4 + PNG completos
+npx tsx tests/tools/still.ts /tmp/still.png horizontal "Nombre" "Frase"      # fotograma rápido para revisar diseño
 ```
 
 `test:e2e` usa Chromium real (Playwright) con tres contextos simultáneos —admin de escritorio, **emulación** de iPhone 13 y de Pixel 7— y cubre: cambios del programa en vivo en dos dispositivos, regla de una sola actividad, pausa, cambio de horario, avisos, pérdida y recuperación de red, reintento sin duplicados, moderación y privacidad (API pública, pantalla), conteos separados y normalización de palabras, firma con mouse y táctil sin desplazar la página, conservación al girar, firma privada vs. pública, generación de la postal desde el celular y verificación con `ffprobe` del MP4 descargado.

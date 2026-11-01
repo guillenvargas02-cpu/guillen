@@ -206,6 +206,7 @@ ok('El equipo sí ve la firma privada', staffSig === 200);
 
 // ── 6. Postal: generar en servidor desde el celular, descargar y verificar fuera de la plataforma ──
 await P1.goto(`${BASE}/postal`);
+await P1.waitForLoadState('networkidle'); await sleep(600);
 await P1.fill('#' + (await P1.locator('.step input.input').getAttribute('id')).replace(/:/g, '\\:'), longName);
 await P1.locator('.step textarea').fill('La cima se construye en equipo.');
 ok('Previsualización lista (fuentes + video)', await until(() => P1.isVisible('text=Así se verá tu video'), 15000));

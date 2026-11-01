@@ -1,6 +1,6 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { PostcardPreview } from '@/components/PostcardPreview';
 import { useLive } from '@/components/LiveProvider';
 import { IconAlert, IconDownload, IconRefresh, IconShare } from '@/components/icons';
@@ -19,7 +19,7 @@ function fit(text: string, max: number) {
 }
 
 export function PostalView() {
-  const [profile, setProfile] = useProfile();
+  const [profile, setProfile, profileReady] = useProfile();
   const [memory] = useMemory();
   const [d, setD, ready] = useLocal<Draft>('borrador:postal', { name: '', phrase: '', format: 'vertical' });
   const [job, setJob] = useLocal<Job | null>('postal:trabajo', null);
@@ -30,7 +30,12 @@ export function PostalView() {
   const ids = useId();
   const open = program?.settings.postal_open ?? true;
 
-  useEffect(() => { if (ready && !d.name && profile.name) setD((x) => ({ ...x, name: profile.name })); }, [ready, d.name, profile.name, setD]);
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (!ready || !profileReady || prefilled.current) return;
+    prefilled.current = true;
+    if (!d.name && profile.name && !(document.activeElement instanceof HTMLInputElement)) setD((x) => (x.name ? x : { ...x, name: profile.name }));
+  }, [ready, profileReady, d.name, profile.name, setD]);
 
   const input = useMemo(() => ({ name: d.name.trim(), phrase: d.phrase.trim(), format: d.format }), [d.name, d.phrase, d.format]);
   const key = JSON.stringify(input);
