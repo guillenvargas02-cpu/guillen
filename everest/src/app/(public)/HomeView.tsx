@@ -10,7 +10,6 @@ import { Contacts } from '@/components/Contacts';
 import { PostcardPreview } from '@/components/PostcardPreview';
 import { IconArrow, IconMegaphone, IconPin } from '@/components/icons';
 import { EVENT } from '@/lib/event';
-import { useProfile } from '@/lib/client/store';
 import { fmtTime } from '@/lib/event';
 
 function Head({ title, href, cta = 'Ver todo' }: { title: string; href?: string; cta?: string }) {
@@ -24,7 +23,6 @@ function Head({ title, href, cta = 'Ver todo' }: { title: string; href?: string;
 
 export function HomeView() {
   const { program, wall, words } = useLive();
-  const [profile] = useProfile();
   const notices = program?.notices ?? [];
   return (
     <div className="home page-enter">
@@ -72,7 +70,7 @@ export function HomeView() {
         <section className="panel panel--soft postal-teaser" aria-labelledby="h-postal">
           <div className="panel__head"><h2 id="h-postal" className="panel__title">Tu postal en video</h2></div>
           <div className="postal-teaser__stage">
-            <PostcardPreview input={{ name: profile.name || 'Tu nombre', phrase: '', format: 'horizontal' }} />
+            <PostcardPreview input={{ format: 'horizontal' }} />
           </div>
           <Link className="btn btn--rosa" href="/postal">Crear mi postal</Link>
         </section>

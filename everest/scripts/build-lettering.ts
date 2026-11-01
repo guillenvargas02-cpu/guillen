@@ -42,6 +42,21 @@ for (const [key, file] of Object.entries(variants)) {
   };
 }
 
+// Rótulo manuscrito "Saludos desde" (Lobster Two Bold Italic, SIL OFL 1.1). Unidades: 1000 = em.
+const scriptFont = fontkit.openSync(path.resolve('assets/source/LobsterTwo-BoldItalic.ttf')) as fontkit.Font;
+const srun = scriptFont.layout('Saludos desde');
+const ss = 1000 / scriptFont.unitsPerEm;
+let sx = 0, sminX = Infinity, smaxX = -Infinity, sminY = Infinity, smaxY = -Infinity;
+const sparts: string[] = [];
+srun.glyphs.forEach((g, i) => {
+  const p = g.path.scale(ss, -ss).translate(sx, 0);
+  const bb = p.bbox;
+  if (Number.isFinite(bb.minX)) { sminX = Math.min(sminX, bb.minX); smaxX = Math.max(smaxX, bb.maxX); sminY = Math.min(sminY, bb.minY); smaxY = Math.max(smaxY, bb.maxY); }
+  sparts.push(p.toSVG().replace(/(\d+\.\d{2})\d+/g, '$1'));
+  sx += srun.positions[i].xAdvance * ss;
+});
+const SCRIPT = { d: sparts.join(' '), bbox: { minX: +sminX.toFixed(2), maxX: +smaxX.toFixed(2), minY: +sminY.toFixed(2), maxY: +smaxY.toFixed(2) } };
+
 const ts = `// Archivo generado por scripts/build-lettering.ts — no editar a mano.
 // Contornos de "${WORD}" en Anton (SIL OFL 1.1). Unidades: altura de mayúscula = 1000, línea base y = 0.
 export type LetteringVariant = {
@@ -50,6 +65,8 @@ export type LetteringVariant = {
   advance: number;
 };
 export const LETTERING: Record<'anton', LetteringVariant> = ${JSON.stringify(out, null, 2)};
+// "Saludos desde" en Lobster Two Bold Italic (SIL OFL 1.1). Unidades: 1000 = em, línea base y = 0.
+export const SCRIPT = ${JSON.stringify(SCRIPT)};
 `;
 fs.writeFileSync('src/postcard/lettering.ts', ts);
 console.log('ok', Object.keys(out));

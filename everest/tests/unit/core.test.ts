@@ -44,7 +44,8 @@ test('postal: encuadre "cover" sin deformar y con números pares', () => {
   assert.equal(r.w % 2, 0); assert.equal(r.h % 2, 0);
   assert.ok(Math.abs(r.w / r.h - 16 / 9) < 0.01);
   assert.ok(r.x <= 66 && r.y <= 260 && r.x + r.w >= 66 + 948 && r.y + r.h >= 260 + 282);
-  assert.equal(sanitizeInput({ name: 'x'.repeat(80), format: 'vertical' }).name.length, 48);
+  assert.equal(sanitizeInput({ name: 'x'.repeat(80), format: 'vertical' }).name!.length, 40);
+  assert.equal(sanitizeInput({ format: 'horizontal' }).name, '');
 });
 
 test('fechas: hora de Ciudad de México', () => {

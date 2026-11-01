@@ -36,16 +36,16 @@ Navegador ──HTTP──▶ Next.js 16 (App Router, TypeScript, Node) ──SQ
 
 ### Postal: un solo módulo para previsualizar y exportar
 
-**Diseño — “la palabra como montaña”.** Inspirada en las postales retro de letras monumentales, pero propia de EVEREST. Las letras son una rotulación de cordillera: conservan su ancho y su altura sube de los extremos a una **cima en la R**, con contorno negro, profundidad sólida y filete interior rosa. Detrás tienen un sol de rayos en rosa muy pálido. Debajo va una **cinta retro** con “Nuestra cima, nuestro futuro”. Completan la pieza un **timbre perforado** (CDMX · 2026) con su **matasellos** rosa, curvas de nivel topográficas, textura de papel blanco cálido (determinista), un marco de doble filete y el logotipo oficial en una etiqueta blanca. El nombre y la frase se ajustan solos en tamaño y líneas para caber en su zona.
+**Diseño — postal retro de “letras grandes”.** El video de montaña es el **fondo de toda la postal**. Las letras de EVEREST son ventanas al paisaje a color pleno: arco suave, filete blanco, contorno azul noche y extrusión profunda rosa→magenta. Fuera de las letras, el video lleva una veladura de impresión antigua: degradado de atardecer a azul noche, puntos de semitono y grano. La postal tiene un borde crema con doble filete, “Saludos desde” manuscrito en Lobster Two (OFL, convertido en contorno vectorial), una cinta rosa con “Nuestra cima, nuestro futuro” y un timbre perforado con su matasellos. Lleva el día, la fecha, la hora y la sede, y el logotipo oficial sobre etiqueta blanca. **Sin frase personal**; el nombre es **opcional** (“Con cariño, …”) y está desactivado por defecto.
 
 `src/postcard/compose.ts` define tipografía, máscara, encuadre, posiciones y tiempos. Lo usan:
 
 - **Previsualización** (navegador): `<video>` ligero (720p, 600 KB) posicionado en el rectángulo *cover* + `<canvas>` con la capa gráfica.
 - **Render** (servidor): `@napi-rs/canvas` dibuja **la misma capa** en PNG con alfa; FFmpeg escala el **original 4K** al mismo rectángulo, recorta, superpone y codifica.
 
-La capa gráfica es opaca salvo el **interior de las letras** (`destination-out`), así que el video solo se ve dentro de EVEREST; los huecos interiores (la R) siguen siendo papel. Las letras son contornos vectoriales precalculados (`src/postcard/lettering.ts`, generado por `npm run assets:lettering`), idénticos en ambos motores.
+La capa gráfica es semitransparente fuera de las letras (veladura) y totalmente transparente en el **interior de las letras** (`destination-out`), así que el paisaje se ve con color pleno dentro de EVEREST y tratado alrededor; los huecos interiores (la R) reciben la veladura del fondo. Las letras son contornos vectoriales precalculados (`src/postcard/lettering.ts`, generado por `npm run assets:lettering`), idénticos en ambos motores.
 
-Salida verificada: **MP4 H.264 High, yuv420p, 30 fps, 240 cuadros = 8 s exactos, sin audio, `+faststart`**; vertical 1080×1920 (principal) y horizontal 1920×1080 con composición adaptada; PNG adicional. No se usa MediaRecorder: el MP4 se genera en servidor (funciona igual en cualquier celular).
+Salida verificada (render en servidor con el **original 4K** como fondo): **MP4 H.264 High, yuv420p, 30 fps, 240 cuadros = 8 s exactos, sin audio, `+faststart`**; vertical 1080×1920 (principal) y horizontal 1920×1080 con composición adaptada; PNG adicional. No se usa MediaRecorder: el MP4 se genera en servidor (funciona igual en cualquier celular).
 
 La cola (`render_jobs`) es persistente, con progreso, límite de concurrencia por instancia (`RENDER_CONCURRENCY`), tope de fila (`RENDER_MAX_QUEUE`), hasta 3 intentos y recuperación de trabajos atascados. Varias instancias pueden compartirla (`FOR UPDATE SKIP LOCKED`), pero los archivos se guardan en disco local: con más de una instancia, monta un volumen compartido en `RENDER_DIR`.
 
@@ -108,16 +108,16 @@ Alternativa autocontenida: `docker compose up -d --build` (app + PostgreSQL).
 npm run typecheck
 npm run test:unit                    # palabras, firma, texto, encuadre, fechas
 npm run test:e2e                     # ⚠ reinicia los datos de participación de DATABASE_URL
-npx tsx tests/tools/render-sample.ts /tmp/postal vertical "Nombre" "Frase"   # MP4 + PNG completos
-npx tsx tests/tools/still.ts /tmp/still.png horizontal "Nombre" "Frase"      # fotograma rápido para revisar diseño
+npx tsx tests/tools/render-sample.ts /tmp/postal vertical ["Nombre"]   # MP4 + PNG completos
+npx tsx tests/tools/still.ts /tmp/still.png horizontal ["Nombre"]      # fotograma rápido para revisar diseño
 ```
 
 `test:e2e` usa Chromium real (Playwright) con tres contextos simultáneos —admin de escritorio, **emulación** de iPhone 13 y de Pixel 7— y cubre: cambios del programa en vivo en dos dispositivos, regla de una sola actividad, pausa, cambio de horario, avisos, pérdida y recuperación de red, reintento sin duplicados, moderación y privacidad (API pública, pantalla), conteos separados y normalización de palabras, firma con mouse y táctil sin desplazar la página, conservación al girar, firma privada vs. pública, generación de la postal desde el celular y verificación con `ffprobe` del MP4 descargado.
 
 ### Resultados en este entorno (1 nov 2026)
 
-- `test:unit`: 6/6. `test:e2e`: **38/38**.
-- MP4 descargado verificado fuera de la plataforma: `h264 High, yuv420p, 1080×1920, 30/1, 8.000 s, sin audio`. Fotogramas a 0,2 s / 4 s / 7,8 s: diferencia media dentro de las letras 11–15 (el paisaje se mueve) y ≈ 0,00 fuera (fondo, contorno y profundidad estables).
+- `test:unit`: 6/6. `test:e2e`: **39/39**.
+- MP4 descargado verificado fuera de la plataforma: `h264 High, yuv420p, 1080×1920, 30/1, 8.000 s, sin audio`. Fotogramas a 0,2 s / 4 s / 7,8 s: el paisaje se mueve dentro de las letras (diferencia media ≈ 18) y en el fondo tratado; el borde y los elementos gráficos quedan fijos (≈ 0,00).
 - Previsualización vs. PNG del servidor en el mismo instante: la capa gráfica coincide (diferencia media ≈ 5/255 por reescalado); el video interior coincide en tiempo (mejor ajuste t ≈ 5,4–5,5 s) y difiere solo en resolución (proxy 720p vs. original 4K).
 - **Distinción real vs. emulación:** todas las pruebas de celular de esta entrega son **emulación** (viewport, táctil y user agent de iPhone 13 y Pixel 7 sobre Chromium). **No** se probó en Safari de iPhone ni Chrome de Android físicos; está en la lista de pendientes.
 

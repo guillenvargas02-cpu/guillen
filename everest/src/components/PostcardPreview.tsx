@@ -72,7 +72,7 @@ export function PostcardPreview({ input, label, onReady, controls = true }: { in
   const r = layout?.videoRect;
   return (
     <div className="preview-stage" ref={wrap} style={{ aspectRatio: `${W} / ${H}` }} role="img"
-      aria-label={label ?? `Previsualización de la postal ${FORMATS[input.format].label}: EVEREST con el paisaje en movimiento dentro de las letras, a nombre de ${input.name || 'tu nombre'}.`}>
+      aria-label={label ?? `Previsualización de la postal ${FORMATS[input.format].label}: “Saludos desde EVEREST” con el paisaje de montaña en movimiento de fondo y dentro de las letras${input.name ? `, firmada por ${input.name}` : ''}.`}>
       <video
         ref={video}
         src="/media/everest-preview-720.mp4"

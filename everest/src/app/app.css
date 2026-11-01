@@ -160,3 +160,5 @@
 .admin-modal { position: fixed; inset: 0; z-index: 50; background: rgba(10,10,10,.45); display: grid; place-items: center; padding: 16px; overflow-y: auto; }
 .admin-modal__card { width: min(760px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; }
 .admin-qr { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: #fff; padding: 16px; border-radius: var(--r); border: 1px solid var(--line); }
+/* El video de la postal puede ser más grande que el escenario (encuadre "cover"). */
+.preview-stage video { max-width: none; max-height: none; }

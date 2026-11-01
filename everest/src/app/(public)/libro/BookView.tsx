@@ -99,7 +99,7 @@ function BookForm() {
           <div className="confirm">
             <strong><IconCheck /> Gracias por firmar</strong>
             <span className="small">{state.show ? 'Aparecerá en el libro tras la revisión del equipo.' : 'Tu dedicatoria quedó solo para el equipo.'}</span>
-            <Link href="/postal" className="linkbtn small">Úsala en tu postal →</Link>
+            <Link href="/postal" className="linkbtn small">Crea tu postal en video →</Link>
           </div>
         )}
         {state.kind === 'error' && (

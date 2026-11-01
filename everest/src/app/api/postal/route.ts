@@ -12,8 +12,7 @@ export const runtime = 'nodejs';
 
 const Body = z.object({
   client_id: z.string().uuid(),
-  name: z.string(),
-  phrase: z.string().optional().default(''),
+  name: z.string().optional().default(''),
   format: z.enum(['vertical', 'horizontal']),
 });
 const MAX_QUEUE = Number(process.env.RENDER_MAX_QUEUE ?? 60);
@@ -22,11 +21,9 @@ const MAX_QUEUE = Number(process.env.RENDER_MAX_QUEUE ?? 60);
 export const POST = handle(async (req: Request) => {
   assertSameOrigin(req);
   const b = Body.parse(await readJson(req));
+  // El nombre es opcional: sin nombre, la postal lleva solo el evento, el lugar y la fecha.
   const name = cleanText(b.name);
-  const phrase = cleanText(b.phrase);
-  if (charCount(name) < 1) throw new HttpError(422, 'NOMBRE', 'Escribe tu nombre para la postal.');
   if (charCount(name) > LIMITS.name) throw new HttpError(422, 'NOMBRE', `El nombre puede tener hasta ${LIMITS.name} caracteres.`);
-  if (charCount(phrase) > LIMITS.phrase) throw new HttpError(422, 'FRASE', `La frase puede tener hasta ${LIMITS.phrase} caracteres.`);
   const settings = await getSettings();
   if (!settings.postal_open) throw new HttpError(423, 'CERRADO', 'La postal no está disponible en este momento.');
   const guest = await ensureGuestId();
@@ -34,7 +31,7 @@ export const POST = handle(async (req: Request) => {
   const prev = await q1<{ id: string }>(`select id from render_jobs where client_id = $1 and guest_id = $2`, [b.client_id, guest]);
   if (prev) return json({ ok: true, id: prev.id, duplicate: true });
   // Misma postal ya generada: reutilizarla.
-  const params = { name, phrase, format: b.format };
+  const params = { name, format: b.format };
   const same = await q1<{ id: string }>(
     `select id from render_jobs where guest_id = $1 and params = $2::jsonb and status in ('queued','rendering','done')
       order by created_at desc limit 1`, [guest, JSON.stringify(params)],
