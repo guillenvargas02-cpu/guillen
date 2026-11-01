@@ -1,0 +1,30 @@
+# Despliegue autocontenido (VPS) o prueba local: app + PostgreSQL.
+#   cp .env.example .env   (define SESSION_SECRET y PUBLIC_URL)
+#   docker compose up -d --build
+#   docker compose exec app npm run admin:create -- --email tu@correo.mx --name "Tu nombre" --role admin
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: everest
+      POSTGRES_PASSWORD: everest
+      POSTGRES_DB: everest
+    volumes: [db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U everest"]
+      interval: 5s
+      retries: 10
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://everest:everest@db:5432/everest
+      DATABASE_SSL: disable
+    ports: ["3000:3000"]
+    volumes: [renders:/data]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: unless-stopped
+volumes:
+  db: {}
+  renders: {}
