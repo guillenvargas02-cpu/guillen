@@ -3,6 +3,7 @@ import { Readable } from 'node:stream';
 import { q1 } from '@/lib/db';
 import { readGuestId } from '@/lib/guest';
 import { renderFilePath } from '@/lib/render-worker';
+import { STORAGE_PREFIX, supabaseStorage } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,17 +13,26 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const type = new URL(req.url).searchParams.get('type') === 'png' ? 'png' : 'mp4';
   const inline = new URL(req.url).searchParams.has('inline');
   const guest = await readGuestId();
-  const job = await q1<{ output_mp4: string | null; output_png: string | null; guest_id: string; params: { name: string; format: string } }>(
+  const job = await q1<{ output_mp4: string | null; output_png: string | null; guest_id: string; params: { name?: string; format: string } }>(
     `select output_mp4, output_png, guest_id, params from render_jobs where id = $1 and status = 'done'`, [id],
   ).catch(() => null);
   if (!job || job.guest_id !== guest) return new Response('No encontrado', { status: 404 });
   const rel = type === 'png' ? job.output_png : job.output_mp4;
   if (!rel) return new Response('No encontrado', { status: 404 });
+  const slug0 = job.params.name?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40);
+  if (rel.startsWith(STORAGE_PREFIX)) {
+    // Supabase Storage: redirección a un enlace firmado de corta duración (admite rangos).
+    const remote = supabaseStorage();
+    if (!remote) return new Response('Almacenamiento no configurado', { status: 503 });
+    const name = `postal-everest${slug0 ? '-' + slug0 : ''}-${job.params.format}.${type}`;
+    const signed = await remote.signedUrl(rel.slice(STORAGE_PREFIX.length), 600, inline ? undefined : name);
+    return new Response(null, { status: 302, headers: { Location: signed, 'Cache-Control': 'private, no-store' } });
+  }
   const file = renderFilePath(rel);
   if (!fs.existsSync(file)) return new Response('El archivo expiró. Genera la postal de nuevo.', { status: 410 });
   const stat = fs.statSync(file);
-  const slug = job.params.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) || 'invitado';
-  const filename = `postal-everest-${slug}-${job.params.format}.${type}`;
+  const slug = (job.params.name ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) || '';
+  const filename = `postal-everest${slug ? '-' + slug : ''}-${job.params.format}.${type}`;
   const headers: Record<string, string> = {
     'Content-Type': type === 'png' ? 'image/png' : 'video/mp4',
     'Content-Disposition': `${inline ? 'inline' : 'attachment'}; filename="${filename}"`,

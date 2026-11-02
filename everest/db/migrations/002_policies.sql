@@ -40,15 +40,18 @@ do $$
 begin
   if exists (select 1 from pg_roles where rolname = 'anon') then
     execute 'revoke all on all tables in schema public from anon';
-    execute 'revoke all on all functions in schema public from anon';
+    execute 'revoke all on function program_transition(uuid, text, boolean), bump_live(), touch_updated_at() from anon';
     execute 'alter default privileges in schema public revoke all on tables from anon';
   end if;
   if exists (select 1 from pg_roles where rolname = 'authenticated') then
     execute 'revoke all on all tables in schema public from authenticated';
-    execute 'revoke all on all functions in schema public from authenticated';
+    execute 'revoke all on function program_transition(uuid, text, boolean), bump_live(), touch_updated_at() from authenticated';
     execute 'alter default privileges in schema public revoke all on tables from authenticated';
   end if;
 end $$;
+
+-- Las funciones propias no se ejecutan desde la API pública.
+revoke all on function program_transition(uuid, text, boolean) from public;
 
 -- Las vistas públicas se evalúan con los privilegios del propietario; solo las usa el servidor.
 revoke all on v_public_wall, v_public_words, v_public_guestbook from public;

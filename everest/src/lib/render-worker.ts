@@ -4,6 +4,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { q, q1 } from './db';
 import type { PostcardInput } from '@/postcard/compose';
+import { STORAGE_PREFIX, supabaseStorage } from './storage';
 
 /**
  * Cola de render de postales.
@@ -73,9 +74,17 @@ async function process1(job: Job) {
         q(`update render_jobs set progress = $2, locked_at = now() where id = $1`, [job.id, p]).catch(() => {});
       }
     });
+    let mp4 = path.relative(RENDER_DIR, r.mp4), png = path.relative(RENDER_DIR, r.png);
+    const remote = supabaseStorage();
+    if (remote) {
+      // Supabase Storage: el servidor de la app no necesita disco persistente.
+      mp4 = await remote.upload(`${job.id}/postal.mp4`, fs.readFileSync(r.mp4), 'video/mp4');
+      png = await remote.upload(`${job.id}/postal.png`, fs.readFileSync(r.png), 'image/png');
+      fs.rmSync(outDir, { recursive: true, force: true });
+    }
     await q(
       `update render_jobs set status = 'done', progress = 1, output_mp4 = $2, output_png = $3, finished_at = now(), error = null where id = $1`,
-      [job.id, path.relative(RENDER_DIR, r.mp4), path.relative(RENDER_DIR, r.png)],
+      [job.id, mp4, png],
     );
   } catch (e) {
     const msg = (e as Error).message.slice(0, 500);
@@ -88,9 +97,12 @@ async function process1(job: Job) {
 }
 
 async function cleanup() {
-  const old = await q<{ id: string }>(
-    `delete from render_jobs where created_at < now() - make_interval(hours => $1) returning id`, [TTL_HOURS],
+  const old = await q<{ id: string; output_mp4: string | null; output_png: string | null }>(
+    `delete from render_jobs where created_at < now() - make_interval(hours => $1) returning id, output_mp4, output_png`, [TTL_HOURS],
   );
+  const remote = supabaseStorage();
+  const remotePaths = old.flatMap((o) => [o.output_mp4, o.output_png]).filter((p): p is string => !!p?.startsWith(STORAGE_PREFIX)).map((p) => p.slice(STORAGE_PREFIX.length));
+  if (remote && remotePaths.length) await remote.remove(remotePaths).catch((e) => console.error('[render] limpieza remota:', e.message));
   for (const { id } of old) fs.rmSync(path.join(RENDER_DIR, id), { recursive: true, force: true });
 }
 

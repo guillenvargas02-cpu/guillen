@@ -14,7 +14,10 @@
     "assets:video": "bash scripts/prepare-video.sh",
     "assets:lettering": "tsx scripts/build-lettering.ts",
     "test:unit": "tsx --test tests/unit/*.test.ts",
-    "test:e2e": "node tests/e2e/run.mjs"
+    "test:e2e": "node tests/e2e/run.mjs",
+    "supabase:setup": "tsx scripts/supabase-setup.ts",
+    "supabase:check": "tsx scripts/supabase-setup.ts --check",
+    "supabase:sql": "tsx scripts/build-supabase-sql.ts"
   },
   "engines": {
     "node": ">=20.9"

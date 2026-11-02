@@ -1,0 +1,29 @@
+# Despliegue en Render (Blueprint): New → Blueprint → elige este repositorio.
+# La base de datos y el almacenamiento viven en Supabase; este servicio corre la app y FFmpeg.
+# Las rutas son relativas a la raíz del repositorio (la app vive en everest/).
+services:
+  - type: web
+    name: everest-somos
+    runtime: docker
+    dockerContext: ./everest
+    dockerfilePath: ./everest/Dockerfile
+    plan: standard            # 2 GB RAM: cómodo para generar postales (≈12 s cada una)
+    region: ohio              # cerca de us-east-1 (Supabase) y de CDMX
+    healthCheckPath: /api/snapshot?t=program
+    envVars:
+      - key: DATABASE_URL
+        sync: false           # pega el "Session pooler" de Supabase
+      - key: DATABASE_POOL_MAX
+        value: "8"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PUBLIC_URL
+        sync: false           # p. ej. https://everest-somos.onrender.com o tu dominio
+      - key: RENDER_CONCURRENCY
+        value: "1"
+      - key: POSTAL_X264_PRESET
+        value: veryfast

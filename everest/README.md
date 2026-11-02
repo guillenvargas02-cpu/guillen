@@ -36,16 +36,16 @@ Navegador ──HTTP──▶ Next.js 16 (App Router, TypeScript, Node) ──SQ
 
 ### Postal: un solo módulo para previsualizar y exportar
 
-**Diseño — postal retro de “letras grandes”.** El video de montaña es el **fondo de toda la postal**. Las letras de EVEREST son ventanas al paisaje a color pleno: arco suave, filete blanco, contorno azul noche y extrusión profunda rosa→magenta. Fuera de las letras, el video lleva una veladura de impresión antigua: degradado de atardecer a azul noche, puntos de semitono y grano. La postal tiene un borde crema con doble filete, “Saludos desde” manuscrito en Lobster Two (OFL, convertido en contorno vectorial), una cinta rosa con “Nuestra cima, nuestro futuro” y un timbre perforado con su matasellos. Lleva el día, la fecha, la hora y la sede, y el logotipo oficial sobre etiqueta blanca. **Sin frase personal**; el nombre es **opcional** (“Con cariño, …”) y está desactivado por defecto.
+**Diseño: postal blanca premium con guiños retro.** El fondo es blanco y la palabra EVEREST, monumental, lleva el paisaje en movimiento **dentro de las letras**. Las letras tienen un contorno negro fino y un segundo contorno rosa desplazado, como un registro de imprenta, con un arco suave. La acompañan “Saludos desde” manuscrito en Lobster Two (OFL, convertido a contorno vectorial) y un timbre de línea con matasellos rosa. Debajo van “Nuestra cima, nuestro futuro”, la fecha monumental **03.11.26** y una ficha técnica con líneas finas: día, hora, sede y ciudad. El logotipo oficial positivo va directamente sobre blanco. No lleva frase personal. El nombre es **opcional** (“Con cariño, …”) y viene desactivado por defecto.
 
 `src/postcard/compose.ts` define tipografía, máscara, encuadre, posiciones y tiempos. Lo usan:
 
 - **Previsualización** (navegador): `<video>` ligero (720p, 600 KB) posicionado en el rectángulo *cover* + `<canvas>` con la capa gráfica.
 - **Render** (servidor): `@napi-rs/canvas` dibuja **la misma capa** en PNG con alfa; FFmpeg escala el **original 4K** al mismo rectángulo, recorta, superpone y codifica.
 
-La capa gráfica es semitransparente fuera de las letras (veladura) y totalmente transparente en el **interior de las letras** (`destination-out`), así que el paisaje se ve con color pleno dentro de EVEREST y tratado alrededor; los huecos interiores (la R) reciben la veladura del fondo. Las letras son contornos vectoriales precalculados (`src/postcard/lettering.ts`, generado por `npm run assets:lettering`), idénticos en ambos motores.
+La capa gráfica es opaca salvo el **interior de las letras** (`destination-out`), así que el video solo se ve dentro de EVEREST; los huecos interiores (la R) siguen siendo blancos. Las letras son contornos vectoriales precalculados (`src/postcard/lettering.ts`, generado por `npm run assets:lettering`), idénticos en ambos motores.
 
-Salida verificada (render en servidor con el **original 4K** como fondo): **MP4 H.264 High, yuv420p, 30 fps, 240 cuadros = 8 s exactos, sin audio, `+faststart`**; vertical 1080×1920 (principal) y horizontal 1920×1080 con composición adaptada; PNG adicional. No se usa MediaRecorder: el MP4 se genera en servidor (funciona igual en cualquier celular).
+Salida verificada (render en servidor con el **original 4K** dentro de las letras): **MP4 H.264 High, yuv420p, 30 fps, 240 cuadros = 8 s exactos, sin audio, `+faststart`**; vertical 1080×1920 (principal) y horizontal 1920×1080 con composición adaptada; PNG adicional. No se usa MediaRecorder: el MP4 se genera en servidor (funciona igual en cualquier celular).
 
 La cola (`render_jobs`) es persistente, con progreso, límite de concurrencia por instancia (`RENDER_CONCURRENCY`), tope de fila (`RENDER_MAX_QUEUE`), hasta 3 intentos y recuperación de trabajos atascados. Varias instancias pueden compartirla (`FOR UPDATE SKIP LOCKED`), pero los archivos se guardan en disco local: con más de una instancia, monta un volumen compartido en `RENDER_DIR`.
 
@@ -104,6 +104,8 @@ Datos de demostración (identificados y separados): `npm run db:seed -- --demo`.
 
 ## Despliegue
 
+**Con Supabase (recomendado):** sigue la guía [`docs/SUPABASE.md`](docs/SUPABASE.md). Incluye credenciales, `npm run supabase:setup` / `supabase:check`, `supabase/setup.sql` para el SQL Editor y el Blueprint de Render (`render.yaml` en la raíz del repositorio). Con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`, las postales se guardan en un bucket privado de Supabase Storage y se descargan con enlaces firmados.
+
 Necesita un **proceso Node de larga duración** (SSE + FFmpeg + cola), por lo que la opción recomendada es un contenedor (Railway, Render, Fly.io, un VPS…) y **no** funciones serverless.
 
 1. **Base de datos (Supabase):** crea el proyecto y copia la cadena de conexión **directa** o *session pooler* (puerto 5432) en `DATABASE_URL`.
@@ -129,13 +131,13 @@ npx tsx tests/tools/still.ts /tmp/still.png horizontal ["Nombre"]      # fotogra
 ### Resultados en este entorno (1 nov 2026)
 
 - `test:unit`: 6/6. `test:e2e`: **39/39**.
-- MP4 descargado verificado fuera de la plataforma: `h264 High, yuv420p, 1080×1920, 30/1, 8.000 s, sin audio`. Fotogramas a 0,2 s / 4 s / 7,8 s: el paisaje se mueve dentro de las letras (diferencia media ≈ 18) y en el fondo tratado; el borde y los elementos gráficos quedan fijos (≈ 0,00).
+- MP4 descargado verificado fuera de la plataforma: `h264 High, yuv420p, 1080×1920, 30/1, 8.000 s, sin audio`. Fotogramas a 0,2 s / 4 s / 7,8 s: el paisaje se mueve dentro de las letras (diferencia media ≈ 13) y todo lo de fuera queda fijo (≈ 0,00).
 - Previsualización vs. PNG del servidor en el mismo instante: la capa gráfica coincide (diferencia media ≈ 5/255 por reescalado); el video interior coincide en tiempo (mejor ajuste t ≈ 5,4–5,5 s) y difiere solo en resolución (proxy 720p vs. original 4K).
 - **Distinción real vs. emulación:** todas las pruebas de celular de esta entrega son **emulación** (viewport, táctil y user agent de iPhone 13 y Pixel 7 sobre Chromium). **No** se probó en Safari de iPhone ni Chrome de Android físicos; está en la lista de pendientes.
 
 ## Pendiente (requiere configuración externa)
 
-1. **Infraestructura:** en este entorno no hay credenciales de hosting ni de Supabase, así que **no hay URL pública desplegada ni QR definitivo**. Falta: proyecto Supabase (o Postgres), servicio de contenedores, `PUBLIC_URL`/dominio y `SESSION_SECRET`.
+1. **Infraestructura:** en este entorno no hay credenciales de hosting ni de Supabase, así que **no hay URL pública desplegada ni QR definitivo**. Todo lo necesario para conectarlo está listo (`docs/SUPABASE.md`, `supabase/setup.sql`, `npm run supabase:setup`, `render.yaml`). Faltan el proyecto de Supabase, el servicio de contenedores, el dominio o `PUBLIC_URL`, y la cuenta del equipo. La integración se verificó contra Postgres con los roles de Supabase y un simulador de Storage, no contra un proyecto real.
 2. **Imagen Docker:** el `Dockerfile` no se pudo construir aquí (no hay daemon de Docker); la app sí se compiló y probó en modo producción (`next build && next start`).
 3. **Pruebas en dispositivos reales:** Safari en iPhone y Chrome en Android sobre la URL pública (firma con dedo, descarga/compartir de MP4, enlaces `mailto:` y `wa.me`).
 4. **Contenido por confirmar:** horarios intermedios y panelistas marcados “por confirmar”.
