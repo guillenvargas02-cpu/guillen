@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto';
 import { connect } from './_db';
 
 import { PROGRAM, SOURCE } from './_program';
+import { hashPassword } from '../src/lib/password';
 
 const DEMO_WALL = [
   ['Mariana', 'llevas', 'Me llevo la certeza de que la cima se construye en equipo.'],
@@ -34,6 +35,20 @@ const DEMO_WORDS: [string, string][] = [
     console.log(`Programa inicial cargado (${PROGRAM.length} actividades).`);
   } else {
     console.log('El programa ya tiene actividades; no se modificó.');
+  }
+  // Primera cuenta del equipo sin terminal: ADMIN_EMAIL + ADMIN_PASSWORD en las variables del servidor.
+  // Solo se crea si ese correo aún no existe (no sobrescribe contraseñas cambiadas después).
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const pass = process.env.ADMIN_PASSWORD;
+  if (email && pass) {
+    if (pass.length < 10) console.log('ADMIN_PASSWORD debe tener al menos 10 caracteres: no se creó la cuenta.');
+    else {
+      const r = await c.query(
+        `insert into staff_users (email, name, role, password_hash) values ($1, $2, 'admin', $3) on conflict (email) do nothing returning id`,
+        [email, process.env.ADMIN_NAME || 'Equipo SOMOS', await hashPassword(pass)],
+      );
+      console.log(r.rowCount ? `Cuenta de administración creada: ${email}` : `La cuenta ${email} ya existía; no se modificó.`);
+    }
   }
   if (demo) {
     for (const [name, prompt, body] of DEMO_WALL) {

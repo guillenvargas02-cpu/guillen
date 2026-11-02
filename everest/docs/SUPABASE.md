@@ -10,6 +10,15 @@ Celulares ──▶ App (contenedor: Next.js + FFmpeg) ──SQL──▶ Supaba
 
 > El tiempo real usa `LISTEN/NOTIFY` de Postgres y Server-Sent Events, no Supabase Realtime. Así ningún dato pendiente o privado pasa por canales públicos: la API REST y Realtime de Supabase quedan **cerradas** con RLS y sin privilegios para `anon` y `authenticated`.
 
+## Ruta rápida sin terminal (Supabase + Render)
+
+1. **Supabase → Connect → Direct (Connection string) → Session pooler.** Copia el URI y cambia `[YOUR-PASSWORD]` por la contraseña de la base de datos: es `DATABASE_URL`.
+2. **Supabase → Connect → API Keys.** Copia la llave secreta (`sb_secret_…` o `service_role`): es `SUPABASE_SERVICE_ROLE_KEY`. `SUPABASE_URL` es `https://TU_PROJECT_REF.supabase.co`.
+3. **Render → New → Blueprint →** este repositorio y la rama con la plataforma. Captura `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` y, por ahora, deja `PUBLIC_URL` vacía.
+4. Al arrancar, el contenedor crea las tablas, carga el programa, crea tu cuenta de administración y el bucket `postales`. No hace falta el SQL Editor.
+5. Copia la URL que te da Render (`https://….onrender.com`), ponla en `PUBLIC_URL` y vuelve a desplegar: con ella se genera el QR.
+6. Entra a `/admin` con `ADMIN_EMAIL` y `ADMIN_PASSWORD`. En Supabase → **Table Editor** verás las tablas creadas.
+
 ## 1 · Crear el proyecto (5 min)
 
 1. En <https://supabase.com/dashboard>, pulsa **New project**.

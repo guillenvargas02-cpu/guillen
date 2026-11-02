@@ -23,6 +23,10 @@ services:
         generateValue: true
       - key: PUBLIC_URL
         sync: false           # p. ej. https://everest-somos.onrender.com o tu dominio
+      - key: ADMIN_EMAIL        # primera cuenta del equipo (se crea al arrancar si no existe)
+        sync: false
+      - key: ADMIN_PASSWORD     # mínimo 10 caracteres; puedes borrarla después del primer acceso
+        sync: false
       - key: RENDER_CONCURRENCY
         value: "1"
       - key: POSTAL_X264_PRESET
