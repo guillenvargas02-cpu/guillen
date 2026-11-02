@@ -81,17 +81,17 @@ ok('Al reconectar recupera el estado vigente', await until(async () => (await P1
 // ── 3. Muro: envío, confirmación real, sin duplicados tras fallo, moderación y privacidad ──
 await P1.goto(`${BASE}/tu-voz`);
 const longName = 'María Fernanda de los Ángeles Ñúñez-Güemes';
-await P1.fill('#muro input.input', longName);
-await P1.fill('#muro textarea', 'Me llevo la certeza de que la cima se construye en equipo. ¡Gracias, SOMOS! ñ á é í ó ú ü');
-await P1.check('#muro input[type=checkbox]');
+await P1.fill('#panel-muro input.input', longName);
+await P1.fill('#panel-muro textarea', 'Me llevo la certeza de que la cima se construye en equipo. ¡Gracias, SOMOS! ñ á é í ó ú ü');
+await P1.check('#panel-muro input[type=checkbox]');
 // Simula pérdida de red al enviar: el texto se conserva
 await iphone.setOffline(true);
-await P1.click('#muro button:has-text("Enviar")');
-ok('Fallo de red: se informa y el texto se conserva', await until(() => P1.isVisible('text=No se envió')) && (await P1.inputValue('#muro textarea')).includes('cima'));
+await P1.click('#panel-muro button:has-text("Enviar al muro")');
+ok('Fallo de red: se informa y el texto se conserva', await until(() => P1.isVisible('text=No se envió')) && (await P1.inputValue('#panel-muro textarea')).includes('cima'));
 await iphone.setOffline(false);
 // Al volver la señal se reintenta solo (mismo client_id); si no, se usa "Reintentar".
 await P1.evaluate(() => window.dispatchEvent(new Event('online')));
-if (!(await until(() => P1.isVisible('text=Recibido'), 3000))) await P1.click('#muro button:has-text("Reintentar")').catch(() => {});
+if (!(await until(() => P1.isVisible('text=Recibido'), 3000))) await P1.click('#panel-muro button:has-text("Reintentar")').catch(() => {});
 ok('Reintento: confirmación real del servidor', await until(() => P1.isVisible('text=Recibido')));
 await P1.evaluate(() => window.dispatchEvent(new Event('online')));
 await sleep(800);
@@ -99,9 +99,9 @@ const wallCount = (await db.query(`select count(*)::int n from wall_messages`)).
 ok('Sin envíos duplicados', wallCount === 1, `filas=${wallCount}`);
 // Mensaje privado desde Android
 await P2.goto(`${BASE}/tu-voz`);
-await P2.fill('#muro input.input', 'Privado');
-await P2.fill('#muro textarea', 'Mensaje solo para el equipo XYZPRIV');
-await P2.click('#muro button:has-text("Enviar")');
+await P2.fill('#panel-muro input.input', 'Privado');
+await P2.fill('#panel-muro textarea', 'Mensaje solo para el equipo XYZPRIV');
+await P2.click('#panel-muro button:has-text("Enviar al muro")');
 await until(() => P2.isVisible('text=Solo lo verá el equipo'));
 let snap = await (await fetch(`${BASE}/api/snapshot`)).text();
 ok('Pendientes no salen por la API pública', !snap.includes('cima se construye en equipo'));
@@ -119,8 +119,8 @@ ok('Pantalla no muestra el privado', !(await S.content()).includes('XYZPRIV'));
 await S.screenshot({ path: path.join(OUT, 'pantalla.png') });
 
 // ── 4. Palabras: dos preguntas, conteos separados, actualizar sin duplicar, validación ──
-await P1.goto(`${BASE}/tu-voz?palabras`);
-const somosBox = P1.locator('.word-box').nth(0), nocheBox = P1.locator('.word-box').nth(1);
+await P1.goto(`${BASE}/tu-voz?tab=somos`);
+const somosBox = P1.locator('#panel-somos .word-box'), nocheBox = P1.locator('#panel-noche .word-box');
 await somosBox.locator('input').fill('esta es una frase');
 ok('Explica amablemente si es una frase', await until(() => somosBox.locator('text=Parece una frase').isVisible()));
 await somosBox.locator('input').fill('  UNIÓN ');
@@ -130,13 +130,16 @@ await tap(somosBox.locator('button:has-text("Cambiar")'));
 await somosBox.locator('input').fill('Comunidad');
 await somosBox.locator('input').press('Enter');
 await until(() => somosBox.locator('b:has-text("Comunidad")').isVisible());
+await P1.click('role=tab[name="Esta noche"]');
 await nocheBox.locator('input').fill('Año');
 await nocheBox.locator('input').press('Enter');
-await P2.goto(`${BASE}/tu-voz?palabras`);
-const s2 = P2.locator('.word-box').nth(0), n2 = P2.locator('.word-box').nth(1);
+await P2.goto(`${BASE}/tu-voz?tab=somos`);
+const s2 = P2.locator('#panel-somos .word-box'), n2 = P2.locator('#panel-noche .word-box');
 await s2.locator('input').fill('comunidad'); await s2.locator('input').press('Enter');
 await until(() => s2.locator('text=Tu palabra').isVisible());
+await P2.click('role=tab[name="Esta noche"]');
 await n2.locator('input').fill('ano'); await n2.locator('input').press('Enter');
+await P2.click('role=tab[name="SOMOS"]');
 await sleep(600);
 for (const [q, k] of [['somos', 'comunidad'], ['somos', 'unión'], ['noche', 'año'], ['noche', 'ano']]) await rpc('mod.word', { question: q, key: k, action: 'approve' });
 const w = await until(async () => {

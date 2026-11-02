@@ -1,21 +1,17 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import { NowModule, NextModule, Timeline } from '@/components/program';
+import { NowModule, Timeline } from '@/components/program';
 import { ConnStatus } from '@/components/ConnStatus';
+import { PageHeader } from '@/components/ui';
+import { useLive } from '@/components/LiveProvider';
 
 export function ProgramView() {
+  const { program } = useLive();
   return (
     <div className="page-enter">
-      <header className="pagehead">
-        <img className="pagehead__img" src="/media/foto-cordillera.jpg" alt="" />
-        <div className="pagehead__body">
-          <span className="eyebrow">Martes 3 de noviembre · Hora de CDMX</span>
-          <h1>Programa</h1>
-        </div>
-      </header>
+      <PageHeader eyebrow="Martes 3 de noviembre · hora de CDMX" title="Programa" count={program?.items.length ?? null} img="/media/foto-cordillera-960.jpg" />
       <div className="program-summary">
         <NowModule compact />
-        <NextModule />
       </div>
       <div className="statusline" style={{ marginBottom: 12 }}>
         <ConnStatus withTime />

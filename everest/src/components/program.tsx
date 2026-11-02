@@ -94,8 +94,8 @@ export function NowModule({ compact = false }: { compact?: boolean }) {
         <h2 id="now-title" className="now__title balance">Gracias por subir con nosotros a la cima.</h2>
         <p className="now__desc">Llévate tu postal en video y deja tu firma en el libro de visitas.</p>
         <div className="form__actions">
-          <Link className="btn btn--rosa" href="/postal">Crear mi postal</Link>
-          <Link className="btn btn--ghost" style={{ ['--fg' as string]: '#fff', borderColor: 'rgba(255,255,255,.3)' }} href="/libro">Firmar el libro</Link>
+          <Link className="btn" href="/postal">Crear mi postal</Link>
+          <Link className="btn btn--ghost" href="/libro">Firmar el libro</Link>
         </div>
       </section>
     );
@@ -106,7 +106,7 @@ export function NowModule({ compact = false }: { compact?: boolean }) {
       <section className="now" aria-labelledby="now-title">
         <div className="now__top"><span className="now__label">Entre actividades</span></div>
         <h2 id="now-title" className="now__title balance">En un momento continuamos.</h2>
-        {next ? <p className="now__desc">Sigue: <b style={{ color: '#fff' }}>{next.title}</b> · {plannedLabel(next)}</p> : null}
+        {next ? <p className="now__desc">Sigue: <b>{next.title}</b> · {plannedLabel(next)}</p> : null}
       </section>
     );
   }

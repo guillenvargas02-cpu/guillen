@@ -28,3 +28,5 @@ export const IconPause = (p: P) => <svg {...base} {...p}><path d="M8.5 5.5v13M15
 export const IconChat = (p: P) => <svg {...base} {...p}><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z" /></svg>;
 export const IconSparkle = (p: P) => <svg {...base} {...p}><path d="M12 3.5 13.8 10l6.7 2-6.7 2L12 20.5 10.2 14 3.5 12l6.7-2z" /></svg>;
 export const IconRefresh = (p: P) => <svg {...base} {...p}><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" /><path d="M19.5 4v4.5H15" /></svg>;
+export const IconChevron = (p: P) => <svg {...base} {...p}><path d="m9.5 6 6 6-6 6" /></svg>;
+export const IconMail = (p: P) => <svg {...base} {...p}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></svg>;

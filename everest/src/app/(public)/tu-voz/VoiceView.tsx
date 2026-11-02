@@ -7,6 +7,7 @@ import { IconAlert, IconCheck } from '@/components/icons';
 import { api, ApiError } from '@/lib/client/api';
 import { countChars, newId, useLocal, useMemory, useProfile } from '@/lib/client/store';
 import { useMine, STATUS_TEXT } from '@/lib/client/useMine';
+import { PageHeader } from '@/components/ui';
 import { checkWord, WORD_MAX, WORD_QUESTIONS, type WordQuestion } from '@/lib/words';
 
 type WallDraft = { client_id: string; prompt: 'llevas' | 'expectativa'; name: string; body: string; consent: boolean };
@@ -62,7 +63,7 @@ function WallForm() {
           </button>
         ))}
       </div>
-      <h3 style={{ fontSize: 22 }}>{PROMPTS[draft.prompt]}</h3>
+      <h2 className="form__q">{PROMPTS[draft.prompt]}</h2>
       <div className="field">
         <label className="field__label" htmlFor={`${ids}-n`}>Nombre visible</label>
         <input id={`${ids}-n`} className="input" autoComplete="nickname" maxLength={60} value={draft.name}
@@ -81,7 +82,7 @@ function WallForm() {
         <span><strong>Mostrar en el muro y en la pantalla</strong><span>Si no lo marcas, solo lo leerá el equipo.</span></span>
       </label>
       <div className="form__actions">
-        <button className="btn btn--rosa" type="submit" disabled={state.kind === 'sending'}>{state.kind === 'sending' ? 'Enviando…' : 'Enviar'}</button>
+        <button className="btn btn--block" type="submit" disabled={state.kind === 'sending'}>{state.kind === 'sending' ? 'Enviando…' : 'Enviar al muro'}</button>
       </div>
       <div aria-live="polite">
         {state.kind === 'ok' && (
@@ -145,9 +146,9 @@ function WordBox({ q }: { q: WordQuestion }) {
   };
 
   return (
-    <section className="panel word-box" aria-labelledby={`${ids}-t`}>
-      <span className="eyebrow eyebrow--rosa">{q === 'somos' ? 'Pregunta 1' : 'Pregunta 2'}</span>
-      <h3 id={`${ids}-t`} style={{ fontSize: 22, margin: '6px 0 14px' }}>{WORD_QUESTIONS[q].label}</h3>
+    <section className="word-box" aria-labelledby={`${ids}-t`}>
+      <span className="eyebrow">{q === 'somos' ? 'Pregunta 1 de 2' : 'Pregunta 2 de 2'} · una palabra</span>
+      <h2 id={`${ids}-t`} className="word-box__q">{WORD_QUESTIONS[q].label}</h2>
       {my && !editing ? (
         <div className="mine">
           <span>Tu palabra</span><b>{my.display}</b>
@@ -161,7 +162,7 @@ function WordBox({ q }: { q: WordQuestion }) {
             <input id={`${ids}-w`} className="input" value={value} maxLength={WORD_MAX + 20} autoCapitalize="sentences" autoComplete="off" spellCheck
               placeholder="Una palabra" aria-invalid={!!check && !check.ok} aria-describedby={`${ids}-e`}
               onChange={(e) => { setValue(e.target.value); setState({ kind: 'idle' }); }} />
-            <button className="btn btn--rosa" disabled={state.kind === 'sending' || !value.trim()}>{my ? 'Actualizar' : 'Enviar'}</button>
+            <button className="btn" disabled={state.kind === 'sending' || !value.trim()}>{my ? 'Actualizar' : 'Enviar'}</button>
           </div>
           <p id={`${ids}-e`} className={check && !check.ok && check.reason === 'frase' ? 'field__hint' : 'error'} aria-live="polite">
             {state.kind === 'error' ? state.message : check && !check.ok && value.trim().length > 1 ? check.message : ''}
@@ -177,31 +178,51 @@ function WordBox({ q }: { q: WordQuestion }) {
   );
 }
 
+const TABS = [
+  { id: 'muro', label: 'Muro' },
+  { id: 'somos', label: 'SOMOS' },
+  { id: 'noche', label: 'Esta noche' },
+] as const;
+type Tab = (typeof TABS)[number]['id'];
+
 export function VoiceView() {
   const { wall } = useLive();
+  const [tab, setTab] = useState<Tab>('muro');
+  useEffect(() => {
+    const read = () => {
+      const q = new URLSearchParams(window.location.search).get('tab') || window.location.hash.replace('#', '');
+      if (q === 'palabras') setTab('somos');
+      else if (TABS.some((t) => t.id === q)) setTab(q as Tab);
+    };
+    read();
+    window.addEventListener('hashchange', read);
+    return () => window.removeEventListener('hashchange', read);
+  }, []);
+  const choose = (t: Tab) => {
+    setTab(t);
+    const u = new URL(window.location.href);
+    u.searchParams.set('tab', t); u.hash = '';
+    window.history.replaceState(null, '', u.toString());
+  };
   return (
     <div className="page-enter">
-      <header className="pagehead">
-        <img className="pagehead__img" src="/media/foto-cumbre.jpg" alt="" style={{ objectPosition: '50% 30%' }} />
-        <div className="pagehead__body">
-          <span className="eyebrow">Muro · Palabras</span>
-          <h1>Tu voz</h1>
-        </div>
-      </header>
-      <nav className="subnav" aria-label="En esta sección">
-        <a href="#muro">Muro</a><a href="#palabras">SOMOS en una palabra</a><a href="#noche">Esta noche</a>
-      </nav>
-      <section id="muro" className="voice-section" aria-label="Muro">
+      <PageHeader eyebrow="Participa" title="Tu voz" img="/media/foto-cumbre-960.jpg" />
+      <div className="tabs" role="tablist" aria-label="Dinámicas">
+        {TABS.map((t) => (
+          <button key={t.id} role="tab" id={`tab-${t.id}`} aria-selected={tab === t.id} aria-controls={`panel-${t.id}`} onClick={() => choose(t.id)}>{t.label}</button>
+        ))}
+      </div>
+      <section id="panel-muro" role="tabpanel" aria-labelledby="tab-muro" hidden={tab !== 'muro'} className="voice-section">
         <div className="voice-grid">
-          <div className="panel"><WallForm /><MyMessages /></div>
+          <div className="sheetcard"><WallForm /><MyMessages /></div>
           <div><WallList messages={wall ?? []} /></div>
         </div>
       </section>
-      <section id="palabras" className="voice-section" aria-label="Palabras">
-        <div className="words-grid">
-          <WordBox q="somos" />
-          <div id="noche" style={{ scrollMarginTop: 130 }}><WordBox q="noche" /></div>
-        </div>
+      <section id="panel-somos" role="tabpanel" aria-labelledby="tab-somos" hidden={tab !== 'somos'} className="voice-section">
+        <WordBox q="somos" />
+      </section>
+      <section id="panel-noche" role="tabpanel" aria-labelledby="tab-noche" hidden={tab !== 'noche'} className="voice-section">
+        <WordBox q="noche" />
       </section>
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from 'react';
 import Link from 'next/link';
 import { useLive } from '@/components/LiveProvider';
 import { SignaturePad } from '@/components/SignaturePad';
+import { PageHeader } from '@/components/ui';
 import { IconAlert, IconCheck } from '@/components/icons';
 import { api, ApiError } from '@/lib/client/api';
 import { countChars, newId, useLocal, useMemory, useProfile } from '@/lib/client/store';
@@ -92,7 +93,7 @@ function BookForm() {
         </label>
       </fieldset>
       <div className="form__actions">
-        <button className="btn btn--rosa" type="submit" disabled={state.kind === 'sending'}>{state.kind === 'sending' ? 'Enviando…' : 'Firmar el libro'}</button>
+        <button className="btn btn--block" type="submit" disabled={state.kind === 'sending'}>{state.kind === 'sending' ? 'Enviando…' : 'Firmar el libro'}</button>
       </div>
       <div aria-live="polite">
         {state.kind === 'ok' && (
@@ -119,12 +120,9 @@ export function BookView() {
   const list = guestbook ?? [];
   return (
     <div className="page-enter">
-      <header className="pagehead">
-        <img className="pagehead__img" src="/media/foto-macizo.jpg" alt="" />
-        <div className="pagehead__body"><span className="eyebrow">Dedicatoria y firma</span><h1>Libro de visitas</h1></div>
-      </header>
+      <PageHeader eyebrow="Dedicatoria y firma" title="Libro" count={list.length} img="/media/foto-macizo-960.jpg" />
       <div className="voice-grid">
-        <div className="panel">
+        <div className="sheetcard">
           <BookForm />
           {mine?.guestbook.length ? (
             <div className="mine-list">

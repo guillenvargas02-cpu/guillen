@@ -51,6 +51,18 @@ La cola (`render_jobs`) es persistente, con progreso, límite de concurrencia po
 
 ---
 
+## Dirección visual de la plataforma
+
+**Premium y blanco dominante**, con referencias de producto como la app de Tesla, la identidad del GP de México y apps editoriales de tareas:
+
+- **Superficie blanca y pocas cajas.** La jerarquía sale del tamaño tipográfico: titulares de 40 a 128 px con interletra cerrada, grises neutros (#6E6E73) y líneas finas.
+- **Un objeto protagonista.** En Inicio, el video de la cima va en un escenario redondeado con etiquetas de datos y líneas guía (inicio, sede, actividad actual), al estilo de una ficha técnica.
+- **Filas con ícono, título, dato vivo y chevrón** para navegar: programa, Tu voz, libro, postal, Instagram, contacto y sede.
+- **Un solo acento vibrante por pantalla.** En Inicio es la tarjeta de la postal (degradado rosa→violeta con textura de líneas); en el muro, el mensaje destacado.
+- **El rosa cívico solo marca lo vivo**: el punto “en vivo”, la selección, el progreso y el foco. Los botones principales son pastillas negras.
+- **Encabezados de sección tipográficos** con conteo, por ejemplo “Programa (6)”, y una miniatura circular de montaña en lugar de banners fotográficos.
+- **Tu voz en pestañas** (Muro · SOMOS · Esta noche), con campos amplios sobre gris claro.
+
 ## Identidad SOMOS aplicada
 
 - **Logotipo oficial** extraído en vector del *Manual de Identidad 2026* (pág. 6, positivo; pág. 17, pleca; pág. 13, lema) → `public/brand/`. Nunca se recompone con una fuente; sin cambios de proporción, color, sombras ni efectos.

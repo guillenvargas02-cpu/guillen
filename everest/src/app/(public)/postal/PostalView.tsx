@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { PostcardPreview } from '@/components/PostcardPreview';
+import { PageHeader } from '@/components/ui';
 import { useLive } from '@/components/LiveProvider';
 import { IconAlert, IconDownload, IconRefresh, IconShare } from '@/components/icons';
 import { api, ApiError } from '@/lib/client/api';
@@ -69,10 +70,7 @@ export function PostalView() {
 
   return (
     <div className="page-enter">
-      <header className="pagehead">
-        <img className="pagehead__img" src="/media/foto-atardecer.jpg" alt="" />
-        <div className="pagehead__body"><span className="eyebrow">MP4 · 8 s · sin audio</span><h1>Tu postal en video</h1></div>
-      </header>
+      <PageHeader eyebrow="MP4 · 8 s · sin audio" title="Postal" img="/media/foto-atardecer-960.jpg" />
       {!open ? <div className="empty"><strong>La postal no está disponible por ahora.</strong></div> : (
         <div className="postal-layout">
           <ol className="steps">
@@ -121,7 +119,7 @@ export function PostalView() {
               <div className="step__body">
                 <span className="step__title">Generar</span>
                 {!busy && current?.status !== 'done' && (
-                  <button className="btn btn--rosa" onClick={generate} disabled={d.withName && !name}>
+                  <button className="btn btn--block" onClick={generate} disabled={d.withName && !name}>
                     {current?.status === 'failed' ? <><IconRefresh /> Intentar de nuevo</> : 'Generar mi postal'}
                   </button>
                 )}
@@ -146,7 +144,7 @@ export function PostalView() {
                 {current?.status === 'done' ? (
                   <div className="result">
                     <div className="form__actions">
-                      <a className="btn btn--rosa" href={`/api/postal/${current.id}/file?type=mp4`} download><IconDownload /> Video MP4</a>
+                      <a className="btn" href={`/api/postal/${current.id}/file?type=mp4`} download><IconDownload /> Video MP4</a>
                       <a className="btn btn--ghost" href={`/api/postal/${current.id}/file?type=png`} download><IconDownload /> Imagen PNG</a>
                       <button className="btn btn--ghost" onClick={share}><IconShare /> Compartir</button>
                     </div>
