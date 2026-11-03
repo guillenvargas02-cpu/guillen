@@ -1,5 +1,5 @@
 /* ─────────── Inicio ─────────── */
-.home { display: grid; gap: clamp(28px, 4vw, 44px); }
+.home { display: grid; gap: clamp(28px, 4vw, 44px); grid-template-columns: minmax(0, 1fr); }
 .hhead { display: grid; gap: 4px; padding-top: 8px; }
 .hhead__title { font-size: clamp(64px, 15vw, 128px); letter-spacing: -0.055em; line-height: .86; margin-top: 6px; }
 .hhead__sub { font-size: clamp(17px, 2vw, 21px); color: var(--muted); letter-spacing: -0.01em; }
