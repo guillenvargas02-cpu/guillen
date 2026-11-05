@@ -1,0 +1,99 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .all {
+      position: absolute;
+      inset: 0;
+    }
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cam img,
+    .cam video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+
+    #p-ph { left: 0; top: 0; width: 1080px; height: 1440px; }
+    #p-ph .cam { transform-origin: 50% 30%; }
+    #p-l1 { position: absolute; left: 0; top: 1530px; width: 1080px; text-align: center; font-size: 120px; color: #ffffff; }
+    #p-l2 { position: absolute; left: 0; top: 1660px; width: 1080px; text-align: center; font-size: 92px; color: #e60573; }
+    #p-slash { position: absolute; left: 0; top: -200px; width: 2200px; height: 2320px; background: #e60573; }
+
+  </style>
+  <div id="root" data-composition-id="panel" data-width="1080" data-height="1920">
+    <div id="p-all" class="all" data-layout-allow-overflow>
+      <div id="p-ph" class="slot"><div class="cam"><img src="assets/photos/panel-robot.jpg" alt="" /></div></div>
+      <div id="p-l1" class="disp"><span>L</span><span>a</span> <span>f</span><span>u</span><span>e</span><span>r</span><span>z</span><span>a</span></div>
+      <div id="p-l2" class="disp"><span>Que</span> <span>nos</span> <span>une</span></div>
+    </div>
+    <div id="p-slash" class="clip" data-start="2.1000" data-duration="0.3149" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo("#p-ph", { x: 1080, filter: "blur(22px)" }, { x: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, 0);
+    tl.fromTo("#p-ph .cam", { scale: 1.0 }, { scale: 1.07, duration: 2.1, ease: "power1.out" }, 0);
+    tl.fromTo("#p-l1 span", { opacity: 0, y: 40, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out", stagger: 0.035 }, 0.6037);
+    tl.fromTo("#p-l2 span", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", stagger: 0.09 }, 1.2074);
+    tl.fromTo("#p-slash", { x: -2500, skewX: -14 }, { x: -620, skewX: -14, duration: 0.3149, ease: "power3.in" }, 2.1000);
+
+    window.__timelines["panel"] = tl;
+  </script>
+</template>

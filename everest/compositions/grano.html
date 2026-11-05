@@ -22,7 +22,7 @@
     }
   </style>
   <div id="root" data-composition-id="grano" data-width="1080" data-height="1920">
-    <div id="g-all" class="clip" data-start="0" data-duration="36.2233" style="position: absolute; inset: 0" data-layout-ignore>
+    <div id="g-all" class="clip" data-start="0" data-duration="36.2232" style="position: absolute; inset: 0" data-layout-ignore>
       <div id="g-wrap">
         <img class="g" src="assets/fx/grano-0.jpg" alt="" />
         <img class="g" src="assets/fx/grano-1.jpg" alt="" />
@@ -39,8 +39,8 @@
     const frames = Array.from(document.querySelectorAll("#g-wrap .g"));
     const clock = { t: 0 };
     tl.to(clock, {
-      t: 36.2233,
-      duration: 36.2233,
+      t: 36.2232,
+      duration: 36.2232,
       ease: "none",
       onUpdate: () => {
         const i = Math.floor(clock.t * 15) % frames.length;

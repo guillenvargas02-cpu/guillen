@@ -1,0 +1,105 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .all {
+      position: absolute;
+      inset: 0;
+    }
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cam img,
+    .cam video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+
+    #g-pano { left: 0; top: 0; width: 1080px; height: 1920px; background: transparent; }
+    #g-pano-cam { position: absolute; left: 0; top: 0; width: 1080px; height: 642px; transform-origin: 50% 0%; }
+    #g-pano-cam img { position: absolute; left: 0; top: 0; width: 1080px; height: 642px; }
+    #g-vert { left: 66px; top: 656px; width: 948px; height: 1264px; }
+
+  </style>
+  <div id="root" data-composition-id="final" data-width="1080" data-height="1920">
+    <div id="g-all" class="all" data-layout-allow-overflow>
+      <div id="g-vert" class="slot"><div class="cam"><img src="assets/photos/grupo.jpg" alt="" /></div></div>
+      <div id="g-pano" class="slot"><div id="g-pano-cam"><img src="assets/photos/grupo-panoramica.jpg" alt="" /></div></div>
+    </div>
+    <div id="g-flash-in" class="flash clip" data-start="0" data-duration="0.6"></div>
+    <div id="g-flash-out" class="flash clip" data-start="7.1147" data-duration="0.13"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo("#g-flash-in", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power2.out" }, 0);
+    tl.fromTo("#g-pano", { clipPath: "inset(0px 0px 1278px 0px)" }, { clipPath: "inset(0px 0px 1278px 0px)", duration: 0.01 }, 0);
+    tl.fromTo("#g-pano-cam", { y: -642 }, { y: 0, duration: 0.6, ease: "expo.out" }, 0.02);
+    tl.fromTo("#g-vert", { y: 1300 }, { y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+    tl.fromTo("#g-vert .cam", { scale: 1.0 }, { scale: 1.05, duration: 1.9, ease: "none" }, 0.1);
+    tl.fromTo("#g-pano-cam", { scale: 1.0, x: 0 }, { scale: 1.04, x: 0, duration: 1.7, ease: "none" }, 0.62);
+    // Compás siguiente: la vertical baja y la panorámica llena el cuadro (sin perder nitidez: 6584 px)
+    tl.to("#g-vert", { y: 1300, duration: 0.45, ease: "power3.in" }, 2.3149);
+    tl.to("#g-pano", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.85, ease: "power3.inOut" }, 2.3649);
+    tl.to("#g-pano-cam", { scale: 2.99, x: 330, duration: 0.85, ease: "power3.inOut" }, 2.3649);
+    tl.to("#g-pano-cam", { x: -330, duration: 3.7798, ease: "power1.inOut" }, 3.2149);
+    tl.fromTo("#g-flash-out", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power2.in" }, 7.1147);
+
+    window.__timelines["final"] = tl;
+  </script>
+</template>

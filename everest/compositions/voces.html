@@ -1,0 +1,100 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .all {
+      position: absolute;
+      inset: 0;
+    }
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cam img,
+    .cam video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+
+    .row { left: 0; width: 1080px; height: 607px; }
+    #v-r1 { top: 33px; }
+    #v-r2 { top: 656px; }
+    #v-r3 { top: 1279px; }
+
+    #v-slash { position: absolute; left: 0; top: -200px; width: 2200px; height: 2320px; background: #e60573; }
+
+  </style>
+  <div id="root" data-composition-id="voces" data-width="1080" data-height="1920">
+    <div id="v-all" class="all" data-layout-allow-overflow>
+      <div id="v-r1" class="slot row"><div class="cam"><img src="assets/photos/ponente.jpg" alt="" /></div></div>
+      <div id="v-r2" class="slot row"><div class="cam"><img src="assets/photos/caminata.jpg" alt="" /></div></div>
+      <div id="v-r3" class="slot row"><div class="cam"><img src="assets/photos/anfitrion.jpg" alt="" /></div></div>
+    </div>
+    <div id="v-slash" class="clip" data-start="0" data-duration="0.36" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo("#v-slash", { x: -620, skewX: -14 }, { x: 1520, skewX: -14, duration: 0.36, ease: "power3.out" }, 0);
+    tl.fromTo("#v-r1 .cam", { scale: 1.08, x: -30 }, { scale: 1.08, x: 30, duration: 2.2, ease: "none" }, 0);
+    tl.fromTo("#v-r2 .cam", { scale: 1.08, x: 30 }, { scale: 1.08, x: -30, duration: 2.2, ease: "none" }, 0);
+    tl.fromTo("#v-r3 .cam", { scale: 1.08, x: -30 }, { scale: 1.08, x: 30, duration: 2.2, ease: "none" }, 0);
+    tl.to("#v-r1, #v-r2, #v-r3", { scale: 1.25, opacity: 0, filter: "blur(14px)", duration: 0.2, ease: "power3.in", stagger: 0.02 }, 2.1749);
+
+    window.__timelines["voces"] = tl;
+  </script>
+</template>

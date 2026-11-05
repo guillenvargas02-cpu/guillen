@@ -1,61 +1,100 @@
 <template>
   <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
       background: #0a1124;
     }
-    #s6-win {
+    .all {
       position: absolute;
-      left: 0;
-      top: 285px;
-      width: 1080px;
-      height: 1350px;
-      overflow: hidden;
+      inset: 0;
     }
-    #s6-img {
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
       position: absolute;
       left: 0;
       top: 0;
-      width: 2400px;
-      height: 1350px;
+      width: 100%;
+      height: 100%;
     }
-    .bar {
+    .cam img,
+    .cam video {
       position: absolute;
       left: 0;
-      width: 1080px;
-      height: 10px;
-      background: #e60573;
-      transform-origin: 0% 50%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    #s6-bar-t { top: 285px; }
-    #s6-bar-b { top: 1625px; transform-origin: 100% 50%; }
-    #s6-dip {
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
       position: absolute;
       inset: 0;
-      background: #000000;
+      background: #ffffff;
     }
+
+    .row { left: 0; width: 1080px; height: 607px; }
+    #u-r1 { top: 33px; }
+    #u-r2 { top: 656px; }
+    #u-r3 { top: 1279px; }
+    .row .cam { width: 1200px; height: 675px; top: -34px; }
+    #u-dip { position: absolute; inset: 0; background: #000000; }
+
   </style>
   <div id="root" data-composition-id="publico" data-width="1080" data-height="1920">
-    <div id="s6-all" class="clip" data-start="0" data-duration="2.4149" style="position: absolute; inset: 0" data-layout-allow-overflow>
-      <div id="s6-win"><img id="s6-img" src="assets/photos/publico.jpg" alt="" /></div>
-      <div id="s6-bar-t" class="bar"></div>
-      <div id="s6-bar-b" class="bar"></div>
+    <div id="u-all" class="all" data-layout-allow-overflow>
+      <div id="u-r1" class="slot row"><div class="cam"><img src="assets/photos/publico.jpg" alt="" /></div></div>
+      <div id="u-r2" class="slot row"><div class="cam"><img src="assets/photos/publico-amplio.jpg" alt="" /></div></div>
+      <div id="u-r3" class="slot row"><div class="cam"><img src="assets/photos/panel-publico.jpg" alt="" /></div></div>
     </div>
-    <div id="s6-dip" class="clip" data-start="2.3" data-duration="0.1149"></div>
+    <div id="u-dip" class="clip" data-start="2.3149" data-duration="0.1"></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    // Entra desde abajo (sigue el barrido vertical de la cresta)
-    tl.fromTo("#s6-win", { y: 760, filter: "blur(20px)" }, { y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0);
-    // Paneo por los rostros del público
-    tl.fromTo("#s6-img", { x: -80 }, { x: -1320, duration: 2.4149, ease: "power1.inOut" }, 0);
-    // Líneas de marca que marcan el compás
-    tl.fromTo("#s6-bar-t", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.3);
-    tl.fromTo("#s6-bar-b", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.9037);
-    // Corte con oscurecimiento (dip) de 3 fotogramas
-    tl.fromTo("#s6-dip", { opacity: 0 }, { opacity: 0.45, duration: 0.1, ease: "none" }, 2.3);
+
+    tl.fromTo("#u-r1, #u-r2, #u-r3", { clipPath: "inset(50% 0% 50% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "expo.out", stagger: 0.08 }, 0);
+    tl.fromTo("#u-r1 .cam", { x: 0 }, { x: -120, duration: 2.4149, ease: "none" }, 0);
+    tl.fromTo("#u-r2 .cam", { x: -120 }, { x: 0, duration: 2.4149, ease: "none" }, 0);
+    tl.fromTo("#u-r3 .cam", { x: 0 }, { x: -120, duration: 2.4149, ease: "none" }, 0);
+    tl.fromTo("#u-dip", { opacity: 0 }, { opacity: 0.45, duration: 0.09, ease: "none" }, 2.3149);
+
     window.__timelines["publico"] = tl;
   </script>
 </template>

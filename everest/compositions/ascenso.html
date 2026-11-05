@@ -1,0 +1,101 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .all {
+      position: absolute;
+      inset: 0;
+    }
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cam img,
+    .cam video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+
+    .strip { top: 0; width: 352px; height: 1920px; }
+    #s-s1 { left: 0; }
+    #s-s2 { left: 364px; }
+    #s-s3 { left: 728px; }
+    .strip .cam { left: -364px; width: 1080px; height: 1920px; }
+
+  </style>
+  <div id="root" data-composition-id="ascenso" data-width="1080" data-height="1920">
+    <div id="s-all" class="all" data-layout-allow-overflow>
+      <div id="s-s1" class="slot strip"><div class="cam"><img src="assets/mountains/everest.jpg" alt="" /></div></div>
+      <div id="s-s2" class="slot strip"><div class="cam"><img src="assets/mountains/cresta.jpg" alt="" /></div></div>
+      <div id="s-s3" class="slot strip"><div class="cam"><img src="assets/mountains/cumbre.jpg" alt="" /></div></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo("#s-s1", { y: 1920, filter: "blur(20px)" }, { y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0);
+    tl.fromTo("#s-s2", { y: 1920, filter: "blur(20px)" }, { y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0.08);
+    tl.fromTo("#s-s3", { y: 1920, filter: "blur(20px)" }, { y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0.16);
+    tl.fromTo("#s-s1 .cam", { scale: 1.12, y: 60 }, { scale: 1.12, y: -60, duration: 2.2, ease: "none" }, 0);
+    tl.fromTo("#s-s2 .cam", { scale: 1.12, y: -60 }, { scale: 1.12, y: 60, duration: 2.2, ease: "none" }, 0);
+    tl.fromTo("#s-s3 .cam", { scale: 1.12, y: 60 }, { scale: 1.12, y: -60, duration: 2.2, ease: "none" }, 0);
+    tl.to("#s-s1, #s-s3", { y: -1920, filter: "blur(20px)", duration: 0.22, ease: "power3.in" }, 2.1948999999999996);
+    tl.to("#s-s2", { y: 1920, filter: "blur(20px)", duration: 0.22, ease: "power3.in" }, 2.1948999999999996);
+
+    window.__timelines["ascenso"] = tl;
+  </script>
+</template>

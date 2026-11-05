@@ -1,0 +1,105 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .all {
+      position: absolute;
+      inset: 0;
+    }
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cam img,
+    .cam video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+
+    .row { left: 0; width: 1080px; height: 607px; }
+    #l-r1 { top: 33px; }
+    #l-r2 { top: 656px; }
+    #l-r3 { top: 1279px; }
+
+    #l-r1 .cam { transform-origin: 30% 50%; }
+    #l-r2 .cam { transform-origin: 70% 50%; }
+    #l-r3 .cam { transform-origin: 50% 40%; }
+
+  </style>
+  <div id="root" data-composition-id="llegada" data-width="1080" data-height="1920">
+    <div id="l-all" class="all" data-layout-allow-overflow>
+      <div id="l-r1" class="slot row"><div class="cam"><img src="assets/photos/sala.jpg" alt="" /></div></div>
+      <div id="l-r2" class="slot row"><div class="cam"><img src="assets/photos/altar.jpg" alt="" /></div></div>
+      <div id="l-r3" class="slot row"><div class="cam"><img src="assets/photos/robot-invitados.jpg" alt="" /></div></div>
+    </div>
+    <div id="l-flash" class="flash clip" data-start="0" data-duration="0.7"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo("#l-flash", { opacity: 1 }, { opacity: 0, duration: 0.6, ease: "power2.out" }, 0);
+    tl.fromTo("#l-r1", { x: -1080, filter: "blur(20px)" }, { x: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0.02);
+    tl.fromTo("#l-r2", { x: 1080, filter: "blur(20px)" }, { x: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0.12);
+    tl.fromTo("#l-r3", { x: -1080, filter: "blur(20px)" }, { x: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0.22);
+    tl.fromTo("#l-r1 .cam, #l-r2 .cam, #l-r3 .cam", { scale: 1.0 }, { scale: 1.06, duration: 2.15, ease: "power1.out" }, 0);
+    tl.to("#l-r1", { x: -1100, filter: "blur(22px)", duration: 0.2, ease: "power3.in" }, 2.1749);
+    tl.to("#l-r2", { x: -1100, filter: "blur(22px)", duration: 0.2, ease: "power3.in" }, 2.1948999999999996);
+    tl.to("#l-r3", { x: -1100, filter: "blur(22px)", duration: 0.2, ease: "power3.in" }, 2.2148999999999996);
+
+    window.__timelines["llegada"] = tl;
+  </script>
+</template>

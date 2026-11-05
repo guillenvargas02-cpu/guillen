@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
-"""Prepara las imágenes del recap Everest para render 4K (2160x3840).
+"""Prepara imágenes y videos del recap Everest para render 4K (composición 1080x1920, salida 2160x3840).
 
-- Convierte HEIC (Display P3) a sRGB.
-- Escala con Lanczos al tamaño necesario y aplica un enfoque suave (sin IA).
-- Grade común y discreto (curva S suave, +saturación ligera) para que todo se sienta de una pieza.
-- Genera la máscara de cielo de la montaña de apertura (texto detrás de la cumbre).
-- Genera los fotogramas de grano animado.
-Uso: python3 -I tools/prep_assets.py <carpeta_fuentes>
+- HEIC (Display P3) y JPG con perfil -> sRGB.
+- Lanczos al tamaño que pide cada encuadre (+ enfoque suave sólo si se amplía).
+- Grade común y discreto para que todo se sienta de una pieza.
+- Videos: tramo usado, escalado Lanczos x2 y enfoque ligero (ffmpeg).
+- Grano animado.
+Uso: python3 -I tools/prep_assets.py <carpeta_fuentes> <carpeta_montañas_zip>
 """
-import io, sys
+import io, subprocess, sys
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageCms, ImageFilter, ImageOps
 
 SRC = Path(sys.argv[1])
+ZIP = Path(sys.argv[2])
 OUT = Path(__file__).resolve().parent.parent / "assets"
-(OUT / "photos").mkdir(parents=True, exist_ok=True)
-(OUT / "mountains").mkdir(parents=True, exist_ok=True)
-(OUT / "fx").mkdir(parents=True, exist_ok=True)
+for d in ("photos", "mountains", "video", "fx"):
+    (OUT / d).mkdir(parents=True, exist_ok=True)
+
 
 def load(p):
     if p.suffix.lower() == ".heic":
@@ -31,56 +32,75 @@ def load(p):
         im = ImageCms.profileToProfile(im.convert("RGB"), src, dst, renderingIntent=0, outputMode="RGB")
     return im.convert("RGB")
 
-def grade(im, contrast=0.10, sat=1.08, lift=0.0):
+
+def grade(im, contrast=0.10, sat=1.08):
     a = np.asarray(im).astype(np.float32) / 255.0
-    # curva S suave alrededor de 0.5
     s = a + contrast * (a - 0.5) * (1 - np.abs(2 * a - 1))
-    s = lift + s * (1 - lift)
     lum = (0.2126 * s[..., 0] + 0.7152 * s[..., 1] + 0.0722 * s[..., 2])[..., None]
     s = lum + (s - lum) * sat
     return Image.fromarray((np.clip(s, 0, 1) * 255 + 0.5).astype(np.uint8))
 
-def fit(im, w=None, h=None, sharpen=(1.6, 45, 2)):
-    if w and not h: h = round(im.height * w / im.width)
-    if h and not w: w = round(im.width * h / im.height)
+
+def fit(im, w):
+    h = round(im.height * w / im.width)
     up = w > im.width
     im = im.resize((w, h), Image.LANCZOS)
     if up:
-        im = im.filter(ImageFilter.UnsharpMask(radius=sharpen[0], percent=sharpen[1], threshold=sharpen[2]))
+        im = im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=45, threshold=2))
     return im
 
-def save(im, path, q=92):
-    im.save(path, quality=q, subsampling=0, optimize=True)
-    print(path.name, im.size)
 
-# Fotos del evento (horizontales 2000x1125 -> 4000x2250)
-for name, out in [("7.jpg", "sala"), ("3.jpg", "publico"), ("4.jpg", "ponente"), ("5.jpg", "anfitrion")]:
-    save(grade(fit(load(SRC / name), w=4000)), OUT / "photos" / f"{out}.jpg")
-# Selfie (1600x1200 -> 3200x2400)
-save(grade(fit(load(SRC / "2.jpg"), w=3200)), OUT / "photos" / "equipo.jpg")
-# Verticales del iPhone (3024x4032, P3 -> sRGB), se quedan en 2880x3840
-for name, out in [("IMG_0081.HEIC", "escenario"), ("IMG_7747.HEIC", "cercania")]:
-    save(grade(fit(load(SRC / name), h=3840)), OUT / "photos" / f"{out}.jpg")
-# Invitación (941x1672 -> 2160x3838)
-save(fit(load(SRC / "6.webp"), w=2160, sharpen=(1.4, 40, 2)), OUT / "photos" / "invitacion.jpg")
+def save(im, name, q=90):
+    im.save(OUT / name, quality=q, subsampling=0, optimize=True)
+    print(name, im.size)
+
+
+# Fotos del evento — (fuente, salida, ancho)
+PHOTOS = [
+    ("_DSC0401.jpg", "sala", 3200),
+    ("_DSC0242.jpg", "altar", 2400),
+    ("_DSC0228 (2).jpg", "robot-invitados", 2400),
+    ("_DSC0332 (1).jpg", "ponente", 3200),
+    ("_DSC0313.jpg", "caminata", 3200),
+    ("_DSC0357.jpg", "anfitrion", 3200),
+    ("_DSC0330 (1).jpg", "publico", 3600),
+    ("_DSC0324.jpg", "publico-amplio", 3600),
+    ("_DSC0316.jpg", "panel-publico", 3600),
+    ("_DSC0302.jpg", "panel", 3200),
+    ("_DSC0415.jpg", "camara", 4240),
+    ("_DSC0465 (1).jpg", "pose-robot", 3200),
+    ("selfie.jpg", "selfie", 2400),
+    ("IMG_0078.HEIC", "grupo", 2400),
+    ("IMG_7752 (1).HEIC", "panel-robot", 2400),
+    ("IMG_0081.HEIC", "escenario", 2160),
+    ("IMG_7747.HEIC", "cercania", 2160),
+]
+for src, out, w in PHOTOS:
+    save(grade(fit(load(SRC / src), w)), f"photos/{out}.jpg")
+# Foto panorámica del grupo: resolución completa para acercarse 3x sin perder nitidez
+save(grade(load(SRC / "IMG_0079.HEIC")), "photos/grupo-panoramica.jpg", q=88)
+
 # Montañas (1080x1920 -> 2160x3840)
-for i, out in [(1, "cresta"), (2, "cumbre"), (3, "everest"), (4, "nubes")]:
-    save(grade(fit(load(SRC / "zip" / f"{i}.jpg"), w=2160), contrast=0.06, sat=1.04), OUT / "mountains" / f"{out}.jpg")
+for i, out in [(1, "cresta"), (2, "cumbre"), (3, "everest")]:
+    save(grade(fit(load(ZIP / f"{i}.jpg"), 2160), contrast=0.06, sat=1.04), f"mountains/{out}.jpg")
 
-# Máscara: la montaña de "everest" sin el cielo (para poner el título detrás de la cumbre)
-ev = Image.open(OUT / "mountains" / "everest.jpg").convert("RGB")
-a = np.asarray(ev).astype(np.float32)
-r, g, b = a[..., 0], a[..., 1], a[..., 2]
-sky = (b - r > 70) & (b > 150) & (r < 120)
-sky = np.asarray(Image.fromarray((sky * 255).astype(np.uint8)).filter(ImageFilter.MedianFilter(9)))
-# todo lo que está por debajo de la primera fila de montaña es montaña
-col_first = np.argmax(sky == 0, axis=0)
-yy = np.arange(sky.shape[0])[:, None]
-mount = (yy >= col_first[None, :]).astype(np.uint8) * 255
-alpha = Image.fromarray(mount).filter(ImageFilter.GaussianBlur(1.6))
-cut = ev.copy(); cut.putalpha(alpha)
-cut.save(OUT / "mountains" / "everest-cumbre.png", optimize=True)
-print("everest-cumbre.png", cut.size)
+# Videos — (fuente, salida, inicio, duración, ancho, alto)
+VIDEOS = [
+    ("nubes-video.mp4", "nubes", 0.0, 2.6, 2160, 3840),
+    ("escalador-video.mp4", "escalador", 1.4, 2.6, 2160, 3840),
+    ("wa2.mp4", "panel-vivo", 6.0, 2.7, 1080, 1920),
+    ("wa3.mp4", "ponente-vivo", 13.0, 2.7, 1080, 1920),
+    ("wa1.mp4", "publico-vivo", 2.0, 2.7, 1080, 1920),
+]
+for src, out, ss, dur, w, h in VIDEOS:
+    subprocess.run(
+        ["ffmpeg", "-v", "error", "-y", "-ss", str(ss), "-t", str(dur), "-i", str(SRC / src), "-an",
+         "-vf", f"scale={w}:{h}:flags=lanczos,unsharp=5:5:0.45,eq=contrast=1.04:saturation=1.06,fps=30,format=yuv420p",
+         "-c:v", "libx264", "-crf", "15", "-preset", "slow", "-movflags", "+faststart",
+         str(OUT / "video" / f"{out}.mp4")],
+        check=True,
+    )
+    print(f"video/{out}.mp4")
 
 # Grano: 6 fotogramas 1080x1920 gris (se mezcla en overlay)
 rng = np.random.default_rng(7)

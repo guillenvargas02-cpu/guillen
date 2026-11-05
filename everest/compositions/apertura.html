@@ -1,0 +1,100 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Poppins Brand";
+      src: url("assets/fonts/Poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .all {
+      position: absolute;
+      inset: 0;
+    }
+    .slot {
+      position: absolute;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .cam img,
+    .cam video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    .disp span,
+    .lbl span {
+      display: inline-block;
+    }
+    .lbl {
+      font-family: "Poppins Brand", "Poppins", sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+
+    #a-cam { transform-origin: 50% 45%; }
+    .blk { position: absolute; left: 0; top: 1420px; width: 1080px; text-align: center; }
+    .blk .s { font-size: 92px; color: #0a1124; text-shadow: 0 0 30px rgba(255, 255, 255, 0.7); }
+    .blk .b { font-size: 168px; color: #e60573; margin-top: 6px; letter-spacing: -0.015em; text-shadow: 0 0 36px rgba(255, 255, 255, 0.75), 0 0 12px rgba(255, 255, 255, 0.5); }
+
+  </style>
+  <div id="root" data-composition-id="apertura" data-width="1080" data-height="1920">
+    <div id="a-all" class="all" data-layout-allow-overflow>
+      <div id="a-cam" class="cam"><video id="a-vid" class="clip" src="assets/video/nubes.mp4" data-start="0" data-duration="2.4149" data-track-index="0" muted playsinline></video></div>
+      <div id="a-blk1" class="blk"><div id="a-s1" class="disp s"><span>N</span><span>u</span><span>e</span><span>s</span><span>t</span><span>r</span><span>a</span></div><div id="a-b1" class="disp b"><span>C</span><span>i</span><span>m</span><span>a</span><span>,</span></div></div>
+      <div id="a-blk2" class="blk"><div id="a-s2" class="disp s"><span>N</span><span>u</span><span>e</span><span>s</span><span>t</span><span>r</span><span>o</span></div><div id="a-b2" class="disp b"><span>F</span><span>u</span><span>t</span><span>u</span><span>r</span><span>o</span></div></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo("#a-cam", { scale: 1.1 }, { scale: 1.02, duration: 2.15, ease: "power2.out" }, 0);
+    tl.fromTo("#a-s1 span", { opacity: 0.55, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.025 }, 0);
+    tl.fromTo("#a-b1 span", { opacity: 0, y: 50, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out", stagger: 0.05 }, 0.12);
+    tl.to("#a-blk1", { opacity: 0, filter: "blur(10px)", duration: 0.15, ease: "power2.in" }, 1.0574000000000001);
+    tl.fromTo("#a-s2 span", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.22, ease: "power2.out", stagger: 0.025 }, 1.2074);
+    tl.fromTo("#a-b2 span", { opacity: 0, y: 50, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out", stagger: 0.05 }, 1.2874);
+    tl.to("#a-blk2", { opacity: 0, filter: "blur(10px)", duration: 0.15, ease: "power2.in" }, 2.2148999999999996);
+    tl.to("#a-cam", { scale: 1.45, filter: "blur(16px)", duration: 0.22, ease: "power3.in" }, 2.1948999999999996);
+
+    window.__timelines["apertura"] = tl;
+  </script>
+</template>
