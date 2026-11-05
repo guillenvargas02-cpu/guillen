@@ -1,0 +1,55 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .win {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      overflow: hidden;
+    }
+    .win img {
+      position: absolute;
+      width: 2160px;
+      height: 1215px;
+    }
+    #s7-top { top: 130px; height: 820px; }
+    #s7-bot { top: 970px; height: 820px; }
+    #s7-img-t { left: -330px; top: -150px; }
+    #s7-img-b { left: -1080px; top: -170px; }
+    #s7-line {
+      position: absolute;
+      left: 0;
+      top: 955px;
+      width: 1080px;
+      height: 10px;
+      background: #e60573;
+    }
+  </style>
+  <div id="root" data-composition-id="anfitrion" data-width="1080" data-height="1920">
+    <!-- Díptico: una sola foto partida en dos encuadres -->
+    <div id="s7-all" class="clip" data-start="0" data-duration="2.4149" style="position: absolute; inset: 0" data-layout-allow-overflow>
+      <div id="s7-top" class="win"><img id="s7-img-t" src="assets/photos/anfitrion.jpg" alt="" /></div>
+      <div id="s7-bot" class="win"><img id="s7-img-b" src="assets/photos/anfitrion.jpg" alt="" /></div>
+      <div id="s7-line"></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Después del dip, los dos encuadres llegan en tijera
+    tl.fromTo("#s7-top", { x: -1080, filter: "blur(20px)" }, { x: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, 0);
+    tl.fromTo("#s7-bot", { x: 1080, filter: "blur(20px)" }, { x: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, 0.08);
+    tl.fromTo("#s7-line", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "expo.out" }, 0.25);
+    // Deriva lenta en sentidos opuestos
+    tl.fromTo("#s7-img-t", { x: 0 }, { x: 70, duration: 2.2, ease: "none" }, 0);
+    tl.fromTo("#s7-img-b", { x: 0 }, { x: -60, duration: 2.2, ease: "none" }, 0);
+    // Salida en tijera hacia la derecha (barrido)
+    tl.to("#s7-top, #s7-line", { x: 1100, filter: "blur(22px)", duration: 0.21, ease: "power3.in" }, 2.2049);
+    tl.to("#s7-bot", { x: 1100, filter: "blur(22px)", duration: 0.19, ease: "power3.in" }, 2.2249);
+    window.__timelines["anfitrion"] = tl;
+  </script>
+</template>

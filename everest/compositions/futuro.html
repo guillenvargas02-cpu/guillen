@@ -1,0 +1,127 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #e60573;
+    }
+    #s10-ground {
+      position: absolute;
+      inset: 0;
+      background: #e60573;
+    }
+    #s10-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      transform-origin: 50% 50%;
+    }
+    .win {
+      position: absolute;
+      left: 0;
+      top: 285px;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+    }
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1350px;
+      transform-origin: 54% 45%;
+    }
+    .cam img {
+      position: absolute;
+      left: -360px;
+      top: 0;
+      width: 1800px;
+      height: 1350px;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.88;
+      white-space: nowrap;
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .disp span {
+      display: inline-block;
+    }
+    #s10-l1 {
+      top: 120px;
+      font-size: 118px;
+      color: #ffffff;
+    }
+    #s10-l2 {
+      top: 300px;
+      left: 46px;
+      width: 900px;
+      text-align: left;
+      font-size: 172px;
+      letter-spacing: -0.02em;
+      color: #0a1124;
+    }
+    #s10-flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+  </style>
+  <div id="root" data-composition-id="futuro" data-width="1080" data-height="1920">
+    <div id="s10-all" class="clip" data-start="0" data-duration="4.8297" style="position: absolute; inset: 0" data-layout-allow-overflow data-layout-allow-overlap>
+      <div id="s10-ground"></div>
+      <div id="s10-frame">
+        <div id="s10-win-p" class="win"><div id="s10-cam-p" class="cam"><img src="assets/photos/equipo.jpg" alt="" /></div></div>
+        <div id="s10-l1" class="disp"><span>Nuestro</span></div>
+        <div id="s10-l2" class="disp"><span>F</span><span>u</span><span>t</span><span>u</span><span>r</span><span>o</span></div>
+        <div id="s10-win-c" class="win"><div id="s10-cam-c" class="cam"><img src="assets/photos/equipo-recorte.webp" alt="" /></div></div>
+      </div>
+    </div>
+    <div id="s10-flash" class="clip" data-start="4.68" data-duration="0.1497"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Iris que se abre desde el visor del robot
+    tl.fromTo(
+      "#s10-win-p, #s10-win-c",
+      { clipPath: "circle(0px at 579px 855px)" },
+      { clipPath: "circle(1500px at 579px 855px)", duration: 0.7, ease: "power4.out" },
+      0.02,
+    );
+    tl.fromTo("#s10-cam-p, #s10-cam-c", { scale: 1.12 }, { scale: 1.0, duration: 1.0, ease: "expo.out" }, 0);
+    tl.to("#s10-cam-p, #s10-cam-c", { scale: 1.05, duration: 3.6, ease: "power1.inOut" }, 1.0);
+    // "NUESTRO" en blanco sobre el rosa; "FUTURO" asoma detrás del equipo
+    tl.fromTo("#s10-l1 span", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 0.6037);
+    tl.fromTo(
+      "#s10-l2 span",
+      { opacity: 0, y: 110 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", stagger: 0.06 },
+      1.2075,
+    );
+    // Tirón de cámara hacia atrás en el compás: la foto se vuelve tarjeta sobre el rosa
+    tl.to("#s10-frame", { scale: 0.93, duration: 0.9, ease: "power3.inOut" }, 2.4149);
+    tl.to("#s10-win-p, #s10-win-c", { borderRadius: "40px", duration: 0.9, ease: "power3.inOut" }, 2.4149);
+    // Flash final: abre el cierre en blanco
+    tl.fromTo("#s10-flash", { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "power2.in" }, 4.68);
+    window.__timelines["futuro"] = tl;
+  </script>
+</template>

@@ -1,15 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="es" data-resolution="portrait">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
     <style>
-      /* Placeholders: replace all three with the film's own palette and display face. */
+      /* SOMOS · EVEREST — recap del evento (3 nov). Rejilla: 99.4 BPM, 1 beat = 0.60372 s.
+         La música entra en el beat 10 de la pista; el drop cae en 4.830 s (flash + obturador). */
       :root {
-        --ground: #6b6b6b;
-        --ink: #ffffff;
-        --font-display: sans-serif;
+        --navy: #0a1124;
+        --rosa: #e60573;
+        --blanco: #ffffff;
       }
       * {
         margin: 0;
@@ -19,43 +20,43 @@
       html,
       body {
         margin: 0;
-        width: 1920px;
-        height: 1080px;
+        width: 1080px;
+        height: 1920px;
         overflow: hidden;
-        background: var(--ground);
+        background: #0a1124;
       }
       #root {
+        position: relative;
         width: 100%;
         height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--font-display);
-      }
-      #title {
-        color: var(--ink);
-        font-size: 72px;
-        font-weight: 600;
-        letter-spacing: -0.03em;
+        overflow: hidden;
+        background: #0a1124;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="main"
-      data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
-    >
-      <h1 id="title" class="clip" data-start="0" data-duration="10" data-track-index="0">Title</h1>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="36.2233" data-width="1080" data-height="1920">
+      <!-- I. La subida: montaña + invitación; el flash del drop abre el evento -->
+      <div id="subida" class="clip" data-composition-id="subida" data-composition-src="compositions/subida.html" data-start="0" data-duration="4.8298" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 1"></div>
+      <!-- II. El evento -->
+      <div id="sala" class="clip" data-composition-id="sala" data-composition-src="compositions/sala.html" data-start="4.8298" data-duration="3.6223" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="escenario" class="clip" data-composition-id="escenario" data-composition-src="compositions/escenario.html" data-start="8.4521" data-duration="2.4149" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="ponente" class="clip" data-composition-id="ponente" data-composition-src="compositions/ponente.html" data-start="10.867" data-duration="2.4149" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 4"></div>
+      <div id="cresta" class="clip" data-composition-id="cresta" data-composition-src="compositions/cresta.html" data-start="13.2819" data-duration="2.4149" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="publico" class="clip" data-composition-id="publico" data-composition-src="compositions/publico.html" data-start="15.6968" data-duration="2.4149" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 6"></div>
+      <div id="anfitrion" class="clip" data-composition-id="anfitrion" data-composition-src="compositions/anfitrion.html" data-start="18.1117" data-duration="2.4149" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 7"></div>
+      <div id="cercania" class="clip" data-composition-id="cercania" data-composition-src="compositions/cercania.html" data-start="20.5266" data-duration="2.4149" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 8"></div>
+      <!-- III. La cima -->
+      <div id="cumbre" class="clip" data-composition-id="cumbre" data-composition-src="compositions/cumbre.html" data-start="22.9415" data-duration="3.6223" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 9"></div>
+      <div id="futuro" class="clip" data-composition-id="futuro" data-composition-src="compositions/futuro.html" data-start="26.5638" data-duration="4.8297" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 10"></div>
+      <div id="cierre" class="clip" data-composition-id="cierre" data-composition-src="compositions/cierre.html" data-start="31.3935" data-duration="4.8298" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 11"></div>
+      <!-- Grano de película sobre todo -->
+      <div id="grano" class="clip" data-composition-id="grano" data-composition-src="compositions/grano.html" data-start="0" data-duration="36.2233" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 20"></div>
+      <audio id="mezcla" class="clip" src="assets/audio/mezcla.wav" data-start="0" data-duration="36.2233" data-track-index="3" data-volume="1"></audio>
     </div>
     <script>
-      const tl = gsap.timeline({ paused: true });
-      // Example: tl.fromTo("#title", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0);
-      window.__timelines["main"] = tl;
-      tl.seek(0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
     </script>
   </body>
 </html>

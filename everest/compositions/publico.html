@@ -1,0 +1,61 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    #s6-win {
+      position: absolute;
+      left: 0;
+      top: 285px;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+    }
+    #s6-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2400px;
+      height: 1350px;
+    }
+    .bar {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 10px;
+      background: #e60573;
+      transform-origin: 0% 50%;
+    }
+    #s6-bar-t { top: 285px; }
+    #s6-bar-b { top: 1625px; transform-origin: 100% 50%; }
+    #s6-dip {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+    }
+  </style>
+  <div id="root" data-composition-id="publico" data-width="1080" data-height="1920">
+    <div id="s6-all" class="clip" data-start="0" data-duration="2.4149" style="position: absolute; inset: 0" data-layout-allow-overflow>
+      <div id="s6-win"><img id="s6-img" src="assets/photos/publico.jpg" alt="" /></div>
+      <div id="s6-bar-t" class="bar"></div>
+      <div id="s6-bar-b" class="bar"></div>
+    </div>
+    <div id="s6-dip" class="clip" data-start="2.3" data-duration="0.1149"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Entra desde abajo (sigue el barrido vertical de la cresta)
+    tl.fromTo("#s6-win", { y: 760, filter: "blur(20px)" }, { y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0);
+    // Paneo por los rostros del público
+    tl.fromTo("#s6-img", { x: -80 }, { x: -1320, duration: 2.4149, ease: "power1.inOut" }, 0);
+    // Líneas de marca que marcan el compás
+    tl.fromTo("#s6-bar-t", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.3);
+    tl.fromTo("#s6-bar-b", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.9037);
+    // Corte con oscurecimiento (dip) de 3 fotogramas
+    tl.fromTo("#s6-dip", { opacity: 0 }, { opacity: 0.45, duration: 0.1, ease: "none" }, 2.3);
+    window.__timelines["publico"] = tl;
+  </script>
+</template>

@@ -1,0 +1,90 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    #s9-cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      transform-origin: 52% 46%;
+    }
+    #s9-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.88;
+      white-space: nowrap;
+      color: #ffffff;
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      text-align: center;
+    }
+    .disp span {
+      display: inline-block;
+    }
+    #s9-l1 {
+      top: 250px;
+      font-size: 132px;
+    }
+    #s9-l2 {
+      top: 370px;
+      font-size: 290px;
+      letter-spacing: -0.02em;
+    }
+    #s9-flood {
+      position: absolute;
+      inset: 0;
+      background: #e60573;
+    }
+  </style>
+  <div id="root" data-composition-id="cumbre" data-width="1080" data-height="1920">
+    <div id="s9-all" class="clip" data-start="0" data-duration="3.6223" style="position: absolute; inset: 0" data-layout-allow-overflow>
+      <div id="s9-cam"><img id="s9-img" src="assets/mountains/cumbre.jpg" alt="" /></div>
+      <div id="s9-l1" class="disp"><span>N</span><span>u</span><span>e</span><span>s</span><span>t</span><span>r</span><span>a</span></div>
+      <div id="s9-l2" class="disp"><span>C</span><span>i</span><span>m</span><span>a</span></div>
+    </div>
+    <div id="s9-flood" class="clip" data-start="3.38" data-duration="0.2423"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Seguimos subiendo: la cumbre entra desde arriba y se asienta
+    tl.fromTo("#s9-cam", { y: -900, filter: "blur(22px)", scale: 1.12 }, { y: 0, filter: "blur(0px)", scale: 1.08, duration: 0.75, ease: "expo.out" }, 0);
+    tl.to("#s9-cam", { scale: 1.15, duration: 2.6, ease: "power1.inOut" }, 0.75);
+    // "NUESTRA CIMA" en el cielo
+    tl.fromTo("#s9-l1 span", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.035 }, 0.55);
+    tl.fromTo(
+      "#s9-l2 span",
+      { opacity: 0, y: 60, filter: "blur(12px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out", stagger: 0.07 },
+      1.2075,
+    );
+    tl.to("#s9-l1, #s9-l2", { opacity: 0, filter: "blur(10px)", duration: 0.18, ease: "power2.in" }, 3.25);
+    // El rosa de la marca inunda el cuadro desde abajo
+    tl.fromTo("#s9-flood", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.2423, ease: "power3.in" }, 3.38);
+    window.__timelines["cumbre"] = tl;
+  </script>
+</template>

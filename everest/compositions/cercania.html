@@ -1,0 +1,42 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    #s8-cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      transform-origin: 34% 40%;
+    }
+    #s8-img {
+      position: absolute;
+      left: -70px;
+      top: 0;
+      width: 1440px;
+      height: 1920px;
+    }
+  </style>
+  <div id="root" data-composition-id="cercania" data-width="1080" data-height="1920">
+    <div id="s8-all" class="clip" data-start="0" data-duration="2.4149" style="position: absolute; inset: 0" data-layout-allow-overflow>
+      <div id="s8-cam"><img id="s8-img" src="assets/photos/cercania.jpg" alt="" /></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Llega desde la izquierda, en la dirección del barrido anterior
+    tl.fromTo("#s8-cam", { x: -700, filter: "blur(22px)", scale: 1.04 }, { x: 0, filter: "blur(0px)", scale: 1.06, duration: 0.5, ease: "expo.out" }, 0);
+    tl.to("#s8-cam", { scale: 1.12, duration: 0.7, ease: "none" }, 0.5);
+    // Punch-in sobre el ponente entre el público
+    tl.set("#s8-cam", { scale: 1.32 }, 1.2075);
+    tl.to("#s8-cam", { scale: 1.37, duration: 0.99, ease: "none" }, 1.2075);
+    // Salida: la cámara mira hacia arriba (el cuadro cae)
+    tl.to("#s8-cam", { y: 900, filter: "blur(22px)", duration: 0.22, ease: "power3.in" }, 2.1949);
+    window.__timelines["cercania"] = tl;
+  </script>
+</template>

@@ -1,0 +1,106 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    .layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      transform-origin: 66% 32%;
+    }
+    .layer img {
+      position: absolute;
+      left: -180px;
+      top: 0;
+      width: 1440px;
+      height: 1920px;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.88;
+      white-space: nowrap;
+      color: #e60573;
+    }
+    #s3-txt {
+      position: absolute;
+      left: 56px;
+      top: 300px;
+      width: 1000px;
+      height: 420px;
+    }
+    #s3-la {
+      position: absolute;
+      left: 6px;
+      top: 0;
+      font-size: 104px;
+    }
+    #s3-fuerza {
+      position: absolute;
+      left: 0;
+      top: 100px;
+      font-size: 168px;
+      letter-spacing: -0.02em;
+    }
+    .disp span {
+      display: inline-block;
+    }
+    #s3-slash {
+      position: absolute;
+      left: 0;
+      top: -200px;
+      width: 2200px;
+      height: 2320px;
+      background: #e60573;
+    }
+  </style>
+  <div id="root" data-composition-id="escenario" data-width="1080" data-height="1920">
+    <div id="s3-all" class="clip" data-start="0" data-duration="2.4149" style="position: absolute; inset: 0" data-layout-allow-overflow data-layout-allow-overlap>
+      <div id="s3-plate" class="layer"><img src="assets/photos/escenario.jpg" alt="" /></div>
+      <div id="s3-txt">
+        <div id="s3-la" class="disp"><span>La</span></div>
+        <div id="s3-fuerza" class="disp"><span>F</span><span>u</span><span>e</span><span>r</span><span>z</span><span>a</span></div>
+      </div>
+      <div id="s3-cut" class="layer"><img src="assets/photos/escenario-recorte.webp" alt="" /></div>
+    </div>
+    <div id="s3-slash" class="clip" data-start="2.1" data-duration="0.3149" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Entra con el barrido desde la derecha (continúa el movimiento de la sala)
+    tl.fromTo("#s3-all", { x: 700, filter: "blur(22px)" }, { x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0);
+    tl.fromTo("#s3-plate, #s3-cut", { scale: 1.0 }, { scale: 1.06, duration: 1.2, ease: "power1.out" }, 0);
+    // "LA FUERZA" detrás del ponente
+    tl.fromTo("#s3-la span", { opacity: 0, y: 40, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 0.22);
+    tl.fromTo(
+      "#s3-fuerza span",
+      { opacity: 0, y: 70, filter: "blur(10px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out", stagger: 0.045 },
+      0.3,
+    );
+    // Punch-in en el beat (corte duro dentro de la escena)
+    tl.set("#s3-plate, #s3-cut", { scale: 1.26 }, 1.2075);
+    tl.set("#s3-txt", { scale: 1.06, transformOrigin: "20% 50%" }, 1.2075);
+    tl.to("#s3-plate, #s3-cut", { scale: 1.31, duration: 1.0, ease: "none" }, 1.2075);
+    // Salida: la diagonal rosa (ángulo del logo) cubre el cuadro
+    tl.fromTo("#s3-slash", { x: -2500, skewX: -14 }, { x: -620, skewX: -14, duration: 0.3149, ease: "power3.in" }, 2.1);
+    window.__timelines["escenario"] = tl;
+  </script>
+</template>

@@ -1,0 +1,88 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/Archivo-Italic-VF.woff2") format("woff2");
+      font-style: italic;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0a1124;
+    }
+    #s4-win {
+      position: absolute;
+      left: 0;
+      top: 120px;
+      width: 1080px;
+      height: 1180px;
+      overflow: hidden;
+    }
+    #s4-img {
+      position: absolute;
+      left: 0;
+      top: -40px;
+      width: 2311px;
+      height: 1300px;
+    }
+    .disp {
+      font-family: "Archivo", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+      font-stretch: 125%;
+      text-transform: uppercase;
+      line-height: 0.88;
+      white-space: nowrap;
+      position: absolute;
+      left: 60px;
+    }
+    .disp span {
+      display: inline-block;
+    }
+    #s4-l1 {
+      top: 1380px;
+      font-size: 150px;
+      color: #ffffff;
+    }
+    #s4-l2 {
+      top: 1520px;
+      font-size: 236px;
+      letter-spacing: -0.02em;
+      color: #e60573;
+    }
+    #s4-slash {
+      position: absolute;
+      left: 0;
+      top: -200px;
+      width: 2200px;
+      height: 2320px;
+      background: #e60573;
+    }
+  </style>
+  <div id="root" data-composition-id="ponente" data-width="1080" data-height="1920">
+    <div id="s4-all" class="clip" data-start="0" data-duration="2.4149" style="position: absolute; inset: 0" data-layout-allow-overflow>
+      <div id="s4-win"><img id="s4-img" src="assets/photos/ponente.jpg" alt="" /></div>
+      <div id="s4-l1" class="disp"><span>Que</span> <span>nos</span></div>
+      <div id="s4-l2" class="disp"><span>une</span></div>
+    </div>
+    <div id="s4-slash" class="clip" data-start="0" data-duration="0.36" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // La diagonal rosa sigue su camino y descubre al ponente
+    tl.fromTo("#s4-slash", { x: -620, skewX: -14 }, { x: 1520, skewX: -14, duration: 0.36, ease: "power3.out" }, 0);
+    // La cámara recorre el escenario: del ponente hacia el panel y el robot
+    tl.fromTo("#s4-img", { x: -40, scale: 1.04 }, { x: -1200, scale: 1.0, duration: 2.3, ease: "power2.inOut" }, 0);
+    // "QUE NOS UNE" termina la frase de la escena anterior
+    tl.fromTo("#s4-l1 span", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", stagger: 0.1 }, 0.3);
+    tl.fromTo("#s4-l2 span", { opacity: 0, filter: "blur(12px)", scale: 1.12 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.45, ease: "expo.out" }, 0.6037);
+    // Salida: atravesamos la ventana (zoom con desenfoque)
+    tl.to("#s4-l1, #s4-l2", { opacity: 0, filter: "blur(10px)", duration: 0.15, ease: "power2.in" }, 2.2);
+    tl.to("#s4-win", { scale: 1.6, filter: "blur(16px)", duration: 0.22, ease: "power3.in" }, 2.1949);
+    window.__timelines["ponente"] = tl;
+  </script>
+</template>
