@@ -1,11 +1,5 @@
 <template>
   <style>
-    @font-face {
-      font-family: "SOMOS Display";
-      src: url("assets/fonts/InterDisplay-SemiBold.otf") format("opentype");
-      font-weight: 600;
-      font-style: normal;
-    }
     #root {
       position: absolute;
       inset: 0;
@@ -17,32 +11,6 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-    }
-    #out-rule {
-      position: absolute;
-      left: 480px;
-      top: 1030px;
-      width: 120px;
-      height: 5px;
-      background: #e60573;
-      transform: skewX(-14deg);
-    }
-    #out-word {
-      position: absolute;
-      left: 0;
-      top: 1066px;
-      width: 1080px;
-      text-align: center;
-      font-family: "SOMOS Display", sans-serif;
-      font-weight: 600;
-      font-size: 46px;
-      letter-spacing: 0.4em;
-      text-indent: 0.4em;
-      color: #e60573;
-      white-space: nowrap;
-    }
-    #out-word span {
-      display: inline-block;
     }
   </style>
   <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
@@ -63,8 +31,6 @@
         </g>
       </g>
     </svg>
-    <div id="out-rule"></div>
-    <div id="out-word"><span>C</span><span>O</span><span>B</span><span>E</span><span>R</span><span>T</span><span>U</span><span>R</span><span>A</span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
@@ -91,11 +57,8 @@
     // 2. La O se cierra en blanco: logo limpio, con sus colores
     tl.to("#out-ofill", { opacity: 1, duration: 0.3, ease: "power1.inOut" }, 0.55);
 
-    // 3. COBERTURA
-    tl.fromTo("#out-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.85);
-    tl.fromTo("#out-word span", { opacity: 0, y: 22, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "power3.out", stagger: 0.04 }, 0.92);
 
-    // 4. Empuje lento hasta el final
+    // 3. Empuje lento hasta el final
     tl.to(st, { push: 1.035, duration: 2.1, ease: "sine.out" }, 0.95);
     window.__timelines["outro"] = tl;
   </script>

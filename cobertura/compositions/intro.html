@@ -1,11 +1,5 @@
 <template>
   <style>
-    @font-face {
-      font-family: "SOMOS Display";
-      src: url("assets/fonts/InterDisplay-SemiBold.otf") format("opentype");
-      font-weight: 600;
-      font-style: normal;
-    }
     #root {
       position: absolute;
       inset: 0;
@@ -17,32 +11,6 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-    }
-    #in-rule {
-      position: absolute;
-      left: 480px;
-      top: 1030px;
-      width: 120px;
-      height: 5px;
-      background: #e60573;
-      transform: skewX(-14deg);
-    }
-    #in-word {
-      position: absolute;
-      left: 0;
-      top: 1066px;
-      width: 1080px;
-      text-align: center;
-      font-family: "SOMOS Display", sans-serif;
-      font-weight: 600;
-      font-size: 46px;
-      letter-spacing: 0.4em;
-      text-indent: 0.4em;
-      color: #e60573;
-      white-space: nowrap;
-    }
-    #in-word span {
-      display: inline-block;
     }
   </style>
   <div id="root" data-composition-id="intro" data-width="1080" data-height="1920">
@@ -68,8 +36,6 @@
         </g>
       </g>
     </svg>
-    <div id="in-rule"></div>
-    <div id="in-word"><span>C</span><span>O</span><span>B</span><span>E</span><span>R</span><span>T</span><span>U</span><span>R</span><span>A</span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
@@ -96,15 +62,11 @@
     });
     tl.to(st, { push: 1, duration: 1.4, ease: "power3.out" }, 0.1);
 
-    // 2. COBERTURA: línea rosa y letras que se asientan
-    tl.fromTo("#in-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.95);
-    tl.fromTo("#in-word span", { opacity: 0, y: 22, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "power3.out", stagger: 0.04 }, 1.02);
 
-    // 3. Espera (la música sube): empuje lento
+    // 2. Espera (la música sube): empuje lento
     tl.to(st, { push: 1.045, duration: 1.4, ease: "sine.inOut" }, 1.5);
 
-    // 4. Sale el texto, se abre la O y la cámara la atraviesa
-    tl.to(["#in-word", "#in-rule"], { opacity: 0, y: -14, duration: 0.25, ease: "power2.in" }, 2.5);
+    // 3. Se abre la O y la cámara la atraviesa
     tl.to("#in-ofill", { opacity: 0, duration: 0.22, ease: "power1.out" }, 2.66);
     tl.to(st, { zoom: 85, zx: 540 - OX, zy: 960 - OY, duration: 0.6, ease: "power4.in" }, 2.8);
     tl.fromTo("#in-svg", { filter: "blur(0px)" }, { filter: "blur(9px)", duration: 0.22, ease: "power2.in" }, 3.18);
