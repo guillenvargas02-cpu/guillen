@@ -1,80 +1,11 @@
 <template>
   <style>
-    @font-face {
-      font-family: "Inter Display";
-      font-weight: 800;
-      font-style: italic;
-      src: local("Inter Display ExtraBold Italic"), local("InterDisplay-ExtraBoldItalic");
-    }
-    @font-face {
-      font-family: "Inter Display";
-      font-weight: 800;
-      font-style: normal;
-      src: local("Inter Display ExtraBold"), local("InterDisplay-ExtraBold");
-    }
-    @font-face {
-      font-family: "Inter Display";
-      font-weight: 500;
-      font-style: normal;
-      src: local("Inter Display Medium"), local("InterDisplay-Medium");
-    }
     #root {
       position: absolute;
       inset: 0;
-      font-family: "Inter Display", "Inter", sans-serif;
-      color: #fff;
     }
-    .mono {
-      font-family: "JetBrains Mono", monospace;
-    }
-    /* 1) cámara lenta final: fijación rápida y "desconectando" */
-    .ot-br {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      border-style: solid;
-      border-width: 0;
-      border-color: #e60872;
-      filter: drop-shadow(0 0 10px rgba(230, 8, 114, 0.8));
-    }
-    #ot-b1 {
-      left: 170px;
-      top: 330px;
-      border-left-width: 6px;
-      border-top-width: 6px;
-    }
-    #ot-b2 {
-      left: 820px;
-      top: 330px;
-      border-right-width: 6px;
-      border-top-width: 6px;
-    }
-    #ot-b3 {
-      left: 170px;
-      top: 1560px;
-      border-left-width: 6px;
-      border-bottom-width: 6px;
-    }
-    #ot-b4 {
-      left: 820px;
-      top: 1560px;
-      border-right-width: 6px;
-      border-bottom-width: 6px;
-    }
-    #ot-status {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      top: 1700px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      color: #fff;
-      text-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
-      white-space: nowrap;
-    }
-    /* 2) cortinilla robótica: barras de interferencia + rejilla de paneles */
+    /* Cierre: la música se corta, el cuadro se congela con interferencia rosa, paneles robóticos
+       pasan de ciruela a rosa SOMOS a blanco y el logo SOMOS se ensambla por franjas. Solo el logo. */
     #ot-slices {
       position: absolute;
       left: 0;
@@ -93,7 +24,7 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-      background-image: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0 2px, transparent 2px 6px);
+      background-image: repeating-linear-gradient(180deg, rgba(26, 4, 16, 0.4) 0 2px, transparent 2px 6px);
     }
     #ot-tiles {
       position: absolute;
@@ -106,9 +37,9 @@
       position: absolute;
       width: 120px;
       height: 120px;
-      background: #070b1a;
-      outline: 2px solid #3ef0ff;
-      outline-offset: -2px;
+      background: #1a0410;
+      outline: 3px solid #ff3d9a;
+      outline-offset: -3px;
     }
     #ot-white {
       position: absolute;
@@ -124,14 +55,29 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-      background-image: linear-gradient(rgba(7, 11, 26, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(7, 11, 26, 0.06) 1px, transparent 1px);
-      background-size: 60px 60px;
+      background-image: linear-gradient(rgba(230, 8, 114, 0.08) 2px, transparent 2px), linear-gradient(90deg, rgba(230, 8, 114, 0.08) 2px, transparent 2px);
+      background-size: 120px 120px;
     }
-    /* 3) logo SOMOS sobre blanco, ensamblado por franjas */
+    .ot-streak {
+      position: absolute;
+      top: -200px;
+      left: -900px;
+      height: 2320px;
+      transform: skewX(-18deg);
+      background: #e60872;
+    }
+    #ot-s1 {
+      width: 150px;
+      opacity: 0.12;
+    }
+    #ot-s2 {
+      width: 40px;
+      opacity: 0.22;
+    }
     #ot-logo {
       position: absolute;
       left: 110px;
-      top: 838px;
+      top: 884px;
       width: 860px;
       height: 153px;
     }
@@ -159,11 +105,11 @@
       -webkit-mask-size: 100% 100%;
       mask-size: 100% 100%;
     }
-    #ot-ghost-c {
-      background: #3ef0ff;
+    #ot-ghost-a {
+      background: #ff7ab8;
     }
-    #ot-ghost-n {
-      background: #070b1a;
+    #ot-ghost-b {
+      background: #1a0410;
     }
     #ot-glint {
       position: absolute;
@@ -181,115 +127,76 @@
       position: absolute;
       top: 0;
       left: -300px;
-      width: 220px;
+      width: 200px;
       height: 153px;
-      background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+      background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 100%);
     }
     #ot-scan {
       position: absolute;
       left: 100px;
-      top: 780px;
-      width: 6px;
-      height: 270px;
-      background: #3ef0ff;
-      box-shadow: 0 0 20px 6px rgba(62, 240, 255, 0.8);
+      top: 840px;
+      width: 8px;
+      height: 240px;
+      background: #ff3d9a;
+      box-shadow: 0 0 20px 6px rgba(255, 61, 154, 0.7);
     }
-    #ot-name {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      top: 1050px;
-      text-align: center;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 40px;
-      font-weight: 800;
-      letter-spacing: 0.62em;
-      color: #070b1a;
-      white-space: nowrap;
-    }
-    #ot-rule {
-      position: absolute;
-      left: 440px;
-      top: 1124px;
-      width: 200px;
-      height: 5px;
-      background: #e60872;
+    /* estados iniciales (el fotograma 0 de la composición no ejecuta los set en 0) */
+    .ot-slice,
+    #ot-scanlines,
+    #ot-white,
+    #ot-grid,
+    #ot-logo,
+    #ot-scan {
+      opacity: 0;
     }
   </style>
   <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
-    <div id="ot-b1" class="ot-br"></div>
-    <div id="ot-b2" class="ot-br"></div>
-    <div id="ot-b3" class="ot-br"></div>
-    <div id="ot-b4" class="ot-br"></div>
-    <div id="ot-status" class="mono" data-layout-ignore></div>
     <div id="ot-slices"></div>
     <div id="ot-scanlines"></div>
     <div id="ot-tiles"></div>
     <div id="ot-white"></div>
     <div id="ot-grid"></div>
+    <div id="ot-s1" class="ot-streak"></div>
+    <div id="ot-s2" class="ot-streak"></div>
     <div id="ot-logo">
-      <div id="ot-ghost-c" class="ot-ghost"></div>
-      <div id="ot-ghost-n" class="ot-ghost"></div>
+      <div id="ot-ghost-a" class="ot-ghost"></div>
+      <div id="ot-ghost-b" class="ot-ghost"></div>
       <div id="ot-strips"></div>
       <div id="ot-glint"><div id="ot-glint-band"></div></div>
     </div>
     <div id="ot-scan"></div>
-    <div id="ot-name"></div>
-    <div id="ot-rule"></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 4.125;
+    const D = 4.136;
+    const initTiles = () => gsap.set(".ot-tile", { scale: 0 });
     let seed = 23;
     const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 
-    // ---------- 1) cámara lenta: fijación rápida + "DESCONECTANDO" ----------
-    const st = document.querySelector("#ot-status");
-    const STATUS = "SOMOTRIX_01 // FIN DE DEMO";
-    tl.fromTo(".ot-br", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "expo.out", stagger: 0.02 }, 0.05);
-    const a = { t: 0 };
-    tl.to(
-      a,
-      {
-        t: 1,
-        duration: 0.5,
-        ease: "none",
-        onUpdate: () => {
-          const n = Math.round(a.t * STATUS.length);
-          st.textContent = STATUS.slice(0, n) + (n < STATUS.length ? "▌" : "");
-        },
-      },
-      0.2
-    );
-    tl.set([".ot-br", "#ot-status"], { opacity: 0 }, 1.08);
-
-    // ---------- 2) interferencia (26.95 s): barras de color que barren el cuadro ----------
-    const G0 = 1.075;
+    // ---------- 1) interferencia sobre el cuadro congelado ----------
     const sl = document.querySelector("#ot-slices");
-    const COLORS = ["#3ef0ff", "#e60872", "#070b1a", "#ffffff", "#3ef0ff", "#070b1a", "#e60872", "#070b1a"];
+    const COLORS = ["#e60872", "#ffffff", "#1a0410", "#ff3d9a", "#e60872", "#1a0410", "#ffffff", "#ff7ab8"];
     const slices = [];
     let y = 0;
     for (let i = 0; y < 1920; i++) {
-      const h = 40 + Math.floor(rnd() * 180);
+      const h = 40 + Math.floor(rnd() * 170);
       const d = document.createElement("div");
       d.className = "ot-slice";
       d.style.top = y + "px";
       d.style.height = h + "px";
       d.style.background = COLORS[i % COLORS.length];
-      d.style.opacity = "0";
       sl.appendChild(d);
-      slices.push({ el: d, dir: i % 2 ? 1 : -1, delay: rnd() * 0.25, keep: rnd() });
+      slices.push({ el: d, dir: i % 2 ? 1 : -1, delay: 0.04 + rnd() * 0.3, keep: rnd() });
       y += h;
     }
     slices.forEach((s) => {
-      tl.fromTo(s.el, { x: s.dir * 1100, opacity: 0.9 }, { x: s.dir * -40, duration: 0.18, ease: "expo.out", immediateRender: false }, G0 + s.delay);
-      tl.set(s.el, { opacity: s.keep > 0.5 ? 0.85 : 0 }, G0 + s.delay + 0.2);
-      tl.set(s.el, { opacity: 0 }, G0 + s.delay + 0.3);
+      tl.fromTo(s.el, { x: s.dir * 1100, opacity: 0.9 }, { x: s.dir * -40, duration: 0.16, ease: "expo.out", immediateRender: false }, s.delay);
+      tl.set(s.el, { opacity: s.keep > 0.5 ? 0.85 : 0 }, s.delay + 0.18);
+      tl.set(s.el, { opacity: 0 }, s.delay + 0.26);
     });
-    tl.set(".ot-slice", { opacity: 0 }, 0);
-    tl.fromTo("#ot-scanlines", { opacity: 0 }, { opacity: 1, duration: 0.1 }, G0);
+    tl.fromTo("#ot-scanlines", { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0);
 
-    // ---------- 2b) paneles robóticos: azul noche → rosa SOMOS → blanco ----------
+    // ---------- 2) paneles: ciruela → rosa SOMOS → blanco ----------
     const tiles = document.querySelector("#ot-tiles");
     for (let r = 0; r < 16; r++) {
       for (let c = 0; c < 9; c++) {
@@ -300,29 +207,33 @@
         tiles.appendChild(t);
       }
     }
-    const P0 = 1.3;
-    tl.set(".ot-tile", { scale: 0, opacity: 1 }, 0);
-    tl.to(".ot-tile", { scale: 1, duration: 0.16, ease: "expo.out", stagger: { grid: [16, 9], from: "center", amount: 0.32 } }, P0);
-    tl.to(".ot-tile", { backgroundColor: "#e60872", outlineColor: "#ff6fb1", duration: 0.1, ease: "none", stagger: { grid: [16, 9], from: "center", amount: 0.32 } }, P0 + 0.14);
-    tl.to(".ot-tile", { backgroundColor: "#ffffff", outlineColor: "#ffffff", duration: 0.12, ease: "none", stagger: { grid: [16, 9], from: "center", amount: 0.32 } }, P0 + 0.3);
-    tl.to("#ot-scanlines", { opacity: 0, duration: 0.1 }, P0 + 0.45);
-    const W0 = P0 + 0.78; // todo blanco ≈ 27.96 s
+    initTiles();
+    const P0 = 0.22;
+    const G = { grid: [16, 9], from: "center", amount: 0.3 };
+    tl.set(".ot-tile", { scale: 0 }, 0);
+    tl.to(".ot-tile", { scale: 1, duration: 0.14, ease: "expo.out", stagger: G }, P0);
+    tl.to(".ot-tile", { backgroundColor: "#e60872", outlineColor: "#ff7ab8", duration: 0.08, ease: "none", stagger: G }, P0 + 0.12);
+    tl.to(".ot-tile", { backgroundColor: "#ffffff", outlineColor: "#ffffff", duration: 0.1, ease: "none", stagger: G }, P0 + 0.26);
+    tl.to("#ot-scanlines", { opacity: 0, duration: 0.1 }, P0 + 0.4);
+    const W0 = 0.84; // todo blanco = 26.70 s (la base también pasa a blanco)
     tl.set("#ot-white", { opacity: 0 }, 0);
     tl.set("#ot-white", { opacity: 1 }, W0);
     tl.set("#ot-tiles", { opacity: 0 }, W0 + 0.01);
-    tl.fromTo("#ot-grid", { opacity: 0 }, { opacity: 1, duration: 0.2 }, W0 - 0.1);
-    tl.to("#ot-grid", { opacity: 0, duration: 1.2, ease: "power1.in" }, W0 + 0.6);
+    tl.set("#ot-grid", { opacity: 0 }, 0);
+    tl.to("#ot-grid", { opacity: 1, duration: 0.2 }, W0);
+    tl.to("#ot-grid", { opacity: 0, duration: 1.0, ease: "power1.in" }, W0 + 0.9);
+    tl.fromTo("#ot-s1", { x: 0 }, { x: 2400, duration: 0.8, ease: "power2.inOut" }, W0 + 0.05);
+    tl.fromTo("#ot-s2", { x: 0 }, { x: 2400, duration: 0.65, ease: "power2.inOut" }, W0 + 0.15);
 
-    // ---------- 3) el logo se ensambla por franjas que llegan de lados opuestos ----------
+    // ---------- 3) logo SOMOS ensamblado por franjas ----------
     const strips = document.querySelector("#ot-strips");
     const NS = 6;
-    const H = 153;
     const S = [];
     for (let i = 0; i < NS; i++) {
       const w = document.createElement("div");
       w.className = "ot-strip";
-      const top = Math.round((i * H) / NS);
-      const bot = Math.round(((i + 1) * H) / NS);
+      const top = Math.round((i * 153) / NS);
+      const bot = Math.round(((i + 1) * 153) / NS);
       w.style.top = top + "px";
       w.style.height = bot - top + "px";
       const img = document.createElement("img");
@@ -333,53 +244,22 @@
       strips.appendChild(w);
       S.push(w);
     }
-    const L0 = W0 - 0.12; // 27.84 s
+    const L0 = W0 + 0.02;
     tl.set("#ot-logo", { opacity: 0 }, 0);
     tl.set("#ot-logo", { opacity: 1 }, L0);
     S.forEach((w, i) => {
       tl.fromTo(w, { x: (i % 2 ? 1 : -1) * (700 + i * 60) }, { x: 0, duration: 0.42, ease: "expo.out" }, L0 + i * 0.045);
     });
-    // fantasmas cian / azul noche que se asientan (aberración cromática)
-    tl.fromTo("#ot-ghost-c", { x: -26, opacity: 0.95 }, { x: 0, opacity: 0, duration: 0.7, ease: "expo.out" }, L0 + 0.25);
-    tl.fromTo("#ot-ghost-n", { x: 22, opacity: 0.6 }, { x: 0, opacity: 0, duration: 0.7, ease: "expo.out" }, L0 + 0.25);
-    // micro-sacudidas de ensamblado mecánico
-    [0.52, 0.6, 0.66].forEach((d, k) => {
-      tl.set("#ot-logo", { x: k % 2 ? -8 : 10 }, L0 + d);
-    });
+    tl.fromTo("#ot-ghost-a", { x: -28, opacity: 0.95 }, { x: 0, opacity: 0, duration: 0.7, ease: "expo.out" }, L0 + 0.25);
+    tl.fromTo("#ot-ghost-b", { x: 22, opacity: 0.55 }, { x: 0, opacity: 0, duration: 0.7, ease: "expo.out" }, L0 + 0.25);
+    [0.52, 0.6, 0.66].forEach((d, k) => tl.set("#ot-logo", { x: k % 2 ? -8 : 10 }, L0 + d));
     tl.set("#ot-logo", { x: 0 }, L0 + 0.72);
-    tl.fromTo("#ot-logo", { scale: 1.04 }, { scale: 1, duration: D - L0, ease: "power2.out" }, L0);
-    // línea de escaneo que verifica el logo
+    tl.fromTo("#ot-logo", { scale: 1.05 }, { scale: 1, duration: D - L0, ease: "power2.out" }, L0);
     tl.set("#ot-scan", { opacity: 0 }, 0);
     tl.set("#ot-scan", { opacity: 1 }, L0 + 0.5);
     tl.fromTo("#ot-scan", { x: 0 }, { x: 880, duration: 0.45, ease: "power2.inOut" }, L0 + 0.5);
     tl.to("#ot-scan", { opacity: 0, duration: 0.1 }, L0 + 0.95);
-    // brillo final sobre las letras
-    tl.fromTo("#ot-glint-band", { x: 0 }, { x: 1300, duration: 0.7, ease: "power2.inOut" }, D - 1.1);
-
-    // nombre del robot bajo el logo: se decodifica
-    const nm = document.querySelector("#ot-name");
-    const NAME = "SOMOTRIX";
-    const GLY = "01<>/#X%";
-    const tab = Array.from({ length: 20 }, () => Array.from({ length: 8 }, () => GLY[Math.floor(rnd() * GLY.length)]));
-    const n = { t: 0 };
-    tl.set("#ot-name", { opacity: 0 }, 0);
-    tl.set("#ot-name", { opacity: 1 }, L0 + 0.7);
-    tl.to(
-      n,
-      {
-        t: 1,
-        duration: 0.45,
-        ease: "none",
-        onUpdate: () => {
-          const f = Math.floor(n.t * 19);
-          nm.textContent = NAME.split("")
-            .map((ch, i) => (n.t * NAME.length > i + 0.5 ? ch : tab[f][i]))
-            .join("");
-        },
-      },
-      L0 + 0.7
-    );
-    tl.fromTo("#ot-rule", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, L0 + 0.8);
+    tl.fromTo("#ot-glint-band", { x: 0 }, { x: 1300, duration: 0.7, ease: "power2.inOut" }, 2.55);
 
     window.__timelines["outro"] = tl;
   </script>

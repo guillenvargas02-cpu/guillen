@@ -6,38 +6,18 @@
       font-style: italic;
       src: local("Inter Display ExtraBold Italic"), local("InterDisplay-ExtraBoldItalic");
     }
-    @font-face {
-      font-family: "Inter Display";
-      font-weight: 800;
-      font-style: normal;
-      src: local("Inter Display ExtraBold"), local("InterDisplay-ExtraBold");
-    }
-    @font-face {
-      font-family: "Inter Display";
-      font-weight: 500;
-      font-style: normal;
-      src: local("Inter Display Medium"), local("InterDisplay-Medium");
-    }
     #root {
       position: absolute;
       inset: 0;
       font-family: "Inter Display", "Inter", sans-serif;
-      color: #fff;
     }
-    #tt-scrim {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 820px;
-      background: linear-gradient(180deg, rgba(4, 6, 15, 0.78) 0%, rgba(4, 6, 15, 0.45) 55%, rgba(4, 6, 15, 0) 100%);
-    }
+    /* Nombre del robot, una sola vez, mientras se voltea. Rosa de marca, sin subtítulos. */
     #tt-block {
       position: absolute;
       left: 0;
-      top: 250px;
+      top: 290px;
       width: 1080px;
-      height: 360px;
+      height: 240px;
     }
     .tt-word {
       position: absolute;
@@ -45,153 +25,81 @@
       top: 0;
       width: 1080px;
       text-align: center;
-      font-size: 178px;
+      font-size: 168px;
       line-height: 1;
       font-weight: 800;
       font-style: italic;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
       white-space: nowrap;
     }
-    #tt-cyan {
-      color: #3ef0ff;
-      mix-blend-mode: screen;
-      opacity: 0.9;
+    #tt-hot {
+      color: #ff3d9a;
     }
-    #tt-pink {
-      color: #e60872;
-      mix-blend-mode: screen;
-      opacity: 0.95;
+    #tt-plum {
+      color: #1a0410;
+      opacity: 0.55;
     }
     #tt-main {
       color: #fff;
-      text-shadow: 0 0 40px rgba(62, 240, 255, 0.35);
-    }
-    #tt-flare {
-      position: absolute;
-      left: 0;
-      top: 86px;
-      width: 1080px;
-      height: 6px;
-      background: linear-gradient(90deg, rgba(62, 240, 255, 0) 0%, #bff9ff 30%, #fff 50%, #bff9ff 70%, rgba(62, 240, 255, 0) 100%);
-      box-shadow: 0 0 30px 8px rgba(62, 240, 255, 0.6);
+      text-shadow: 0 0 30px rgba(230, 8, 114, 0.55), 0 6px 22px rgba(26, 4, 16, 0.35);
     }
     #tt-bar {
       position: absolute;
-      left: 300px;
-      top: 214px;
-      width: 480px;
-      height: 6px;
+      left: 250px;
+      top: 196px;
+      width: 580px;
+      height: 16px;
       background: #e60872;
-      box-shadow: 0 0 16px rgba(230, 8, 114, 0.8);
+      transform: skewX(-18deg);
+      box-shadow: 0 0 20px rgba(230, 8, 114, 0.7);
     }
-    #tt-sub {
+    #tt-bar2 {
       position: absolute;
-      left: 0;
-      top: 246px;
-      width: 1080px;
-      text-align: center;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 30px;
-      font-weight: 600;
-      letter-spacing: 0.4em;
-      color: #fff;
-      text-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
-      white-space: nowrap;
+      left: 250px;
+      top: 222px;
+      width: 220px;
+      height: 6px;
+      background: #fff;
+      transform: skewX(-18deg);
     }
   </style>
   <div id="root" data-composition-id="title" data-width="1080" data-height="1920">
-    <div id="tt-scrim"></div>
     <div id="tt-block">
-      <div id="tt-flare"></div>
-      <div id="tt-cyan" class="tt-word" data-layout-ignore>SOMOTRIX</div>
-      <div id="tt-pink" class="tt-word" data-layout-ignore>SOMOTRIX</div>
+      <div id="tt-plum" class="tt-word" data-layout-ignore>SOMOTRIX</div>
+      <div id="tt-hot" class="tt-word" data-layout-ignore>SOMOTRIX</div>
       <div id="tt-main" class="tt-word">SOMOTRIX</div>
       <div id="tt-bar"></div>
-      <div id="tt-sub">MODELO 01 · SOMOS MX</div>
+      <div id="tt-bar2"></div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     const WORD = "SOMOTRIX";
-    const GLYPHS = "01<>/#▲▮X%$";
+    const GLYPHS = "01<>/#▲X%";
     const main = document.querySelector("#tt-main");
-    const sub = document.querySelector("#tt-sub");
-    const SUB = sub.textContent;
     let seed = 11;
     const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    // tabla fija de glifos por letra y por fotograma: el resultado no depende del orden de búsqueda
     const table = Array.from({ length: 40 }, () => Array.from({ length: 8 }, () => GLYPHS[Math.floor(rnd() * GLYPHS.length)]));
     const scramble = (prog, frame) =>
       WORD.split("")
         .map((ch, i) => (prog * WORD.length > i + 0.5 ? ch : table[frame % 40][i]))
         .join("");
-
-    // Golpe del título: destello anamórfico + letras que se decodifican
-    tl.fromTo("#tt-scrim", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0);
-    tl.fromTo("#tt-flare", { scaleX: 0, opacity: 1 }, { scaleX: 1.4, duration: 0.35, ease: "expo.out" }, 0);
-    tl.to("#tt-flare", { opacity: 0, scaleY: 0.3, duration: 0.6, ease: "power2.out" }, 0.25);
     const p = { t: 0 };
-    tl.to(
-      p,
-      {
-        t: 1,
-        duration: 0.42,
-        ease: "none",
-        onUpdate: () => {
-          main.textContent = scramble(p.t, Math.floor(p.t * 30));
-        },
-      },
-      0
-    );
-    tl.fromTo(".tt-word", { scale: 1.35 }, { scale: 1, duration: 0.45, ease: "expo.out" }, 0);
-    // aberración cromática que se asienta
-    tl.fromTo("#tt-cyan", { x: -34, y: 4 }, { x: -5, y: 0, duration: 0.6, ease: "expo.out" }, 0);
-    tl.fromTo("#tt-pink", { x: 34, y: -4 }, { x: 5, y: 0, duration: 0.6, ease: "expo.out" }, 0);
-    // micro-glitches mientras se lee
-    [0.9, 1.55, 2.3].forEach((t, k) => {
-      tl.set("#tt-cyan", { x: -22 - k * 4 }, t);
-      tl.set("#tt-pink", { x: 22 + k * 4 }, t);
-      tl.set("#tt-main", { x: k % 2 ? 10 : -10, skewX: k % 2 ? -8 : 8 }, t);
-      tl.set("#tt-cyan", { x: -5 }, t + 0.07);
-      tl.set("#tt-pink", { x: 5 }, t + 0.07);
-      tl.set("#tt-main", { x: 0, skewX: 0 }, t + 0.07);
+    tl.to(p, { t: 1, duration: 0.36, ease: "none", onUpdate: () => (main.textContent = scramble(p.t, Math.floor(p.t * 30))) }, 0);
+    tl.fromTo(".tt-word", { scale: 1.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "expo.out" }, 0);
+    tl.fromTo("#tt-hot", { x: 40, y: 6 }, { x: 7, y: 0, duration: 0.6, ease: "expo.out" }, 0);
+    tl.fromTo("#tt-plum", { x: -34, y: -4 }, { x: -5, y: 0, duration: 0.6, ease: "expo.out" }, 0);
+    tl.fromTo("#tt-bar", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.45, ease: "expo.out" }, 0.12);
+    tl.fromTo("#tt-bar2", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.45, ease: "expo.out" }, 0.22);
+    tl.fromTo("#tt-block", { y: 0 }, { y: -18, duration: 1.4, ease: "none" }, 0);
+    [0.62, 0.95].forEach((t, k) => {
+      tl.set("#tt-main", { x: k ? -12 : 12, skewX: k ? 10 : -10 }, t);
+      tl.set("#tt-hot", { x: k ? 30 : -24 }, t);
+      tl.set("#tt-main", { x: 0, skewX: 0 }, t + 0.06);
+      tl.set("#tt-hot", { x: 7 }, t + 0.06);
     });
-    tl.fromTo("#tt-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.25);
-    const q = { t: 0 };
-    tl.to(
-      q,
-      {
-        t: 1,
-        duration: 0.5,
-        ease: "none",
-        onUpdate: () => {
-          const n = Math.round(q.t * SUB.length);
-          sub.textContent = SUB.slice(0, n) + (n < SUB.length ? "▌" : "");
-        },
-      },
-      0.4
-    );
-    tl.fromTo("#tt-sub", { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0.4);
-    // empuje lento (cámara de cine)
-    tl.fromTo("#tt-block", { scale: 1 }, { scale: 1.05, duration: 3.4, ease: "none" }, 0);
-
-    // salida: cortes horizontales y decodificación inversa
-    const o = 3.0;
-    const r = { t: 1 };
-    tl.to(
-      r,
-      {
-        t: 0,
-        duration: 0.3,
-        ease: "none",
-        onUpdate: () => {
-          main.textContent = scramble(r.t, 20 + Math.floor((1 - r.t) * 20));
-        },
-      },
-      o
-    );
-    tl.to("#tt-block", { scaleY: 0.05, opacity: 0, duration: 0.25, ease: "expo.in" }, o + 0.12);
-    tl.to("#tt-scrim", { opacity: 0, duration: 0.3 }, o + 0.1);
+    // sale en seco justo antes de "Atención"
+    tl.to("#tt-block", { scaleY: 0.04, opacity: 0, duration: 0.14, ease: "expo.in" }, 1.3);
 
     window.__timelines["title"] = tl;
   </script>

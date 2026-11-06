@@ -1,0 +1,220 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    /* Cortinilla de apertura: el logo SOMOS se ensambla sobre blanco (ya legible desde el fotograma 0),
+       barras diagonales rosas en el ángulo itálico del logo lo barren y paneles rosas abren al robot. */
+    #op-white {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #fff;
+    }
+    #op-grid {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background-image: linear-gradient(rgba(230, 8, 114, 0.07) 2px, transparent 2px), linear-gradient(90deg, rgba(230, 8, 114, 0.07) 2px, transparent 2px);
+      background-size: 120px 120px;
+      background-position: 0 0, 0 0;
+    }
+    .op-streak {
+      position: absolute;
+      top: -200px;
+      height: 2320px;
+      transform: skewX(-18deg);
+      background: #e60872;
+    }
+    #op-s1 {
+      left: -900px;
+      width: 130px;
+      opacity: 0.12;
+    }
+    #op-s2 {
+      left: -900px;
+      width: 46px;
+      opacity: 0.2;
+    }
+    #op-s3 {
+      left: -900px;
+      width: 16px;
+      opacity: 0.35;
+    }
+    #op-logo {
+      position: absolute;
+      left: 110px;
+      top: 884px;
+      width: 860px;
+      height: 153px;
+    }
+    .op-ghost {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 860px;
+      height: 153px;
+      -webkit-mask-image: url("assets/brand/somos.png");
+      mask-image: url("assets/brand/somos.png");
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+    }
+    #op-ghost-a {
+      background: #ff7ab8;
+    }
+    #op-ghost-b {
+      background: #1a0410;
+    }
+    .op-strip {
+      position: absolute;
+      left: 0;
+      width: 860px;
+      overflow: hidden;
+    }
+    .op-strip img {
+      position: absolute;
+      left: 0;
+      width: 860px;
+      height: 153px;
+      display: block;
+    }
+    #op-glint {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 860px;
+      height: 153px;
+      -webkit-mask-image: url("assets/brand/somos.png");
+      mask-image: url("assets/brand/somos.png");
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      overflow: hidden;
+    }
+    #op-glint-band {
+      position: absolute;
+      top: 0;
+      left: -300px;
+      width: 200px;
+      height: 153px;
+      background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 100%);
+    }
+    /* barrido de salida: bandas rosas que cubren el cuadro */
+    .op-wipe {
+      position: absolute;
+      top: -300px;
+      height: 2520px;
+      transform: skewX(-18deg);
+    }
+    #op-w1 {
+      left: 1700px;
+      width: 700px;
+      background: #ff3d9a;
+    }
+    #op-w2 {
+      left: 1700px;
+      width: 2200px;
+      background: #e60872;
+    }
+    /* paneles que se retiran desde el centro y revelan al robot */
+    #op-tiles {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .op-tile {
+      position: absolute;
+      width: 121px;
+      height: 121px;
+      background: #e60872;
+    }
+    #op-tiles {
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="opener" data-width="1080" data-height="1920">
+    <div id="op-white"></div>
+    <div id="op-grid"></div>
+    <div id="op-s1" class="op-streak"></div>
+    <div id="op-s2" class="op-streak"></div>
+    <div id="op-s3" class="op-streak"></div>
+    <div id="op-logo">
+      <div id="op-ghost-a" class="op-ghost"></div>
+      <div id="op-ghost-b" class="op-ghost"></div>
+      <div id="op-strips"></div>
+      <div id="op-glint"><div id="op-glint-band"></div></div>
+    </div>
+    <div id="op-w1" class="op-wipe"></div>
+    <div id="op-w2" class="op-wipe"></div>
+    <div id="op-tiles"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const HIT = 1.275; // segundo golpe del teaser: arranca el barrido
+    const REVEAL = 1.8; // el robot ya está debajo
+
+    // logo en 6 franjas
+    const strips = document.querySelector("#op-strips");
+    const NS = 6;
+    const S = [];
+    for (let i = 0; i < NS; i++) {
+      const w = document.createElement("div");
+      w.className = "op-strip";
+      const top = Math.round((i * 153) / NS);
+      const bot = Math.round(((i + 1) * 153) / NS);
+      w.style.top = top + "px";
+      w.style.height = bot - top + "px";
+      const img = document.createElement("img");
+      img.src = "assets/brand/somos.png";
+      img.alt = "";
+      img.style.top = -top + "px";
+      w.appendChild(img);
+      strips.appendChild(w);
+      S.push(w);
+    }
+    // fotograma 0: franjas apenas desplazadas (el logo se lee), luego encajan con un golpe seco
+    S.forEach((w, i) => {
+      tl.fromTo(w, { x: (i % 2 ? 1 : -1) * (22 + i * 8) }, { x: 0, duration: 0.42, ease: "expo.out" }, 0);
+    });
+    tl.fromTo("#op-ghost-a", { x: -14, opacity: 0.55 }, { x: 0, opacity: 0, duration: 0.6, ease: "expo.out" }, 0);
+    tl.fromTo("#op-ghost-b", { x: 10, opacity: 0.25 }, { x: 0, opacity: 0, duration: 0.6, ease: "expo.out" }, 0);
+    tl.fromTo("#op-logo", { scale: 1.08 }, { scale: 1, duration: 1.2, ease: "power3.out" }, 0);
+    tl.fromTo("#op-grid", { backgroundPosition: "0px 0px, 0px 0px" }, { backgroundPosition: "0px -120px, -120px 0px", duration: 1.6, ease: "none" }, 0);
+    // destellos diagonales detrás del logo
+    tl.fromTo("#op-s1", { x: 0 }, { x: 2300, duration: 0.9, ease: "power2.inOut" }, 0.05);
+    tl.fromTo("#op-s2", { x: 0 }, { x: 2300, duration: 0.75, ease: "power2.inOut" }, 0.18);
+    tl.fromTo("#op-s3", { x: 0 }, { x: 2300, duration: 0.6, ease: "power2.inOut" }, 0.3);
+    tl.fromTo("#op-glint-band", { x: 0 }, { x: 1300, duration: 0.6, ease: "power2.inOut" }, 0.55);
+    // latido en el golpe y salida: las bandas rosas barren y se llevan el logo
+    tl.to("#op-logo", { scale: 1.06, duration: 0.08, ease: "power2.out" }, HIT);
+    tl.to("#op-logo", { scale: 1.0, duration: 0.2, ease: "power2.out" }, HIT + 0.08);
+    tl.fromTo("#op-w1", { x: 0 }, { x: -2000, duration: 0.42, ease: "power3.in" }, HIT + 0.02);
+    tl.fromTo("#op-w2", { x: 0 }, { x: -2260, duration: 0.42, ease: "power3.in" }, HIT + 0.08);
+    tl.to("#op-logo", { x: -260, opacity: 0, duration: 0.25, ease: "power3.in" }, HIT + 0.22);
+
+    // paneles rosas (cubren al llegar el barrido) que se retiran desde el centro
+    const tiles = document.querySelector("#op-tiles");
+    for (let r = 0; r < 16; r++) {
+      for (let c = 0; c < 9; c++) {
+        const t = document.createElement("div");
+        t.className = "op-tile";
+        t.style.left = c * 120 + "px";
+        t.style.top = r * 120 + "px";
+        tiles.appendChild(t);
+      }
+    }
+    tl.set("#op-tiles", { opacity: 0 }, 0);
+    tl.set("#op-tiles", { opacity: 1 }, HIT + 0.42);
+    tl.set(["#op-white", "#op-grid", "#op-w1", "#op-w2", "#op-logo", ".op-streak"], { opacity: 0 }, HIT + 0.43);
+    tl.to(".op-tile", { backgroundColor: "#ff3d9a", duration: 0.08, ease: "none", stagger: { grid: [16, 9], from: "center", amount: 0.3 } }, REVEAL - 0.08);
+    tl.to(".op-tile", { scale: 0, rotation: 45, duration: 0.2, ease: "power2.in", stagger: { grid: [16, 9], from: "center", amount: 0.35 } }, REVEAL);
+
+    window.__timelines["opener"] = tl;
+  </script>
+</template>

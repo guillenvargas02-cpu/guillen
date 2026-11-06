@@ -15,35 +15,39 @@
     #fl-white {
       background: #fff;
     }
-    #fl-cyan {
-      background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(62, 240, 255, 0.9), rgba(62, 240, 255, 0.25) 100%);
-    }
     #fl-pink {
-      background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(230, 8, 114, 0.85), rgba(230, 8, 114, 0.3) 100%);
+      background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(255, 61, 154, 0.85), rgba(230, 8, 114, 0.35) 100%);
     }
   </style>
   <div id="root" data-composition-id="flashes" data-width="1080" data-height="1920">
-    <div id="fl-cyan" class="fl" data-layout-ignore></div>
     <div id="fl-pink" class="fl" data-layout-ignore></div>
     <div id="fl-white" class="fl" data-layout-ignore></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
+    const B = 0.4835;
+    const DROP = 14.26;
     tl.set(".fl", { opacity: 0 }, 0);
-    // golpes de la música: [tiempo, capa, intensidad, caída]
+    // golpes: [tiempo, capa, intensidad, caída]
     [
-      [0.5625, "#fl-cyan", 0.85, 0.3],
-      [3.375, "#fl-white", 0.55, 0.3],
-      [6.75, "#fl-white", 0.95, 0.4],
-      [6.79, "#fl-pink", 0.4, 0.35],
-      [18.0, "#fl-white", 0.9, 0.32],
-      [18.04, "#fl-cyan", 0.45, 0.3],
-      [19.125, "#fl-cyan", 0.3, 0.2],
-      [20.25, "#fl-pink", 0.3, 0.2],
-      [21.375, "#fl-cyan", 0.3, 0.2],
-      [22.5, "#fl-white", 0.8, 0.3],
-      [22.54, "#fl-pink", 0.4, 0.3],
-      [25.875, "#fl-white", 0.5, 0.35],
+      [2.31, "#fl-white", 0.5, 0.3],
+      [3.75, "#fl-pink", 0.3, 0.25],
+      [5.82, "#fl-pink", 0.25, 0.22],
+      [7.84, "#fl-pink", 0.25, 0.22],
+      [10.8, "#fl-pink", 0.25, 0.22],
+      [13.3, "#fl-white", 0.4, 0.25],
+      [DROP, "#fl-white", 0.95, 0.35],
+      [DROP + 0.04, "#fl-pink", 0.5, 0.35],
+      [DROP + 2 * B, "#fl-pink", 0.3, 0.2],
+      [DROP + 4 * B, "#fl-pink", 0.3, 0.2],
+      [DROP + 6 * B, "#fl-pink", 0.3, 0.2],
+      [DROP + 8 * B, "#fl-white", 0.7, 0.3],
+      [DROP + 12 * B, "#fl-pink", 0.35, 0.18],
+      [DROP + 16 * B, "#fl-white", 0.7, 0.3],
+      [DROP + 16 * B + 0.04, "#fl-pink", 0.45, 0.3],
+      [DROP + 20 * B, "#fl-pink", 0.3, 0.2],
+      [DROP + 22 * B, "#fl-pink", 0.3, 0.2],
+      [DROP + 24 * B, "#fl-white", 0.8, 0.25],
     ].forEach(([t, el, a, d]) => {
       tl.set(el, { opacity: a }, t);
       tl.to(el, { opacity: 0, duration: d, ease: "power2.out" }, t + 0.001);

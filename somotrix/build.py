@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Arma el video SOMOTRIX (30 s, 2160x3840, 30 fps).
 
+Estructura: cortinilla con el logo SOMOS → el robot de playera rosa da su mensaje completo
+→ bailes al beat de "audio_baile" (124 BPM) → corte seco, cortinilla robótica y logo SOMOS en blanco.
+
 0. prep       — convierte la toma HQ de la playera rosa (iPhone HDR HLG, 60 fps) a SDR BT.709 (caché).
-1. base.mp4   — cortes del footage en la rejilla de beats de la música (~106.7 BPM, 0.5625 s),
-                reescalado a 4K con lanczos + nitidez, gradación unificada para las tres locaciones,
-                punch-ins, cámara lenta (la playera rosa está a 60 fps) y glitches RGB en los golpes.
-2. sfx.wav    — efectos sintetizados (arranque digital, whooshes, impactos, risers, glitch de cierre).
-3. audio.wav  — diálogo de la playera rosa limpio y al frente, música con ducking y los efectos.
+1. base.mp4   — cortes en la rejilla de beats, reescalado a 4K con lanczos + nitidez, gradación
+                unificada, punch-ins, cámara lenta (60 fps reales o interpolada), stutter y glitches RGB.
+2. sfx.wav    — efectos sintetizados (whooshes, impactos, risers, glitch).
+3. audio.wav  — diálogo limpio al frente, música con ducking, efectos sintetizados y los audios tech.
 4. Compone la capa gráfica de HyperFrames (png-sequence RGBA, 4K) encima y entrega el MP4.
 
 Uso:
@@ -27,58 +29,79 @@ OUT = ROOT / "renders"
 FPS = 30
 W, H = 2160, 3840
 TOTAL = 30.0
-BEAT = 0.5625  # 106.67 BPM; la sección de la canción que usamos entra en 0.0 y el golpe grande en 18.0
 
 SRC = {
     "alfombra": A / "robot-alfombra.mp4",  # alfombra roja (evento), 30 fps
     "sala": A / "robot-sala.mp4",  # sala gris con micrófonos, 30 fps
-    "rosa": OUT / "cache" / "rosa-sdr.mp4",  # playera rosa SOMOS MX con diálogo (HQ 1080p, 59.94 fps)
+    "rosa": OUT / "cache" / "rosa-sdr.mp4",  # playera rosa con el mensaje (HQ 1080p, 59.94 fps)
 }
 ROSA_HQ = A / "robot-playera-rosa-hq.mov"
 SFX_DIR = A / "sfx"
 
-# (fuente, entrada, inicio, fin, velocidad, zoom inicial, zoom final, centro vertical, golpe)
-# golpe=True: el plano entra con un punch de escala que se asienta (impacto en el beat).
+# Música: "audio_baile" (124.1 BPM). Su fuente 0 suena en N1_AT; el corte seco de la canción
+# (fuente 23.55 s) cae en STOP y el golpe de entrada al baile (fuente 11.95, inicio de frase) en DROP.
+BEAT = 0.4835
+N1_AT = 2.31
+DROP = 14.26
+STOP = 25.864
+
+
+def bt(k):
+    """Tiempo del beat k del baile (k=0 es el DROP)."""
+    return round(DROP + k * BEAT, 4)
+
+
+# (fuente, entrada, inicio, fin, velocidad, zoom inicial, zoom final, centro vertical, golpe, interpolar)
+# golpe=True: el plano entra con un punch de escala que se asienta (impacto en el corte).
+# interpolar=True: cámara lenta con fotogramas intermedios (minterpolate) para fuentes a 30 fps.
 EDL = [
-    ("black", 0, 0.0000, 0.5625, 1, 1, 1, 0.5, False),  # arranque del sistema (HUD encima)
-    ("sala", 3.00, 0.5625, 1.6875, 1, 1.30, 1.38, 0.30, True),  # detalle: cabeza
-    ("sala", 0.45, 1.6875, 2.8125, 1, 1.12, 1.20, 0.45, True),  # detalle: torso y brazo
-    ("sala", 4.40, 2.8125, 3.3750, 1, 1.22, 1.26, 0.25, True),  # gira la cabeza
-    ("rosa", 0.00, 3.3750, 6.7500, 0.75, 1.00, 1.12, 0.48, True),  # de espaldas (SOMOS MX), gira en cámara lenta
-    # Diálogo (sin cortar palabras: los saltos caen en las pausas y los tapan los cambios de plano)
-    ("rosa", 4.35, 6.7500, 11.0800, 1, 1.04, 1.12, 0.46, True),  # abierto, push-in lento
-    ("rosa", 8.83, 11.0800, 15.0000, 1, 1.32, 1.38, 0.40, False),  # medio
-    ("rosa", 12.90, 15.0000, 18.0000, 1, 1.14, 1.24, 0.44, False),  # abierto-medio, push-in
-    # Montaje de baile al beat (el golpe grande de la canción cae en 18.0)
-    ("alfombra", 21.40, 18.0000, 19.1250, 1, 1.06, 1.10, 0.50, True),
-    ("sala", 22.00, 19.1250, 20.2500, 1, 1.10, 1.14, 0.52, True),
-    ("alfombra", 29.00, 20.2500, 21.3750, 1, 1.06, 1.12, 0.50, True),
-    ("sala", 27.40, 21.3750, 22.5000, 1, 1.10, 1.14, 0.50, True),
-    ("alfombra", 39.00, 22.5000, 23.6250, 1, 1.08, 1.12, 0.50, True),
-    ("sala", 17.00, 23.6250, 24.1875, 1, 1.12, 1.14, 0.50, True),
-    ("alfombra", 32.30, 24.1875, 24.7500, 1, 1.10, 1.12, 0.50, True),
-    ("sala", 30.00, 24.7500, 25.3125, 1, 1.12, 1.14, 0.50, True),
-    ("alfombra", 36.20, 25.3125, 25.8750, 1, 1.10, 1.12, 0.50, True),
-    # Cierre: la protagonista en cámara lenta (fuente a 60 fps) y la cortinilla robótica al logo
-    ("rosa", 9.50, 25.8750, 27.6000, 0.6, 1.18, 1.30, 0.40, True),
-    ("white", 0, 27.6000, TOTAL, 1, 1, 1, 0.5, False),
+    ("white", 0, 0.00, 1.80, 1, 1, 1, 0.5, False, False),  # cortinilla de apertura con el logo SOMOS
+    ("rosa", 0.10, 1.80, 3.75, 1, 1.02, 1.10, 0.48, True, False),  # se voltea: aparece SOMOTRIX
+    # El mensaje (los cortes caen en las pausas; los cambios de encuadre tapan los saltos)
+    ("rosa", 4.38, 3.75, 5.82, 1, 1.15, 1.24, 0.42, True, False),  # "Atención humanos de Miguel Hidalgo"
+    ("rosa", 6.60, 5.82, 7.84, 1, 1.55, 1.62, 0.30, True, False),  # "el futuro ya llegó a su alcaldía"
+    ("rosa", 8.82, 7.84, 9.57, 1, 1.00, 1.04, 0.50, True, False),  # "síganos en las redes sociales" (+ Instagram)
+    ("rosa", 10.85, 9.57, 10.80, 1, 1.12, 1.15, 0.47, True, False),  # "de SOMOS Miguel Hidalgo"
+    ("rosa", 12.08, 10.80, 13.30, 1, 1.30, 1.45, 0.36, True, False),  # "y descubra lo que estamos construyendo"
+    ("rosa", 14.84, 13.30, DROP, 1, 1.85, 1.95, 0.29, True, False),  # "cambio y fuera"
+    # Bailes al beat
+    ("alfombra", 21.40, bt(0), bt(2), 1, 1.00, 1.04, 0.50, True, False),
+    ("sala", 22.00, bt(2), bt(4), 1, 1.00, 1.04, 0.50, True, False),
+    ("alfombra", 29.00, bt(4), bt(6), 1, 1.00, 1.04, 0.50, True, False),
+    ("sala", 27.40, bt(6), bt(8), 1, 1.00, 1.04, 0.50, True, False),
+    ("alfombra", 39.00, bt(8), bt(12), 0.5, 1.00, 1.06, 0.50, True, True),  # cámara lenta
+    ("sala", 17.00, bt(12), bt(13), 1, 1.02, 1.04, 0.50, True, False),
+    ("alfombra", 32.30, bt(13), bt(14), 1, 1.02, 1.04, 0.50, True, False),
+    ("sala", 30.00, bt(14), bt(15), 1, 1.02, 1.04, 0.50, True, False),
+    ("alfombra", 36.20, bt(15), bt(16), 1, 1.02, 1.04, 0.50, True, False),
+    ("rosa", 9.60, bt(16), bt(18), 0.6, 1.08, 1.14, 0.45, True, False),  # la protagonista, cámara lenta real
+    # stutter robótico: el mismo tercio de beat tres veces
+    ("sala", 25.00, bt(18), bt(18) + BEAT / 3, 1, 1.02, 1.02, 0.50, True, False),
+    ("sala", 25.00, bt(18) + BEAT / 3, bt(18) + 2 * BEAT / 3, 1, 1.08, 1.08, 0.50, True, False),
+    ("sala", 25.00, bt(18) + 2 * BEAT / 3, bt(19), 1, 1.15, 1.15, 0.50, True, False),
+    ("alfombra", 41.00, bt(19), bt(20), 1, 1.02, 1.04, 0.50, True, False),
+    ("sala", 31.00, bt(20), bt(22), 1, 1.00, 1.04, 0.50, True, False),
+    ("alfombra", 22.60, bt(22), STOP, 1, 1.00, 1.04, 0.50, True, False),
+    # la música se corta: cuadro congelado (con glitch) y cortinilla al logo
+    ("alfombra", 23.56, STOP, 26.70, 0.001, 1.06, 1.10, 0.50, True, False),
+    ("white", 0, 26.70, TOTAL, 1, 1, 1, 0.5, False, False),
 ]
 
 # Gradación (todo en RGB; la conversión YUV↔RGB siempre con matriz BT.709 explícita: con la
 # matriz por defecto de ffmpeg (BT.601) el rosa de la playera se iba a carmesí).
-# Base cinematográfica común + corrección por locación para que las tomas casen.
+# Base cinematográfica común (sombras hacia el ciruela, en familia con el rosa de marca) + corrección por locación para que las tomas casen.
 GRADE_COMMON = (
     # curva en S suave + sombras hacia el azul petróleo
     "curves=master='0/0.02 0.25/0.21 0.5/0.5 0.75/0.79 1/0.97',"
-    "colorbalance=rs=-0.03:gs=0.0:bs=0.05,"
+    "colorbalance=rs=0.02:gs=-0.01:bs=0.03,"
     "huesaturation=saturation=0.04"
 )
 GRADE = {
     # la alfombra roja satura todo: bajamos rojos y el exceso de calidez
     "alfombra": "huesaturation=saturation=-0.38:colors=r:strength=1.2,huesaturation=saturation=-0.06,"
     "curves=all='0/0 0.5/0.48 1/0.98',colortemperature=temperature=6800:mix=0.35",
-    # sala gris plana: más contraste y un poco de frío hacia el cian del pecho del robot
-    "sala": "curves=all='0/0 0.25/0.21 0.5/0.48 0.75/0.78 1/1',colortemperature=temperature=7600:mix=0.30",
+    # sala gris plana: más contraste, neutra
+    "sala": "curves=all='0/0 0.25/0.21 0.5/0.48 0.75/0.78 1/1',colortemperature=temperature=6800:mix=0.15",
     # playera rosa: el tonemapping HDR la oscurece; levantamos medios y llevamos el rojo hacia el magenta SOMOS
     "rosa": "curves=all='0/0 0.5/0.56 1/1',huesaturation=hue=-6:colors=r+m:intensity=0.06:saturation=0.05",
 }
@@ -87,13 +110,17 @@ TO_YUV = f"scale=out_color_matrix=bt709:out_range=tv,format=yuv420p"
 
 # Glitches RGB del footage en los golpes (inicio, fin, desplazamiento en px a 4K)
 GLITCH = [
-    (0.5625, 0.66, 18),
-    (3.375, 3.47, 14),
-    (6.75, 6.98, 26),
-    (18.0, 18.16, 30),
-    (22.5, 22.6, 22),
-    (25.875, 25.95, 18),
-    (26.95, 27.6, 34),
+    (1.80, 1.92, 26),
+    (3.75, 3.82, 16),
+    (5.82, 5.88, 14),
+    (7.84, 7.92, 18),
+    (10.80, 10.86, 14),
+    (13.30, 13.40, 22),
+    (DROP, DROP + 0.14, 34),
+    (bt(8), bt(8) + 0.1, 24),
+    (bt(16), bt(16) + 0.1, 24),
+    (bt(18), bt(19), 18),
+    (STOP, 26.70, 40),
 ]
 
 
@@ -102,15 +129,16 @@ def run(cmd):
     subprocess.run([str(c) for c in cmd], check=True)
 
 
-def clip_chain(i, src, s_in, dur, speed, z0, z1, cy, hit):
+def clip_chain(i, src, s_in, dur, speed, z0, z1, cy, hit, interp=False):
     if src in ("black", "white"):
         return [], f"color=c={src}:s={W}x{H}:r={FPS}:d={dur:.4f},format=gbrp,setsar=1[s{i}]"
     # zoom: lineal z0→z1 durante el plano; con golpe, +8 % que se asienta en ~0.25 s
     bump = "+0.08*exp(-t*14)" if hit else ""
     z = f"({z0}+({z1}-{z0})*t/{dur:.4f}{bump})"
     chain = (
-        f"[{i}:v]trim=start={s_in:.4f}:duration={dur * speed + 0.05:.4f},setpts=(PTS-STARTPTS)/{speed},"
-        f"fps={FPS},"
+        f"[{i}:v]trim=start={s_in:.4f}:duration={dur * speed + 0.1:.4f},setpts=PTS-STARTPTS,"
+        + ("minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1," if interp else "")
+        + f"setpts=PTS/{speed},fps={FPS},"
         f"scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame:flags=lanczos:{TO_RGB},format=gbrp,"
         f"crop={W}:{H}:x=(iw-{W})/2:y=(ih-{H})*{cy},"
         f"cas=strength=0.55,{GRADE[src]},{GRADE_COMMON},"
@@ -135,8 +163,8 @@ def build_prep():
 def build_base():
     # Los fondos negro/blanco son fuentes dentro del grafo y no ocupan índice de entrada (-i)
     flat, graph, labels, idx = [], [], [], 0
-    for i, (src, s_in, t0, t1, speed, z0, z1, cy, hit) in enumerate(EDL):
-        inp, chain = clip_chain(i, src, s_in, t1 - t0, speed, z0, z1, cy, hit)
+    for i, (src, s_in, t0, t1, speed, z0, z1, cy, hit, interp) in enumerate(EDL):
+        inp, chain = clip_chain(i, src, s_in, t1 - t0, speed, z0, z1, cy, hit, interp)
         if inp:
             flat += inp
             chain = chain.replace(f"[{i}:v]", f"[{idx}:v]", 1)
@@ -270,34 +298,34 @@ def build_sfx():
         track[i:i + len(x), 0] += x * gain * (1 - max(0, pan))
         track[i:i + len(x), 1] += x * gain * (1 + min(0, pan))
 
-    # Hook de entrada
-    for off, b in sfx_beeps():
-        put(0.05 + off, b, 0.35)
-    put(0.30, sfx_glitch(0.26, 11), 0.30)
-    put(0.40, sfx_whoosh(0.3, 400, 7000, 12), 0.5)
-    put(0.5625, sfx_boom(1.6, 80, 30, 13), 0.55)
-    put(1.60, sfx_whoosh(0.3, 600, 5000, 14), 0.35, 0.4)
-    put(2.72, sfx_whoosh(0.25, 800, 8000, 15), 0.35, -0.4)
-    put(3.30, sfx_whoosh(0.45, 250, 3000, 16), 0.45)
-    # Título SOMOTRIX
-    put(5.05, sfx_riser(1.7, 17), 0.40)
-    put(6.75, sfx_boom(2.4, 110, 30, 18), 0.85)
-    put(6.75, sfx_glitch(0.42, 19), 0.32)
-    # Entrada al baile
-    put(16.30, sfx_riser(1.7, 20), 0.34)
-    put(18.0, sfx_boom(2.0, 100, 32, 21), 0.75)
-    put(18.0, sfx_glitch(0.18, 22), 0.25)
-    for k, tt in enumerate([19.125, 20.25, 21.375, 23.625, 24.75]):
-        put(tt - 0.12, sfx_whoosh(0.22, 700, 9000, 30 + k), 0.22, (-1) ** k * 0.5)
-    put(22.5, sfx_boom(1.4, 90, 34, 23), 0.55)
-    put(25.875, sfx_whoosh(0.5, 3000, 300, 24), 0.4)
-    # Hook de salida: cortinilla robótica → logo
-    put(26.95, sfx_glitch(0.65, 25), 0.42)
-    put(27.15, sfx_powerdown(0.5), 0.35)
-    put(27.60, sfx_boom(2.4, 120, 34, 26), 0.8)
-    put(27.80, sfx_chime(2.2), 0.45)
+    # Cortinilla de apertura: el logo se ensambla y las barras rosas abren al robot
+    put(0.00, sfx_boom(1.4, 90, 34, 11), 0.45)
+    for k in range(4):
+        put(0.04 + k * 0.06, sfx_glitch(0.05, 50 + k), 0.16, (-1) ** k * 0.6)
+    put(1.10, sfx_riser(0.7, 12), 0.30)
+    put(1.62, sfx_whoosh(0.4, 300, 8000, 13), 0.55)
+    put(1.80, sfx_boom(1.8, 110, 30, 14), 0.75)
+    # Cambios de encuadre durante el mensaje (sutiles, bajo la voz)
+    for k, tt in enumerate([3.75, 5.82, 7.84, 10.80]):
+        put(tt - 0.1, sfx_whoosh(0.2, 900, 7000, 30 + k), 0.12, (-1) ** k * 0.5)
+    put(13.30, sfx_glitch(0.2, 15), 0.2)
+    # Entrada al baile: "cambio y fuera" → golpe
+    put(DROP - 1.30, sfx_riser(1.30, 20), 0.30)
+    put(DROP, sfx_boom(2.0, 110, 32, 21), 0.8)
+    put(DROP, sfx_glitch(0.16, 22), 0.22)
+    for k, kk in enumerate([2, 4, 6, 12, 13, 14, 15, 19, 20, 22]):
+        put(bt(kk) - 0.1, sfx_whoosh(0.18, 700, 9000, 60 + k), 0.16, (-1) ** k * 0.5)
+    put(bt(8), sfx_boom(1.4, 90, 34, 23), 0.5)
+    put(bt(16), sfx_boom(1.2, 90, 34, 24), 0.45)
+    for k in range(3):
+        put(bt(18) + k * BEAT / 3, sfx_glitch(0.08, 70 + k), 0.25, (-1) ** k * 0.4)
+    # Corte seco de la música → congelado → cortinilla → logo
+    put(STOP, sfx_glitch(0.55, 25), 0.40)
+    put(STOP + 0.15, sfx_powerdown(0.5), 0.30)
+    put(26.70, sfx_boom(2.4, 120, 34, 26), 0.8)
+    put(26.85, sfx_chime(2.6), 0.45)
     for k in range(5):
-        put(27.85 + k * 0.07, sfx_glitch(0.05, 40 + k), 0.18, (-1) ** k * 0.6)
+        put(26.85 + k * 0.07, sfx_glitch(0.05, 40 + k), 0.16, (-1) ** k * 0.6)
 
     track = track[: int(TOTAL * SR)]
     track = np.clip(track, -1, 1)
@@ -309,20 +337,25 @@ def build_sfx():
 
 
 # ---------------------------------------------------------------- mezcla
-# Diálogo: tramos de la playera rosa (fuente HQ, inicio, fin en el video) — los mismos del EDL
-VOICE = [(4.35, 6.75, 11.08), (8.83, 11.08, 15.00), (12.90, 15.00, 18.00)]
-# Audios complementarios del robot: (archivo, entrada, duración, inicio en el video, ganancia)
-SFX_FILES = [
-    ("scifi-data", 0.0, 1.43, 0.00, 0.55),  # arranque: datos
-    ("robot-mecanico", 0.0, 3.30, 0.55, 0.30),  # servos bajo los detalles del hook
-    ("robot-bleeps", 0.0, 0.94, 4.20, 0.40),  # fijación del objetivo al voltearse
-    ("scifi-data", 0.12, 1.30, 6.80, 0.32),  # el título se decodifica
-    ("robot-mecanico", 6.40, 1.10, 25.87, 0.32),  # cámara lenta final
-    ("robot-mecanico", 9.70, 1.00, 26.95, 0.40),  # cortinilla robótica
-    ("robot-bleeps", 0.0, 0.94, 27.80, 0.42),  # ensamblado del logo
+# Diálogo: tramos de la toma HQ (entrada, inicio, fin en el video). Los cortes caen en las pausas.
+VOICE = [
+    (4.38, 3.75, 5.82),  # Atención humanos de Miguel Hidalgo,
+    (6.60, 5.82, 7.84),  # el futuro ya llegó a su alcaldía,
+    (8.82, 7.84, 9.57),  # síganos en las redes sociales
+    (10.85, 9.57, 13.30),  # de SOMOS Miguel Hidalgo y descubra lo que estamos construyendo.
+    (14.84, 13.30, DROP),  # Cambio y fuera.
 ]
-MUSIC_OFFSET = 77.12  # sección de la canción cuyo golpe (95.12) cae en 18.0; su cola cierra el video
-DUCK = (6.55, 17.95)
+# Audios complementarios: (archivo, entrada, duración, inicio en el video, ganancia)
+SFX_FILES = [
+    ("tech-glitch", 0.0, 1.37, 1.45, 0.55),  # las barras abren la cortinilla
+    ("robot-mecanico", 0.0, 1.90, 1.85, 0.28),  # servos mientras se voltea
+    ("scifi-data", 0.0, 1.43, 7.80, 0.32),  # entra el ícono de Instagram
+    ("robot-bleeps", 0.0, 0.94, 9.60, 0.26),  # @somos_mh
+    ("tech-glitch", 0.0, 1.37, STOP - 0.05, 0.55),  # corte seco de la música
+    ("robot-bleeps", 0.0, 0.94, 26.85, 0.40),  # ensamblado del logo
+]
+TEASER_IN = 0.60  # "audio_video_robot_teaser": golpe fuerte en la fuente 0.64 → abre la cortinilla
+DUCK = (3.55, DROP - 0.06)
 
 
 def build_audio():
@@ -333,38 +366,44 @@ def build_audio():
             f"[0:a]atrim=start={s_in:.3f}:duration={d:.3f},asetpts=PTS-STARTPTS,"
             f"afade=t=in:d=0.03,afade=t=out:st={d - 0.04:.3f}:d=0.04,adelay={int(t0 * 1000)}|{int(t0 * 1000)}[v{i}]"
         )
+    nv = len(VOICE)
     f.append(
-        "[v0][v1][v2]amix=inputs=3:normalize=0,"
+        "".join(f"[v{i}]" for i in range(nv)) + f"amix=inputs={nv}:normalize=0,"
         "afftdn=nr=12:nf=-44:tn=1,highpass=f=100,lowpass=f=12000,"
         "equalizer=f=3000:t=q:w=1.2:g=3,equalizer=f=250:t=q:w=1.0:g=-2,"
         "acompressor=threshold=-28dB:ratio=4:attack=4:release=120:makeup=10dB,"
         f"volume=1.5,apad=whole_dur={TOTAL}[voice]"
     )
     a, b = DUCK
-    r, rel = 0.35, 0.05
+    r, rel = 0.3, 0.04
     duck = (
         f"if(lt(t,{a - r}),1,if(lt(t,{a}),1-0.84*(t-{a - r})/{r},"
         f"if(lt(t,{b}),0.16,if(lt(t,{b + rel}),0.16+0.84*(t-{b})/{rel},1))))"
     )
+    # baile: entra con la apertura de la cortinilla y queda debajo del mensaje
+    d1 = TOTAL - N1_AT
     f.append(
-        f"[1:a]atrim=start={MUSIC_OFFSET}:duration={TOTAL},asetpts=PTS-STARTPTS,"
-        # el hook abre con la música filtrada (como detrás de una puerta) y se abre al girar la playera
-        "lowpass=f=900:enable='lt(t,3.375)',"
-        f"volume='{duck}':eval=frame,volume=0.6,"
-        f"afade=t=in:d=0.4,afade=t=out:st={TOTAL - 1.6:.2f}:d=1.6[music]"
+        f"[1:a]atrim=start=0:duration={d1:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.25,"
+        f"adelay={int(N1_AT * 1000)}|{int(N1_AT * 1000)},apad=whole_dur={TOTAL},"
+        f"volume='{duck}':eval=frame,volume=0.62[music]"
     )
-    f.append("[2:a]volume=1.0[synth]")
-    inputs = ["-i", SRC["rosa"], "-i", A / "musica.m4a", "-i", OUT / "sfx.wav"]
+    # teaser: el golpe de la cortinilla de apertura, se funde con el baile
+    f.append(
+        f"[2:a]atrim=start={TEASER_IN}:duration=2.7,asetpts=PTS-STARTPTS,"
+        "afade=t=in:d=0.02,afade=t=out:st=2.05:d=0.6,volume=0.6,apad=whole_dur=30[teaser]"
+    )
+    f.append("[3:a]volume=1.0[synth]")
+    inputs = ["-i", SRC["rosa"], "-i", A / "musica-baile.m4a", "-i", A / "musica-teaser.m4a", "-i", OUT / "sfx.wav"]
     labels = []
     for k, (name, s_in, d, t0, g) in enumerate(SFX_FILES):
         inputs += ["-i", SFX_DIR / f"{name}.m4a"]
         f.append(
-            f"[{3 + k}:a]atrim=start={s_in}:duration={d},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,"
+            f"[{4 + k}:a]atrim=start={s_in}:duration={d},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,"
             f"afade=t=out:st={max(0.0, d - 0.08):.3f}:d=0.08,volume={g},adelay={int(t0 * 1000)}|{int(t0 * 1000)}[x{k}]"
         )
         labels.append(f"[x{k}]")
-    n = 3 + len(labels)
-    f.append(f"[voice][music][synth]{''.join(labels)}amix=inputs={n}:normalize=0:duration=first,alimiter=limit=0.9[mix]")
+    n = 4 + len(labels)
+    f.append(f"[voice][music][teaser][synth]{''.join(labels)}amix=inputs={n}:normalize=0:duration=first,alimiter=limit=0.9[mix]")
     run(
         ["ffmpeg", "-v", "error", "-y", *inputs,
          "-filter_complex", ";".join(f), "-map", "[mix]", "-ar", "48000", "-ac", "2", "-t", TOTAL,
