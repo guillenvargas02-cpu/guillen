@@ -56,7 +56,7 @@ def bt(k):
 # interpolar=True: cámara lenta con fotogramas intermedios (minterpolate) para fuentes a 30 fps.
 EDL = [
     ("white", 0, 0.00, 1.80, 1, 1, 1, 0.5, False, False),  # cortinilla de apertura con el logo SOMOS
-    ("rosa", 0.10, 1.80, 3.75, 1, 1.02, 1.10, 0.48, True, False),  # se voltea: aparece SOMOTRIX
+    ("rosa", 1.00, 1.80, 3.75, 1, 1.02, 1.10, 0.48, True, False),  # termina de voltearse (sin el estampado de la espalda): SOMOTRIX
     # El mensaje (los cortes caen en las pausas; los cambios de encuadre tapan los saltos)
     ("rosa", 4.38, 3.75, 5.82, 1, 1.15, 1.24, 0.42, True, False),  # "Atención humanos de Miguel Hidalgo"
     ("rosa", 6.60, 5.82, 7.84, 1, 1.55, 1.62, 0.30, True, False),  # "el futuro ya llegó a su alcaldía"
@@ -134,11 +134,18 @@ def clip_filter(src, s_in, dur, speed, z0, z1, cy, hit, interp=False):
     # zoom: lineal z0→z1 durante el plano; con golpe, +8 % que se asienta en ~0.25 s
     bump = "+0.08*exp(-t*14)" if hit else ""
     z = f"({z0}+({z1}-{z0})*t/{dur:.4f}{bump})"
+    if speed < 0.01:
+        # cuadro congelado: un solo fotograma clonado (no estirar el tiempo: dispara la memoria)
+        head = f"trim=start={s_in:.4f}:duration=0.04,setpts=PTS-STARTPTS,fps={FPS},tpad=stop_mode=clone:stop_duration={dur + 0.1:.4f},"
+    else:
+        head = (
+            f"trim=start={s_in:.4f}:duration={dur * speed + 0.1:.4f},setpts=PTS-STARTPTS,"
+            + ("minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1," if interp else "")
+            + f"setpts=PTS/{speed},fps={FPS},"
+        )
     return (
-        f"trim=start={s_in:.4f}:duration={dur * speed + 0.1:.4f},setpts=PTS-STARTPTS,"
-        + ("minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1," if interp else "")
-        + f"setpts=PTS/{speed},fps={FPS},"
-        f"scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame:flags=lanczos:{TO_RGB},format=gbrp,"
+        head
+        + f"scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame:flags=lanczos:{TO_RGB},format=gbrp,"
         f"crop={W}:{H}:x=(iw-{W})/2:y=(ih-{H})*{cy},"
         f"cas=strength=0.55,{GRADE[src]},{GRADE_COMMON},"
         f"scale=out_color_matrix=bt709:out_range=tv,format=yuv444p,setsar=1"
@@ -180,16 +187,28 @@ def build_base():
         else:
             vf = clip_filter(src, s_in, n / FPS, speed, z0, z1, cy, hit, interp)
             cmd = ["ffmpeg", "-v", "error", "-y", "-i", SRC[src], "-an", "-vf", vf, "-frames:v", n, *INTER, out]
+            if hit:
+                # ffmpeg 6.1 a veces se cae (corrupción de memoria) al reescalar con tamaño variable por
+                # fotograma; si pasa, el plano se repite sin el golpe de zoom
+                safe = clip_filter(src, s_in, n / FPS, speed, z0, z1, cy, False, interp)
+                cmd = (cmd, ["ffmpeg", "-v", "error", "-y", "-i", SRC[src], "-an", "-vf", safe, "-frames:v", n, *INTER, out])
         # caché: si el plano ya existe con el mismo comando, no se vuelve a renderizar
         key = out.with_suffix(".key")
-        sig = " ".join(str(c) for c in cmd)
+        sig = " ".join(str(c) for c in (cmd[0] if isinstance(cmd, tuple) else cmd))
         if out.exists() and out.stat().st_size > 10000 and key.exists() and key.read_text() == sig:
             continue
         jobs.append((cmd, key, sig))
 
     def render(job):
         cmd, key, sig = job
-        run(cmd)
+        if isinstance(cmd, tuple):
+            try:
+                run(cmd[0])
+            except subprocess.CalledProcessError:
+                print("  ↳ reintento sin golpe de zoom:", key.stem)
+                run(cmd[1])
+        else:
+            run(cmd)
         key.write_text(sig)
 
     with ThreadPoolExecutor(max_workers=2) as ex:

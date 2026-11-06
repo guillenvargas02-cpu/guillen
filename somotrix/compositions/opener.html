@@ -66,9 +66,11 @@
     }
     #op-ghost-a {
       background: #ff7ab8;
+      opacity: 0;
     }
     #op-ghost-b {
       background: #1a0410;
+      opacity: 0;
     }
     .op-strip {
       position: absolute;
@@ -178,13 +180,14 @@
       strips.appendChild(w);
       S.push(w);
     }
-    // fotograma 0: franjas apenas desplazadas (el logo se lee), luego encajan con un golpe seco
+    // fotograma 0 = logo limpio (miniatura); enseguida un glitch de franjas que vuelve a encajar
+    const G0 = 1 / 30;
     S.forEach((w, i) => {
-      tl.fromTo(w, { x: (i % 2 ? 1 : -1) * (22 + i * 8) }, { x: 0, duration: 0.42, ease: "expo.out" }, 0);
+      tl.fromTo(w, { x: (i % 2 ? 1 : -1) * (40 + i * 14) }, { x: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, G0);
     });
-    tl.fromTo("#op-ghost-a", { x: -14, opacity: 0.55 }, { x: 0, opacity: 0, duration: 0.6, ease: "expo.out" }, 0);
-    tl.fromTo("#op-ghost-b", { x: 10, opacity: 0.25 }, { x: 0, opacity: 0, duration: 0.6, ease: "expo.out" }, 0);
-    tl.fromTo("#op-logo", { scale: 1.08 }, { scale: 1, duration: 1.2, ease: "power3.out" }, 0);
+    tl.fromTo("#op-ghost-a", { x: -16, opacity: 0.6 }, { x: 0, opacity: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, G0);
+    tl.fromTo("#op-ghost-b", { x: 12, opacity: 0.3 }, { x: 0, opacity: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, G0);
+    tl.fromTo("#op-logo", { scale: 1.08 }, { scale: 1, duration: 1.2, ease: "power3.out", immediateRender: false }, G0);
     tl.fromTo("#op-grid", { backgroundPosition: "0px 0px, 0px 0px" }, { backgroundPosition: "0px -120px, -120px 0px", duration: 1.6, ease: "none" }, 0);
     // destellos diagonales detrás del logo
     tl.fromTo("#op-s1", { x: 0 }, { x: 2300, duration: 0.9, ease: "power2.inOut" }, 0.05);
