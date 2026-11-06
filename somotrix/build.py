@@ -129,22 +129,24 @@ def run(cmd):
     subprocess.run([str(c) for c in cmd], check=True)
 
 
-def clip_chain(i, src, s_in, dur, speed, z0, z1, cy, hit, interp=False):
-    if src in ("black", "white"):
-        return [], f"color=c={src}:s={W}x{H}:r={FPS}:d={dur:.4f},format=gbrp,setsar=1[s{i}]"
+def clip_filter(src, s_in, dur, speed, z0, z1, cy, hit, interp=False):
+    """Cadena de un plano: recorte, velocidad, reencuadre con zoom animado y gradación (en RGB, BT.709)."""
     # zoom: lineal z0→z1 durante el plano; con golpe, +8 % que se asienta en ~0.25 s
     bump = "+0.08*exp(-t*14)" if hit else ""
     z = f"({z0}+({z1}-{z0})*t/{dur:.4f}{bump})"
-    chain = (
-        f"[{i}:v]trim=start={s_in:.4f}:duration={dur * speed + 0.1:.4f},setpts=PTS-STARTPTS,"
+    return (
+        f"trim=start={s_in:.4f}:duration={dur * speed + 0.1:.4f},setpts=PTS-STARTPTS,"
         + ("minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1," if interp else "")
         + f"setpts=PTS/{speed},fps={FPS},"
         f"scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame:flags=lanczos:{TO_RGB},format=gbrp,"
         f"crop={W}:{H}:x=(iw-{W})/2:y=(ih-{H})*{cy},"
         f"cas=strength=0.55,{GRADE[src]},{GRADE_COMMON},"
-        f"trim=duration={dur:.4f},setpts=PTS-STARTPTS,format=gbrp,setsar=1[s{i}]"
+        f"scale=out_color_matrix=bt709:out_range=tv,format=yuv444p,setsar=1"
     )
-    return ["-i", SRC[src]], chain
+
+
+INTER = ["-c:v", "libx264", "-crf", "8", "-preset", "fast", "-pix_fmt", "yuv444p",
+         "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv"]
 
 
 def build_prep():
@@ -161,30 +163,41 @@ def build_prep():
 
 
 def build_base():
-    # Los fondos negro/blanco son fuentes dentro del grafo y no ocupan índice de entrada (-i)
-    flat, graph, labels, idx = [], [], [], 0
+    """Cada plano se renderiza por separado (un solo flujo 4K a la vez: poca memoria), con su número
+    exacto de fotogramas, y luego se unen y reciben glitches, viñeta y grano en una sola pasada."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    clips = OUT / "clips"
+    clips.mkdir(exist_ok=True)
+    jobs = []
     for i, (src, s_in, t0, t1, speed, z0, z1, cy, hit, interp) in enumerate(EDL):
-        inp, chain = clip_chain(i, src, s_in, t1 - t0, speed, z0, z1, cy, hit, interp)
-        if inp:
-            flat += inp
-            chain = chain.replace(f"[{i}:v]", f"[{idx}:v]", 1)
-            idx += 1
-        labels.append(f"[s{i}]")
-        graph.append(chain)
-    graph.append("".join(labels) + f"concat=n={len(EDL)}:v=1:a=0[cat]")
+        n = round(t1 * FPS) - round(t0 * FPS)  # cortes alineados a la rejilla de fotogramas
+        out = clips / f"c{i:02d}.mp4"
+        if src in ("black", "white"):
+            cmd = ["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color=c={src}:s={W}x{H}:r={FPS}",
+                   "-vf", "format=gbrp,scale=out_color_matrix=bt709:out_range=tv,format=yuv444p",
+                   "-frames:v", n, *INTER, out]
+        else:
+            vf = clip_filter(src, s_in, n / FPS, speed, z0, z1, cy, hit, interp)
+            cmd = ["ffmpeg", "-v", "error", "-y", "-i", SRC[src], "-an", "-vf", vf, "-frames:v", n, *INTER, out]
+        jobs.append(cmd)
+    with ThreadPoolExecutor(max_workers=3) as ex:
+        list(ex.map(run, jobs))
+
+    lst = clips / "lista.txt"
+    lst.write_text("".join(f"file 'c{i:02d}.mp4'\n" for i in range(len(EDL))))
     glitch = ",".join(
         f"rgbashift=rh={-px}:bh={px}:gv={px // 3}:enable='between(t,{a},{b})'" for a, b, px in GLITCH
     )
-    graph.append(
-        f"[cat]{glitch},{TO_YUV},"
+    vf = (
+        f"setpts=N/({FPS}*TB),scale={TO_RGB},format=gbrp,{glitch},{TO_YUV},"
         # viñeta y grano de película en luma (el grano también disimula el reescalado)
-        "vignette=angle=0.55:mode=forward,"
-        "noise=c0s=7:c0f=t+u,"
-        f"trim=duration={TOTAL},setpts=PTS-STARTPTS[v]"
+        "vignette=angle=0.55:mode=forward,noise=c0s=7:c0f=t+u"
     )
     run(
-        ["ffmpeg", "-v", "error", "-y", *flat, "-filter_complex", ";".join(graph), "-map", "[v]",
-         "-r", FPS, "-c:v", "libx264", "-crf", "15", "-preset", "medium", "-pix_fmt", "yuv420p",
+        ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", lst, "-vf", vf,
+         "-frames:v", round(TOTAL * FPS), "-r", FPS,
+         "-c:v", "libx264", "-crf", "15", "-preset", "medium", "-pix_fmt", "yuv420p",
          "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv",
          OUT / "base.mp4"]
     )
