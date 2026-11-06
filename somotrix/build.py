@@ -180,9 +180,20 @@ def build_base():
         else:
             vf = clip_filter(src, s_in, n / FPS, speed, z0, z1, cy, hit, interp)
             cmd = ["ffmpeg", "-v", "error", "-y", "-i", SRC[src], "-an", "-vf", vf, "-frames:v", n, *INTER, out]
-        jobs.append(cmd)
-    with ThreadPoolExecutor(max_workers=3) as ex:
-        list(ex.map(run, jobs))
+        # caché: si el plano ya existe con el mismo comando, no se vuelve a renderizar
+        key = out.with_suffix(".key")
+        sig = " ".join(str(c) for c in cmd)
+        if out.exists() and out.stat().st_size > 10000 and key.exists() and key.read_text() == sig:
+            continue
+        jobs.append((cmd, key, sig))
+
+    def render(job):
+        cmd, key, sig = job
+        run(cmd)
+        key.write_text(sig)
+
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        list(ex.map(render, jobs))
 
     lst = clips / "lista.txt"
     lst.write_text("".join(f"file 'c{i:02d}.mp4'\n" for i in range(len(EDL))))
