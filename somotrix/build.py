@@ -64,22 +64,26 @@ EDL = [
     ("white", 0, 27.6000, TOTAL, 1, 1, 1, 0.5, False),
 ]
 
-# Gradación: base cinematográfica común + corrección por locación para que las tomas casen
+# Gradación (todo en RGB; la conversión YUV↔RGB siempre con matriz BT.709 explícita: con la
+# matriz por defecto de ffmpeg (BT.601) el rosa de la playera se iba a carmesí).
+# Base cinematográfica común + corrección por locación para que las tomas casen.
 GRADE_COMMON = (
-    # curva en S suave + sombras hacia el azul petróleo (sin tocar altas: el rosa de marca no se mueve)
+    # curva en S suave + sombras hacia el azul petróleo
     "curves=master='0/0.02 0.25/0.21 0.5/0.5 0.75/0.79 1/0.97',"
     "colorbalance=rs=-0.03:gs=0.0:bs=0.05,"
-    "eq=contrast=1.05:saturation=1.03"
+    "huesaturation=saturation=0.04"
 )
 GRADE = {
-    # la alfombra roja satura todo: bajamos rojos y calentamos menos
-    "alfombra": "huesaturation=saturation=-0.38:colors=r:strength=1.2,eq=brightness=-0.02:saturation=0.92,"
-    "colortemperature=temperature=6800:mix=0.35",
+    # la alfombra roja satura todo: bajamos rojos y el exceso de calidez
+    "alfombra": "huesaturation=saturation=-0.38:colors=r:strength=1.2,huesaturation=saturation=-0.06,"
+    "curves=all='0/0 0.5/0.48 1/0.98',colortemperature=temperature=6800:mix=0.35",
     # sala gris plana: más contraste y un poco de frío hacia el cian del pecho del robot
-    "sala": "eq=contrast=1.10:brightness=-0.03:saturation=1.0,colortemperature=temperature=7600:mix=0.30",
-    # playera rosa: respetar el rosa de marca y bajar el amarillo del muro
-    "rosa": "eq=contrast=1.04:brightness=-0.01",
+    "sala": "curves=all='0/0 0.25/0.21 0.5/0.48 0.75/0.78 1/1',colortemperature=temperature=7600:mix=0.30",
+    # playera rosa: el tonemapping HDR la oscurece; levantamos medios y llevamos el rojo hacia el magenta SOMOS
+    "rosa": "curves=all='0/0 0.5/0.56 1/1',huesaturation=hue=-6:colors=r+m:intensity=0.06:saturation=0.05",
 }
+TO_RGB = "in_color_matrix=bt709:in_range=tv"
+TO_YUV = f"scale=out_color_matrix=bt709:out_range=tv,format=yuv420p"
 
 # Glitches RGB del footage en los golpes (inicio, fin, desplazamiento en px a 4K)
 GLITCH = [
@@ -100,17 +104,17 @@ def run(cmd):
 
 def clip_chain(i, src, s_in, dur, speed, z0, z1, cy, hit):
     if src in ("black", "white"):
-        return [], f"color=c={src}:s={W}x{H}:r={FPS}:d={dur:.4f},format=yuv420p,setsar=1[s{i}]"
+        return [], f"color=c={src}:s={W}x{H}:r={FPS}:d={dur:.4f},format=gbrp,setsar=1[s{i}]"
     # zoom: lineal z0→z1 durante el plano; con golpe, +8 % que se asienta en ~0.25 s
     bump = "+0.08*exp(-t*14)" if hit else ""
     z = f"({z0}+({z1}-{z0})*t/{dur:.4f}{bump})"
     chain = (
         f"[{i}:v]trim=start={s_in:.4f}:duration={dur * speed + 0.05:.4f},setpts=(PTS-STARTPTS)/{speed},"
         f"fps={FPS},"
-        f"scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame:flags=lanczos,"
+        f"scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame:flags=lanczos:{TO_RGB},format=gbrp,"
         f"crop={W}:{H}:x=(iw-{W})/2:y=(ih-{H})*{cy},"
         f"cas=strength=0.55,{GRADE[src]},{GRADE_COMMON},"
-        f"trim=duration={dur:.4f},setpts=PTS-STARTPTS,format=yuv420p,setsar=1[s{i}]"
+        f"trim=duration={dur:.4f},setpts=PTS-STARTPTS,format=gbrp,setsar=1[s{i}]"
     )
     return ["-i", SRC[src]], chain
 
@@ -144,15 +148,16 @@ def build_base():
         f"rgbashift=rh={-px}:bh={px}:gv={px // 3}:enable='between(t,{a},{b})'" for a, b, px in GLITCH
     )
     graph.append(
-        f"[cat]{glitch},"
-        # viñeta y grano de película (el grano también disimula el reescalado)
+        f"[cat]{glitch},{TO_YUV},"
+        # viñeta y grano de película en luma (el grano también disimula el reescalado)
         "vignette=angle=0.55:mode=forward,"
-        "noise=c0s=7:c0f=t+u:c1s=3:c1f=t+u:c2s=3:c2f=t+u,"
-        f"trim=duration={TOTAL},setpts=PTS-STARTPTS,format=yuv420p[v]"
+        "noise=c0s=7:c0f=t+u,"
+        f"trim=duration={TOTAL},setpts=PTS-STARTPTS[v]"
     )
     run(
         ["ffmpeg", "-v", "error", "-y", *flat, "-filter_complex", ";".join(graph), "-map", "[v]",
-         "-r", FPS, "-c:v", "libx264", "-crf", "14", "-preset", "medium", "-pix_fmt", "yuv420p",
+         "-r", FPS, "-c:v", "libx264", "-crf", "15", "-preset", "medium", "-pix_fmt", "yuv420p",
+         "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv",
          OUT / "base.mp4"]
     )
 
@@ -381,7 +386,9 @@ def build_final():
         ["ffmpeg", "-v", "error", "-y", "-i", OUT / "base.mp4",
          "-framerate", FPS, "-start_number", int(num), "-i", pattern, "-i", OUT / "audio.wav",
          "-filter_complex",
-         f"[1:v]scale={W}:{H}[o];[0:v][o]overlay=0:0:format=auto:shortest=0,format=yuv420p,"
+         # la capa RGBA pasa a YUV con BT.709 explícito (el rosa del logo no debe desplazarse)
+         f"[1:v]scale={W}:{H}:out_color_matrix=bt709:out_range=tv,format=yuva444p[o];"
+         "[0:v]format=yuv444p[b];[b][o]overlay=0:0:format=yuv444:shortest=0,format=yuv420p,"
          "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709[v]",
          "-map", "[v]", "-map", "2:a", "-r", FPS, "-t", str(TOTAL),
          "-c:v", "libx264", "-crf", "16", "-preset", "slow", "-profile:v", "high", "-level", "5.1",
