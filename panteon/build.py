@@ -70,11 +70,18 @@ def audio():
 
 
 def master():
-    """Audio del render a -14 LUFS / -1 dBTP (Reels); el video se copia sin recomprimir."""
+    """Audio del render a -14 LUFS / -1 dBTP (Reels), loudnorm en dos pasadas; el video se copia."""
+    import json
     src, out = ROOT / "renders" / "render.mp4", ROOT / "renders" / "panteon-dolores-teaser.mp4"
-    run(["ffmpeg", "-v", "error", "-y", "-i", src, "-c:v", "copy", "-af",
-         "loudnorm=I=-14:TP=-1.0:LRA=11:linear=true", "-c:a", "aac", "-b:a", "256k", "-ar", "48000",
-         "-movflags", "+faststart", out])
+    target = "I=-14:TP=-1.0:LRA=11"
+    probe = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(src), "-vn", "-af",
+                            f"loudnorm={target}:print_format=json", "-f", "null", "-"],
+                           capture_output=True, text=True).stderr
+    m = json.loads(probe[probe.rindex("{"):probe.rindex("}") + 1])
+    af = (f"loudnorm={target}:linear=true:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
+          f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}")
+    run(["ffmpeg", "-v", "error", "-y", "-i", src, "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "256k",
+         "-ar", "48000", "-movflags", "+faststart", out])
 
 
 if __name__ == "__main__":
