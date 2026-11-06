@@ -1,0 +1,373 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 800;
+      font-style: italic;
+      src: local("Inter Display ExtraBold Italic"), local("InterDisplay-ExtraBoldItalic");
+    }
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 800;
+      font-style: normal;
+      src: local("Inter Display ExtraBold"), local("InterDisplay-ExtraBold");
+    }
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 500;
+      font-style: normal;
+      src: local("Inter Display Medium"), local("InterDisplay-Medium");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Inter Display", "Inter", sans-serif;
+      color: #fff;
+    }
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+    }
+    /* ---------- arranque del sistema ---------- */
+    #hk-black {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #04060f;
+    }
+    #hk-grid {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background-image: linear-gradient(rgba(62, 240, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62, 240, 255, 0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    #hk-line {
+      position: absolute;
+      left: 0;
+      top: 958px;
+      width: 1080px;
+      height: 4px;
+      background: #3ef0ff;
+      box-shadow: 0 0 24px 6px rgba(62, 240, 255, 0.75), 0 0 80px 10px rgba(62, 240, 255, 0.35);
+      transform-origin: 50% 50%;
+    }
+    #hk-boot {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 880px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      color: #3ef0ff;
+      white-space: nowrap;
+    }
+    #hk-pct {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 994px;
+      text-align: center;
+      font-size: 22px;
+      letter-spacing: 0.3em;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    /* ---------- HUD de escaneo ---------- */
+    .hk-corner {
+      position: absolute;
+      width: 96px;
+      height: 96px;
+      border-color: #3ef0ff;
+      border-style: solid;
+      border-width: 0;
+      filter: drop-shadow(0 0 8px rgba(62, 240, 255, 0.7));
+    }
+    #hk-c1 {
+      left: 64px;
+      top: 250px;
+      border-left-width: 5px;
+      border-top-width: 5px;
+    }
+    #hk-c2 {
+      right: 64px;
+      top: 250px;
+      border-right-width: 5px;
+      border-top-width: 5px;
+    }
+    #hk-c3 {
+      left: 64px;
+      bottom: 250px;
+      border-left-width: 5px;
+      border-bottom-width: 5px;
+    }
+    #hk-c4 {
+      right: 64px;
+      bottom: 250px;
+      border-right-width: 5px;
+      border-bottom-width: 5px;
+    }
+    #hk-scan {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 220px;
+      background: linear-gradient(180deg, rgba(62, 240, 255, 0) 0%, rgba(62, 240, 255, 0.16) 80%, rgba(180, 250, 255, 0.85) 98%, rgba(62, 240, 255, 0) 100%);
+    }
+    .hk-read {
+      position: absolute;
+      left: 96px;
+      top: 290px;
+      font-size: 25px;
+      line-height: 1.6;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 0 12px rgba(62, 240, 255, 0.9);
+      white-space: nowrap;
+    }
+    .hk-read b {
+      color: #3ef0ff;
+      font-weight: 700;
+    }
+    .hk-read i {
+      font-style: normal;
+      color: #ff4fa0;
+    }
+    #hk-reticle {
+      position: absolute;
+      left: 430px;
+      top: 650px;
+      width: 220px;
+      height: 220px;
+    }
+    #hk-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px dashed rgba(62, 240, 255, 0.9);
+    }
+    #hk-ring2 {
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+    }
+    .hk-cross {
+      position: absolute;
+      background: #3ef0ff;
+    }
+    #hk-ch {
+      left: -40px;
+      top: 109px;
+      width: 300px;
+      height: 2px;
+    }
+    #hk-cv {
+      left: 109px;
+      top: -40px;
+      width: 2px;
+      height: 300px;
+    }
+    #hk-ruler {
+      position: absolute;
+      right: 70px;
+      top: 420px;
+      width: 60px;
+      height: 1080px;
+      overflow: hidden;
+    }
+    #hk-ticks {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 60px;
+      height: 2400px;
+      background-image: repeating-linear-gradient(180deg, rgba(62, 240, 255, 0.85) 0 2px, transparent 2px 30px),
+        repeating-linear-gradient(180deg, #fff 0 3px, transparent 3px 150px);
+      background-size: 30px 100%, 60px 100%;
+      background-repeat: no-repeat;
+      background-position: right top, right top;
+    }
+    /* ---------- tarjeta de estudio: SOMOS presenta ---------- */
+    #hk-scrim {
+      position: absolute;
+      left: 0;
+      top: 1000px;
+      width: 1080px;
+      height: 920px;
+      background: linear-gradient(180deg, rgba(4, 6, 15, 0) 0%, rgba(4, 6, 15, 0.82) 55%, rgba(4, 6, 15, 0.9) 100%);
+    }
+    #hk-card {
+      position: absolute;
+      left: 0;
+      top: 1300px;
+      width: 1080px;
+      height: 260px;
+    }
+    #hk-logo-wrap {
+      position: absolute;
+      left: 230px;
+      top: 0;
+      width: 620px;
+      height: 110px;
+    }
+    #hk-logo {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 620px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 0 22px rgba(230, 8, 114, 0.55));
+    }
+    #hk-edge {
+      position: absolute;
+      top: -30px;
+      left: 230px;
+      width: 6px;
+      height: 170px;
+      background: #3ef0ff;
+      box-shadow: 0 0 22px 6px rgba(62, 240, 255, 0.85);
+    }
+    #hk-presenta {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 150px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 500;
+      letter-spacing: 0.62em;
+      color: #fff;
+      white-space: nowrap;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="hk-black"></div>
+    <div id="hk-grid"></div>
+    <div id="hk-line"></div>
+    <div id="hk-boot" class="mono" data-layout-ignore></div>
+    <div id="hk-pct" class="mono" data-layout-ignore>000%</div>
+
+    <div id="hk-scan" data-layout-ignore></div>
+    <div id="hk-reticle">
+      <div id="hk-ring"></div>
+      <div id="hk-ring2"></div>
+      <div id="hk-ch" class="hk-cross"></div>
+      <div id="hk-cv" class="hk-cross"></div>
+    </div>
+    <div id="hk-ruler"><div id="hk-ticks"></div></div>
+    <div id="hk-c1" class="hk-corner"></div>
+    <div id="hk-c2" class="hk-corner"></div>
+    <div id="hk-c3" class="hk-corner"></div>
+    <div id="hk-c4" class="hk-corner"></div>
+    <div id="hk-r1" class="hk-read mono" data-layout-ignore><b>SCAN 01</b> // CABEZA<br />ÓPTICA ········ <i>OK</i></div>
+    <div id="hk-r2" class="hk-read mono" data-layout-ignore><b>SCAN 02</b> // TORSO<br />SERVOS 28/28 ·· <i>OK</i></div>
+    <div id="hk-r3" class="hk-read mono" data-layout-ignore><b>SCAN 03</b> // VISIÓN<br />SISTEMA ······· <i>EN LÍNEA</i></div>
+
+    <div id="hk-scrim"></div>
+    <div id="hk-card">
+      <div id="hk-logo-wrap"><img id="hk-logo" src="assets/brand/somos.png" alt="SOMOS" /></div>
+      <div id="hk-edge"></div>
+      <div id="hk-presenta" class="mono">PRESENTA</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const B = 0.5625;
+
+    // --- Arranque: línea de energía, texto que se escribe y porcentaje (todo determinista) ---
+    const bootText = "SOMOTRIX_OS // INICIANDO";
+    const boot = document.querySelector("#hk-boot");
+    const pct = document.querySelector("#hk-pct");
+    const p = { t: 0 };
+    tl.to(
+      p,
+      {
+        t: 1,
+        duration: 0.42,
+        ease: "none",
+        onUpdate: () => {
+          const n = Math.round(p.t * bootText.length);
+          boot.textContent = bootText.slice(0, n) + (n < bootText.length ? "▌" : "");
+          pct.textContent = String(Math.round(p.t * 100)).padStart(3, "0") + "%";
+        },
+      },
+      0.04
+    );
+    tl.fromTo("#hk-grid", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0);
+    tl.fromTo("#hk-line", { scaleX: 0, scaleY: 1 }, { scaleX: 1, duration: 0.34, ease: "expo.out" }, 0.04);
+    // el "ojo" se abre en el primer golpe
+    tl.to("#hk-line", { scaleY: 120, opacity: 0, duration: 0.22, ease: "expo.in" }, B - 0.16);
+    tl.to(["#hk-boot", "#hk-pct"], { opacity: 0, scaleX: 1.6, duration: 0.12, ease: "power2.in" }, B - 0.1);
+    tl.set(["#hk-black", "#hk-grid"], { opacity: 0 }, B);
+
+    // --- HUD de escaneo sobre los detalles del robot ---
+    tl.set(["#hk-c1", "#hk-c2", "#hk-c3", "#hk-c4", "#hk-reticle", "#hk-ruler", "#hk-scan"], { opacity: 0 }, 0);
+    tl.fromTo(
+      ["#hk-c1", "#hk-c2", "#hk-c3", "#hk-c4"],
+      { opacity: 0, scale: 1.5 },
+      { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out", stagger: 0.03 },
+      B
+    );
+    tl.set("#hk-ruler", { opacity: 1 }, B);
+    tl.fromTo("#hk-ticks", { y: 0 }, { y: -900, duration: 3.375 - B, ease: "none" }, B);
+    [
+      [B, 3 * B],
+      [3 * B, 5 * B],
+      [5 * B, 6 * B],
+    ].forEach(([a, b]) => {
+      tl.set("#hk-scan", { opacity: 1 }, a);
+      tl.fromTo("#hk-scan", { y: 160 }, { y: 1760, duration: b - a, ease: "power1.inOut" }, a);
+    });
+    // retícula: entra, gira y se reubica con cada plano
+    tl.set("#hk-reticle", { opacity: 1 }, B);
+    tl.fromTo("#hk-reticle", { scale: 2.2, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.4, ease: "expo.out" }, B);
+    tl.fromTo("#hk-ring", { rotation: 0 }, { rotation: 220, duration: 3.375 - B, ease: "none" }, B);
+    tl.to("#hk-reticle", { x: 120, y: 260, scale: 0.8, duration: 0.25, ease: "expo.out" }, 3 * B);
+    tl.to("#hk-reticle", { x: -40, y: -180, scale: 1.1, duration: 0.25, ease: "expo.out" }, 5 * B);
+    // lecturas por plano (aparecen con un parpadeo de terminal)
+    tl.set(["#hk-r1", "#hk-r2", "#hk-r3"], { opacity: 0 }, 0);
+    [
+      ["#hk-r1", B, 3 * B],
+      ["#hk-r2", 3 * B, 5 * B],
+      ["#hk-r3", 5 * B, 6 * B],
+    ].forEach(([el, a, b]) => {
+      tl.set(el, { opacity: 1 }, a + 0.04);
+      tl.set(el, { opacity: 0.2 }, a + 0.08);
+      tl.set(el, { opacity: 1 }, a + 0.12);
+      tl.fromTo(el, { x: -30 }, { x: 0, duration: 0.3, ease: "expo.out" }, a + 0.04);
+      tl.set(el, { opacity: 0 }, b);
+    });
+
+    // --- Tarjeta de estudio: SOMOS presenta (barrido de luz que revela el logo) ---
+    const c0 = 2 * B; // 1.125
+    tl.set(["#hk-scrim", "#hk-card"], { opacity: 0 }, 0);
+    tl.to("#hk-scrim", { opacity: 1, duration: 0.3, ease: "power1.out" }, c0 - 0.1);
+    tl.set("#hk-card", { opacity: 1 }, c0);
+    tl.fromTo("#hk-logo-wrap", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power3.inOut" }, c0);
+    tl.fromTo("#hk-edge", { x: 0, opacity: 1 }, { x: 620, duration: 0.55, ease: "power3.inOut" }, c0);
+    tl.to("#hk-edge", { opacity: 0, scaleY: 0.2, duration: 0.15, ease: "power2.in" }, c0 + 0.55);
+    tl.fromTo("#hk-logo", { scale: 1.06 }, { scale: 1, duration: 1.6, ease: "power2.out" }, c0);
+    tl.fromTo("#hk-presenta", { opacity: 0, scaleX: 1.5 }, { opacity: 1, scaleX: 1, duration: 0.7, ease: "expo.out" }, c0 + 0.35);
+    // salida en glitch justo antes del giro de cabeza
+    const g0 = 5 * B - 0.12;
+    [0, 0.03, 0.06, 0.09].forEach((d, i) => {
+      tl.set("#hk-card", { x: i % 2 ? -26 : 34, skewX: i % 2 ? 14 : -10, opacity: i % 2 ? 0.5 : 1 }, g0 + d);
+    });
+    tl.set("#hk-card", { x: 0, skewX: 0, opacity: 0 }, 5 * B);
+    tl.to("#hk-scrim", { opacity: 0, duration: 0.2 }, 5 * B);
+
+    // salida del hook: todo el HUD se contrae hacia el centro al entrar la playera rosa
+    tl.to(["#hk-c1", "#hk-c2", "#hk-c3", "#hk-c4", "#hk-reticle", "#hk-ruler"], { opacity: 0, duration: 0.12, ease: "power2.in" }, 6 * B - 0.12);
+    tl.set("#hk-scan", { opacity: 0 }, 6 * B - 0.02);
+
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

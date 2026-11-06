@@ -10,3 +10,5 @@ __pycache__/
 reel/renders/*.mp4
 teaser/.hyperframes/
 teaser/renders/
+somotrix/.hyperframes/
+somotrix/renders/

@@ -1,0 +1,243 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 800;
+      font-style: italic;
+      src: local("Inter Display ExtraBold Italic"), local("InterDisplay-ExtraBoldItalic");
+    }
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 800;
+      font-style: normal;
+      src: local("Inter Display ExtraBold"), local("InterDisplay-ExtraBold");
+    }
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 500;
+      font-style: normal;
+      src: local("Inter Display Medium"), local("InterDisplay-Medium");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Inter Display", "Inter", sans-serif;
+      color: #fff;
+    }
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+    }
+    /* Golpe de entrada: MODO BAILE */
+    #dc-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 760px;
+      background: linear-gradient(180deg, rgba(4, 6, 15, 0.72) 0%, rgba(4, 6, 15, 0) 100%);
+    }
+    #dc-hero {
+      position: absolute;
+      left: 0;
+      top: 200px;
+      width: 1080px;
+      text-align: center;
+    }
+    #dc-kicker {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.5em;
+      color: #3ef0ff;
+      white-space: nowrap;
+    }
+    .dc-big {
+      position: absolute;
+      left: 0;
+      top: 56px;
+      width: 1080px;
+      text-align: center;
+      font-size: 220px;
+      line-height: 1;
+      font-weight: 800;
+      font-style: italic;
+      white-space: nowrap;
+    }
+    #dc-big-c {
+      color: #3ef0ff;
+      mix-blend-mode: screen;
+    }
+    #dc-big-p {
+      color: #e60872;
+      mix-blend-mode: screen;
+    }
+    #dc-big {
+      color: #fff;
+    }
+    /* Segundo golpe (22.5): sincronía */
+    #dc-sync {
+      position: absolute;
+      left: 0;
+      top: 250px;
+      width: 1080px;
+      text-align: center;
+    }
+    #dc-sync-num {
+      font-size: 200px;
+      line-height: 1;
+      font-weight: 800;
+      font-style: italic;
+      color: #fff;
+      text-shadow: 0 0 40px rgba(230, 8, 114, 0.7);
+      white-space: nowrap;
+    }
+    #dc-sync-lbl {
+      margin-top: 10px;
+      font-size: 32px;
+      letter-spacing: 0.5em;
+      color: #3ef0ff;
+      white-space: nowrap;
+    }
+    /* HUD permanente del montaje */
+    #dc-tag {
+      position: absolute;
+      left: 70px;
+      top: 1690px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    }
+    #dc-tag b {
+      color: #04060f;
+      background: #3ef0ff;
+      padding: 4px 12px;
+      margin-right: 14px;
+    }
+    #dc-beats {
+      position: absolute;
+      right: 70px;
+      top: 1700px;
+      width: 300px;
+      height: 26px;
+    }
+    .dc-beat {
+      position: absolute;
+      top: 0;
+      width: 30px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+    #dc-bpm {
+      position: absolute;
+      right: 70px;
+      top: 1640px;
+      font-size: 24px;
+      letter-spacing: 0.24em;
+      color: #fff;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    }
+    #dc-frame {
+      position: absolute;
+      left: 30px;
+      top: 30px;
+      width: 1020px;
+      height: 1860px;
+      border: 4px solid #3ef0ff;
+      box-shadow: 0 0 24px rgba(62, 240, 255, 0.8), inset 0 0 24px rgba(62, 240, 255, 0.6);
+    }
+  </style>
+  <div id="root" data-composition-id="dance" data-width="1080" data-height="1920">
+    <div id="dc-scrim"></div>
+    <div id="dc-hero">
+      <div id="dc-kicker" class="mono">MODO</div>
+      <div id="dc-big-c" class="dc-big" data-layout-ignore>BAILE</div>
+      <div id="dc-big-p" class="dc-big" data-layout-ignore>BAILE</div>
+      <div id="dc-big" class="dc-big">BAILE</div>
+    </div>
+    <div id="dc-sync">
+      <div id="dc-sync-num">106 BPM</div>
+      <div id="dc-sync-lbl" class="mono">SINCRONÍA TOTAL</div>
+    </div>
+    <div id="dc-frame"></div>
+    <div id="dc-bpm" class="mono" data-layout-ignore>♪ 106.7 BPM</div>
+    <div id="dc-beats"></div>
+    <div id="dc-tag" class="mono"><b>MOV_01</b><span id="dc-tag-txt">RITMO</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const B = 0.5625;
+    const D = 14 * B;
+    const beatsBox = document.querySelector("#dc-beats");
+    const beats = [];
+    for (let i = 0; i < 8; i++) {
+      const d = document.createElement("div");
+      d.className = "dc-beat";
+      d.style.left = i * 38 + "px";
+      beatsBox.appendChild(d);
+      beats.push(d);
+    }
+
+    // --- MODO BAILE: entra en seco con el golpe y se va al segundo plano ---
+    tl.fromTo("#dc-scrim", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 0);
+    tl.fromTo(".dc-big", { scale: 1.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: "expo.out" }, 0);
+    tl.fromTo("#dc-big-c", { x: -40 }, { x: -6, duration: 0.5, ease: "expo.out" }, 0);
+    tl.fromTo("#dc-big-p", { x: 40 }, { x: 6, duration: 0.5, ease: "expo.out" }, 0);
+    tl.fromTo("#dc-kicker", { opacity: 0, scaleX: 1.6 }, { opacity: 1, scaleX: 1, duration: 0.45, ease: "expo.out" }, 0.05);
+    tl.fromTo("#dc-hero", { scale: 1 }, { scale: 1.06, duration: 1.0, ease: "none" }, 0);
+    tl.set("#dc-big", { skewX: -14, x: 18 }, 0.62);
+    tl.set("#dc-big", { skewX: 0, x: 0 }, 0.68);
+    tl.to("#dc-hero", { scaleY: 0.04, opacity: 0, duration: 0.18, ease: "expo.in" }, 2 * B - 0.2);
+    tl.to("#dc-scrim", { opacity: 0, duration: 0.2 }, 2 * B - 0.15);
+
+    // --- 106 BPM: segundo golpe grande (22.5 s) ---
+    const s0 = 8 * B;
+    tl.set("#dc-sync", { opacity: 0 }, 0);
+    tl.set("#dc-sync", { opacity: 1 }, s0);
+    tl.fromTo("#dc-sync-num", { scale: 1.8 }, { scale: 1, duration: 0.3, ease: "expo.out" }, s0);
+    tl.fromTo("#dc-sync-lbl", { opacity: 0, clipPath: "inset(0 50% 0 50%)" }, { opacity: 1, clipPath: "inset(0 0% 0 0%)", duration: 0.35, ease: "expo.out" }, s0 + 0.08);
+    tl.set("#dc-sync", { x: -16, skewX: 10 }, s0 + 0.6);
+    tl.set("#dc-sync", { x: 0, skewX: 0 }, s0 + 0.66);
+    tl.to("#dc-sync", { scaleY: 0.04, opacity: 0, duration: 0.16, ease: "expo.in" }, 10 * B - 0.18);
+
+    // --- HUD: etiqueta por movimiento, metrónomo y marco que destella en cada corte ---
+    const cuts = [0, 2, 4, 6, 8, 10, 11, 12, 13].map((k) => k * B);
+    const names = ["RITMO", "PRECISIÓN", "EQUILIBRIO", "ESTILO", "POTENCIA", "GIRO", "FLOW", "CONTROL", "ACTITUD"];
+    const tag = document.querySelector("#dc-tag b");
+    const tagTxt = document.querySelector("#dc-tag-txt");
+    const p = { t: 0 };
+    tl.to(
+      p,
+      {
+        t: D,
+        duration: D,
+        ease: "none",
+        onUpdate: () => {
+          let k = 0;
+          for (let i = 0; i < cuts.length; i++) if (p.t >= cuts[i]) k = i;
+          tag.textContent = "MOV_" + String(k + 1).padStart(2, "0");
+          tagTxt.textContent = names[k];
+          const b = Math.floor(p.t / B + 1e-6);
+          const ph = p.t / B - b;
+          beats.forEach((el, i) => {
+            const on = i === b % 8;
+            el.style.background = on ? (b % 4 === 0 ? "#e60872" : "#3ef0ff") : "rgba(255,255,255,0.25)";
+            el.style.transform = on ? "scaleY(" + (1.5 - 0.5 * ph).toFixed(3) + ")" : "scaleY(1)";
+          });
+        },
+      },
+      0
+    );
+    tl.fromTo(["#dc-tag", "#dc-beats", "#dc-bpm"], { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0.08);
+    tl.set("#dc-frame", { opacity: 0 }, 0);
+    cuts.forEach((t, i) => {
+      tl.set("#dc-frame", { opacity: 1, scale: 1.02 }, t);
+      tl.to("#dc-frame", { opacity: 0, scale: 1, duration: 0.25, ease: "power2.out" }, t + 0.001);
+      tl.fromTo("#dc-tag", { x: -24 }, { x: 0, duration: 0.25, ease: "expo.out", immediateRender: false }, t);
+    });
+    tl.to(["#dc-tag", "#dc-beats", "#dc-bpm"], { opacity: 0, duration: 0.1 }, D - 0.12);
+
+    window.__timelines["dance"] = tl;
+  </script>
+</template>

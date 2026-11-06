@@ -1,0 +1,179 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "JetBrains Mono", monospace;
+      color: #fff;
+    }
+    /* Caja de fijación sobre el robot de playera rosa (plano abierto, cámara lenta) */
+    .lk-br {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-style: solid;
+      border-width: 0;
+      border-color: #3ef0ff;
+      filter: drop-shadow(0 0 10px rgba(62, 240, 255, 0.8));
+    }
+    #lk-b1 {
+      left: 250px;
+      top: 540px;
+      border-left-width: 6px;
+      border-top-width: 6px;
+    }
+    #lk-b2 {
+      left: 720px;
+      top: 540px;
+      border-right-width: 6px;
+      border-top-width: 6px;
+    }
+    #lk-b3 {
+      left: 250px;
+      top: 1520px;
+      border-left-width: 6px;
+      border-bottom-width: 6px;
+    }
+    #lk-b4 {
+      left: 720px;
+      top: 1520px;
+      border-right-width: 6px;
+      border-bottom-width: 6px;
+    }
+    #lk-label {
+      position: absolute;
+      left: 250px;
+      top: 470px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #04060f;
+      background: #3ef0ff;
+      padding: 6px 14px;
+      white-space: nowrap;
+    }
+    #lk-ok {
+      position: absolute;
+      left: 250px;
+      top: 470px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #fff;
+      background: #e60872;
+      padding: 6px 14px;
+      white-space: nowrap;
+    }
+    #lk-prog {
+      position: absolute;
+      left: 250px;
+      top: 1665px;
+      width: 580px;
+    }
+    #lk-prog-txt {
+      font-size: 24px;
+      letter-spacing: 0.2em;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      white-space: nowrap;
+    }
+    #lk-bar {
+      margin-top: 12px;
+      width: 580px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.22);
+    }
+    #lk-fill {
+      width: 580px;
+      height: 10px;
+      background: linear-gradient(90deg, #3ef0ff, #e60872);
+      transform-origin: 0 50%;
+    }
+    #lk-data {
+      position: absolute;
+      left: 840px;
+      top: 640px;
+      font-size: 17px;
+      line-height: 1.55;
+      color: rgba(62, 240, 255, 0.85);
+      white-space: pre;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+    }
+  </style>
+  <div id="root" data-composition-id="lock" data-width="1080" data-height="1920">
+    <div id="lk-b1" class="lk-br"></div>
+    <div id="lk-b2" class="lk-br"></div>
+    <div id="lk-b3" class="lk-br"></div>
+    <div id="lk-b4" class="lk-br"></div>
+    <div id="lk-label" data-layout-ignore>◎ OBJETIVO DETECTADO</div>
+    <div id="lk-ok" data-layout-ignore>▲ SOMOTRIX_01 · IDENTIFICADO</div>
+    <div id="lk-prog">
+      <div id="lk-prog-txt" data-layout-ignore>IDENTIFICANDO 000%</div>
+      <div id="lk-bar"><div id="lk-fill"></div></div>
+    </div>
+    <div id="lk-data" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const D = 3.375;
+    // generador pseudoaleatorio con semilla fija (determinista entre renders)
+    let seed = 7;
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const hex = () => Math.floor(rnd() * 65536).toString(16).toUpperCase().padStart(4, "0");
+    const rows = Array.from({ length: 40 }, () => `${hex()} ${hex()}`);
+
+    // las esquinas llegan desde los bordes del cuadro y se cierran sobre el robot
+    const from = [
+      [-200, -420],
+      [200, -420],
+      [-200, 380],
+      [200, 380],
+    ];
+    ["#lk-b1", "#lk-b2", "#lk-b3", "#lk-b4"].forEach((el, i) => {
+      tl.fromTo(el, { x: from[i][0], y: from[i][1], opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.05 + i * 0.03);
+    });
+    // respiración leve mientras identifica
+    tl.to(["#lk-b1", "#lk-b3"], { x: -10, duration: 0.5625, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0.8);
+    tl.to(["#lk-b2", "#lk-b4"], { x: 10, duration: 0.5625, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0.8);
+
+    tl.fromTo("#lk-label", { opacity: 0, clipPath: "inset(0 100% 0 0)" }, { opacity: 1, clipPath: "inset(0 0% 0 0)", duration: 0.35, ease: "power3.out" }, 0.25);
+    tl.set("#lk-ok", { opacity: 0 }, 0);
+    tl.fromTo("#lk-prog", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0.35);
+
+    const txt = document.querySelector("#lk-prog-txt");
+    const data = document.querySelector("#lk-data");
+    const p = { t: 0 };
+    tl.to(
+      p,
+      {
+        t: 1,
+        duration: 2.75,
+        ease: "power1.inOut",
+        onUpdate: () => {
+          txt.textContent = "IDENTIFICANDO " + String(Math.round(p.t * 100)).padStart(3, "0") + "%";
+          const k = Math.floor(p.t * 28);
+          data.textContent = rows.slice(k, k + 12).join("\n");
+        },
+      },
+      0.35
+    );
+    tl.fromTo("#lk-fill", { scaleX: 0 }, { scaleX: 1, duration: 2.75, ease: "power1.inOut" }, 0.35);
+    tl.fromTo("#lk-data", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.5);
+
+    // fijado: esquinas se aprietan, todo cambia a rosa SOMOS
+    const L = 3.1;
+    tl.set("#lk-label", { opacity: 0 }, L);
+    tl.set("#lk-ok", { opacity: 1 }, L);
+    tl.fromTo("#lk-ok", { scaleX: 1.4, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.2, ease: "expo.out" }, L);
+    tl.set(".lk-br", { borderColor: "#e60872" }, L);
+    tl.to("#lk-b1", { x: 24, y: 24, duration: 0.15, ease: "expo.out" }, L);
+    tl.to("#lk-b2", { x: -24, y: 24, duration: 0.15, ease: "expo.out" }, L);
+    tl.to("#lk-b3", { x: 24, y: -24, duration: 0.15, ease: "expo.out" }, L);
+    tl.to("#lk-b4", { x: -24, y: -24, duration: 0.15, ease: "expo.out" }, L);
+    tl.set("#lk-prog-txt", { color: "#ff4fa0" }, L);
+    // salida seca en el golpe del título
+    tl.set(["#lk-b1", "#lk-b2", "#lk-b3", "#lk-b4", "#lk-ok", "#lk-prog", "#lk-data"], { opacity: 0 }, D - 0.02);
+
+    window.__timelines["lock"] = tl;
+  </script>
+</template>

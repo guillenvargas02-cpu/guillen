@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Capa gráfica de SOMOTRIX. El footage y el audio los arma build.py con ffmpeg
+         (cortes en la rejilla de beats, 4K, gradación) y luego compone esta capa encima.
+         Paleta: azul noche + cian eléctrico (la luz del pecho del robot) → rosa SOMOS → blanco del logo. */
+      :root {
+        --pink: #e60872;
+        --cyan: #3ef0ff;
+        --navy: #070b1a;
+        --ink: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: "JetBrains Mono", monospace;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1080" data-height="1920">
+      <!-- Rejilla de beats: 0.5625 s (106.7 BPM). Golpes: 0.5625, 3.375, 6.75 (título), 18.0 (baile), 22.5, 27.6 (logo) -->
+      <div id="hook" class="clip" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="3.375" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="lock" class="clip" data-composition-id="lock" data-composition-src="compositions/lock.html" data-start="3.375" data-duration="3.375" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="title" class="clip" data-composition-id="title" data-composition-src="compositions/title.html" data-start="6.75" data-duration="3.4" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 4"></div>
+      <div id="voz" class="clip" data-composition-id="voz" data-composition-src="compositions/voz.html" data-start="9.9" data-duration="8.1" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="dance" class="clip" data-composition-id="dance" data-composition-src="compositions/dance.html" data-start="18" data-duration="7.875" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="outro" class="clip" data-composition-id="outro" data-composition-src="compositions/outro.html" data-start="25.875" data-duration="4.125" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 6"></div>
+      <div id="letterbox" class="clip" data-composition-id="letterbox" data-composition-src="compositions/letterbox.html" data-start="0" data-duration="7.2" data-track-index="3" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="flashes" class="clip" data-composition-id="flashes" data-composition-src="compositions/flashes.html" data-start="0" data-duration="30" data-track-index="4" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 20"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
