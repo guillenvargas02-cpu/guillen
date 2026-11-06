@@ -10,3 +10,7 @@ __pycache__/
 reel/renders/*.mp4
 teaser/.hyperframes/
 teaser/renders/
+panteon/.hyperframes/
+panteon/renders/
+panteon/assets/footage/
+panteon/snapshots/

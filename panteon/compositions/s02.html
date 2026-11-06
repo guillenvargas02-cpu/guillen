@@ -1,0 +1,68 @@
+<template>
+  <style>
+
+    @font-face { font-family: "Fell SC"; src: url("assets/fonts/IMFellEnglishSC.woff2") format("woff2"); }
+    @font-face { font-family: "Fell Italic"; src: url("assets/fonts/IMFellEnglish-Italic.woff2") format("woff2"); font-style: italic; }
+    @font-face { font-family: "Cormorant SC"; src: url("assets/fonts/CormorantSC-Medium.woff2") format("woff2"); font-weight: 500; }
+    @font-face { font-family: "Oswald"; src: url("assets/fonts/Oswald-SemiBold.woff2") format("woff2"); font-weight: 600; }
+
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+    .cam { position: absolute; inset: 0; }
+    .cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .txt { position: absolute; left: 108px; right: 108px; text-align: center; color: var(--hueso); }
+    .w { display: inline-block; }
+    .sc { font-family: "Fell SC", serif; line-height: 0.98; letter-spacing: 0.02em; }
+    .it { font-family: "Fell Italic", serif; font-style: italic; }
+    .lbl { font-family: "Cormorant SC", serif; font-weight: 500; letter-spacing: 0.34em; color: var(--sangre); }
+    .num { font-family: "Oswald", sans-serif; font-weight: 600; line-height: 1; letter-spacing: 0.01em; }
+    .red { color: var(--sangre); }
+    .shade { text-shadow: 0 0 40px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.9); }
+    #root { --hueso: #EFE7D6; --sangre: #D11F26; }
+
+    #s02-t { top: 740px; }
+    #s02-a { font-size: 88px; }
+    #s02-rule { width: 120px; height: 2px; background: var(--sangre); margin: 34px auto; }
+    #s02-b { font-size: 88px; }
+
+  </style>
+  <div id="root" data-composition-id="s02" data-width="1080" data-height="1920">
+
+      <div id="s02-t" class="txt">
+        <div id="s02-a" class="sc"><span class="w">Por</span> <span class="w">primera</span></div>
+        <div id="s02-rule"></div>
+        <div id="s02-b" class="sc"><span class="w">y</span> <span class="w">única</span> <span class="w">ocasión</span></div>
+      </div>
+  </div>
+  <script>
+
+    const tl = gsap.timeline({ paused: true });
+    const EXP = "--hf-color-grading-exposure";
+    // relámpago: subida de exposición de 1-2 cuadros con un rebote, vuelve a la base
+    function rayo(sel, t, base, k = 1) {
+      tl.to(sel, { [EXP]: base + 1.6 * k, duration: 0.033, ease: "none" }, t)
+        .to(sel, { [EXP]: base + 0.1, duration: 0.066, ease: "none" }, t + 0.033)
+        .to(sel, { [EXP]: base + 1.0 * k, duration: 0.033, ease: "none" }, t + 0.1)
+        .to(sel, { [EXP]: base, duration: 0.35, ease: "power2.out" }, t + 0.133);
+    }
+    // sacudida de cámara determinista que se apaga en ~0.4 s
+    function sacude(sel, t, amp = 10) {
+      const k = [[1, -0.6], [-0.8, 0.9], [0.6, -0.4], [-0.35, 0.3], [0.15, -0.1], [0, 0]];
+      k.forEach(([x, y], i) => tl.to(sel, { x: x * amp, y: y * amp, duration: 0.066, ease: "none" }, t + i * 0.066));
+    }
+    // entrada por palabra con desenfoque (sin desplazamiento)
+    function entra(sel, t, gap = 0.08, d = 0.18, blur = 8) {
+      tl.fromTo(sel, { opacity: 0, filter: `blur(${blur}px)` }, { opacity: 1, filter: "blur(0px)", duration: d, ease: "power2.out", stagger: gap }, t);
+    }
+    function sale(sel, t, d = 0.2) {
+      tl.to(sel, { opacity: 0, filter: "blur(8px)", duration: d, ease: "power2.in" }, t);
+    }
+
+
+    entra("#s02-a .w", 0.12, 0.11, 0.3, 10);
+    tl.fromTo("#s02-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "expo.out" }, 0.45);
+    entra("#s02-b .w", 0.6, 0.11, 0.3, 10);
+    sale("#s02-t > div", 2.15, 0.22);
+
+    window.__timelines["s02"] = tl;
+  </script>
+</template>

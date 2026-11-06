@@ -1,0 +1,76 @@
+<template>
+  <style>
+
+    @font-face { font-family: "Fell SC"; src: url("assets/fonts/IMFellEnglishSC.woff2") format("woff2"); }
+    @font-face { font-family: "Fell Italic"; src: url("assets/fonts/IMFellEnglish-Italic.woff2") format("woff2"); font-style: italic; }
+    @font-face { font-family: "Cormorant SC"; src: url("assets/fonts/CormorantSC-Medium.woff2") format("woff2"); font-weight: 500; }
+    @font-face { font-family: "Oswald"; src: url("assets/fonts/Oswald-SemiBold.woff2") format("woff2"); font-weight: 600; }
+
+    #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+    .cam { position: absolute; inset: 0; }
+    .cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .txt { position: absolute; left: 108px; right: 108px; text-align: center; color: var(--hueso); }
+    .w { display: inline-block; }
+    .sc { font-family: "Fell SC", serif; line-height: 0.98; letter-spacing: 0.02em; }
+    .it { font-family: "Fell Italic", serif; font-style: italic; }
+    .lbl { font-family: "Cormorant SC", serif; font-weight: 500; letter-spacing: 0.34em; color: var(--sangre); }
+    .num { font-family: "Oswald", sans-serif; font-weight: 600; line-height: 1; letter-spacing: 0.01em; }
+    .red { color: var(--sangre); }
+    .shade { text-shadow: 0 0 40px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.9); }
+    #root { --hueso: #EFE7D6; --sangre: #D11F26; }
+
+    #s10-cam1 { transform-origin: 50% 70%; }
+    #s10-t { top: 250px; }
+    #s10-lbl { font-size: 40px; margin-bottom: 30px; }
+    #s10-a, #s10-b { font-size: 168px; }
+    #s10-c { font-size: 118px; color: var(--sangre); margin-top: 6px; }
+    .ch { display: inline-block; }
+
+  </style>
+  <div data-hf-id="hf-k4dx" id="root" data-composition-id="s10" data-width="1080" data-height="1920">
+      <div data-hf-id="hf-d2bc" id="s10-cam1" class="cam"><video data-color-grading="{&quot;preset&quot;:null,&quot;intensity&quot;:1,&quot;adjust&quot;:{&quot;exposure&quot;:-0.3,&quot;contrast&quot;:0.35,&quot;highlights&quot;:-0.35,&quot;shadows&quot;:-0.3,&quot;whites&quot;:0,&quot;blacks&quot;:-0.55,&quot;temperature&quot;:0,&quot;tint&quot;:0,&quot;vibrance&quot;:0,&quot;saturation&quot;:-1},&quot;details&quot;:{&quot;vignette&quot;:0.9,&quot;vignetteMidpoint&quot;:0.32,&quot;vignetteRoundness&quot;:0.3,&quot;vignetteFeather&quot;:0.85,&quot;grain&quot;:0.42,&quot;grainSize&quot;:0.35,&quot;grainRoughness&quot;:0.5},&quot;effects&quot;:{&quot;blur&quot;:0,&quot;pixelate&quot;:0,&quot;chromaBleed&quot;:0,&quot;tapeDamage&quot;:0,&quot;tapeTracking&quot;:0,&quot;tapeNoise&quot;:1,&quot;tapeSpeed&quot;:0.5,&quot;filmArtifacts&quot;:0.3,&quot;halftone&quot;:0,&quot;halftoneSize&quot;:0,&quot;twoInkPrint&quot;:0,&quot;twoInkPrintSize&quot;:0,&quot;ascii&quot;:0,&quot;asciiSize&quot;:0.06578947368421052,&quot;asciiInvert&quot;:0,&quot;asciiStyle&quot;:0,&quot;asciiColor&quot;:1,&quot;asciiRotation&quot;:0,&quot;dither&quot;:0,&quot;ditherSize&quot;:0,&quot;bloom&quot;:0,&quot;bloomRadius&quot;:8,&quot;monoScreen&quot;:0,&quot;monoScreenSize&quot;:0,&quot;monoScreenAngle&quot;:0,&quot;monoScreenSpread&quot;:0,&quot;monoScreenShape&quot;:0,&quot;monoScreenInvert&quot;:0,&quot;scanlines&quot;:0,&quot;scanlineCount&quot;:0,&quot;scanlineSoftness&quot;:0,&quot;chromaticAberration&quot;:0,&quot;chromaticAngle&quot;:0,&quot;crtCurvature&quot;:0,&quot;digitalGlitch&quot;:0,&quot;digitalGlitchColorSplit&quot;:0,&quot;digitalGlitchLineTear&quot;:0,&quot;digitalGlitchPixelate&quot;:0,&quot;digitalGlitchBlockAmount&quot;:0,&quot;digitalGlitchBlockDisplacement&quot;:0,&quot;digitalGlitchBlockOpacity&quot;:0,&quot;digitalGlitchSpeed&quot;:0,&quot;engraving&quot;:0,&quot;engravingSpacing&quot;:0.4117647058823529,&quot;engravingMinThickness&quot;:0.2,&quot;engravingMaxThickness&quot;:0.4571428571428572,&quot;engravingAngle&quot;:0.25,&quot;engravingContrast&quot;:0.4666666666666667,&quot;engravingSharpness&quot;:0.59,&quot;engravingWave&quot;:0.2,&quot;engravingWaveFrequency&quot;:0.2222222222222222,&quot;crosshatch&quot;:0,&quot;crosshatchSpacing&quot;:0.28,&quot;crosshatchThickness&quot;:0.25,&quot;crosshatchAngle&quot;:0.25,&quot;crosshatchContrast&quot;:0.3333333333333333,&quot;crosshatchEdges&quot;:0.5,&quot;crosshatchLineWeight&quot;:0,&quot;crosshatchWave&quot;:0.33,&quot;crosshatchWaveFrequency&quot;:0.2222222222222222,&quot;kuwahara&quot;:0,&quot;kuwaharaRadius&quot;:0.14285714285714285,&quot;kuwaharaSharpness&quot;:0.3125,&quot;kuwaharaSaturation&quot;:0.5},&quot;lut&quot;:null,&quot;colorSpace&quot;:&quot;rec709&quot;,&quot;curves&quot;:{&quot;master&quot;:[[0,0],[0.2,0.03],[0.5,0.3],[0.8,0.66],[1,0.86]],&quot;red&quot;:[[0,0],[0.5,0.62],[1,0.97]],&quot;green&quot;:[[0,0],[0.5,0.05],[1,0.2]],&quot;blue&quot;:[[0,0],[0.5,0.045],[1,0.17]]}}" data-hf-id="hf-rrbi" id="s10-v1" class="clip" data-start="0" data-duration="4.87" data-media-start="0.6" src="assets/footage/clip1.mp4" muted playsinline></video></div>
+      <div data-hf-id="hf-jzng" id="s10-t" class="txt shade">
+        <div data-hf-id="hf-sfvi" id="s10-lbl" class="lbl">Recorrido exclusivo</div>
+        <div data-hf-id="hf-3sny" id="s10-a" class="sc"><span data-hf-id="hf-tr7g" class="ch">P</span><span data-hf-id="hf-mzzz" class="ch">a</span><span data-hf-id="hf-gyhq" class="ch">n</span><span data-hf-id="hf-eknk" class="ch">t</span><span data-hf-id="hf-ol83" class="ch">e</span><span data-hf-id="hf-upp1" class="ch">ó</span><span data-hf-id="hf-j79e" class="ch">n</span></div>
+        <div data-hf-id="hf-zujx" id="s10-b" class="sc"><span data-hf-id="hf-1pc0" class="ch">D</span><span data-hf-id="hf-gk6p" class="ch">o</span><span data-hf-id="hf-hr3s" class="ch">l</span><span data-hf-id="hf-raqt" class="ch">o</span><span data-hf-id="hf-c6te" class="ch">r</span><span data-hf-id="hf-7x77" class="ch">e</span><span data-hf-id="hf-bsid" class="ch">s</span></div>
+        <div data-hf-id="hf-zlsf" id="s10-c" class="it">de noche</div>
+      </div>
+  </div>
+  <script>
+
+    const tl = gsap.timeline({ paused: true });
+    const EXP = "--hf-color-grading-exposure";
+    // relámpago: subida de exposición de 1-2 cuadros con un rebote, vuelve a la base
+    function rayo(sel, t, base, k = 1) {
+      tl.to(sel, { [EXP]: base + 1.6 * k, duration: 0.033, ease: "none" }, t)
+        .to(sel, { [EXP]: base + 0.1, duration: 0.066, ease: "none" }, t + 0.033)
+        .to(sel, { [EXP]: base + 1.0 * k, duration: 0.033, ease: "none" }, t + 0.1)
+        .to(sel, { [EXP]: base, duration: 0.35, ease: "power2.out" }, t + 0.133);
+    }
+    // sacudida de cámara determinista que se apaga en ~0.4 s
+    function sacude(sel, t, amp = 10) {
+      const k = [[1, -0.6], [-0.8, 0.9], [0.6, -0.4], [-0.35, 0.3], [0.15, -0.1], [0, 0]];
+      k.forEach(([x, y], i) => tl.to(sel, { x: x * amp, y: y * amp, duration: 0.066, ease: "none" }, t + i * 0.066));
+    }
+    // entrada por palabra con desenfoque (sin desplazamiento)
+    function entra(sel, t, gap = 0.08, d = 0.18, blur = 8) {
+      tl.fromTo(sel, { opacity: 0, filter: `blur(${blur}px)` }, { opacity: 1, filter: "blur(0px)", duration: d, ease: "power2.out", stagger: gap }, t);
+    }
+    function sale(sel, t, d = 0.2) {
+      tl.to(sel, { opacity: 0, filter: "blur(8px)", duration: d, ease: "power2.in" }, t);
+    }
+
+
+    tl.set("#s10-v1", { [EXP]: -0.3 }, 0);
+    tl.fromTo("#s10-cam1", { scale: 1.16 }, { scale: 1.3, duration: 4.87, ease: "none" }, 0);
+    rayo("#s10-v1", 0.0, -0.3, 1.1);
+    sacude("#s10-cam1", 0.0, 14);
+    tl.fromTo("#s10-a .ch, #s10-b .ch", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power2.out", stagger: 0.07 }, 0.05);
+    entra("#s10-lbl", 1.2, 0, 0.5, 6);
+    tl.fromTo("#s10-c", { opacity: 0, filter: "blur(16px)", scale: 1.06 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.5, ease: "expo.out" }, 2.25);
+    rayo("#s10-v1", 2.25, -0.3, 0.6);
+    sale("#s10-t > div", 4.62, 0.22);
+
+    window.__timelines["s10"] = tl;
+  </script>
+</template>
