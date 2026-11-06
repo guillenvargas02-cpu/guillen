@@ -34,5 +34,6 @@ Hecho con [HyperFrames](https://hyperframes.heygen.com): cada escena es HTML + G
 ```bash
 python3 build.py footage audio   # clips 480p → 1080×1920 con cámara lenta interpolada; efectos
 npx hyperframes preview          # editar en el navegador
-npx hyperframes render --fps 30 --quality delivery -o renders/panteon-dolores-teaser.mp4
+npx hyperframes render --fps 30 --quality delivery -o renders/render.mp4
+python3 build.py master          # audio a -14 LUFS → renders/panteon-dolores-teaser.mp4
 ```

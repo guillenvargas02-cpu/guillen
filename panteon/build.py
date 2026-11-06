@@ -3,7 +3,8 @@
 
   python3 build.py footage   # clips 480p de WhatsApp -> 1080x1920, limpieza y cámara lenta interpolada
   python3 build.py audio     # música y efectos de sonido diseñados a partir de la librería de Hyperframes
-  npx hyperframes render --fps 30 -o renders/panteon-dolores-teaser.mp4
+  npx hyperframes render --fps 30 --quality delivery -o renders/render.mp4
+  python3 build.py master    # loudness para Reels -> renders/panteon-dolores-teaser.mp4
 
 El color (look nocturno de terror) NO se hace aquí: vive en data-color-grading de cada <video>
 (npx hyperframes media-treatment), editable en el preview.
@@ -68,6 +69,14 @@ def audio():
          "-ar", "48000", "-ac", "2", "-t", "3.0", SFX / "eco-corte.wav"])
 
 
+def master():
+    """Audio del render a -14 LUFS / -1 dBTP (Reels); el video se copia sin recomprimir."""
+    src, out = ROOT / "renders" / "render.mp4", ROOT / "renders" / "panteon-dolores-teaser.mp4"
+    run(["ffmpeg", "-v", "error", "-y", "-i", src, "-c:v", "copy", "-af",
+         "loudnorm=I=-14:TP=-1.0:LRA=11:linear=true", "-c:a", "aac", "-b:a", "256k", "-ar", "48000",
+         "-movflags", "+faststart", out])
+
+
 if __name__ == "__main__":
     for step in sys.argv[1:] or ["footage", "audio"]:
-        {"footage": footage, "audio": audio}[step]()
+        {"footage": footage, "audio": audio, "master": master}[step]()
