@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Capa gráfica del video de COBERTURA. El footage (4K) y el audio los arma build.py
+         con ffmpeg; esta capa se renderiza como png-sequence RGBA y se compone encima. */
+      @font-face {
+        font-family: "SOMOS Display";
+        src: url("assets/fonts/InterDisplay-SemiBold.otf") format("opentype");
+        font-weight: 600;
+        font-style: normal;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: "SOMOS Display", sans-serif;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Rejilla: 123 BPM, beat 0.487875 s. Golpes: 3.40 (entra el video), 11.206 (photo dump), 26.818 (logo) -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="29.9" data-width="1080" data-height="1920">
+      <div id="intro" class="clip" data-composition-id="intro" data-composition-src="compositions/intro.html" data-start="0" data-duration="3.44" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 10"></div>
+      <div id="dump" class="clip" data-composition-id="dump" data-composition-src="compositions/dump.html" data-start="11.206" data-duration="7.84" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="outro" class="clip" data-composition-id="outro" data-composition-src="compositions/outro.html" data-start="26.818" data-duration="3.082" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 10"></div>
+      <div id="fx" class="clip" data-composition-id="fx" data-composition-src="compositions/fx.html" data-start="0" data-duration="29.9" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 30"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .fx-bar {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 962px;
+      background: #000;
+      transform: scaleY(0);
+    }
+    #fx-barT {
+      top: 0;
+      transform-origin: 50% 0%;
+    }
+    #fx-barB {
+      top: 958px;
+      transform-origin: 50% 100%;
+    }
+    .fx-wipe {
+      position: absolute;
+      left: -300px;
+      top: -200px;
+      width: 820px;
+      height: 2320px;
+      background: #e60573;
+      transform: skewX(-14deg) translateX(-1500px);
+    }
+    .fx-wipe-w {
+      background: #fff;
+      width: 140px;
+    }
+    #fx-flash {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #fff;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="fx" data-width="1080" data-height="1920">
+    <div id="fx-barT" class="fx-bar" data-layout-ignore></div>
+    <div id="fx-barB" class="fx-bar" data-layout-ignore></div>
+    <div id="fx-wipe" class="fx-wipe" data-layout-ignore></div>
+    <div id="fx-wipew" class="fx-wipe fx-wipe-w" data-layout-ignore></div>
+    <div id="fx-flash" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const B = 0.487875, H1 = 3.4;
+    const b = (n) => H1 + n * B;
+    const H2 = b(16), H3 = b(48);
+    tl.set("#fx-flash", { opacity: 0 }, 0);
+    tl.set(["#fx-barT", "#fx-barB"], { scaleY: 0 }, 0);
+
+    // Destellos en los cortes (fuerte en los golpes, sutil en la ráfaga)
+    [[H1, 0.7, 0.4], [b(4), 0.35, 0.22], [b(8), 0.4, 0.22], [b(10), 0.35, 0.22],
+     [b(36), 0.35, 0.22], [b(38), 0.35, 0.22], [b(40), 0.25, 0.16], [b(41), 0.25, 0.16],
+     [b(42), 0.25, 0.16], [b(43), 0.3, 0.16], [H3, 0.85, 0.3]].forEach(([t, a, d]) => {
+      tl.set("#fx-flash", { opacity: a }, t);
+      tl.to("#fx-flash", { opacity: 0, duration: d, ease: "power2.out" }, t + 0.001);
+    });
+
+    // Barrido rosa de marca que tapa el paso al photo dump
+    tl.fromTo("#fx-wipe", { x: -1500 }, { x: 1900, duration: 0.44, ease: "power3.inOut" }, H2 - 0.24);
+    tl.fromTo("#fx-wipew", { x: -1700 }, { x: 2100, duration: 0.48, ease: "power3.inOut" }, H2 - 0.22);
+
+    // Suspenso: entran barras de cine, la imagen se apaga y, en silencio, se cierra a negro
+    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.2, duration: 1.2, ease: "power2.inOut" }, b(44));
+    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.27, duration: 0.35, ease: "sine.inOut" }, b(44) + 1.2);
+    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 1, duration: 0.09, ease: "power3.in" }, 26.46);
+    tl.set(["#fx-barT", "#fx-barB"], { scaleY: 0 }, H3);
+    window.__timelines["fx"] = tl;
+  </script>
+</template>
