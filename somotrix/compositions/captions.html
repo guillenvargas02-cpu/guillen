@@ -1,0 +1,92 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter Display";
+      font-weight: 800;
+      font-style: normal;
+      src: local("Inter Display ExtraBold"), local("InterDisplay-ExtraBold");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Inter Display", "Inter", sans-serif;
+    }
+    /* Subtítulos de lo que dice el robot: frases cortas para vertical, la palabra que suena en rosa.
+       Zona media-baja (sobre la playera/piernas), arriba de las barras de sonido. */
+    #cp-box {
+      position: absolute;
+      left: 90px;
+      top: 1270px;
+      width: 900px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #cp-line {
+      display: inline-block;
+      padding: 14px 30px 16px;
+      border-radius: 22px;
+      background: rgba(26, 4, 16, 0.62);
+      font-size: 68px;
+      word-spacing: 0.18em;
+      line-height: 1;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+    #cp-line span {
+      display: inline-block;
+    }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1080" data-height="1920">
+    <div id="cp-box"><div id="cp-line"></div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const T0 = 3.75; // inicio de la composición en el video
+    const D = 10.51;
+    // frases con tiempos por palabra (segundos del video), de la transcripción del audio
+    const CAPS = [{"t0":3.79,"t1":4.89,"w":[["ATENCIÓN",3.83,4.39],["HUMANOS",4.39,4.89]]},{"t0":4.85,"t1":5.86,"w":[["DE",4.89,4.99],["MIGUEL",4.99,5.17],["HIDALGO",5.17,5.71]]},{"t0":5.84,"t1":6.96,"w":[["EL",5.88,6.1],["FUTURO",6.1,6.38],["YA",6.38,6.68],["LLEGÓ",6.68,6.96]]},{"t0":6.92,"t1":7.88,"w":[["A",6.96,7.12],["SU",7.12,7.22],["ALCALDÍA",7.22,7.74]]},{"t0":7.86,"t1":8.54,"w":[["SÍGANOS",7.9,8.42],["EN",8.42,8.54]]},{"t0":8.5,"t1":9.62,"w":[["LAS",8.54,8.64],["REDES",8.64,8.84],["SOCIALES",8.84,9.44]]},{"t0":9.6,"t1":9.98,"w":[["DE",9.64,9.76],["SOMOS",9.76,9.98]]},{"t0":9.94,"t1":10.7,"w":[["MIGUEL",9.98,10.28],["HIDALGO",10.28,10.7]]},{"t0":10.66,"t1":11.36,"w":[["Y",10.7,10.82],["DESCUBRA",10.82,11.36]]},{"t0":11.32,"t1":12.36,"w":[["LO",11.36,11.88],["QUE",11.88,12.06],["ESTAMOS",12.06,12.36]]},{"t0":12.32,"t1":13.34,"w":[["CONSTRUYENDO",12.36,13.18]]},{"t0":13.32,"t1":14.58,"w":[["CAMBIO",13.36,13.6],["Y",13.6,13.8],["FUERA",13.8,14.08]]}];
+    const line = document.querySelector("#cp-line");
+    let shown = -1;
+    const p = { t: 0 };
+    tl.to(
+      p,
+      {
+        t: D,
+        duration: D,
+        ease: "none",
+        onUpdate: () => {
+          const t = T0 + p.t;
+          let k = -1;
+          for (let i = 0; i < CAPS.length; i++) {
+            const nxt = i + 1 < CAPS.length ? CAPS[i + 1].t0 : 1e9;
+            if (t >= CAPS[i].t0 && t < Math.min(CAPS[i].t1, nxt)) k = i;
+          }
+          if (k !== shown) {
+            shown = k;
+            line.innerHTML = k < 0 ? "" : CAPS[k].w.map((w) => `<span>${w[0]}</span>`).join(" ");
+          }
+          line.style.opacity = k < 0 ? "0" : "1";
+          if (k < 0) return;
+          const c = CAPS[k];
+          // entrada de la frase: pequeño "pop"
+          const age = t - c.t0;
+          const pop = age < 0.12 ? 0.9 + 0.1 * (age / 0.12) : 1;
+          line.style.transform = `scale(${pop.toFixed(3)})`;
+          const spans = line.children;
+          c.w.forEach((w, i) => {
+            const on = t >= w[1] && t < w[2] + 0.05;
+            const brand = w[0] === "SOMOS";
+            spans[i].style.color = on || brand ? "#ff3d9a" : t >= w[1] ? "#ffffff" : "rgba(255,255,255,0.5)";
+            spans[i].style.transform = on ? "scale(1.08)" : "scale(1)";
+          });
+        },
+      },
+      0
+    );
+    window.__timelines["captions"] = tl;
+  </script>
+</template>
