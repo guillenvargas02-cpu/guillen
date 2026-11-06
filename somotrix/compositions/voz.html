@@ -28,38 +28,6 @@
       border: 5px solid #ff3d9a;
       box-shadow: 0 0 18px rgba(255, 61, 154, 0.8), inset 0 0 12px rgba(255, 61, 154, 0.6);
     }
-    .vz-c {
-      position: absolute;
-      width: 70px;
-      height: 70px;
-      border-color: rgba(255, 255, 255, 0.85);
-      border-style: solid;
-      border-width: 0;
-    }
-    #vz-c1 {
-      left: 60px;
-      top: 250px;
-      border-left-width: 4px;
-      border-top-width: 4px;
-    }
-    #vz-c2 {
-      right: 60px;
-      top: 250px;
-      border-right-width: 4px;
-      border-top-width: 4px;
-    }
-    #vz-c3 {
-      left: 60px;
-      top: 1560px;
-      border-left-width: 4px;
-      border-bottom-width: 4px;
-    }
-    #vz-c4 {
-      right: 60px;
-      top: 1560px;
-      border-right-width: 4px;
-      border-bottom-width: 4px;
-    }
     .vz-px {
       position: absolute;
       width: 10px;
@@ -88,7 +56,7 @@
     #vz-rec {
       position: absolute;
       left: 70px;
-      top: 236px;
+      top: 176px;
       height: 56px;
       display: flex;
       align-items: center;
@@ -122,7 +90,7 @@
     #vz-panel {
       position: absolute;
       left: 110px;
-      top: 1420px;
+      top: 1500px;
       width: 860px;
       height: 170px;
     }
@@ -168,9 +136,9 @@
     #vz-scrim {
       position: absolute;
       left: 0;
-      top: 1240px;
+      top: 1280px;
       width: 1080px;
-      height: 680px;
+      height: 640px;
       background: linear-gradient(180deg, rgba(26, 4, 16, 0) 0%, rgba(26, 4, 16, 0.55) 70%, rgba(26, 4, 16, 0.7) 100%);
     }
   </style>
@@ -179,10 +147,6 @@
     <div id="vz-rings"></div>
     <div id="vz-pixels"></div>
     <div id="vz-streak"></div>
-    <div id="vz-c1" class="vz-c"></div>
-    <div id="vz-c2" class="vz-c"></div>
-    <div id="vz-c3" class="vz-c"></div>
-    <div id="vz-c4" class="vz-c"></div>
     <div id="vz-scrim"></div>
     <div id="vz-rec"><span class="dot" id="vz-dot"></span>REC<span class="sep">//</span><span class="name">SOMOTRIX</span></div>
     <div id="vz-panel">
@@ -306,7 +270,6 @@
       },
       0
     );
-    tl.fromTo(".vz-c", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out", stagger: 0.03 }, 0.02);
     tl.fromTo("#vz-rec", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 0.05);
     tl.fromTo(["#vz-scrim", "#vz-panel"], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0.1);
     for (let t = 0.1; t < D - 0.3; t += 0.4835) {
@@ -317,12 +280,7 @@
       tl.fromTo("#vz-streak", { x: 0, opacity: 1 }, { x: 2400, duration: 0.3, ease: "power2.inOut", immediateRender: false }, s[0] - T0 - 0.08);
     });
     tl.set("#vz-streak", { x: 0, opacity: 0 }, 0);
-    // "cambio y fuera": las esquinas se cierran hacia el pecho antes del golpe
-    tl.to("#vz-c1", { x: 120, y: 120, duration: 0.5, ease: "power3.in" }, D - 0.6);
-    tl.to("#vz-c2", { x: -120, y: 120, duration: 0.5, ease: "power3.in" }, D - 0.6);
-    tl.to("#vz-c3", { x: 120, y: -120, duration: 0.5, ease: "power3.in" }, D - 0.6);
-    tl.to("#vz-c4", { x: -120, y: -120, duration: 0.5, ease: "power3.in" }, D - 0.6);
-    tl.to([".vz-c", "#vz-rec", "#vz-pixels", "#vz-panel", "#vz-scrim"], { opacity: 0, duration: 0.08 }, D - 0.08);
+    tl.to(["#vz-rec", "#vz-pixels", "#vz-panel", "#vz-scrim"], { opacity: 0, duration: 0.08 }, D - 0.08);
 
     window.__timelines["voz"] = tl;
   </script>
