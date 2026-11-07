@@ -73,10 +73,6 @@
       fill: none;
       stroke: #e4007c;
     }
-    .hair {
-      stroke: #e4007c;
-      fill: none;
-    }
 
     /* textos */
     .kick {
@@ -92,37 +88,6 @@
     }
     #k-city {
       top: 196px;
-    }
-    #lab {
-      position: absolute;
-      left: 0;
-      top: 1548px;
-      width: 1080px;
-      text-align: center;
-    }
-    #lab-kick {
-      position: relative;
-      font-size: 28px;
-    }
-    #lab-name {
-      margin-top: 2px;
-      font-weight: 700;
-      font-size: 92px;
-      line-height: 1;
-      letter-spacing: 0.01em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    #lab-name .l {
-      display: inline-block;
-    }
-    #lab-coord {
-      margin-top: 14px;
-      font-weight: 500;
-      font-size: 28px;
-      letter-spacing: 0.24em;
-      text-indent: 0.24em;
-      opacity: 0.75;
     }
 
     /* morph y logotipo */
@@ -183,8 +148,6 @@
             <rect x="-900" y="-900" width="2700" height="3000" fill="url(#dots)" opacity="0.32" />
           </g>
           <g id="hud" opacity="0">
-            <line id="hx" class="hair" x1="-500" y1="{{MCY}}" x2="1400" y2="{{MCY}}" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" />
-            <line id="hy" class="hair" x1="{{MCX}}" y1="-600" x2="{{MCX}}" y2="1700" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" />
             <circle id="rg1" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="150" stroke-dasharray="3 7" />
             <circle id="rg2" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="290" stroke-dasharray="3 9" />
             <circle id="rg3" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="470" stroke-dasharray="2 12" />
@@ -201,11 +164,6 @@
     </div>
 
     <div id="k-city" class="kick" data-layout-allow-overflow>Ciudad de México</div>
-    <div id="lab">
-      <div id="lab-kick" class="kick">Alcaldía</div>
-      <div id="lab-name">{{NAME_LETTERS}}</div>
-      <div id="lab-coord">19.42° N · 99.21° O</div>
-    </div>
 
     <!-- La silueta de Miguel Hidalgo se transforma en la placa itálica del logotipo -->
     <svg id="morph-svg" viewBox="0 0 1080 1920" data-layout-ignore>
@@ -235,7 +193,7 @@
 
       const mapEl = document.getElementById("map");
       const strokeEls = Array.from(document.querySelectorAll("#alcs .alc, #mh-line"));
-      const hairEls = Array.from(document.querySelectorAll("#hud .hair, #hud .ring, #rip1, #rip2"));
+      const hairEls = Array.from(document.querySelectorAll("#hud .ring, #rip1, #rip2"));
       const morphEl = document.getElementById("morph");
       const morphSvg = document.getElementById("morph-svg");
 
@@ -306,9 +264,8 @@
       // 0.45 · Miguel Hidalgo se inunda de rosa
       tl.to("#flood-c", { attr: { r: 330 }, duration: 0.5, ease: "power3.inOut" }, 0.42);
 
-      // HUD cartográfico: retícula y anillos de radar
+      // HUD cartográfico: anillos de radar
       tl.to("#hud", { opacity: 0.55, duration: 0.3, ease: "power1.out" }, 0.4);
-      tl.to(["#hx", "#hy"], { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "power3.inOut", stagger: 0.06 }, 0.4);
       tl.fromTo(["#rg1", "#rg2", "#rg3"], { attr: { "stroke-dashoffset": 40 }, opacity: 0 }, { attr: { "stroke-dashoffset": 0 }, opacity: 1, duration: 0.6, ease: "power2.out", stagger: 0.08 }, 0.5);
       tl.to("#rg2", { rotation: 40, svgOrigin: MH.x + " " + MH.y, duration: 1.5, ease: "none" }, 0.5);
 
@@ -316,14 +273,11 @@
       tl.fromTo("#rip1", { attr: { r: 10 }, opacity: 0.9 }, { attr: { r: 300 }, opacity: 0, duration: 0.9, ease: "power2.out" }, 0.82);
       tl.fromTo("#rip2", { attr: { r: 10 }, opacity: 0.7 }, { attr: { r: 300 }, opacity: 0, duration: 0.9, ease: "power2.out" }, 1.0);
 
-      // textos: "Ciudad de México" arriba; "Alcaldía Miguel Hidalgo" abajo, letra por letra
+      // texto: "Ciudad de México" arriba
       tl.fromTo("#k-city", { opacity: 0, scale: 1.12, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, 0.15);
-      tl.fromTo("#lab-kick", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 0.48);
-      tl.fromTo("#lab-name .l", { opacity: 0, y: 26, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.42, ease: "expo.out", stagger: 0.022 }, 0.52);
-      tl.fromTo("#lab-coord", { opacity: 0 }, { opacity: 0.75, duration: 0.4, ease: "power1.out" }, 0.72);
 
-      // 1.30 · salen los textos con desenfoque
-      tl.to(["#k-city", "#lab"], { opacity: 0, filter: "blur(10px)", y: -18, duration: 0.2, ease: "power2.in", stagger: 0.03 }, 1.32);
+      // 1.30 · sale el texto con desenfoque
+      tl.to("#k-city", { opacity: 0, filter: "blur(10px)", y: -18, duration: 0.2, ease: "power2.in" }, 1.32);
 
       // 1.25–2.05 · la cámara se clava en Miguel Hidalgo; el resto de la ciudad se disuelve
       tl.to(cam, { z: 1, duration: 0.78, ease: "power3.inOut", onUpdate: applyCam }, 1.25);

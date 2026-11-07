@@ -50,7 +50,6 @@ def main():
         f'      <svg id="lt{i}" viewBox="0 0 {lw:g} {lh:g}" aria-hidden="true"><path d="{L["d"]}" /></svg>'
         for i, L in enumerate(logo["letters"])
     )
-    name_letters = "".join(f'<span class="l">{"&nbsp;" if c == " " else c}</span>' for c in NAME)
 
     rep = {
         "{{VB0}}": f"{vb0x:.3f} {vb0y:.3f} {W} {H}",
@@ -64,7 +63,6 @@ def main():
         "{{MH_D}}": mh["d"],
         "{{ALC_PATHS}}": "\n".join(paths),
         "{{ALC_TWEENS}}": "\n".join(tweens),
-        "{{NAME_LETTERS}}": name_letters,
         "{{MORPH_FROM}}": json.dumps(mo["from"], separators=(",", ":")),
         "{{MORPH_TO}}": json.dumps(mo["to"], separators=(",", ":")),
         "{{LOGO_LEFT}}": f"{lleft:g}",
