@@ -1,0 +1,116 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    /* el skyline completo vive en una capa; la cámara la mueve con transforms (fotogramas clave precalculados) */
+    #city {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LW}}px;
+      height: 1200px;
+    }
+    #city svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LW}}px;
+      height: 1200px;
+      overflow: visible;
+    }
+    .s {
+      fill: none;
+      stroke: #e4007c;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    /* las letras suben desde la línea del suelo: lo que está debajo de ella no se ve */
+    #logo {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      clip-path: inset(-400px -80px 0px -80px);
+    }
+    #logo svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+    }
+    #logo path {
+      fill: #e4007c;
+      fill-rule: evenodd;
+    }
+  </style>
+
+  <div id="root" data-composition-id="skyline" data-width="1080" data-height="1920">
+    <!-- Skyline de Miguel Hidalgo: Castillo de Chapultepec, Fuente de Petróleos, Altar a la Patria,
+         Torre del Reloj de Polanco, Auditorio Nacional y Museo Soumaya, en un solo plano. -->
+    <div id="city" data-layout-ignore>
+      <svg viewBox="{{VIEWBOX}}">
+        <defs>
+          <clipPath id="above-ground"><rect x="-4000" y="-4000" width="20000" height="4016" /></clipPath>
+        </defs>
+        <g clip-path="url(#above-ground)">
+{{BUILDINGS}}
+        </g>
+        <path id="ground" class="s" d="{{GROUND_D}}" stroke-width="3" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" />
+      </svg>
+    </div>
+
+    <!-- Logotipo oficial SOMOS: rosa cívico #E4007C sobre blanco (manual de identidad 2026) -->
+    <div id="logo" role="img" aria-label="SOMOS">
+{{LOGO_LETTERS}}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // cámara precalculada por fotograma (tools/build_scene.py): [x, y, escala] de la capa del skyline
+      const KF = {{KF}};
+      const FPS = {{FPS}};
+
+      function strokesOf(id) {
+        return Array.from(document.querySelectorAll("#" + id + " .s")).sort(function (a, b) {
+          return a.dataset.o - b.dataset.o;
+        });
+      }
+
+      const tl = gsap.timeline({ paused: true });
+
+      // 0.00–2.50 · travelling lateral por el skyline y luego la cámara se aleja hasta verlo completo
+      tl.set("#city", { transformOrigin: "0 0", x: KF[0][0], y: KF[0][1], scale: KF[0][2] }, 0);
+      tl.to("#city", {
+        keyframes: KF.slice(1).map(function (v) {
+          return { x: v[0], y: v[1], scale: v[2], duration: 1 / FPS, ease: "none" };
+        }),
+      }, 0);
+      tl.to("#ground", { attr: { "stroke-dashoffset": 0 }, duration: 2.1, ease: "sine.inOut" }, 0);
+      tl.to("#ground", { strokeWidth: {{GROUND_W_END}}, duration: 0.6, ease: "power3.inOut" }, 1.9);
+
+      // los edificios brotan del suelo: suben, se rellenan de abajo hacia arriba y se dibujan sus trazos
+{{TWEENS}}
+
+      // 2.42–2.95 · la ciudad se hunde bajo la línea del suelo y, desde esa misma línea, suben las letras
+{{SINK}}
+      [0, 1, 2, 3, 4].forEach(function (i) {
+        tl.fromTo("#lt" + i, { y: 150 }, { y: 0, duration: 0.5, ease: "power4.out" }, 2.7 + i * 0.045);
+      });
+
+      // 3.00–3.30 · la línea del suelo se recoge hacia el centro y queda solo el logotipo
+      tl.to("#ground", { scaleX: 0, svgOrigin: "{{GROUND_CX}} 0", duration: 0.32, ease: "power3.in" }, 3.0);
+      // 3.30–4.00 · el logotipo queda quieto, rosa sobre blanco
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["skyline"] = tl;
+    })();
+  </script>
+</template>
