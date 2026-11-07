@@ -4,7 +4,7 @@ Intro vertical de 4 s (2160×3840, 60 fps) hecha con HyperFrames.
 
 | Tiempo | Qué pasa |
 | --- | --- |
-| 0.00–1.30 s | Toma aérea en perspectiva: se trazan en rosa los límites de las 16 alcaldías de la CDMX; Miguel Hidalgo se ilumina de rosa con ondas y anillos cartográficos. |
+| 0.00–1.30 s | Toma aérea en perspectiva: se trazan en rosa los límites de las 16 alcaldías de la CDMX; Miguel Hidalgo se ilumina de rosa. Sin textos. |
 | 1.25–2.03 s | La cámara se clava en Miguel Hidalgo; el resto de la ciudad se disuelve. |
 | 2.03–2.48 s | La silueta real de la alcaldía se transforma (morph punto a punto) en una placa itálica con la inclinación del logotipo. |
 | 2.52–2.95 s | Un filo inclinado corta la placa y deja las letras de SOMOS. |

@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 W, H = 1080, 1920
-MAP_CENTER = (540, 900)  # dónde queda el centro del mapa completo al inicio
+MAP_CENTER = (540, 960)  # dónde queda el centro del mapa completo al inicio
 ZOOM = 3.6  # escala final de la cámara sobre Miguel Hidalgo
 NAME = "Miguel Hidalgo"
 

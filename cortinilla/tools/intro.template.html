@@ -69,26 +69,8 @@
       stroke-linejoin: round;
       stroke-linecap: round;
     }
-    .ring {
-      fill: none;
-      stroke: #e4007c;
-    }
 
     /* textos */
-    .kick {
-      position: absolute;
-      left: 0;
-      width: 1080px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 30px;
-      letter-spacing: 0.42em;
-      text-indent: 0.42em;
-      text-transform: uppercase;
-    }
-    #k-city {
-      top: 196px;
-    }
 
     /* morph y logotipo */
     #morph-svg {
@@ -147,23 +129,14 @@
           <g id="grid" mask="url(#dot-mask)" opacity="0">
             <rect x="-900" y="-900" width="2700" height="3000" fill="url(#dots)" opacity="0.32" />
           </g>
-          <g id="hud" opacity="0">
-            <circle id="rg1" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="150" stroke-dasharray="3 7" />
-            <circle id="rg2" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="290" stroke-dasharray="3 9" />
-            <circle id="rg3" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="470" stroke-dasharray="2 12" />
-          </g>
           <g id="alcs">
 {{ALC_PATHS}}
           </g>
           <path id="mh-flood" d="{{MH_D}}" fill="#e4007c" clip-path="url(#flood-clip)" />
           <path id="mh-line" d="{{MH_D}}" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" />
-          <circle id="rip1" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="0" opacity="0" />
-          <circle id="rip2" class="ring" cx="{{MCX}}" cy="{{MCY}}" r="0" opacity="0" />
         </svg>
       </div>
     </div>
-
-    <div id="k-city" class="kick" data-layout-allow-overflow>Ciudad de México</div>
 
     <!-- La silueta de Miguel Hidalgo se transforma en la placa itálica del logotipo -->
     <svg id="morph-svg" viewBox="0 0 1080 1920" data-layout-ignore>
@@ -193,7 +166,7 @@
 
       const mapEl = document.getElementById("map");
       const strokeEls = Array.from(document.querySelectorAll("#alcs .alc, #mh-line"));
-      const hairEls = Array.from(document.querySelectorAll("#hud .ring, #rip1, #rip2"));
+      
       const morphEl = document.getElementById("morph");
       const morphSvg = document.getElementById("morph-svg");
 
@@ -208,7 +181,6 @@
         mapEl.setAttribute("viewBox", vx.toFixed(3) + " " + vy.toFixed(3) + " " + (W / s).toFixed(3) + " " + (H / s).toFixed(3));
         const sw = 2.4 / s;
         for (const el of strokeEls) el.setAttribute("stroke-width", (el.id === "mh-line" ? 4.2 / Math.pow(s, 0.55) : sw).toFixed(3));
-        for (const el of hairEls) el.setAttribute("stroke-width", (1.6 / s).toFixed(3));
       }
 
       // ---- morph: silueta -> placa (interpolación punto a punto, centrada en pantalla)
@@ -264,24 +236,9 @@
       // 0.45 · Miguel Hidalgo se inunda de rosa
       tl.to("#flood-c", { attr: { r: 330 }, duration: 0.5, ease: "power3.inOut" }, 0.42);
 
-      // HUD cartográfico: anillos de radar
-      tl.to("#hud", { opacity: 0.55, duration: 0.3, ease: "power1.out" }, 0.4);
-      tl.fromTo(["#rg1", "#rg2", "#rg3"], { attr: { "stroke-dashoffset": 40 }, opacity: 0 }, { attr: { "stroke-dashoffset": 0 }, opacity: 1, duration: 0.6, ease: "power2.out", stagger: 0.08 }, 0.5);
-      tl.to("#rg2", { rotation: 40, svgOrigin: MH.x + " " + MH.y, duration: 1.5, ease: "none" }, 0.5);
-
-      // ondas desde el centro de la alcaldía
-      tl.fromTo("#rip1", { attr: { r: 10 }, opacity: 0.9 }, { attr: { r: 300 }, opacity: 0, duration: 0.9, ease: "power2.out" }, 0.82);
-      tl.fromTo("#rip2", { attr: { r: 10 }, opacity: 0.7 }, { attr: { r: 300 }, opacity: 0, duration: 0.9, ease: "power2.out" }, 1.0);
-
-      // texto: "Ciudad de México" arriba
-      tl.fromTo("#k-city", { opacity: 0, scale: 1.12, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, 0.15);
-
-      // 1.30 · sale el texto con desenfoque
-      tl.to("#k-city", { opacity: 0, filter: "blur(10px)", y: -18, duration: 0.2, ease: "power2.in" }, 1.32);
-
       // 1.25–2.05 · la cámara se clava en Miguel Hidalgo; el resto de la ciudad se disuelve
       tl.to(cam, { z: 1, duration: 0.78, ease: "power3.inOut", onUpdate: applyCam }, 1.25);
-      tl.to(["#alcs", "#hud", "#grid"], { opacity: 0, duration: 0.45, ease: "power2.in" }, 1.45);
+      tl.to(["#alcs", "#grid"], { opacity: 0, duration: 0.45, ease: "power2.in" }, 1.45);
       tl.to("#glow", { opacity: 0, duration: 0.5, ease: "power1.in" }, 1.5);
 
       // 2.05 · relevo invisible a la capa del morph (misma silueta, misma posición)
