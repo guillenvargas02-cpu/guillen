@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Banda sonora del video de COBERTURA: música editada + efectos de sonido sintetizados.
+"""Banda sonora del video de COBERTURA: la canción completa + efectos de sonido sintetizados.
 
 Todo es determinista (semilla fija). Uso: python3 sfx.py renders/
 Salida: renders/audio.wav (48 kHz estéreo, -14 LUFS, pico -1 dBTP).
@@ -15,15 +15,15 @@ ROOT = Path(__file__).resolve().parent
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "renders"
 SR = 48000
 TOTAL = 29.90
-BEAT = 0.487875
-H1 = 3.40
+BEAT = 60 / 124
+D1 = 2.68  # drop de la canción
 
 
-def b(k):
-    return H1 + k * BEAT
+def g(k):
+    return D1 + k * BEAT
 
 
-H2, H3 = b(16), b(48)
+DUMP, B_IN, R_IN, LOGO = g(16), g(36), g(44), g(50)
 rng = np.random.default_rng(7)
 
 # ---------------------------------------------------------------- utilidades
@@ -211,42 +211,14 @@ def load_music():
     return np.frombuffer(raw, np.float32).reshape(-1, 2).astype(np.float64)
 
 
-def edit_music(m):
-    t_in, t_a = 1.12, 8.423  # golpe 1 (4.52 s de la pista) cae en H1 = 3.40 s
-    t_b = t_a + 7.806  # se quitan 4 compases (123 BPM): el empalme cae en el mismo tiempo del compás
-    xf = int(0.012 * SR)
-    s1 = m[int(t_in * SR): int(t_a * SR) + xf].copy()
-    s2 = m[int(t_b * SR): int((t_b + TOTAL) * SR)].copy()
-    ramp = np.sqrt(np.linspace(0, 1, xf))[:, None]
-    s1[-xf:] = s1[-xf:] * ramp[::-1] + s2[:xf] * ramp
-    out = np.concatenate([s1, s2[xf:]])[: int(TOTAL * SR)]
-    out[: int(0.3 * SR)] *= np.linspace(0, 1, int(0.3 * SR))[:, None]
+def prep_music(m):
+    """La canción entra completa desde 0 s (cabe en 29.9 s); sólo un fundido final corto."""
+    out = m[: int(TOTAL * SR)].copy()
+    if len(out) < int(TOTAL * SR):
+        out = np.pad(out, ((0, int(TOTAL * SR) - len(out)), (0, 0)))
+    e = int((TOTAL - 0.8) * SR)
+    out[e:] *= np.linspace(1, 0, len(out) - e)[:, None] ** 1.5
     return out
-
-
-def suspense(m):
-    """Último compás antes del golpe final: la música se ahoga (pasabajos) y luego silencio."""
-    a, z0, z1 = b(44), 26.50, H3 - 0.012
-    i0, i1 = int(a * SR), int(z0 * SR)
-    n = i1 - i0
-    blk = 256
-    zi = np.zeros((2, 1, 2))
-    for i in range(0, n, blk):
-        p = i / n
-        fc = 16000 * (420 / 16000) ** (p**0.8)
-        sos = butter(2, fc, btype="low", fs=SR, output="sos")
-        for c in range(2):
-            seg = m[i0 + i: i0 + min(i + blk, n), c]
-            m[i0 + i: i0 + min(i + blk, n), c], zi[c] = sosfilt(sos, seg, zi=zi[c])
-    f = int(0.03 * SR)
-    m[i1 - f: i1] *= np.linspace(1, 0, f)[:, None]
-    m[i1: int(z1 * SR)] = 0
-    k = int(z1 * SR)
-    m[k: k + int(0.006 * SR)] *= np.linspace(0, 1, int(0.006 * SR))[:, None]
-    # cola: se apaga sola, rematamos con un fundido corto
-    e = int((TOTAL - 1.4) * SR)
-    m[e:] *= np.linspace(1, 0, len(m) - e)[:, None] ** 1.5
-    return m
 
 
 # ---------------------------------------------------------------- mezcla
@@ -266,51 +238,54 @@ def ends_at(x, t):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    music = suspense(edit_music(load_music()))
+    music = prep_music(load_music())
     sfx = np.zeros_like(music)
 
-    # Cortinilla de entrada
-    place(sfx, rumble(3.4), 0.0, -20)
-    place(sfx, swish(0.45), 0.12, -20)
-    place(sfx, paper_drop(), 0.55, -22)
-    place(sfx, shimmer(1.6), 1.02, -26)
-    w = whoosh(0.7, 250, 6000)
-    place(sfx, w, ends_at(w, H1), -11)
-    place(sfx, impact(1.0), H1, -6)
+    # Cortinilla de entrada (sube la canción): el logo se arma y la cámara cruza la O en el drop
+    place(sfx, rumble(D1), 0.0, -22)
+    place(sfx, swish(0.45), 0.12, -21)
+    place(sfx, paper_drop(), 0.5, -23)
+    w = whoosh(0.6, 250, 6000)
+    place(sfx, w, ends_at(w, D1), -12)
+    place(sfx, impact(1.0), D1, -7)
 
-    # Acto 1: cortes con punch-in
-    for t in (b(4), b(8), b(10)):
+    # Entrevista: cortes con punch-in
+    for t in (g(4), g(8), g(10), g(12)):
         place(sfx, swish(0.3), t - 0.15, -22)
-    r = riser(b(16) - b(12))
-    place(sfx, r, b(12), -17)
+    r = riser(g(16) - g(12))
+    place(sfx, r, g(12), -20)
 
-    # Golpe 2: photo dump
-    place(sfx, impact(0.8), H2, -8)
+    # Photo dump
+    place(sfx, impact(0.8), DUMP, -9)
     for k in (16, 18, 20, 22):
-        place(sfx, shutter(), b(k), -9)
+        place(sfx, shutter(), g(k), -9)
     for k in (24, 25, 26, 27, 28, 28.5, 29, 29.5):
-        place(sfx, shutter(), b(k), -12)
-        place(sfx, paper_drop(), b(k) + 0.03, -16)
-    w = whoosh(b(32) - b(30), 200, 5000)
-    place(sfx, w, b(30), -13)
-    place(sfx, impact(0.5), b(32), -15)
+        place(sfx, shutter(), g(k), -12)
+        place(sfx, paper_drop(), g(k) + 0.03, -16)
+    w = whoosh(g(32) - g(30), 200, 5000)
+    place(sfx, w, g(30), -14)
+    place(sfx, impact(0.5), g(32), -15)
+    place(sfx, swish(0.3), g(34) - 0.15, -21)
 
-    # Acto 3: ráfaga
-    for t in (b(36), b(38)):
-        place(sfx, swish(0.3), t - 0.15, -20)
-    for k in (40, 41, 42, 43):
-        place(sfx, tick(), b(k), -17)
+    # Quiebre de bajo: golpe grave, latidos crecientes y platillo en reversa hacia el regreso
+    place(sfx, impact(1.2, 2.6), B_IN, -10)
+    for k, gain in ((40, -15), (41, -13), (42, -11), (43, -9)):
+        place(sfx, heartbeat(), g(k), gain)
+    rc = reverse_cymbal(1.4)
+    place(sfx, rc, ends_at(rc, R_IN), -11)
 
-    # Suspenso: latidos, platillo en reversa y silencio antes del golpe final
-    for k, g in ((44, -12), (45, -10), (46, -8), (47, -6)):
-        place(sfx, heartbeat(), b(k), g)
-    rc = reverse_cymbal(1.35)
-    place(sfx, rc, ends_at(rc, H3), -10)
-    w = whoosh(0.5, 200, 7000)
-    place(sfx, w, ends_at(w, H3), -13)
-    place(sfx, impact(1.4, 3.2), H3, -4)
-    place(sfx, shimmer(2.2), H3 + 0.05, -21)
-    place(sfx, shimmer(1.6), H3 + 1.0, -27)
+    # Regreso: impacto y un golpe en cada corte de la ráfaga
+    place(sfx, impact(1.3, 2.8), R_IN, -6)
+    for k in (45, 46, 47, 48, 49):
+        place(sfx, tick(), g(k), -16)
+        place(sfx, swish(0.25), g(k) - 0.12, -24)
+
+    # Logo final
+    w = whoosh(0.45, 200, 7000)
+    place(sfx, w, ends_at(w, LOGO), -14)
+    place(sfx, impact(1.4, 3.0), LOGO, -6)
+    place(sfx, shimmer(2.2), LOGO + 0.05, -21)
+    place(sfx, shimmer(1.6), LOGO + 1.0, -27)
 
     mix = music * 0.82 + sfx
     raw = OUT / "mix_raw.wav"

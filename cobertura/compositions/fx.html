@@ -53,29 +53,29 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const B = 0.487875, H1 = 3.4;
-    const b = (n) => H1 + n * B;
-    const H2 = b(16), H3 = b(48);
+    const B = 60 / 124, D1 = 2.68;
+    const g = (n) => D1 + n * B;
+    const DUMP = g(16), B_IN = g(36), R_IN = g(44), LOGO = g(50);
     tl.set("#fx-flash", { opacity: 0 }, 0);
     tl.set(["#fx-barT", "#fx-barB"], { scaleY: 0 }, 0);
 
     // Destellos en los cortes (fuerte en los golpes, sutil en la ráfaga)
-    [[H1, 0.7, 0.4], [b(4), 0.35, 0.22], [b(8), 0.4, 0.22], [b(10), 0.35, 0.22],
-     [b(36), 0.35, 0.22], [b(38), 0.35, 0.22], [b(40), 0.25, 0.16], [b(41), 0.25, 0.16],
-     [b(42), 0.25, 0.16], [b(43), 0.3, 0.16], [H3, 0.85, 0.3]].forEach(([t, a, d]) => {
+    [[D1, 0.7, 0.4], [g(4), 0.35, 0.22], [g(8), 0.4, 0.22], [g(10), 0.35, 0.22], [g(12), 0.35, 0.22],
+     [g(34), 0.35, 0.22], [R_IN, 0.9, 0.35], [g(45), 0.3, 0.16], [g(46), 0.3, 0.16], [g(47), 0.3, 0.16],
+     [g(48), 0.3, 0.16], [g(49), 0.35, 0.16], [LOGO, 0.85, 0.3]].forEach(([t, a, d]) => {
       tl.set("#fx-flash", { opacity: a }, t);
       tl.to("#fx-flash", { opacity: 0, duration: d, ease: "power2.out" }, t + 0.001);
     });
 
     // Barrido rosa de marca que tapa el paso al photo dump
-    tl.fromTo("#fx-wipe", { x: -1500 }, { x: 1900, duration: 0.44, ease: "power3.inOut" }, H2 - 0.24);
-    tl.fromTo("#fx-wipew", { x: -1700 }, { x: 2100, duration: 0.48, ease: "power3.inOut" }, H2 - 0.22);
+    tl.fromTo("#fx-wipe", { x: -1500 }, { x: 1900, duration: 0.44, ease: "power3.inOut" }, DUMP - 0.24);
+    tl.fromTo("#fx-wipew", { x: -1700 }, { x: 2100, duration: 0.48, ease: "power3.inOut" }, DUMP - 0.22);
 
-    // Suspenso: entran barras de cine, la imagen se apaga y, en silencio, se cierra a negro
-    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.2, duration: 1.2, ease: "power2.inOut" }, b(44));
-    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.27, duration: 0.35, ease: "sine.inOut" }, b(44) + 1.2);
-    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 1, duration: 0.09, ease: "power3.in" }, 26.46);
-    tl.set(["#fx-barT", "#fx-barB"], { scaleY: 0 }, H3);
+    // Quiebre de bajo: entran barras de cine, la imagen se apaga y se cierra a negro antes del regreso
+    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.2, duration: 1.2, ease: "power2.inOut" }, B_IN);
+    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.3, duration: R_IN - B_IN - 1.6, ease: "sine.inOut" }, B_IN + 1.2);
+    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 1, duration: 0.09, ease: "power3.in" }, R_IN - 0.38);
+    tl.set(["#fx-barT", "#fx-barB"], { scaleY: 0 }, R_IN);
     window.__timelines["fx"] = tl;
   </script>
 </template>

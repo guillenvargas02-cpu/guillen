@@ -145,8 +145,8 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const B = 0.487875;
-    const T0 = 0.006; // el clip arranca en el fotograma 336 (11.200 s); el golpe cae en 11.206 s
+    const B = 60 / 124;
+    const T0 = 0; // el clip arranca en el fotograma 313 (10.433 s), sobre el inicio de frase de 10.422 s
     const k = (n) => T0 + n * B;
     const FULL = 1080 / 558; // escala a la que la foto de una copia llena el cuadro
 
@@ -209,7 +209,7 @@
     tl.fromTo("#d-p8", { scale: 1.5, rotation: -14, x: 0, y: -160, opacity: 0 },
       { scale: 1, rotation: -2, x: 0, y: 0, opacity: 1, duration: 0.42, ease: "expo.out" }, k(13.5));
     flash(k(13.5), 0.4, 0.22);
-    const zEnd = 7.78; // fotograma 570 (19.000 s): base.mp4 ya muestra esta misma toma
+    const zEnd = 7.7; // fotograma 544; en el 545 (18.167 s) base.mp4 ya muestra esta misma toma
     tl.to("#d-p8", { scale: FULL, rotation: 0, x: 0, y: 0, duration: zEnd - k(14), ease: "power3.inOut" }, k(14));
     tl.to("#d-stack", { scale: 1.9, duration: zEnd - k(14), ease: "power3.inOut" }, k(14));
     tl.to("#d-p1", { scale: 1.9, x: -76, y: -57, rotation: -7, duration: zEnd - k(14), ease: "power3.inOut" }, k(14));
