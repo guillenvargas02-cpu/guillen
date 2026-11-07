@@ -1,0 +1,4 @@
+.hyperframes/
+renders/*
+!renders/cortinilla-somos-edificios-4k.mp4
+tools/preview.html

@@ -1,0 +1,192 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    /* cada plano es una capa de 3800x1200 unidades del skyline; la cámara la mueve con transform */
+    .layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3800px;
+      height: 1200px;
+      transform-origin: 0 0;
+    }
+    .layer svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3800px;
+      height: 1200px;
+      overflow: visible;
+    }
+    .s {
+      fill: none;
+      stroke: #e4007c;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    #overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: visible;
+    }
+    #logo {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+    }
+    #logo svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+    }
+    #logo path {
+      fill: #e4007c;
+      fill-rule: evenodd;
+    }
+  </style>
+
+  <div id="root" data-composition-id="skyline" data-width="1080" data-height="1920">
+    <!-- sol rosa pálido detrás de la ciudad (paralaje lento) -->
+    <div id="sun-layer" class="layer" data-layout-ignore>
+      <svg viewBox="-400 -1150 3800 1200">
+        <circle id="sun" cx="1450" cy="-560" r="640" fill="#FDE9F2" />
+      </svg>
+    </div>
+
+    <!-- plano del fondo: Fuente de Petróleos y Torre del Reloj en silueta de tono medio -->
+    <div id="back" class="layer" data-layout-ignore>
+      <svg viewBox="-400 -1150 3800 1200">
+{{BACK}}
+      </svg>
+    </div>
+
+    <!-- plano del frente: Castillo de Chapultepec, Altar a la Patria, Auditorio Nacional, Museo Soumaya -->
+    <div id="front" class="layer" data-layout-ignore>
+      <svg viewBox="-400 -1150 3800 1200">
+{{FRONT}}
+        <path id="ground" class="s" d="M-400 0L3400 0" stroke-width="3" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" />
+      </svg>
+    </div>
+
+    <!-- la silueta conjunta del skyline se llena de rosa y se comprime en la placa del logotipo -->
+    <svg id="overlay" viewBox="0 0 1080 1920" data-layout-ignore>
+      <defs>
+        <clipPath id="ink-clip"><rect id="ink-rect" x="0" y="1920" width="1080" height="0" /></clipPath>
+      </defs>
+      <path id="morph" d="M0 0Z" fill="#e4007c" clip-path="url(#ink-clip)" />
+    </svg>
+
+    <!-- Logotipo oficial SOMOS: rosa cívico #E4007C sobre blanco (manual de identidad 2026) -->
+    <div id="logo" role="img" aria-label="SOMOS">
+{{LOGO_LETTERS}}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const W = 1080,
+        H = 1920;
+      // cámara precalculada por fotograma (tools/build_scene.py): [x, y, escala] de cada plano.
+      // Son transforms reales de GSAP, así el motion blur de HyperFrames los detecta.
+      const KF = {{KF}};
+      const FPS = {{FPS}};
+      const MORPH_FROM = {{MORPH_FROM}};
+      const MORPH_TO = {{MORPH_TO}};
+      const LOGO = { left: {{LOGO_LEFT}}, top: {{LOGO_TOP}}, w: {{LOGO_W}}, h: {{LOGO_H}} };
+      const LETTER_X = {{LETTER_X}};
+      const SLANT = Math.tan((12.5 * Math.PI) / 180);
+
+      const morphEl = document.getElementById("morph");
+      const overlay = document.getElementById("overlay");
+
+      function strokesOf(id) {
+        return Array.from(document.querySelectorAll("#" + id + " .s")).sort(function (a, b) {
+          return a.dataset.o - b.dataset.o;
+        });
+      }
+
+      // ---- morph: silueta del skyline -> placa itálica
+      const mo = { p: 0 };
+      function applyMorph() {
+        const n = MORPH_FROM.length / 2,
+          e = mo.p;
+        let d = "";
+        for (let i = 0; i < n; i++) {
+          const ax = MORPH_FROM[2 * i],
+            ay = MORPH_FROM[2 * i + 1];
+          const x = ax + (MORPH_TO[2 * i] - ax) * e,
+            y = ay + (MORPH_TO[2 * i + 1] - ay) * e;
+          d += (i ? "L" : "M") + x.toFixed(2) + " " + y.toFixed(2);
+        }
+        morphEl.setAttribute("d", d + "Z");
+      }
+
+      // ---- corte de la placa con un filo inclinado como los fustes del logotipo
+      const X0 = LOGO.left - 40,
+        X1 = LOGO.left + LOGO.w + 60;
+      const cut = { p: 0 };
+      function applyCut() {
+        if (cut.p <= 0) {
+          overlay.style.clipPath = "none";
+          return;
+        }
+        const x = X0 + (X1 - X0) * cut.p;
+        const midY = LOGO.top + LOGO.h / 2;
+        const top = x + SLANT * midY,
+          bot = x - SLANT * (H - midY);
+        overlay.style.clipPath = "polygon(" + top.toFixed(1) + "px 0px, 1200px 0px, 1200px 1920px, " + bot.toFixed(1) + "px 1920px)";
+      }
+
+      applyMorph();
+      applyCut();
+
+      const tl = gsap.timeline({ paused: true });
+
+      // 0.00–2.40 · travelling lateral con paralaje (el fondo y el sol se mueven más lento),
+      // luego la cámara se aleja hasta ver todo el skyline
+      ["front", "back", "sun"].forEach(function (name) {
+        const el = document.getElementById(name === "sun" ? "sun-layer" : name);
+        const k = KF[name];
+        tl.set(el, { transformOrigin: "0 0", x: k[0][0], y: k[0][1], scale: k[0][2] }, 0);
+        tl.to(el, { keyframes: k.slice(1).map(function (v) { return { x: v[0], y: v[1], scale: v[2], duration: 1 / FPS, ease: "none" }; }) }, 0);
+      });
+      tl.to("#ground", { attr: { "stroke-dashoffset": 0 }, duration: 2.1, ease: "sine.inOut" }, 0);
+      tl.fromTo("#sun", { attr: { r: 520 } }, { attr: { r: 640 }, duration: 2.4, ease: "power2.out" }, 0);
+
+      // los edificios brotan del suelo: suben, se rellenan de abajo hacia arriba y se dibujan sus trazos
+{{TWEENS}}
+
+      // 2.40–2.58 · el skyline se llena de rosa desde el suelo
+      tl.to("#ink-rect", { attr: { y: 0, height: 1920 }, duration: 0.18, ease: "power2.in" }, 2.4);
+      tl.set(["#front", "#back", "#sun-layer"], { opacity: 0 }, 2.58);
+
+      // 2.58–2.93 · la silueta se comprime en la placa itálica del logotipo
+      tl.to(mo, { p: 1, duration: 0.35, ease: "power2.inOut", onUpdate: applyMorph }, 2.58);
+      tl.fromTo("#overlay", { scaleX: 1, scaleY: 1 }, { scaleX: 1.035, scaleY: 0.97, duration: 0.08, ease: "power2.out", transformOrigin: "540px 960px", yoyo: true, repeat: 1 }, 2.92);
+
+      // 2.96–3.38 · el filo corta la placa y deja las letras de SOMOS
+      tl.to(cut, { p: 1, duration: 0.42, ease: "power2.inOut", onUpdate: applyCut }, 2.96);
+      LETTER_X.forEach(function (x0, i) {
+        const t = 2.96 + 0.42 * ((x0 + 40) / (LOGO.w + 100)) - 0.04;
+        tl.fromTo("#lt" + i, { opacity: 0, x: -22, filter: "blur(7px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.34, ease: "expo.out" }, t);
+      });
+      // 3.38–4.00 · el logotipo queda quieto, rosa sobre blanco
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["skyline"] = tl;
+    })();
+  </script>
+</template>
