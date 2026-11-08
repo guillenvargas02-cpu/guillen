@@ -1,0 +1,191 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    #goo-layer,
+    #crisp {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: visible;
+    }
+    #crisp {
+      opacity: 0;
+    }
+    .blob,
+    .ltr {
+      fill: #e4007c;
+    }
+    .ltr {
+      fill-rule: evenodd;
+    }
+  </style>
+
+  <div id="root" data-composition-id="liquid" data-width="1080" data-height="1920">
+    <!-- capa líquida: círculos y letras pasan por un filtro "gooey" (desenfoque + umbral de alfa)
+         que los funde como un fluido; al final el desenfoque baja a casi cero y el líquido se vuelve el logotipo -->
+    <svg id="goo-layer" viewBox="0 0 1080 1920" data-layout-ignore>
+      <defs>
+        <filter id="goo" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1680" height="2520" color-interpolation-filters="sRGB">
+          <feGaussianBlur id="goo-blur" in="SourceGraphic" stdDeviation="22" result="b" />
+          <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 42 -19" />
+        </filter>
+      </defs>
+      <g id="cam">
+        <g filter="url(#goo)">
+          <g id="letters" opacity="0">
+            <path class="ltr" transform="translate({{LOGO_LEFT}} {{LOGO_TOP}})" d="{{LOGO_D}}" />
+          </g>
+          <circle id="L0" class="blob" cx="540" cy="960" r="0" />
+          <circle id="L1" class="blob" cx="540" cy="960" r="0" />
+          <circle id="L2" class="blob" cx="540" cy="960" r="0" />
+          <circle id="L3" class="blob" cx="540" cy="960" r="0" />
+          <circle id="L4" class="blob" cx="540" cy="960" r="0" />
+          <circle id="Q0" class="blob" cx="540" cy="960" r="0" />
+          <circle id="Q1" class="blob" cx="540" cy="960" r="0" />
+          <circle id="Q2" class="blob" cx="540" cy="960" r="0" />
+          <circle id="Q3" class="blob" cx="540" cy="960" r="0" />
+          <circle id="D0" class="blob" cx="540" cy="960" r="0" />
+          <circle id="D1" class="blob" cx="540" cy="960" r="0" />
+          <circle id="D2" class="blob" cx="540" cy="960" r="0" />
+          <circle id="D3" class="blob" cx="540" cy="960" r="0" />
+          <circle id="D4" class="blob" cx="540" cy="960" r="0" />
+          <circle id="D5" class="blob" cx="540" cy="960" r="0" />
+        </g>
+      </g>
+    </svg>
+
+    <!-- Logotipo oficial SOMOS, nítido: rosa cívico #E4007C sobre blanco (manual de identidad 2026) -->
+    <svg id="crisp" viewBox="0 0 1080 1920" role="img" aria-label="SOMOS" data-layout-ignore>
+      <path class="ltr" transform="translate({{LOGO_LEFT}} {{LOGO_TOP}})" d="{{LOGO_D}}" />
+    </svg>
+  </div>
+
+  <script>
+    (function () {
+      // Todo lo que se ve es una función pura del tiempo t (render(t) en cada fotograma).
+      const CX = 540,
+        CY = 960;
+      const CENTERS = {{CENTERS}};
+      const T = { hit: 0.38, swirl: 0.6, line: 1.45, lineEnd: 2.05, cond: 2.05, solid: 2.6 };
+
+      const clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+      const prog = function (t, a, b) { return clamp((t - a) / (b - a), 0, 1); };
+      const expoOut = function (p) { return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p); };
+      const p2in = function (p) { return p * p; };
+      const p3in = function (p) { return p * p * p; };
+      const p2io = function (p) { return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+      const p3io = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+      const lerp = function (a, b, p) { return a + (b - a) * p; };
+
+      const $ = function (id) { return document.getElementById(id); };
+      const L = [0, 1, 2, 3, 4].map(function (i) { return $("L" + i); });
+      const Q = [0, 1, 2, 3].map(function (i) { return $("Q" + i); });
+      const D = [0, 1, 2, 3, 4, 5].map(function (i) { return $("D" + i); });
+      const blur = $("goo-blur"),
+        letters = $("letters"),
+        crisp = $("crisp"),
+        cam = $("cam");
+
+      function circ(el, x, y, r) {
+        el.setAttribute("cx", x.toFixed(2));
+        el.setAttribute("cy", y.toFixed(2));
+        el.setAttribute("r", Math.max(0, r).toFixed(2));
+      }
+
+      // giro en espiral (fase 3)
+      function swirlPos(i, t) {
+        const p = prog(t, T.swirl, T.line);
+        const rad = 270 * expoOut(prog(t, T.swirl, T.swirl + 0.3)) * (1 - 0.25 * Math.sin(Math.PI * p));
+        const a = (i * 2 * Math.PI) / 5 + 2 * Math.PI * 1.35 * p2io(p) - Math.PI / 2;
+        return { x: CX + rad * Math.cos(a), y: CY + rad * 0.62 * Math.sin(a) };
+      }
+      // al alinearse, cada gota va a la letra que le queda en orden izquierda → derecha
+      const order = [0, 1, 2, 3, 4].sort(function (a, b) { return swirlPos(a, T.line).x - swirlPos(b, T.line).x; });
+      const slot = [];
+      order.forEach(function (g, k) { slot[g] = k; });
+
+      function render(t) {
+        // ---- 0.00–0.38 · dos gotas entran desde los lados y chocan en el centro
+        // ---- 0.38–0.60 · impacto: la masa se funde y salpica
+        for (let i = 0; i < 5; i++) {
+          let x, y, r;
+          if (t < T.hit) {
+            const p = p3in(t / T.hit);
+            if (i === 0) { x = lerp(30, CX - 40, p); y = CY; r = 96; }
+            else if (i === 4) { x = lerp(1060, CX + 46, p); y = CY; r = 78; }
+            else { x = CX; y = CY; r = 0; }
+          } else if (t < T.swirl) {
+            const p = expoOut(prog(t, T.hit, T.swirl));
+            const wob = 14 * Math.exp(-(t - T.hit) * 12) * Math.sin((t - T.hit) * 60 + i);
+            x = CX + wob * (i - 2);
+            y = CY + wob * 0.5;
+            r = i === 0 ? lerp(96, 78, p) : i === 4 ? lerp(78, 70, p) : 64 * p;
+          } else {
+            const sp = swirlPos(i, Math.min(t, T.line));
+            const fp = p3io(prog(t, T.line, T.lineEnd));
+            const tx = CENTERS[slot[i]];
+            const settle = 16 * Math.exp(-Math.max(0, t - T.lineEnd) * 9) * Math.sin(Math.max(0, t - T.lineEnd) * 30 + i * 1.7);
+            x = lerp(sp.x, tx, fp);
+            y = lerp(sp.y, CY, fp) + settle * fp;
+            r = lerp(62, 74, fp);
+          }
+          // ---- 2.05–2.55 · condensación: las gotas se encogen mientras aparecen las letras
+          const k = slot[i] !== undefined ? slot[i] : i;
+          const shrink = p2in(prog(t, T.cond + 0.02 + k * 0.03, T.cond + 0.3 + k * 0.03));
+          circ(L[i], x, y, r * (1 - shrink));
+        }
+
+        // puentes líquidos entre letras (forman la barra)
+        for (let k = 0; k < 4; k++) {
+          const gp = expoOut(prog(t, 1.72, 2.02));
+          const shrink = p2in(prog(t, T.cond + 0.04, T.cond + 0.36));
+          const x = (CENTERS[k] + CENTERS[k + 1]) / 2;
+          const wav = 10 * Math.sin(t * 14 + k * 2.1) * (1 - shrink);
+          circ(Q[k], x, CY + wav, 50 * gp * (1 - shrink));
+        }
+
+        // salpicadura del choque: gotitas que salen y regresan a la masa
+        for (let k = 0; k < 6; k++) {
+          const a = (k / 6) * 2 * Math.PI + 0.4 + 0.3 * Math.sin(k * 3.1);
+          const dist = (250 + 80 * Math.sin(k * 1.9)) * expoOut(prog(t, T.hit, T.hit + 0.22)) * (1 - p2in(prog(t, T.hit + 0.22, T.hit + 0.5)));
+          const r = t < T.hit ? 0 : (34 + 8 * Math.cos(k * 2.3)) * (1 - p2in(prog(t, T.hit + 0.3, T.hit + 0.5)));
+          circ(D[k], CX + dist * Math.cos(a), CY + dist * Math.sin(a) * 0.85, r);
+        }
+
+        // ---- el líquido se solidifica: aparecen las letras y el desenfoque del filtro baja casi a cero
+        letters.setAttribute("opacity", p2io(prog(t, T.cond, T.cond + 0.25)).toFixed(3));
+        const b = lerp(22, 0.6, p2in(prog(t, T.cond, T.solid)));
+        blur.setAttribute("stdDeviation", b.toFixed(3));
+        // relevo invisible al logotipo nítido (fuera del filtro)
+        const c = prog(t, T.solid - 0.04, T.solid + 0.06);
+        crisp.style.opacity = c.toFixed(3);
+        $("goo-layer").style.opacity = t >= T.solid + 0.06 ? "0" : "1";
+
+        // ---- cámara: arranca cerca y girada, se abre y se endereza hasta el plano final
+        const cp = p2io(prog(t, 0, 2.7));
+        const s = lerp(1.14, 1, cp),
+          rot = lerp(-4, 0, cp);
+        cam.setAttribute("transform", "translate(" + CX + " " + CY + ") rotate(" + rot.toFixed(3) + ") scale(" + s.toFixed(4) + ") translate(" + -CX + " " + -CY + ")");
+        // 2.70–4.00 · el logotipo queda quieto, rosa sobre blanco
+      }
+
+      const clock = { t: 0 };
+      render(0);
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: 4, duration: 4, ease: "none" }, 0);
+      tl.eventCallback("onUpdate", function () {
+        render(tl.time());
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["liquid"] = tl;
+    })();
+  </script>
+</template>
