@@ -1,0 +1,11 @@
+{
+  "name": "cortinilla-logo-v5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.8.209 preview",
+    "check": "npx --yes hyperframes@0.8.209 check",
+    "render": "npx --yes hyperframes@0.8.209 render --fps 60 --resolution portrait-4k --quality delivery -o renders/cortinilla-somos-logo-v5-4k.mp4",
+    "publish": "npx --yes hyperframes@0.8.209 publish"
+  }
+}

@@ -1,0 +1,252 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    #scene {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: visible;
+    }
+    .px,
+    .ghost1,
+    .ghost2,
+    .lvl,
+    .logo-d {
+      fill: #e4007c;
+    }
+    .logo-d {
+      fill-rule: evenodd;
+    }
+    .ghost1 {
+      opacity: 0.42;
+    }
+    .ghost2 {
+      opacity: 0.18;
+    }
+    .gridline {
+      stroke: #e4007c;
+      stroke-width: 1;
+      fill: none;
+    }
+  </style>
+
+  <div id="root" data-composition-id="decode" data-width="1080" data-height="1920">
+    <svg id="scene" viewBox="0 0 1080 1920" role="img" aria-label="SOMOS" data-layout-ignore>
+      <defs>
+        <!-- retícula digital de {{GRID}} px alineada con las celdas del logotipo -->
+        <pattern id="grid" x="{{GRID_X}}" y="{{GRID_Y}}" width="{{GRID}}" height="{{GRID}}" patternUnits="userSpaceOnUse">
+          <path class="gridline" d="M{{GRID}} 0H0V{{GRID}}" />
+        </pattern>
+        <radialGradient id="grid-fade" cx="540" cy="960" r="760" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#fff" stop-opacity="1" />
+          <stop offset="1" stop-color="#fff" stop-opacity="0" />
+        </radialGradient>
+        <mask id="grid-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1080" height="1920">
+          <rect width="1080" height="1920" fill="url(#grid-fade)" />
+        </mask>
+        <clipPath id="k0"><rect id="k0r" x="-2000" y="-2000" width="6000" height="6000" /></clipPath>
+        <clipPath id="k1"><rect id="k1r" x="0" y="-2000" width="0" height="6000" /></clipPath>
+        <clipPath id="k2"><rect id="k2r" x="0" y="-2000" width="0" height="6000" /></clipPath>
+        <clipPath id="k3"><rect id="k3r" x="0" y="-2000" width="0" height="6000" /></clipPath>
+        <clipPath id="k4"><rect id="k4r" x="0" y="-2000" width="0" height="6000" /></clipPath>
+      </defs>
+
+      <g id="cam">
+        <rect id="gridbg" x="0" y="0" width="1080" height="1920" fill="url(#grid)" mask="url(#grid-mask)" opacity="0" />
+
+        <!-- 20 px: cada píxel viaja por la retícula hasta su celda -->
+        <g clip-path="url(#k0)">
+          {{RECTS}}
+        </g>
+        <!-- resoluciones intermedias, reveladas por la línea de escaneo -->
+        <path class="lvl" clip-path="url(#k1)" d="{{L10}}" />
+        <path class="lvl" clip-path="url(#k2)" d="{{L5}}" />
+        <path class="lvl" clip-path="url(#k3)" d="{{L25}}" />
+        <!-- Logotipo oficial SOMOS: rosa cívico #E4007C sobre blanco (manual de identidad 2026) -->
+        <g id="crisp" clip-path="url(#k4)">
+          <path class="logo-d" transform="translate({{LOGO_LEFT}} {{LOGO_TOP}})" d="{{LOGO_D}}" />
+        </g>
+
+        <!-- interferencia digital final: franjas horizontales desplazadas -->
+        <g id="glitch" opacity="0">
+          <g id="gl-ghost" opacity="0.32"><path class="logo-d" transform="translate({{LOGO_LEFT}} {{LOGO_TOP}})" d="{{LOGO_D}}" /></g>
+        </g>
+
+        <!-- línea de escaneo -->
+        <rect id="scan-glow" x="0" y="0" width="34" height="0" fill="#e4007c" opacity="0" />
+        <rect id="scan" x="0" y="0" width="3" height="0" fill="#e4007c" opacity="0" />
+      </g>
+    </svg>
+  </div>
+
+  <script>
+    (function () {
+      // Todo lo que se ve es una función pura del tiempo t (render(t) en cada fotograma).
+      const PX = {{PX}};
+      const G = {{GRID}};
+      const LEFT = {{LOGO_LEFT}},
+        TOP = {{LOGO_TOP}},
+        LW = {{LOGO_W}},
+        LH = {{LOGO_H}};
+      const NS = "http://www.w3.org/2000/svg";
+      const SWEEPS = [
+        [1.36, 1.64],
+        [1.66, 1.93],
+        [1.95, 2.2],
+        [2.22, 2.46],
+      ];
+      const GLITCH = [2.5, 2.64];
+      const MOVE = 0.42;
+
+      const clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+      const prog = function (t, a, b) { return clamp((t - a) / (b - a), 0, 1); };
+      const p2io = function (p) { return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+      const p3io = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+      const lerp = function (a, b, p) { return a + (b - a) * p; };
+      const $ = function (id) { return document.getElementById(id); };
+
+      // franjas del glitch (creadas una vez, deterministas)
+      const glitch = $("glitch");
+      const STRIPS = 7,
+        band = LH / STRIPS;
+      const strips = [];
+      for (let k = 0; k < STRIPS; k++) {
+        const cp = document.createElementNS(NS, "clipPath");
+        cp.setAttribute("id", "gb" + k);
+        const r = document.createElementNS(NS, "rect");
+        r.setAttribute("x", "-200");
+        r.setAttribute("y", (TOP + k * band).toFixed(2));
+        r.setAttribute("width", "1480");
+        r.setAttribute("height", (band + 0.6).toFixed(2));
+        cp.appendChild(r);
+        glitch.appendChild(cp);
+        const gg = document.createElementNS(NS, "g");
+        gg.setAttribute("clip-path", "url(#gb" + k + ")");
+        const p = document.createElementNS(NS, "path");
+        p.setAttribute("class", "logo-d");
+        p.setAttribute("transform", "translate(" + LEFT + " " + TOP + ")");
+        p.setAttribute("d", $("crisp").firstElementChild.getAttribute("d"));
+        gg.appendChild(p);
+        glitch.appendChild(gg);
+        strips.push(gg);
+      }
+
+      const els = PX.map(function (_, i) { return [$("c" + i), $("g" + i + "a"), $("g" + i + "b")]; });
+      const snap = function (v, o) { return o + Math.round((v - o) / G) * G; };
+
+      // posición de un píxel: trayectoria en "L" por la retícula, en pasos de 20 px (movimiento digital)
+      function pos(p, t) {
+        const q = prog(t, p.go, p.go + MOVE);
+        const a = p3io(prog(q, 0, 0.5)),
+          b = p3io(prog(q, 0.5, 1));
+        let x, y;
+        if (p.xf) { x = lerp(p.sx, p.tx, a); y = lerp(p.sy, p.ty, b); }
+        else { y = lerp(p.sy, p.ty, a); x = lerp(p.sx, p.tx, b); }
+        return { x: snap(x, p.tx), y: snap(y, p.ty), moving: q > 0 && q < 1 };
+      }
+
+      function sweepX(k, t) {
+        const s = SWEEPS[k];
+        return lerp(LEFT - 24, LEFT + LW + 24, p2io(prog(t, s[0], s[1])));
+      }
+      function setClip(id, x0, x1) {
+        const r = $(id);
+        r.setAttribute("x", x0.toFixed(2));
+        r.setAttribute("width", Math.max(0, x1 - x0).toFixed(2));
+      }
+
+      function render(t) {
+        // ---- 0.00–1.20 · píxeles que aparecen parpadeando y viajan a su celda
+        for (let i = 0; i < PX.length; i++) {
+          const p = PX[i],
+            e = els[i];
+          if (t < p.on) {
+            e[0].setAttribute("opacity", "0");
+            e[1].setAttribute("opacity", "0");
+            e[2].setAttribute("opacity", "0");
+            continue;
+          }
+          const blink = t - p.on < 0.16 ? (Math.floor((t - p.on) * 40) % 2 === 0 ? 1 : 0.15) : 1;
+          const c = pos(p, t),
+            a = pos(p, t - 0.03),
+            b = pos(p, t - 0.06);
+          e[0].setAttribute("x", c.x);
+          e[0].setAttribute("y", c.y);
+          e[0].setAttribute("opacity", blink);
+          e[1].setAttribute("x", a.x);
+          e[1].setAttribute("y", a.y);
+          e[1].setAttribute("opacity", c.moving ? 0.42 : 0);
+          e[2].setAttribute("x", b.x);
+          e[2].setAttribute("y", b.y);
+          e[2].setAttribute("opacity", c.moving ? 0.18 : 0);
+        }
+
+        // ---- 1.36–2.46 · cuatro pasadas de escaneo: 20 → 10 → 5 → 2.5 px → vector
+        const s = [0, 1, 2, 3].map(function (k) { return sweepX(k, t); });
+        setClip("k0r", s[0], 4000);
+        setClip("k1r", s[1], s[0]);
+        setClip("k2r", s[2], s[1]);
+        setClip("k3r", s[3], s[2]);
+        setClip("k4r", -2000, s[3]);
+        let active = -1;
+        for (let k = 0; k < 4; k++) if (t >= SWEEPS[k][0] && t <= SWEEPS[k][1]) active = k;
+        const scan = $("scan"),
+          glow = $("scan-glow");
+        if (active >= 0) {
+          const x = s[active];
+          scan.setAttribute("x", (x - 1.5).toFixed(2));
+          scan.setAttribute("y", (TOP - 40).toFixed(2));
+          scan.setAttribute("height", (LH + 80).toFixed(2));
+          scan.setAttribute("opacity", "1");
+          glow.setAttribute("x", (x - 34).toFixed(2));
+          glow.setAttribute("y", (TOP - 40).toFixed(2));
+          glow.setAttribute("height", (LH + 80).toFixed(2));
+          glow.setAttribute("opacity", "0.12");
+        } else {
+          scan.setAttribute("opacity", "0");
+          glow.setAttribute("opacity", "0");
+        }
+
+        // retícula de fondo: aparece con los datos y se apaga cuando el logotipo se resuelve
+        const gridOp = 0.16 * prog(t, 0, 0.3) * (1 - p2io(prog(t, 1.4, 2.45)));
+        $("gridbg").setAttribute("opacity", gridOp.toFixed(3));
+
+        // ---- 2.50–2.64 · interferencia: franjas desplazadas y un eco, luego el logotipo se asienta
+        const inG = t >= GLITCH[0] && t < GLITCH[1];
+        glitch.setAttribute("opacity", inG ? "1" : "0");
+        $("crisp").setAttribute("opacity", inG ? "0" : "1");
+        if (inG) {
+          const f = Math.floor((t - GLITCH[0]) * 60);
+          for (let k = 0; k < STRIPS; k++) {
+            const dx = (f % 3 === 2 ? 0 : 1) * 26 * Math.sin(k * 2.7 + f * 1.9) * (k % 2 ? 1 : -0.6);
+            strips[k].setAttribute("transform", "translate(" + dx.toFixed(1) + " 0)");
+          }
+          $("gl-ghost").setAttribute("transform", "translate(" + (f % 2 ? 16 : -12) + " " + (f % 2 ? -4 : 3) + ")");
+        }
+
+        // ---- cámara: arranca cerca y se abre hasta el plano final
+        const sc = lerp(1.22, 1, p2io(prog(t, 0, 2.5)));
+        $("cam").setAttribute("transform", "translate(540 960) scale(" + sc.toFixed(4) + ") translate(-540 -960)");
+        // 2.65–4.00 · el logotipo queda quieto, rosa sobre blanco
+      }
+
+      const clock = { t: 0 };
+      render(0);
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: 4, duration: 4, ease: "none" }, 0);
+      tl.eventCallback("onUpdate", function () {
+        render(tl.time());
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["decode"] = tl;
+    })();
+  </script>
+</template>
