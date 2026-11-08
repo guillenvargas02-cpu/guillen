@@ -1,0 +1,172 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    #stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      perspective: 1500px;
+      perspective-origin: 540px 960px;
+    }
+    #world {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      transform-style: preserve-3d;
+      transform-origin: 540px 960px;
+    }
+    .piece {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      backface-visibility: visible;
+    }
+    .piece svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+    }
+    .piece use,
+    #crisp path {
+      fill: #e4007c;
+      fill-rule: evenodd;
+    }
+    .debris {
+      position: absolute;
+      left: 490px;
+      top: 910px;
+      width: 100px;
+      height: 100px;
+      background: #e4007c;
+      opacity: 0;
+    }
+    #crisp {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="shatter" data-width="1080" data-height="1920">
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs><path id="somos-d" d="{{LOGO_D}}" /></defs>
+    </svg>
+    <div id="stage" data-layout-ignore>
+      <div id="world">
+        <!-- esquirlas: cada una es un pedazo recortado del logotipo oficial -->
+        {{PIECES}}
+        {{DEBRIS}}
+      </div>
+    </div>
+    <!-- Logotipo oficial SOMOS, en una sola pieza: rosa cívico #E4007C sobre blanco (manual de identidad 2026) -->
+    <svg id="crisp" viewBox="0 0 {{LOGO_W}} {{LOGO_H}}" role="img" aria-label="SOMOS" data-layout-ignore><path d="{{LOGO_D}}" /></svg>
+  </div>
+
+  <script>
+    (function () {
+      // Todo lo que se ve es una función pura del tiempo t (render(t) en cada fotograma).
+      const P = {{PDATA}};
+      const DB = {{DDATA}};
+      const T = { burst: 0.5, rewind: 1.55, slam: 2.2 };
+
+      const clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+      const prog = function (t, a, b) { return clamp((t - a) / (b - a), 0, 1); };
+      const expoOut = function (p) { return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p); };
+      const p4in = function (p) { return p * p * p * p; };
+      const p2io = function (p) { return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+      const lerp = function (a, b, p) { return a + (b - a) * p; };
+
+      const pieces = P.map(function (_, i) { return document.getElementById("p" + i); });
+      const debris = DB.map(function (_, i) { return document.getElementById("d" + i); });
+      const world = document.getElementById("world"),
+        crisp = document.getElementById("crisp");
+
+      // cuánto está "explotada" cada esquirla (0 = en su lugar, 1 = dispersa)
+      function amount(i, t) {
+        if (t < T.burst) return 1 - Math.pow(1 - t / T.burst, 4); // el logotipo completo estalla: rápido y luego frena
+        if (t < T.rewind) return lerp(1, 1.07, (t - T.burst) / (T.rewind - T.burst)); // tiempo casi congelado
+        // rebobinado: de dentro hacia afuera, cada una acelera hasta encajar
+        const k = P[i] ? P[i].k : 1;
+        const t0 = T.rewind + 0.12 * k,
+          t1 = T.slam - 0.1 + 0.1 * k;
+        return 1.07 * (1 - p4in(prog(t, t0, t1)) * 1) * (t < t1 ? 1 : 0);
+      }
+
+      function render(t) {
+        // tamaño durante el estallido inicial: nace pequeño en el centro y crece hacia la cámara
+        const grow = 1;
+        for (let i = 0; i < P.length; i++) {
+          const p = P[i],
+            a = amount(i, t);
+          const spin = a; // el giro acompaña a la dispersión
+          const drift = t > T.burst && t < T.rewind ? (t - T.burst) * 9 : t >= T.rewind ? (T.rewind - T.burst) * 9 * a : 0;
+          pieces[i].style.transform =
+            "translate3d(" + (p.dx * a).toFixed(2) + "px," + (p.dy * a).toFixed(2) + "px," + (p.dz * a).toFixed(2) + "px)" +
+            " rotateX(" + (p.rx * spin + drift).toFixed(2) + "deg) rotateY(" + (p.ry * spin - drift).toFixed(2) + "deg) rotateZ(" + (p.rz * spin).toFixed(2) + "deg)" +
+            " scale(" + grow.toFixed(4) + ")";
+        }
+        // astillas sueltas: salen con el estallido y desaparecen al rebobinar
+        for (let i = 0; i < DB.length; i++) {
+          const q = DB[i];
+          const a = t < T.burst ? expoOut(t / T.burst) : t < T.rewind ? 1 + 0.1 * prog(t, T.burst, T.rewind) : 1.1 * (1 - p4in(prog(t, T.rewind, T.slam - 0.05)));
+          const vis = t < T.rewind ? 1 : 1 - prog(t, T.slam - 0.25, T.slam - 0.05);
+          debris[i].style.opacity = (t <= 0 ? 0 : vis).toFixed(3);
+          debris[i].style.transform =
+            "translate3d(" + (q.dx * a).toFixed(2) + "px," + (q.dy * a).toFixed(2) + "px," + (q.dz * a).toFixed(2) + "px)" +
+            " rotateX(" + (q.rx * a).toFixed(1) + "deg) rotateY(" + (q.ry * a).toFixed(1) + "deg) rotateZ(" + (q.rz * a).toFixed(1) + "deg) scale(" + (0.4 + 0.6 * a / 1.1).toFixed(3) + ")";
+        }
+
+        // cámara: órbita lenta durante el tiempo congelado, se endereza en el rebobinado y golpea al encajar
+        const orbit = p2io(prog(t, 0, T.slam));
+        // la cámara se mete en la nube de esquirlas al estallar y orbita; en el rebobinado se aleja y se endereza
+        const inside = expoOut(prog(t, 0, 0.6)) * (1 - p2io(prog(t, T.rewind, T.slam)));
+        const ry = t < T.rewind ? lerp(0, -30, expoOut(prog(t, 0, 0.5))) + 44 * p2io(prog(t, 0.3, T.rewind)) : lerp(14, 0, p2io(prog(t, T.rewind, T.slam))),
+          rx = 18 * Math.sin(Math.PI * prog(t, 0, T.slam)),
+          rz = -7 * Math.sin(Math.PI * prog(t, 0, T.slam));
+        const zoom = 1 + 0.38 * inside;
+        const punch = t >= T.slam ? 0.055 * Math.exp(-(t - T.slam) * 9) : 0;
+        const shakeA = t >= T.slam ? 9 * Math.exp(-(t - T.slam) * 14) : 0;
+        const sx = shakeA * Math.sin((t - T.slam) * 90),
+          sy = shakeA * Math.cos((t - T.slam) * 113);
+        world.style.transform =
+          "translate(" + sx.toFixed(2) + "px," + sy.toFixed(2) + "px) rotateX(" + rx.toFixed(3) + "deg) rotateY(" + ry.toFixed(3) + "deg) rotateZ(" + rz.toFixed(3) + "deg) scale(" + (zoom + punch).toFixed(4) + ")";
+
+        // al encajar, el logotipo de una sola pieza reemplaza a las esquirlas (sin costuras entre cortes)
+        const c = t >= T.slam ? 1 : 0;
+        crisp.style.opacity = c;
+        crisp.style.transform = "translate(" + sx.toFixed(2) + "px," + sy.toFixed(2) + "px) scale(" + (1 + punch).toFixed(4) + ")";
+        world.style.opacity = 1 - c;
+        // 2.60–4.00 · el logotipo queda quieto, rosa sobre blanco
+      }
+
+      const clock = { t: 0 };
+      render(0);
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: 4, duration: 4, ease: "none" }, 0);
+      tl.eventCallback("onUpdate", function () {
+        render(tl.time());
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["shatter"] = tl;
+    })();
+  </script>
+</template>
