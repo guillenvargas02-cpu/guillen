@@ -1,0 +1,217 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    #punch {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      transform-origin: 540px 960px;
+    }
+    #code {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    #crisp {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+      opacity: 0;
+    }
+    #crisp path {
+      fill: #e4007c;
+      fill-rule: evenodd;
+    }
+    /* carga la tipografía monoespaciada que usa el canvas */
+    #font-probe {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+    }
+  </style>
+
+  <div id="root" data-composition-id="binary" data-width="1080" data-height="1920">
+    <span id="font-probe" aria-hidden="true">0101</span>
+    <div id="punch" data-layout-ignore>
+      <!-- código binario dibujado en canvas, fotograma a fotograma -->
+      <canvas id="code" width="1080" height="1920"></canvas>
+      <!-- Logotipo oficial SOMOS: rosa cívico #E4007C sobre blanco (manual de identidad 2026) -->
+      <svg id="crisp" viewBox="0 0 {{LOGO_W}} {{LOGO_H}}" role="img" aria-label="SOMOS"><path d="{{LOGO_D}}" /></svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Todo lo que se ve es una función pura del tiempo t (render(t) en cada fotograma).
+      const DG = {{DIGITS}};
+      const CW = {{CW}},
+        CH = {{CH}},
+        DMAX = {{DMAX}};
+      const PINK = "228,0,124";
+      const T = { rainOut: 1.0, compile: 2.0, compileEnd: 2.32, solid: 2.32 };
+
+      const canvas = document.getElementById("code");
+      const DPR = Math.max(1, Math.round(window.devicePixelRatio || 1));
+      canvas.width = 1080 * DPR;
+      canvas.height = 1920 * DPR;
+      const ctx = canvas.getContext("2d");
+      const crisp = document.getElementById("crisp"),
+        punchEl = document.getElementById("punch");
+
+      const clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+      const prog = function (t, a, b) { return clamp((t - a) / (b - a), 0, 1); };
+      const p2in = function (p) { return p * p; };
+      const p3in = function (p) { return p * p * p; };
+      const p2io = function (p) { return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+      const p3io = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+      const expoOut = function (p) { return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p); };
+      const lerp = function (a, b, p) { return a + (b - a) * p; };
+      function hash(a, b, c) {
+        const v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453;
+        return v - Math.floor(v);
+      }
+
+      // capas de lluvia: tamaño de letra, separación de columnas, velocidad (px/s), opacidad
+      const LAYERS = [
+        { f: 16, sx: 17, v: 620, a: 0.32, len: [10, 26], dens: 0.75 },
+        { f: 28, sx: 30, v: 1050, a: 0.62, len: [7, 18], dens: 0.6 },
+        { f: 58, sx: 64, v: 1900, a: 0.9, len: [4, 10], dens: 0.42 },
+      ];
+
+      function camera(t) {
+        // empuja hacia el código girando, luego se abre de golpe para revelar el logotipo
+        const pin = p2in(prog(t, 0, 1.0));
+        const pout = p3io(prog(t, 1.0, 1.7));
+        const s = lerp(lerp(1.0, 1.32, pin), 0.96, pout) + 0.04 * p2io(prog(t, 1.7, 2.3));
+        const r = lerp(lerp(-9, -3, pin), 0, pout);
+        const y = lerp(lerp(0, -60, pin), 0, pout);
+        return { s: s, r: (r * Math.PI) / 180, y: y };
+      }
+
+      function drawRain(t) {
+        const fade = 1 - p2io(prog(t, T.rainOut, 1.5));
+        if (fade <= 0) return;
+        const boost = 1 + 2.2 * p2in(prog(t, T.rainOut, 1.5)); // la lluvia se acelera al irse
+        for (let L = 0; L < LAYERS.length; L++) {
+          const ly = LAYERS[L];
+          ctx.font = "700 " + ly.f + "px 'JetBrains Mono', monospace";
+          const rowH = ly.f * 1.12;
+          const n = Math.ceil(1500 / ly.sx);
+          for (let c = 0; c < n; c++) {
+            if (hash(c, L, 1) > ly.dens) continue;
+            const x = -210 + c * ly.sx;
+            const len = Math.round(lerp(ly.len[0], ly.len[1], hash(c, L, 2)));
+            const span = 2400 + len * rowH;
+            const speed = ly.v * (0.75 + 0.5 * hash(c, L, 3));
+            // posición acumulada (la aceleración final se integra para que no salte)
+            const dt = Math.max(0, t - T.rainOut);
+            const travel = speed * (t + 2.4 * dt * dt);
+            const head = ((travel + hash(c, L, 4) * span) % span) - 240;
+            const row0 = Math.floor(head / rowH);
+            for (let k = 0; k < len; k++) {
+              const y = head - k * rowH;
+              if (y < -260 || y > 2180) continue;
+              const tail = 1 - k / len;
+              const alpha = ly.a * fade * (k === 0 ? 1 : 0.25 + 0.75 * tail);
+              const bit = hash(c * 7 + L, row0 - k, Math.floor(t * 18 + hash(c, k, L) * 3)) > 0.5 ? "1" : "0";
+              ctx.fillStyle = "rgba(" + PINK + "," + alpha.toFixed(3) + ")";
+              ctx.fillText(bit, x, y);
+              if (boost > 1.2 && k < 3) {
+                // estela vertical cuando acelera
+                ctx.fillStyle = "rgba(" + PINK + "," + (alpha * 0.25).toFixed(3) + ")";
+                ctx.fillRect(x + ly.f * 0.25, y - ly.f * 0.9 - (boost - 1) * 40, ly.f * 0.12, (boost - 1) * 40);
+              }
+            }
+          }
+        }
+      }
+
+      function drawLogoDigits(t) {
+        ctx.font = "700 13px 'JetBrains Mono', monospace";
+        const R = lerp(-20, DMAX + 30, p2io(prog(t, T.compile, T.compileEnd))); // onda de compilación
+        const blockFade = 1 - prog(t, T.solid, T.solid + 0.1);
+        for (let i = 0; i < DG.length; i++) {
+          const g = DG[i];
+          const fall = prog(t, g.land - 0.42, g.land);
+          if (fall <= 0) continue;
+          const p = p3in(fall);
+          const x = lerp(g.sx, g.x, p),
+            y = lerp(g.sy, g.y, p);
+          if (t >= T.compile && g.d < R) {
+            // compilado: el dígito se vuelve un bloque sólido de su celda
+            const k = expoOut(clamp((R - g.d) / 60, 0, 1));
+            const w = lerp(7, CW + 0.6, k),
+              hh = lerp(10, CH + 0.6, k);
+            ctx.fillStyle = "rgba(" + PINK + "," + blockFade.toFixed(3) + ")";
+            ctx.fillRect(g.x + (CW - w) / 2, g.y + (CH - hh) / 2, w, hh);
+            continue;
+          }
+          // aún es código: parpadea su valor (cada vez más lento) con estela al caer
+          const rate = lerp(26, 6, prog(t, g.land, T.compile));
+          const bit = hash(i, 3, Math.floor(t * rate + g.s * 7)) > 0.5 ? "1" : "0";
+          if (fall < 1) {
+            ctx.fillStyle = "rgba(" + PINK + ",0.22)";
+            ctx.fillRect(x + 4, y - 60 * (1 - p) - 10, 1.6, 60 * (1 - p));
+          }
+          if (fall >= 1) {
+            // celda tenue detrás del dígito aterrizado: la forma del logotipo se lee con fuerza
+            const glow = 0.16 + 0.12 * prog(t, g.land, T.compile);
+            ctx.fillStyle = "rgba(" + PINK + "," + glow.toFixed(3) + ")";
+            ctx.fillRect(g.x, g.y, CW + 0.4, CH + 0.4);
+          }
+          ctx.fillStyle = "rgba(" + PINK + "," + (fall < 1 ? 0.55 + 0.45 * p : 1).toFixed(3) + ")";
+          ctx.fillText(bit, x + 1.2, y + CH - 2.6);
+        }
+      }
+
+      function render(t) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cam = camera(t);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        ctx.translate(540, 960 + cam.y);
+        ctx.rotate(cam.r);
+        ctx.scale(cam.s, cam.s);
+        ctx.translate(-540, -960);
+        ctx.textBaseline = "alphabetic";
+        drawRain(t);
+        drawLogoDigits(t);
+
+        // 2.32 · los bloques se funden en el logotipo vectorial, con golpe de cámara
+        crisp.style.opacity = prog(t, T.solid - 0.04, T.solid + 0.06).toFixed(3);
+        const punch = t >= T.solid ? 0.06 * Math.exp(-(t - T.solid) * 10) : 0;
+        const sh = t >= T.solid ? 7 * Math.exp(-(t - T.solid) * 16) : 0;
+        punchEl.style.transform =
+          "translate(" + (sh * Math.sin((t - T.solid) * 95)).toFixed(2) + "px," + (sh * Math.cos((t - T.solid) * 120)).toFixed(2) + "px) scale(" + (1 + punch).toFixed(4) + ")";
+        // 2.45–4.00 · el logotipo queda quieto, rosa sobre blanco
+      }
+
+      const clock = { t: 0 };
+      render(0);
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: 4, duration: 4, ease: "none" }, 0);
+      tl.eventCallback("onUpdate", function () {
+        render(tl.time());
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["binary"] = tl;
+    })();
+  </script>
+</template>
