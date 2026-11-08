@@ -1,0 +1,166 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    #stage,
+    #cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    .logo-box {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+    }
+    .logo-box svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+    }
+    #logo path {
+      fill: #e4007c;
+      fill-rule: evenodd;
+    }
+    /* ecos del impacto: solo el contorno del logotipo, que se expande y se desvanece */
+    .echo path {
+      fill: none;
+      stroke: #e4007c;
+      stroke-width: 2.4;
+      vector-effect: non-scaling-stroke;
+    }
+    /* líneas de velocidad del túnel */
+    .ray {
+      position: absolute;
+      left: 540px;
+      top: 960px;
+      width: 0;
+      height: 0;
+    }
+    .ray i {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: block;
+      background: #e4007c;
+      border-radius: 4px;
+      transform-origin: 0 50%;
+      opacity: 0;
+    }
+    #flash {
+      position: absolute;
+      inset: 0;
+      background: #e4007c;
+      opacity: 0;
+    }
+    .echo {
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="stage" data-layout-ignore>
+      <div id="echo1" class="logo-box echo">{{LOGO_SVG}}</div>
+      <div id="echo2" class="logo-box echo">{{LOGO_SVG}}</div>
+      <div id="echo3" class="logo-box echo">{{LOGO_SVG}}</div>
+      <div id="rays">
+      {{RAYS}}
+      </div>
+      <!-- la "cámara": todos los encuadres son el mismo logotipo oficial visto de muy cerca -->
+      <div id="cam">
+        <div id="logo" class="logo-box" role="img" aria-label="SOMOS">{{LOGO_SVG}}</div>
+      </div>
+    </div>
+    <!-- destello rosa de dos fotogramas en un corte (sin logotipo encima) -->
+    <div id="flash"></div>
+  </div>
+
+  <script>
+    (function () {
+      const LL = {{LOGO_LEFT}},
+        LT = {{LOGO_TOP}};
+      const O = { x: 540, y: 960 };
+
+      // estado de cámara que pone el punto (px, py) del logotipo en el centro de la pantalla + (ox, oy),
+      // con escala s y giro r (grados)
+      function cam(px, py, s, r, ox, oy) {
+        const vx = (LL + px - O.x) * s,
+          vy = (LT + py - O.y) * s;
+        const a = (r * Math.PI) / 180;
+        return {
+          x: (ox || 0) - (vx * Math.cos(a) - vy * Math.sin(a)),
+          y: (oy || 0) - (vx * Math.sin(a) + vy * Math.cos(a)),
+          scale: s,
+          rotation: r,
+        };
+      }
+
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#cam", { transformOrigin: "540px 960px" }, 0);
+
+      // ---- montaje macro: cada toma entra rápido, frena y sale acelerando (el corte cae en el punto más veloz)
+      function shot(t0, t1, f, s0, s1, r0, r1, dir, inMag, outMag) {
+        const mid = t0 + (t1 - t0) * 0.58;
+        const sm = s0 + (s1 - s0) * 0.6,
+          rm = r0 + (r1 - r0) * 0.6;
+        const start = cam(f[0], f[1], s0, r0, -dir[0] * inMag, -dir[1] * inMag);
+        if (t0 === 0) gsap.set("#cam", Object.assign({ transformOrigin: "540px 960px" }, start)); // fotograma 0
+        tl.set("#cam", start, t0);
+        tl.to("#cam", Object.assign(cam(f[0], f[1], sm, rm, 0, 0), { duration: mid - t0, ease: "expo.out" }), t0);
+        tl.to("#cam", Object.assign(cam(f[0], f[1], s1, r1, dir[0] * outMag, dir[1] * outMag), { duration: t1 - mid, ease: "power3.in" }), mid);
+      }
+      // 0.00 · la curva de la primera S cruza en diagonal (el hook: el primer fotograma ya está en movimiento)
+      shot(0.0, 0.4, [72, 52], 8.6, 7.6, -12, -8, [-0.82, 0.57], 260, 820);
+      // 0.40 · la diagonal de la M entra barriendo desde la derecha
+      shot(0.4, 0.72, [404, 74], 6.4, 5.8, 7, 9, [-1, 0], 760, 900);
+      // 0.72 · la curva baja de la última S sube a cuadro
+      shot(0.72, 1.02, [748, 104], 9.5, 8.5, -4, -2, [0, -1], 900, 1100);
+      // 1.02 · destello rosa de dos fotogramas
+      tl.set("#flash", { opacity: 1 }, 1.02);
+      tl.set("#flash", { opacity: 0 }, 1.054);
+      // 1.05 · plano medio: "SOMO" pasa de derecha a izquierda, ya casi se lee
+      shot(1.05, 1.32, [360, 69], 2.5, 2.2, -3, -1, [-1, 0], 640, 520);
+
+      // 1.32–1.85 · la cámara se mete por el hueco blanco de la segunda O hasta llenar la pantalla de blanco
+      tl.set("#cam", cam(591, 69, 2.0, -1, 0, 0), 1.32);
+      tl.to("#cam", Object.assign(cam(591, 69, 46, 4, 0, 0), { duration: 0.53, ease: "power4.in" }), 1.32);
+
+      // 1.85–2.35 · del otro lado, el logotipo completo viene desde el fondo hacia la cámara
+      tl.set("#cam", { x: 0, y: 0, scale: 0.08, rotation: -5 }, 1.85);
+      tl.to("#cam", { scale: 1.13, rotation: 0, duration: 0.5, ease: "power3.in" }, 1.85);
+      for (let i = 0; i < {{N_RAYS}}; i++) {
+        const t = 1.86 + ((i * 7) % 11) * 0.022;
+        tl.fromTo("#ray" + i, { x: 90, opacity: 0, scaleX: 0.4 }, { x: 1250, opacity: 1, scaleX: 1.6, duration: 0.42, ease: "power2.in" }, t);
+        tl.to("#ray" + i, { opacity: 0, duration: 0.08, ease: "none" }, t + 0.34);
+      }
+
+      // 2.35 · impacto: el logotipo se asienta, la cámara tiembla y su contorno hace eco hacia afuera
+      tl.to("#cam", { scale: 1, duration: 0.42, ease: "expo.out" }, 2.35);
+      const shake = [];
+      for (let k = 1; k <= 18; k++) {
+        const amp = 16 * Math.pow(0.8, k);
+        shake.push({ x: amp * Math.sin(k * 2.7), y: amp * Math.cos(k * 3.9), duration: 1 / 60, ease: "none" });
+      }
+      shake.push({ x: 0, y: 0, duration: 1 / 60, ease: "none" });
+      tl.to("#stage", { keyframes: shake }, 2.35);
+      ["#echo1", "#echo2", "#echo3"].forEach(function (id, i) {
+        tl.fromTo(id, { scale: 1, opacity: 0.55 - i * 0.12 }, { scale: 1.28 + i * 0.22, opacity: 0, duration: 0.62, ease: "expo.out", transformOrigin: "50% 50%", immediateRender: false }, 2.35 + i * 0.06);
+      });
+      // 2.80–4.00 · el logotipo queda quieto, rosa sobre blanco
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["hook"] = tl;
+    })();
+  </script>
+</template>
