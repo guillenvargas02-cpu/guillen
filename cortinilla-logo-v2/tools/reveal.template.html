@@ -1,0 +1,228 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--color-ground, #ffffff);
+    }
+    #stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    /* esferas rosas con volumen (luz arriba a la izquierda) */
+    .ball {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 100px;
+      margin: -50px 0 0 -50px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 28%, #ff7cbc 0%, #f02a93 22%, #e4007c 52%, #a8005b 100%);
+      opacity: 0;
+    }
+    /* sombras suaves sobre el piso */
+    .shadow {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 100px;
+      margin: -50px 0 0 -50px;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(150, 0, 80, 0.32), rgba(150, 0, 80, 0) 100%);
+      opacity: 0;
+    }
+    .letter {
+      position: absolute;
+      left: {{LOGO_LEFT}}px;
+      top: {{LOGO_TOP}}px;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      clip-path: circle(0px at 0px 0px);
+    }
+    .letter svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: {{LOGO_W}}px;
+      height: {{LOGO_H}}px;
+      overflow: visible;
+    }
+    .letter path {
+      fill: #e4007c;
+      fill-rule: evenodd;
+    }
+  </style>
+
+  <div id="root" data-composition-id="reveal" data-width="1080" data-height="1920">
+    <div id="stage" data-layout-ignore>
+      <div id="sh0" class="shadow"></div>
+      <div id="sh1" class="shadow"></div>
+      <div id="sh2" class="shadow"></div>
+      <div id="sh3" class="shadow"></div>
+      <div id="sh4" class="shadow"></div>
+      <div id="shm" class="shadow"></div>
+      <!-- Logotipo oficial SOMOS: rosa cívico #E4007C sobre blanco (manual de identidad 2026), una letra por capa -->
+      <div id="logo" role="img" aria-label="SOMOS">
+      {{LETTERS}}
+      </div>
+      <div id="b0" class="ball"></div>
+      <div id="b1" class="ball"></div>
+      <div id="b2" class="ball"></div>
+      <div id="b3" class="ball"></div>
+      <div id="b4" class="ball"></div>
+      <div id="bm" class="ball"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Todo lo que se ve es una función pura del tiempo t: render(t) se llama en cada fotograma.
+      const CX = 540,
+        CY = 960;
+      const LOGO_LEFT = {{LOGO_LEFT}},
+        LOGO_H = {{LOGO_H}};
+      const CENTERS = {{CENTERS}}; // centro x de cada letra dentro del logotipo
+      const TARGET_X = CENTERS.map(function (c) { return LOGO_LEFT + c - CX; }); // destino de cada esfera (mundo)
+
+      const T = { hit: 0.28, split: 0.4, spinEnd: 1.7, line: 2.08, burst: 2.08 };
+      const F = 1500; // distancia focal de la cámara
+      const PITCH = (25 * Math.PI) / 180; // la cámara mira el carrusel desde arriba
+      const RING = 410,
+        R_BALL = 34,
+        BIG = 1.28, // tamaño de las esferas en el carrusel (100 px = 1)
+        FLOOR = -50, // piso del primer rebote
+        GROUND = -230; // piso bajo el carrusel (las esferas flotan)
+
+      const clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+      const prog = function (t, a, b) { return clamp((t - a) / (b - a), 0, 1); };
+      const e = {
+        expoOut: function (p) { return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p); },
+        p2io: function (p) { return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; },
+        p3io: function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; },
+        p3o: function (p) { return 1 - Math.pow(1 - p, 3); },
+        p2o: function (p) { return 1 - Math.pow(1 - p, 2); },
+      };
+
+      // proyección de un punto del mundo (x derecha, y arriba, z hacia la cámara)
+      function project(x, y, z, pitch) {
+        const yp = y * Math.cos(pitch) - z * Math.sin(pitch);
+        const zp = y * Math.sin(pitch) + z * Math.cos(pitch);
+        const s = F / (F - zp);
+        return { x: CX + x * s, y: CY - yp * s, s: s, z: zp };
+      }
+
+      // posición en el carrusel (antes de aplanarse)
+      function ringPos(i, t) {
+        const r = RING * e.expoOut(prog(t, T.split, T.split + 0.45));
+        const lift = 90 * e.expoOut(prog(t, T.split, T.split + 0.5)); // saltan del piso al formar el carrusel
+        const spin = 2 * Math.PI * 1.25 * e.p2io(prog(t, T.split, T.spinEnd));
+        const a = spin + (i * 2 * Math.PI) / 5 - Math.PI / 2;
+        const bobAmp = 22 * Math.sin(Math.PI * prog(t, T.split, T.spinEnd));
+        return { x: r * Math.cos(a), y: lift + bobAmp * Math.sin(t * 9 + i * 1.3), z: r * Math.sin(a) };
+      }
+      // al final del giro, cada esfera va a la letra que le queda más cerca en orden izquierda → derecha
+      const order = [0, 1, 2, 3, 4].sort(function (a, b) { return ringPos(a, T.spinEnd).x - ringPos(b, T.spinEnd).x; });
+      const slot = [];
+      order.forEach(function (ball, k) { slot[ball] = k; });
+
+      const balls = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("b" + i); });
+      const shadows = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("sh" + i); });
+      const letters = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("L" + i); });
+      const bm = document.getElementById("bm"),
+        shm = document.getElementById("shm"),
+        stage = document.getElementById("stage");
+
+      function place(el, x, y, sx, sy, opacity, blur, zi) {
+        el.style.transform = "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) scale(" + sx.toFixed(4) + "," + sy.toFixed(4) + ")";
+        el.style.opacity = opacity.toFixed(3);
+        el.style.filter = blur > 0.05 ? "blur(" + blur.toFixed(2) + "px)" : "none";
+        if (zi !== undefined) el.style.zIndex = zi;
+      }
+
+      function render(t) {
+        // ---- 0.00–0.40 · una esfera cae al centro, se aplasta y rebota
+        if (t < T.split) {
+          let y,
+            sq = 0;
+          if (t < T.hit) {
+            const p = t / T.hit;
+            y = 760 * (1 - p * p); // cae acelerando (altura sobre el centro)
+          } else {
+            const u = t - T.hit;
+            y = 46 * Math.sin((Math.PI * u) / 0.12) * (u < 0.12 ? 1 : 0);
+            sq = 0.32 * Math.exp(-u * 16) * Math.cos(u * 38);
+          }
+          const d = 1.1;
+          const pr = project(0, y, 0, 0);
+          place(bm, pr.x, pr.y + (sq > 0 ? 46 * sq : 0), d * (1 + sq), d * (1 - sq), 1, 0, 20);
+          const g = project(0, FLOOR, 0, 0);
+          const near = clamp(1 - y / 760, 0, 1);
+          place(shm, g.x, g.y, 1.8 * (0.5 + 0.5 * near), 0.32 * (0.5 + 0.5 * near), 0.9 * near, 0, 1);
+        } else {
+          bm.style.opacity = "0";
+          shm.style.opacity = "0";
+        }
+
+        // ---- 0.40–2.08 · carrusel 3D que gira y luego se aplana en línea
+        const flat = e.p3io(prog(t, T.spinEnd, T.line));
+        const pitch = PITCH * (1 - flat) * e.p2o(prog(t, T.split, T.split + 0.5));
+        for (let i = 0; i < 5; i++) {
+          if (t < T.split) {
+            balls[i].style.opacity = "0";
+            shadows[i].style.opacity = "0";
+            continue;
+          }
+          const rp = ringPos(i, Math.min(t, T.spinEnd));
+          const tx = TARGET_X[slot[i]];
+          const w = { x: rp.x + (tx - rp.x) * flat, y: rp.y * (1 - flat), z: rp.z * (1 - flat) };
+          const pr = project(w.x, w.y, w.z, pitch);
+          // del tamaño de la esfera inicial al del carrusel, y al de la línea final (diámetro = 2·R_BALL)
+          const ringSize = 1.1 + (BIG - 1.1) * e.expoOut(prog(t, T.split, T.split + 0.35));
+          const grow = ringSize + ((R_BALL * 2) / 100 - ringSize) * flat;
+          const dof = clamp((-pr.z / RING) * 7, 0, 7) * (1 - flat);
+          // estallido en su letra
+          const tb = T.burst + slot[i] * 0.055;
+          const pb = prog(t, tb, tb + 0.3);
+          const scale = grow * pr.s * (1 + 1.6 * e.p2o(pb));
+          place(balls[i], pr.x, pr.y, scale, scale, 1 - e.p2o(pb), dof, Math.round(1000 + pr.z));
+          const g = project(w.x, GROUND, w.z, pitch);
+          place(shadows[i], g.x, g.y, 1.5 * g.s, 0.3 * g.s, 0.85 * (1 - flat), dof * 0.6, 1);
+        }
+
+        // ---- 2.08–2.80 · cada esfera estalla y revela su letra con un círculo que crece desde su centro
+        for (let k = 0; k < 5; k++) {
+          const tb = T.burst + k * 0.055;
+          const p = prog(t, tb, tb + 0.42);
+          const r = p <= 0 ? 0 : R_BALL + (190 - R_BALL) * e.p3o(p);
+          letters[k].style.clipPath = "circle(" + r.toFixed(1) + "px at " + CENTERS[k] + "px " + (LOGO_H / 2).toFixed(1) + "px)";
+          const s = 0.9 + 0.1 * e.expoOut(prog(t, tb, tb + 0.55));
+          letters[k].style.transformOrigin = CENTERS[k] + "px 50%";
+          letters[k].style.transform = "scale(" + s.toFixed(4) + ")";
+        }
+
+        // ---- cámara: se acerca un poco mientras se forma la línea y se asienta con el logotipo
+        const push = 0.035 * e.p2io(prog(t, T.spinEnd, T.line)) * (1 - e.p3o(prog(t, T.line, 2.95)));
+        const sc = 1 + push;
+        stage.style.transform = "translate(" + (CX * (1 - sc)).toFixed(2) + "px," + (CY * (1 - sc)).toFixed(2) + "px) scale(" + sc.toFixed(5) + ")";
+        // 2.95–4.00 · el logotipo queda quieto, rosa sobre blanco
+      }
+
+      const clock = { t: 0 };
+      render(0);
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: 4, duration: 4, ease: "none" }, 0);
+      tl.eventCallback("onUpdate", function () {
+        render(tl.time());
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["reveal"] = tl;
+    })();
+  </script>
+</template>
