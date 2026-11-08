@@ -5,6 +5,7 @@ Intro vertical de 4 s (2160×3840, 60 fps) hecha con HyperFrames. Sin textos y s
 | Tiempo | Qué pasa |
 | --- | --- |
 | 0.00–2.05 s | Travelling lateral por el skyline, en un solo plano y con el mismo aire entre edificios: Castillo de Chapultepec · Fuente de Petróleos · Altar a la Patria · Torre del Reloj de Polanco · Auditorio Nacional · Museo Soumaya. Cada edificio brota del suelo, se rellena y se dibujan sus trazos. |
+| | Los edificios son volúmenes 3D: cada uno se extruye hacia un punto de fuga en pantalla, así que al pasar la cámara se ve su lado derecho (los de la izquierda) o su lado izquierdo (los de la derecha), con techo claro y lados en tono medio. |
 | 1.90–2.50 s | La cámara se aleja y se ve el skyline completo sobre la línea del suelo. |
 | 2.42–2.95 s | La ciudad se hunde bajo la línea del suelo, de izquierda a derecha, y desde esa misma línea suben las letras de SOMOS. |
 | 3.00–3.32 s | La línea del suelo se recoge hacia el centro. |
@@ -19,5 +20,7 @@ python3 -I tools/build_scene.py             # escribe compositions/skyline.html 
 npm run check
 npm run render                              # renders/cortinilla-somos-skyline-v2-4k.mp4
 ```
+
+La extrusión se ajusta en `tools/skyline.template.html` (`VP` = punto de fuga, `DEPTH` = profundidad; colores en `.xt`, `.xl`, `.xr`).
 
 Edita `tools/buildings.py` (dibujos) y `tools/skyline.template.html` (línea de tiempo); `compositions/skyline.html` se regenera.

@@ -22,6 +22,16 @@
       height: 1200px;
       overflow: visible;
     }
+    /* caras de la extrusión 3D: techo claro, lados en tono medio */
+    .xt {
+      fill: #fcdbea;
+    }
+    .xl {
+      fill: #f8c3dc;
+    }
+    .xr {
+      fill: #f1a2c8;
+    }
     .s {
       fill: none;
       stroke: #e4007c;
@@ -78,6 +88,70 @@
       const KF = {{KF}};
       const FPS = {{FPS}};
 
+      // ---- 3D: cada edificio se extruye hacia un punto de fuga fijo en pantalla (perspectiva de un punto).
+      // Al moverse la cámara, cambia de qué lado se ven los volúmenes.
+      const SIL = {{SIL}};
+      const OX = {{OX}},
+        OY = {{OY}};
+      const VP = { x: 540, y: 560 }; // punto de fuga en pantalla (arriba del horizonte de los edificios)
+      const DEPTH = 105; // profundidad de los volúmenes, en unidades del skyline (dirigida al punto de fuga)
+      function quadD(a, b, ap, bp) {
+        // orientación uniforme para que la unión de caras no deje huecos
+        const ar = (b[0] - a[0]) * (bp[1] - a[1]) - (bp[0] - a[0]) * (b[1] - a[1]);
+        const q = ar >= 0 ? [a, b, bp, ap] : [a, ap, bp, b];
+        return "M" + q.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join("L") + "Z";
+      }
+      function apply3D(time) {
+        const f = Math.min(KF.length - 1, Math.max(0, Math.round(time * FPS)));
+        const cam = KF[f];
+        Object.keys(SIL).forEach(function (uid) {
+          const b = SIL[uid];
+          // punto de fuga en coordenadas locales del edificio
+          const wy = gsap.getProperty("#" + uid + "-wrap", "y") || 0; // el edificio sube y se hunde
+          const vx = ((VP.x - cam[0]) / cam[2] - OX - b.cx) / b.k;
+          const vy = ((VP.y - cam[1]) / cam[2] - OY - wy) / b.k;
+          // una sola dirección de profundidad por edificio (desde su centro hacia el punto de fuga):
+          // prismas limpios cuyo lado visible cambia según dónde pasa la cámara
+          const dl = DEPTH / b.k;
+          const ddx = vx - b.mx,
+            ddy = vy - b.my;
+          const L = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
+          const ox = (ddx / L) * dl,
+            oy = (ddy / L) * dl;
+          function back(p) {
+            return [p[0] + ox, p[1] + oy];
+          }
+          let top = "",
+            left = "",
+            right = "";
+          b.c.forEach(function (c) {
+            const n = c.length / 2;
+            for (let i = 0; i < n; i++) {
+              const j = (i + 1) % n;
+              const a = [c[2 * i], c[2 * i + 1]],
+                bb = [c[2 * j], c[2 * j + 1]];
+              const ex = bb[0] - a[0],
+                ey = bb[1] - a[1];
+              const nx = ey * b.s,
+                ny = -ex * b.s; // normal hacia afuera del sólido
+              const mx = (a[0] + bb[0]) / 2,
+                my = (a[1] + bb[1]) / 2;
+              if (nx * (vx - mx) + ny * (vy - my) <= 0) continue; // cara de espaldas a la cámara
+              const ap = back(a),
+                bp = back(bb);
+              const d = quadD(a, bb, ap, bp);
+              if (ny < 0 && -ny >= Math.abs(nx)) top += d;
+              else if (nx > 0) right += d;
+              else left += d;
+            }
+          });
+          document.getElementById(uid + "-xt").setAttribute("d", top || "M0 0Z");
+          document.getElementById(uid + "-xl").setAttribute("d", left || "M0 0Z");
+          document.getElementById(uid + "-xr").setAttribute("d", right || "M0 0Z");
+        });
+      }
+      apply3D(0);
+
       function strokesOf(id) {
         return Array.from(document.querySelectorAll("#" + id + " .s")).sort(function (a, b) {
           return a.dataset.o - b.dataset.o;
@@ -108,6 +182,11 @@
       // 3.00–3.30 · la línea del suelo se recoge hacia el centro y queda solo el logotipo
       tl.to("#ground", { scaleX: 0, svgOrigin: "{{GROUND_CX}} 0", duration: 0.32, ease: "power3.in" }, 3.0);
       // 3.30–4.00 · el logotipo queda quieto, rosa sobre blanco
+
+      // la extrusión se recalcula después de que todos los tweens del fotograma ya se aplicaron
+      tl.eventCallback("onUpdate", function () {
+        apply3D(tl.time());
+      });
 
       window.__timelines = window.__timelines || {};
       window.__timelines["skyline"] = tl;

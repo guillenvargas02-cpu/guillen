@@ -81,6 +81,40 @@ def render_building(name, k, uid):
     return "\n".join(out)
 
 
+def silhouette(name):
+    """Contorno(s) del volumen del edificio (unión de sus polígonos), para extruirlo en 3D.
+    Devuelve una lista de curvas [x0, y0, x1, y1, ...] en coordenadas locales y el signo que
+    orienta las normales hacia afuera del sólido."""
+    import numpy as np
+    import potrace
+    from PIL import Image, ImageDraw
+
+    sc, x0, y0 = 1.0, -800, -1150
+    img = Image.new("L", (1600, 1180), 0)
+    dr = ImageDraw.Draw(img)
+    for s in BUILDERS[name]():
+        if s["t"] == "poly" and not s.get("flat"):
+            dr.polygon([((p[0] - x0) * sc, (p[1] - y0) * sc) for p in s["pts"]], fill=255)
+    m = np.array(img) > 127
+    curves = potrace.Bitmap(~m).trace(turdsize=30, alphamax=0.9, opticurve=True, opttolerance=0.3)
+    out = []
+    for c in curves:
+        pts, cur = [], c.start_point
+        for seg in c.segments:
+            if seg.is_corner:
+                pts += [(seg.c.x, seg.c.y), (seg.end_point.x, seg.end_point.y)]
+            else:
+                for k in range(1, 5):
+                    u = k / 4
+                    pts.append(tuple((1 - u) ** 3 * a0 + 3 * (1 - u) ** 2 * u * a1 + 3 * (1 - u) * u * u * a2 + u ** 3 * a3 for a0, a1, a2, a3 in zip((cur.x, cur.y), (seg.c1.x, seg.c1.y), (seg.c2.x, seg.c2.y), (seg.end_point.x, seg.end_point.y))))
+            cur = seg.end_point
+        out.append([(x / sc + x0, y / sc + y0) for x, y in pts])
+    big = max(out, key=len)
+    area = sum(big[i][0] * big[(i + 1) % len(big)][1] - big[(i + 1) % len(big)][0] * big[i][1] for i in range(len(big)))
+    flat = [[round(v, 1) for p in c for v in p] for c in out]
+    return flat, (1 if area > 0 else -1)
+
+
 def layout():
     """Coloca los edificios de izquierda a derecha con el mismo aire entre ellos."""
     placed, x = [], 0.0
@@ -141,7 +175,7 @@ def main():
 
     kf = [tf(i / FPS) for i in range(int(round(2.6 * FPS)) + 1)]
 
-    blds, tweens = [], []
+    blds, tweens, sils = [], [], {}
     for i, b in enumerate(bl):
         uid = f"b{i}"
         t_in = 0.0
@@ -151,6 +185,16 @@ def main():
                 t_in = max(0.0, f / FPS - 0.34)
                 break
         body = render_building(b["name"], b["k"], uid)
+        sil, sgn = silhouette(b["name"])
+        allx = [v for c in sil for v in c[0::2]]
+        ally = [v for c in sil for v in c[1::2]]
+        sils[uid] = {"c": sil, "s": sgn, "cx": round(b["cx"], 2), "k": b["k"], "mx": round((min(allx) + max(allx)) / 2, 1), "my": round((min(ally) + max(ally)) / 2, 1)}
+        xclip = f'clip-path="url(#rise-{uid})"'
+        body = (
+            f'<path id="{uid}-xt" class="xt" d="M0 0Z" {xclip} />'
+            f'<path id="{uid}-xl" class="xl" d="M0 0Z" {xclip} />'
+            f'<path id="{uid}-xr" class="xr" d="M0 0Z" {xclip} />\n' + body
+        )
         blds.append(
             f'<g id="{uid}-wrap"><g id="{uid}" transform="translate({fmt(b["cx"])} 0) scale({b["k"]})">\n'
             f'<clipPath id="rise-{uid}"><rect id="{uid}-rise" x="-700" y="20" width="1400" height="0" /></clipPath>\n{body}\n</g></g>'
@@ -164,7 +208,7 @@ def main():
     # salida: cada edificio se hunde bajo el suelo, de izquierda a derecha
     sink = []
     for i, b in enumerate(bl):
-        depth = -b["top"] + 40
+        depth = -b["top"] + 40 + 140 / b["k"] * b["k"]  # también se hunde el volumen extruido
         sink.append(f'      tl.to("#b{i}-wrap", {{ y: {fmt(depth)}, duration: 0.3, ease: "power3.in" }}, {2.42 + i * 0.035:.3f});')
 
     rep = {
@@ -177,6 +221,9 @@ def main():
         "{{TWEENS}}": "\n".join(tweens),
         "{{SINK}}": "\n".join(sink),
         "{{KF}}": json.dumps(kf, separators=(",", ":")),
+        "{{SIL}}": json.dumps(sils, separators=(",", ":")),
+        "{{OX}}": fmt(OX),
+        "{{OY}}": fmt(OY),
         "{{FPS}}": str(FPS),
         "{{LOGO_LEFT}}": fmt(logo_left),
         "{{LOGO_TOP}}": f"{logo_top:.3f}",

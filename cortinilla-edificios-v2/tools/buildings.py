@@ -240,7 +240,7 @@ def petroleos():
     s = []
     # surtidores de agua (blancos con contorno rosa)
     for x, h in ((-330, 150), (-270, 210), (250, 200), (310, 150)):
-        s.append(P([(x - 7, -58), (x - 2, -58 - h * 0.85), (x, -58 - h), (x + 2, -58 - h * 0.85), (x + 7, -58)], "white"))
+        s.append({**P([(x - 7, -58), (x - 2, -58 - h * 0.85), (x, -58 - h), (x + 2, -58 - h * 0.85), (x + 7, -58)], "white"), "flat": True})
     # vaso de la fuente
     s.append(P([(-380, 0), (380, 0), (380, -46)] + catmull([(380, -46), (0, -58), (-380, -46)], closed=False, steps=6)[1:], "mid"))
     s.append(L([(-380, -24), (380, -24)]))
