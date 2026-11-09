@@ -1,0 +1,167 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-600.woff2") format("woff2");
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .mask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding: 0.06em 0.06em 0.1em 0.02em;
+      margin: -0.06em -0.06em -0.1em -0.02em;
+    }
+    .mask > span {
+      display: inline-block;
+    }
+    .r {
+      font-weight: 400;
+    }
+    .b {
+      font-weight: 700;
+    }
+    .card {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      visibility: hidden;
+      overflow: hidden;
+    }
+    .pink {
+      background: #e4007c;
+      color: #fff;
+    }
+    .white {
+      background: #fff;
+      color: #000;
+    }
+    .black {
+      background: #000;
+      color: #fff;
+    }
+    .accent {
+      color: #e4007c;
+    }
+    .txt {
+      position: absolute;
+      left: 92px;
+      width: 920px;
+      font-family: "Hind Siliguri", sans-serif;
+      line-height: 1.04;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      transform-origin: 0% 50%;
+    }
+    .txt > div {
+      display: block;
+    }
+    #c1-swap {
+      position: relative;
+      height: 180px;
+    }
+    #c1-swap .mask {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="cards" data-width="1080" data-height="1920">
+    <!-- Placas de solo texto, con el estilo de las aplicaciones 9:16 del manual SOMOS 2026:
+         Hind Siliguri regular + bold, alineado a la izquierda, rosa cívico / blanco / negro. -->
+    <div id="c1" class="card pink">
+      <div class="txt" id="c1-t" style="top: 640px; font-size: 132px">
+        <div class="r"><span class="mask"><span>Compartimos</span></span></div>
+        <div class="r"><span class="mask"><span>nuestras</span></span></div>
+        <div class="b" id="c1-swap" style="font-size: 156px">
+          <span class="mask" id="c1-w0"><span>causas,</span></span>
+          <span class="mask" id="c1-w1"><span>ideas,</span></span>
+          <span class="mask" id="c1-w2"><span>inquietudes.</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="c2" class="card white">
+      <div class="txt" id="c2-t" style="top: 660px; font-size: 132px">
+        <div class="r"><span class="mask"><span>Y lo que</span></span></div>
+        <div class="r"><span class="mask"><span>queremos</span></span></div>
+        <div class="b accent" style="font-size: 150px"><span class="mask"><span>para</span></span> <span class="mask"><span>México.</span></span></div>
+      </div>
+    </div>
+
+    <div id="c3" class="card black">
+      <div class="txt" id="c3-t" style="top: 660px; font-size: 132px">
+        <div class="r"><span class="mask"><span>Para que</span></span></div>
+        <div class="r"><span class="mask"><span>el poder</span></span></div>
+        <div style="font-size: 130px"><span class="mask r"><span>sea</span></span> <span class="mask b accent"><span>ciudadano.</span></span></div>
+      </div>
+    </div>
+
+    <div id="c4" class="card pink">
+      <div class="txt" id="c4-t" style="top: 720px; font-size: 132px">
+        <div class="r"><span class="mask"><span>Esto apenas</span></span></div>
+        <div class="b" style="font-size: 190px"><span class="mask"><span>comienza.</span></span></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const B = 60 / 124, D1 = 2.68;
+    const g = (n) => D1 + n * B;
+    const LOGO = g(50);
+    const rise = (sel, t, stagger = 0.1) =>
+      tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger }, t);
+    // Cada placa entra en seco en el beat y su texto deriva despacio mientras dura
+    const card = (id, a, b) => {
+      tl.set(`#${id}`, { visibility: "visible" }, a);
+      tl.fromTo(`#${id}-t`, { y: 18, scale: 1.0 }, { y: -18, scale: 1.025, duration: b - a, ease: "none" }, a);
+      tl.set(`#${id}`, { visibility: "hidden" }, b);
+    };
+
+    // 1. "Compartimos nuestras causas, ideas, inquietudes." (la palabra en bold cambia en el beat)
+    card("c1", g(4), g(10));
+    rise("#c1 .r .mask > span", g(4));
+    rise("#c1-w0 > span", g(5));
+    [["#c1-w0", "#c1-w1", g(6.5)], ["#c1-w1", "#c1-w2", g(8)]].forEach(([a, b, t]) => {
+      tl.to(`${a} > span`, { yPercent: -115, duration: 0.16, ease: "power3.in" }, t - 0.16);
+      rise(`${b} > span`, t);
+    });
+
+    // 2. "Y lo que queremos para México." — blanco, la frase final en rosa cívico
+    card("c2", g(12), g(16));
+    rise("#c2 .r .mask > span", g(12));
+    rise("#c2 .b .mask > span", g(13), 0.14);
+
+    // 3. Entra el bajo: "Para que el poder sea ciudadano." sobre negro
+    card("c3", g(36), g(40));
+    rise("#c3 .r .mask > span", g(36));
+    rise("#c3 .mask.r > span", g(37.5));
+    rise("#c3 .mask.b > span", g(38));
+
+    // 4. "Esto apenas comienza." — sigue debajo del logo y se encoge dentro de la O
+    card("c4", g(48), LOGO + 0.95);
+    rise("#c4 .r .mask > span", g(48));
+    rise("#c4 .b .mask > span", g(49));
+    window.__timelines["cards"] = tl;
+  </script>
+</template>

@@ -1,9 +1,21 @@
 <template>
   <style>
     @font-face {
-      font-family: "SOMOS Display";
-      src: url("assets/fonts/InterDisplay-SemiBold.otf") format("opentype");
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-600.woff2") format("woff2");
       font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-700.woff2") format("woff2");
+      font-weight: 700;
       font-style: normal;
     }
     #root {
@@ -17,17 +29,7 @@
       top: 0;
       width: 1080px;
       height: 1920px;
-      background: radial-gradient(ellipse 85% 60% at 50% 48%, #f2207f 0%, #e60573 55%, #b8045c 100%);
-    }
-    #d-mark {
-      position: absolute;
-      z-index: 1;
-      left: -260px;
-      top: 1380px;
-      width: 1600px;
-      height: auto;
-      opacity: 0.1;
-      filter: brightness(0) invert(1);
+      background: #e4007c; /* Rosa cívico (manual de identidad 2026) */
     }
     .full {
       position: absolute;
@@ -110,7 +112,7 @@
       z-index: 6;
       right: 70px;
       bottom: 150px;
-      font-family: "SOMOS Display", sans-serif;
+      font-family: "Hind Siliguri", sans-serif;
       font-weight: 600;
       font-size: 38px;
       letter-spacing: 0.14em;
@@ -124,7 +126,6 @@
          impresas caen sobre el rosa de SOMOS cada vez más rápido. La última es el fotograma exacto
          de la toma que sigue: al acercarse se convierte en video sin corte. -->
     <div id="d-bg"></div>
-    <img id="d-mark" src="assets/brand/somos.svg" alt="" data-layout-ignore />
     <div id="d-stack">
       <div id="d-p2" class="print"><div class="ph"><img src="assets/photos/graded/still_A_3_30.jpg" alt="Entrevista" /></div></div>
       <div id="d-p3" class="print"><div class="ph"><img src="assets/photos/graded/foto1.jpg" alt="Equipo de TV" /></div></div>
@@ -161,7 +162,6 @@
     };
 
     tl.set(["#d-shT", "#d-shB"], { scaleY: 0 }, 0);
-    tl.fromTo("#d-mark", { x: 0 }, { x: -220, duration: 7.84, ease: "none" }, 0);
 
     // 1. Golpe 2: fotos a pantalla completa, una cada 2 beats, con obturador y fecha de cámara
     tl.set("#d-f1", { visibility: "visible" }, 0);
