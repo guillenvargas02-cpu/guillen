@@ -201,6 +201,15 @@ def rumble(d=3.4):
     return stereo(norm(x * p**1.8))
 
 
+def flag_flutter(d):
+    """Tela de bandera al viento: ruido filtrado con aleteo irregular."""
+    t = secs(d)
+    flap = 0.55 + 0.45 * np.sin(2 * np.pi * 7.3 * t) * np.sin(2 * np.pi * 2.1 * t + 0.7)
+    x = bp(noise(d), 300, 3500) * np.abs(flap) ** 1.5
+    env = np.minimum(1, t / 0.06) * np.exp(-t / (d * 0.8))
+    return stereo(norm(x * env), 0.3)
+
+
 # ---------------------------------------------------------------- música
 
 
@@ -274,11 +283,16 @@ def main():
     rc = reverse_cymbal(1.4)
     place(sfx, rc, ends_at(rc, R_IN), -11)
 
-    # Regreso: impacto y un golpe en cada corte de la ráfaga
+    # Placa de la cima: la montaña se traza (barrido suave), pasos del escalador en cada beat
+    place(sfx, swish(0.9), B_IN + 0.2, -24)
+    for k in range(38, 44):
+        place(sfx, paper_drop(), g(k), -27)
+
+    # Regreso: llega a la cima, impacto y la bandera se despliega y ondea
     place(sfx, impact(1.3, 2.8), R_IN, -6)
-    for k in (45, 46, 47, 48, 49):
-        place(sfx, tick(), g(k), -16)
-        place(sfx, swish(0.25), g(k) - 0.12, -24)
+    w = whoosh(0.3, 600, 7000)
+    place(sfx, w, R_IN, -16)
+    place(sfx, flag_flutter(LOGO - R_IN), R_IN + 0.1, -20)
 
     # Logo final
     w = whoosh(0.45, 200, 7000)

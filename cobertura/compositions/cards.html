@@ -109,26 +109,12 @@
       </div>
     </div>
 
-    <div id="c3" class="card black">
-      <div class="txt" id="c3-t" style="top: 660px; font-size: 132px">
-        <div class="r"><span class="mask"><span>Para que</span></span></div>
-        <div class="r"><span class="mask"><span>el poder</span></span></div>
-        <div style="font-size: 130px"><span class="mask r"><span>sea</span></span> <span class="mask b accent"><span>ciudadano.</span></span></div>
-      </div>
-    </div>
 
-    <div id="c4" class="card pink">
-      <div class="txt" id="c4-t" style="top: 720px; font-size: 132px">
-        <div class="r"><span class="mask"><span>Esto apenas</span></span></div>
-        <div class="b" style="font-size: 190px"><span class="mask"><span>comienza.</span></span></div>
-      </div>
-    </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     const B = 60 / 124, D1 = 2.68;
     const g = (n) => D1 + n * B;
-    const LOGO = g(50);
     const rise = (sel, t, stagger = 0.1) =>
       tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger }, t);
     // Cada placa entra en seco en el beat y su texto deriva despacio mientras dura
@@ -152,16 +138,6 @@
     rise("#c2 .r .mask > span", g(12));
     rise("#c2 .b .mask > span", g(13), 0.14);
 
-    // 3. Entra el bajo: "Para que el poder sea ciudadano." sobre negro
-    card("c3", g(36), g(40));
-    rise("#c3 .r .mask > span", g(36));
-    rise("#c3 .mask.r > span", g(37.5));
-    rise("#c3 .mask.b > span", g(38));
-
-    // 4. "Esto apenas comienza." — sigue debajo del logo y se encoge dentro de la O
-    card("c4", g(48), LOGO + 0.95);
-    rise("#c4 .r .mask > span", g(48));
-    rise("#c4 .b .mask > span", g(49));
     window.__timelines["cards"] = tl;
   </script>
 </template>

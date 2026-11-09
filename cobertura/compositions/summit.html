@@ -1,0 +1,184 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-600.woff2") format("woff2");
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/HindSiliguri-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    #s-card {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #e4007c;
+      visibility: hidden;
+      overflow: hidden;
+    }
+    #s-svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    #s-svg .ln {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 15;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+    .txt {
+      position: absolute;
+      left: 92px;
+      top: 214px;
+      width: 920px;
+      font-family: "Hind Siliguri", sans-serif;
+      color: #fff;
+      line-height: 1.04;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+    .mask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding: 0.06em 0.06em 0.1em 0.02em;
+      margin: -0.06em -0.06em -0.1em -0.02em;
+    }
+    .mask > span {
+      display: inline-block;
+    }
+    .r {
+      font-weight: 400;
+      font-size: 100px;
+    }
+    .b {
+      font-weight: 700;
+      font-size: 112px;
+    }
+  </style>
+  <div id="root" data-composition-id="summit" data-width="1080" data-height="1920">
+    <!-- Analogía del Everest: "Para que el poder sea ciudadano, debemos llegar a la cima."
+         Ilustración de línea blanca sobre rosa cívico: la montaña se traza con el bajo, el
+         escalador sube un paso por beat y en el regreso de la canción clava la bandera. -->
+    <div id="s-card">
+      <svg id="s-svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+        <g id="s-cam">
+          <path class="ln" id="s-base" pathLength="1" d="M60 1640 L1010 1640" />
+          <path class="ln" id="s-small" pathLength="1" d="M70 1640 L290 1340 L362 1453.7" />
+          <path class="ln" id="s-big" pathLength="1" d="M240 1640 L620 1060 L1000 1640" />
+          <path class="ln" id="s-snow" pathLength="1" d="M528 1200 L570 1242 L612 1204 L660 1250 L712 1200" />
+          <g id="s-man">
+            <g id="s-body">
+              <circle class="ln" id="s-head" pathLength="1" cx="6" cy="-206" r="26" />
+              <path class="ln" id="s-torso" pathLength="1" d="M2 -178 L10 -92" />
+              <path class="ln" id="s-armb" pathLength="1" d="M4 -160 L-36 -128 L-46 -92" />
+              <path class="ln" id="s-armf" pathLength="1" d="M4 -160 L44 -138 L62 -168" />
+              <path class="ln" id="s-legf" pathLength="1" d="M10 -92 L42 -72 L22 -34" />
+              <path class="ln" id="s-legb" pathLength="1" d="M10 -92 L-2 -40 L-16 26" />
+            </g>
+            <path class="ln" id="s-pole" pathLength="1" d="M58 -150 L80 -342" />
+            <g id="s-flagw">
+              <path class="ln" id="s-flag" pathLength="1" d="M80 -340 C116 -362 152 -318 194 -338 L188 -270 C148 -252 114 -294 76 -276" />
+            </g>
+          </g>
+        </g>
+      </svg>
+      <div class="txt" id="s-txt">
+        <div class="r"><span class="mask"><span>Para que el poder</span></span></div>
+        <div class="r"><span class="mask"><span>sea ciudadano,</span></span></div>
+        <div class="b" style="margin-top: 10px"><span class="mask"><span>debemos llegar</span></span></div>
+        <div class="b"><span class="mask"><span>a la cima.</span></span></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const B = 60 / 124, D1 = 2.68;
+    const g = (n) => D1 + n * B;
+    const START = g(36), R_IN = g(44), LOGO = g(50);
+    const q = (s) => document.querySelector(s);
+
+    // Estado de cámara, escalador y bandera; las transformaciones SVG se escriben a mano (seek-safe)
+    const st = { cam: 1, s: 0.12, hop: 0, wave: 0, flagS: 0 };
+    const CX = 560, CY = 1300;
+    const apply = () => {
+      q("#s-cam").setAttribute("transform", `translate(${CX} ${CY}) scale(${st.cam}) translate(${-CX} ${-CY})`);
+      const x = 240 + 380 * st.s, y = 1640 - 580 * st.s - st.hop;
+      q("#s-man").setAttribute("transform", `translate(${x} ${y})`);
+      q("#s-flagw").setAttribute("transform",
+        `translate(80 -340) skewY(${st.wave * 7}) scale(${st.flagS * (1 + st.wave * 0.05)} 1) translate(-80 340)`);
+    };
+    tl.eventCallback("onUpdate", apply);
+    apply();
+
+    const draw = (sel, t, d, ease = "power2.inOut") =>
+      tl.fromTo(sel, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: d, ease }, t);
+    const rise = (sel, t) => tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out" }, t);
+
+    // Entra con el bajo: placa rosa y la montaña se traza
+    tl.set("#s-card", { visibility: "visible" }, START);
+    draw("#s-base", START, 0.5, "power3.out");
+    draw("#s-small", START + 0.25, 0.8);
+    draw("#s-big", START + 0.4, 1.1);
+    draw("#s-snow", g(38) - 0.1, 0.5);
+    tl.to(st, { cam: 1.05, duration: R_IN - START, ease: "none" }, START);
+
+    // Texto: dos tiempos, como subir
+    rise("#s-txt .r:nth-child(1) .mask > span", START);
+    rise("#s-txt .r:nth-child(2) .mask > span", g(37));
+    rise("#s-txt .b:nth-child(3) .mask > span", g(40));
+    rise("#s-txt .b:nth-child(4) .mask > span", g(41));
+
+    // El escalador aparece al pie y sube un paso por beat; se detiene antes de la cima (suspenso)
+    ["#s-head", "#s-torso", "#s-armb", "#s-armf", "#s-legf", "#s-legb"].forEach((id, i) =>
+      draw(id, g(38) + i * 0.04, 0.35, "power2.out"));
+    tl.to(st, { s: 0.88, duration: g(43.2) - g(38), ease: "none" }, g(38));
+    const POSE = [
+      ["M10 -92 L42 -72 L22 -34", "M10 -92 L-2 -40 L-16 26"],
+      ["M10 -92 L34 -52 L10 -12", "M10 -92 L10 -44 L-6 8"],
+    ];
+    for (let k = 38, i = 0; k <= 43; k++, i++) {
+      tl.set("#s-legf", { attr: { d: POSE[i % 2][0] } }, g(k));
+      tl.set("#s-legb", { attr: { d: POSE[i % 2][1] } }, g(k));
+    }
+
+    // Regreso de la canción: último salto a la cima y clava la bandera
+    tl.to(st, { s: 1, duration: 0.22, ease: "power2.out" }, R_IN - 0.08);
+    tl.to(st, { hop: 34, duration: 0.11, ease: "power2.out", yoyo: true, repeat: 1 }, R_IN - 0.08);
+    tl.set("#s-legf", { attr: { d: "M10 -92 L24 -46 L28 0" } }, R_IN);
+    tl.set("#s-legb", { attr: { d: "M10 -92 L-4 -46 L-14 0" } }, R_IN);
+    tl.set("#s-armf", { attr: { d: "M4 -160 L46 -184 L66 -236" } }, R_IN);
+    draw("#s-pole", R_IN, 0.18, "power3.out");
+    draw("#s-flag", R_IN + 0.12, 0.35, "power2.out");
+    tl.fromTo(st, { flagS: 0 }, { flagS: 1, duration: 0.35, ease: "back.out(2)" }, R_IN + 0.1);
+    tl.fromTo(st, { wave: -1 }, { wave: 1, duration: B, ease: "sine.inOut", yoyo: true, repeat: 7 }, R_IN + 0.4);
+    // Golpe de cámara en la cima y empuje lento hasta el logo
+    tl.to(st, { cam: 1.1, duration: 0.12, ease: "power2.out" }, R_IN);
+    tl.to(st, { cam: 1.14, duration: LOGO - R_IN - 0.12, ease: "sine.inOut" }, R_IN + 0.12);
+    tl.set("#s-card", { visibility: "hidden" }, LOGO + 0.95);
+    window.__timelines["summit"] = tl;
+  </script>
+</template>
