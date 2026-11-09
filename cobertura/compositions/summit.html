@@ -46,8 +46,7 @@
       stroke-width: 15;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
+      opacity: 0; /* el remate redondo dejaría un punto antes de trazarse */
     }
     .txt {
       position: absolute;
@@ -86,22 +85,22 @@
     <div id="s-card">
       <svg id="s-svg" viewBox="0 0 1080 1920" width="1080" height="1920">
         <g id="s-cam">
-          <path class="ln" id="s-base" pathLength="1" d="M60 1640 L1010 1640" />
-          <path class="ln" id="s-small" pathLength="1" d="M70 1640 L290 1340 L362 1453.7" />
-          <path class="ln" id="s-big" pathLength="1" d="M240 1640 L620 1060 L1000 1640" />
-          <path class="ln" id="s-snow" pathLength="1" d="M528 1200 L570 1242 L612 1204 L660 1250 L712 1200" />
+          <path class="ln" id="s-base" d="M60 1640 L1010 1640" />
+          <path class="ln" id="s-small" d="M70 1640 L290 1340 L362 1453.7" />
+          <path class="ln" id="s-big" d="M240 1640 L620 1060 L1000 1640" />
+          <path class="ln" id="s-snow" d="M528 1200 L570 1242 L612 1204 L660 1250 L712 1200" />
           <g id="s-man">
             <g id="s-body">
-              <circle class="ln" id="s-head" pathLength="1" cx="6" cy="-206" r="26" />
-              <path class="ln" id="s-torso" pathLength="1" d="M2 -178 L10 -92" />
-              <path class="ln" id="s-armb" pathLength="1" d="M4 -160 L-36 -128 L-46 -92" />
-              <path class="ln" id="s-armf" pathLength="1" d="M4 -160 L44 -138 L62 -168" />
-              <path class="ln" id="s-legf" pathLength="1" d="M10 -92 L42 -72 L22 -34" />
-              <path class="ln" id="s-legb" pathLength="1" d="M10 -92 L-2 -40 L-16 26" />
+              <circle class="ln" id="s-head" cx="6" cy="-206" r="26" />
+              <path class="ln" id="s-torso" d="M2 -178 L10 -92" />
+              <path class="ln" id="s-armb" d="M4 -160 L-36 -128 L-46 -92" />
+              <path class="ln" id="s-armf" d="M4 -160 L44 -138 L62 -168" />
+              <path class="ln" id="s-legf" d="M10 -92 L42 -72 L22 -34" />
+              <path class="ln" id="s-legb" d="M10 -92 L-2 -40 L-16 26" />
             </g>
-            <path class="ln" id="s-pole" pathLength="1" d="M58 -150 L80 -342" />
+            <path class="ln" id="s-pole" d="M58 -150 L80 -342" />
             <g id="s-flagw">
-              <path class="ln" id="s-flag" pathLength="1" d="M80 -340 C116 -362 152 -318 194 -338 L188 -270 C148 -252 114 -294 76 -276" />
+              <path class="ln" id="s-flag" d="M80 -340 C116 -362 152 -318 194 -338 L188 -270 C148 -252 114 -294 76 -276" />
             </g>
           </g>
         </g>
@@ -134,8 +133,18 @@
     tl.eventCallback("onUpdate", apply);
     apply();
 
-    const draw = (sel, t, d, ease = "power2.inOut") =>
-      tl.fromTo(sel, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: d, ease }, t);
+    // Trazo con la longitud real de cada línea (en px, como atributo SVG)
+    const LEN = {};
+    document.querySelectorAll("#s-svg .ln").forEach((el) => {
+      const L = Math.ceil(el.getTotalLength()) + 2;
+      LEN["#" + el.id] = L;
+      el.setAttribute("stroke-dasharray", `${L} ${L}`);
+      el.setAttribute("stroke-dashoffset", `${L}`);
+    });
+    const draw = (sel, t, d, ease = "power2.inOut") => {
+      tl.set(sel, { opacity: 1 }, t);
+      tl.fromTo(sel, { attr: { "stroke-dashoffset": LEN[sel] } }, { attr: { "stroke-dashoffset": 0 }, duration: d, ease }, t);
+    };
     const rise = (sel, t) => tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out" }, t);
 
     // Entra con el bajo: placa rosa y la montaña se traza
