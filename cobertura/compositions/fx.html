@@ -71,11 +71,6 @@
     tl.fromTo("#fx-wipe", { x: -1500 }, { x: 1900, duration: 0.44, ease: "power3.inOut" }, DUMP - 0.24);
     tl.fromTo("#fx-wipew", { x: -1700 }, { x: 2100, duration: 0.48, ease: "power3.inOut" }, DUMP - 0.22);
 
-    // Quiebre de bajo: entran barras de cine, la imagen se apaga y se cierra a negro antes del regreso
-    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.2, duration: 1.2, ease: "power2.inOut" }, B_IN);
-    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 0.3, duration: R_IN - B_IN - 1.6, ease: "sine.inOut" }, B_IN + 1.2);
-    tl.to(["#fx-barT", "#fx-barB"], { scaleY: 1, duration: 0.09, ease: "power3.in" }, R_IN - 0.38);
-    tl.set(["#fx-barT", "#fx-barB"], { scaleY: 0 }, R_IN);
     window.__timelines["fx"] = tl;
   </script>
 </template>

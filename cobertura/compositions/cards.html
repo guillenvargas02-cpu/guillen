@@ -73,6 +73,9 @@
       white-space: nowrap;
       transform-origin: 0% 50%;
     }
+    #c3-b {
+      transform-origin: 0% 50%;
+    }
     .txt > div {
       display: block;
     }
@@ -102,19 +105,23 @@
     </div>
 
     <div id="c2" class="card white">
-      <div class="txt" id="c2-t" style="top: 600px; font-size: 120px">
+      <div class="txt" id="c2-t" style="top: 680px; font-size: 124px">
         <div class="r"><span class="mask"><span>Y lo que</span></span></div>
         <div class="r"><span class="mask"><span>queremos para</span></span></div>
-        <div class="b accent" style="font-size: 128px"><span class="mask"><span>Miguel Hidalgo</span></span></div>
-        <div class="b accent" style="font-size: 128px"><span class="mask"><span>y para México.</span></span></div>
+        <div class="b accent" style="font-size: 124px"><span class="mask"><span>Miguel Hidalgo.</span></span></div>
       </div>
     </div>
 
     <div id="c3" class="card black">
-      <div class="txt" id="c3-t" style="top: 660px; font-size: 132px">
+      <div class="txt" id="c3-a" style="top: 660px; font-size: 132px; transform-origin: 0% 0%">
         <div class="r"><span class="mask"><span>Para que</span></span></div>
         <div class="r"><span class="mask"><span>el poder</span></span></div>
-        <div style="font-size: 130px"><span class="mask r"><span>sea</span></span> <span class="mask b accent"><span>ciudadano.</span></span></div>
+        <div style="font-size: 130px"><span class="mask r"><span>sea</span></span> <span class="mask b accent"><span>ciudadano,</span></span></div>
+      </div>
+      <div class="txt" id="c3-b" style="top: 690px">
+        <div class="b" style="font-size: 196px"><span class="mask"><span>Debemos</span></span></div>
+        <div class="b" style="font-size: 196px"><span class="mask"><span>llegar</span></span></div>
+        <div class="b accent" style="font-size: 208px"><span class="mask"><span>a la cima.</span></span></div>
       </div>
     </div>
 
@@ -148,17 +155,22 @@
       rise(`${b} > span`, t);
     });
 
-    // 2. "Y lo que queremos para Miguel Hidalgo y para México." — blanco, el destino en rosa cívico
+    // 2. "Y lo que queremos para Miguel Hidalgo." — blanco, el destino en rosa cívico
     card("c2", g(12), g(16));
     rise("#c2 .r .mask > span", g(12));
-    rise("#c2 .b:nth-child(3) .mask > span", g(13));
-    rise("#c2 .b:nth-child(4) .mask > span", g(14));
+    rise("#c2 .b .mask > span", g(13));
 
-    // 3. Entra el bajo: "Para que el poder sea ciudadano." sobre negro
-    card("c3", g(36), g(40));
-    rise("#c3 .r .mask > span", g(36));
-    rise("#c3 .mask.r > span", g(37.5));
-    rise("#c3 .mask.b > span", g(38));
+    // 3. Entra el bajo: "Para que el poder sea ciudadano," … y en grande "Debemos llegar a la cima."
+    tl.set("#c3", { visibility: "visible" }, g(36));
+    tl.set("#c3", { visibility: "hidden" }, g(44));
+    rise("#c3-a .r .mask > span", g(36));
+    rise("#c3-a .mask.r > span", g(37.5));
+    rise("#c3-a .mask.b > span", g(38));
+    tl.fromTo("#c3-a", { y: 0, scale: 1, opacity: 1 }, { y: -440, scale: 0.6, opacity: 0.75, duration: 0.6, ease: "expo.inOut" }, g(40) - 0.3);
+    rise("#c3-b > div:nth-child(1) .mask > span", g(40) + 0.15);
+    rise("#c3-b > div:nth-child(2) .mask > span", g(41));
+    rise("#c3-b > div:nth-child(3) .mask > span", g(42));
+    tl.fromTo("#c3-b", { scale: 1 }, { scale: 1.06, duration: g(44) - g(40), ease: "none" }, g(40));
 
     // 4. "Esto apenas comienza." — sigue debajo del logo y se encoge dentro de la O
     card("c4", g(48), LOGO + 0.95);
