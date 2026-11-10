@@ -55,24 +55,37 @@
     <!-- Textos sobre imagen (Hind Siliguri, tipografía del manual de identidad SOMOS 2026).
          Las frases largas van en placas de solo texto (compositions/cards.html). -->
     <!-- Photo dump, blanco sobre rosa cívico -->
-    <div id="t3" class="grp" style="top: 128px">
-      <div class="r" style="font-size: 66px"><span class="mask"><span>Una nueva</span></span></div>
-      <div class="b" style="font-size: 86px"><span class="mask"><span>opción</span></span> <span class="mask"><span>ciudadana.</span></span></div>
+    <div id="t3" class="grp" style="top: 58px">
+      <div class="r" style="font-size: 62px"><span class="mask"><span>Una nueva</span></span></div>
+      <div class="b" style="font-size: 76px"><span class="mask"><span>opción ciudadana</span></span></div>
+      <div class="b" style="font-size: 76px"><span class="mask"><span>en Miguel Hidalgo.</span></span></div>
+    </div>
+    <!-- Quiebre de bajo: en la franja de cine; queda solo sobre el negro -->
+    <div id="t5" class="grp" style="top: 1758px; font-size: 66px">
+      <span id="t5-in"><span class="mask r"><span>Queremos</span></span> <span class="mask b"><span>llegar</span></span> <span class="mask b"><span>lejos.</span></span></span>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     const B = 60 / 124, D1 = 2.68;
     const g = (n) => D1 + n * B;
+    const R_IN = g(44);
     const rise = (sel, t, stagger = 0.08) =>
       tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger }, t);
 
-    // Photo dump: "Una nueva opción ciudadana."
+    // Photo dump: "Una nueva opción ciudadana en Miguel Hidalgo."
     tl.set("#t3", { opacity: 1 }, g(25));
     rise("#t3 .r .mask > span", g(25));
-    rise("#t3 .b .mask > span", g(26), 0.12);
+    rise("#t3 .b .mask > span", g(25.5), 0.48);
     tl.to("#t3", { opacity: 0, y: -14, duration: 0.25, ease: "power2.in" }, g(30) - 0.2);
 
+    // "Queremos llegar lejos." en la franja de abajo, palabra por beat
+    tl.set("#t5", { opacity: 1 }, g(40));
+    rise("#t5 .mask:nth-child(1) > span", g(40));
+    rise("#t5 .mask:nth-child(2) > span", g(41));
+    rise("#t5 .mask:nth-child(3) > span", g(41.5));
+    tl.fromTo("#t5-in", { scale: 1 }, { scale: 1.06, duration: R_IN - g(40), ease: "none" }, g(40));
+    tl.set("#t5", { opacity: 0 }, R_IN);
     window.__timelines["texts"] = tl;
   </script>
 </template>

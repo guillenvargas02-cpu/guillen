@@ -97,6 +97,36 @@
       top: 958px;
       transform-origin: 50% 100%;
     }
+    #d-card {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      z-index: 7;
+      background: #e4007c;
+      color: #fff;
+      visibility: hidden;
+    }
+    #d-card .txt {
+      position: absolute;
+      left: 92px;
+      top: 700px;
+      font-family: "Hind Siliguri", sans-serif;
+      line-height: 1.04;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+    #d-card .mask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding: 0.06em 0.06em 0.1em 0.02em;
+      margin: -0.06em -0.06em -0.1em -0.02em;
+    }
+    #d-card .mask > span {
+      display: inline-block;
+    }
     #d-flash {
       position: absolute;
       z-index: 8;
@@ -140,6 +170,14 @@
     <div id="d-p1" class="print"><div class="ph"><img id="d-p1i" src="assets/photos/graded/foto4.jpg" alt="Foto 4" /></div></div>
     <div id="d-p8" class="print"><div class="ph"><img src="assets/photos/graded/handoff_C.jpg" alt="Gesto" /></div></div>
     <div id="d-date">03 11 &#8217;26</div>
+    <!-- Después de la sonrisa: placa de texto (estilo del manual SOMOS) -->
+    <div id="d-card">
+      <div class="txt" id="d-card-t">
+        <div style="font-weight: 400; font-size: 132px"><span class="mask"><span>Emocionados</span></span></div>
+        <div style="font-weight: 400; font-size: 132px"><span class="mask"><span>por iniciar</span></span></div>
+        <div style="font-weight: 700; font-size: 150px"><span class="mask"><span>este camino.</span></span></div>
+      </div>
+    </div>
     <div id="d-shT" class="sh" data-layout-ignore></div>
     <div id="d-shB" class="sh" data-layout-ignore></div>
     <div id="d-flash" data-layout-ignore></div>
@@ -163,32 +201,43 @@
 
     tl.set(["#d-shT", "#d-shB"], { scaleY: 0 }, 0);
 
-    // 1. Golpe 2: fotos a pantalla completa, una cada 2 beats, con obturador y fecha de cámara
+    // 1. Fotos a pantalla completa con obturador, cada vez más rápido; la sonrisa se queda 2 beats
     tl.set("#d-f1", { visibility: "visible" }, 0);
     flash(0, 1, 0.45);
     tl.fromTo("#d-date", { opacity: 0 }, { opacity: 0.95, duration: 0.2 }, 0.15);
-    [["#d-f1i", 0, -18], ["#d-f2i", 2, 18], ["#d-f3i", 4, -14]].forEach(([id, n, dx]) => {
-      tl.fromTo(id, { scale: 1.14, x: -dx }, { scale: 1.03, x: dx, duration: 2 * B + 0.1, ease: "power1.out" }, k(n));
+    [["#d-f1i", 0, -18, 2], ["#d-f2i", 2, 18, 1], ["#d-f3i", 3, -14, 1]].forEach(([id, n, dx, len]) => {
+      tl.fromTo(id, { scale: 1.14, x: -dx }, { scale: 1.03, x: dx, duration: len * B + 0.1, ease: "power1.out" }, k(n));
     });
     tl.set("#d-f2", { visibility: "visible" }, k(2));
     tl.set("#d-f1", { visibility: "hidden" }, k(2));
     shutter(k(2));
-    tl.set("#d-f3", { visibility: "visible" }, k(4));
-    tl.set("#d-f2", { visibility: "hidden" }, k(4));
+    tl.set("#d-f3", { visibility: "visible" }, k(3));
+    tl.set("#d-f2", { visibility: "hidden" }, k(3));
+    shutter(k(3));
+    // la sonrisa: copia impresa vista tan de cerca que llena el cuadro
+    tl.set("#d-p1", { visibility: "visible", scale: FULL, rotation: 0, x: 0, y: 0 }, k(4));
+    tl.set("#d-f3", { visibility: "hidden" }, k(4));
+    tl.fromTo("#d-p1i", { scale: 1.14 }, { scale: 1.02, duration: 2 * B, ease: "power1.out" }, k(4));
     shutter(k(4));
-    // la cuarta foto ya es una copia impresa, vista tan de cerca que llena el cuadro
-    tl.set("#d-p1", { visibility: "visible", scale: FULL, rotation: 0, x: 0, y: 0 }, k(6));
-    tl.set("#d-f3", { visibility: "hidden" }, k(6));
-    tl.fromTo("#d-p1i", { scale: 1.12 }, { scale: 1, duration: 2 * B, ease: "power1.inOut" }, k(6));
-    shutter(k(6));
-    tl.to("#d-date", { opacity: 0, duration: 0.12 }, k(8) - 0.05);
+    tl.to("#d-date", { opacity: 0, duration: 0.12 }, k(6) - 0.05);
 
-    // 2. Se aleja: es una foto sobre la mesa rosa, y van cayendo más, cada vez más rápido
-    tl.to("#d-p1", { scale: 1, rotation: -7, x: -40, y: -30, duration: 0.6, ease: "expo.out" }, k(8));
+    // 2. "Emocionados por iniciar este camino."
+    tl.set("#d-card", { visibility: "visible" }, k(6));
+    tl.fromTo("#d-card-t", { y: 18, scale: 1 }, { y: -18, scale: 1.025, duration: 3 * B, ease: "none" }, k(6));
+    tl.fromTo("#d-card-t > div:nth-child(1) .mask > span", { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out" }, k(6));
+    tl.fromTo("#d-card-t > div:nth-child(2) .mask > span", { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out" }, k(6.5));
+    tl.fromTo("#d-card-t > div:nth-child(3) .mask > span", { yPercent: 115 }, { yPercent: 0, duration: 0.65, ease: "expo.out" }, k(7));
+    tl.set("#d-card", { visibility: "hidden" }, k(9));
+
+    // 3. Copias impresas que caen sobre el rosa, cada vez más rápido (la sonrisa es la primera)
+    tl.set("#d-p1i", { scale: 1 }, k(9));
+    tl.fromTo("#d-p1", { scale: 1.5, rotation: -21, x: -120, y: -190, opacity: 0 },
+      { scale: 1, rotation: -7, x: -40, y: -30, opacity: 1, duration: 0.42, ease: "expo.out", immediateRender: false }, k(9));
+    flash(k(9), 0.32, 0.2);
     const drops = [
-      ["#d-p2", 9, 60, 40, 6],
-      ["#d-p3", 10, -70, 60, -4],
-      ["#d-p4", 11, 50, -50, 9],
+      ["#d-p2", 10, 60, 40, 6],
+      ["#d-p3", 11, -70, 60, -4],
+      ["#d-p4", 11.5, 50, -50, 9],
       ["#d-p5", 12, -30, 20, -10],
       ["#d-p6", 12.5, 70, 30, 4],
       ["#d-p7", 13, -50, -40, 7],
@@ -200,11 +249,11 @@
       flash(k(n), 0.32, 0.2);
     });
     // la copia 1 queda debajo de las nuevas
-    tl.set("#d-p1", { zIndex: 1 }, k(8.9));
-    tl.to("#d-p1", { scale: 1.05, x: -42, y: -31.5, duration: k(14) - k(8) - 0.6, ease: "none" }, k(8) + 0.6);
-    tl.fromTo("#d-stack", { scale: 1 }, { scale: 1.05, duration: k(14) - k(8), ease: "none" }, k(8));
+    tl.set("#d-p1", { zIndex: 1 }, k(9.9));
+    tl.to("#d-p1", { scale: 1.04, x: -41.6, y: -31.2, duration: k(14) - k(9) - 0.42, ease: "none" }, k(9) + 0.42);
+    tl.fromTo("#d-stack", { scale: 1 }, { scale: 1.04, duration: k(14) - k(9), ease: "none" }, k(9));
 
-    // 3. Última copia: el gesto. Cae derecha y la cámara entra en ella hasta que es video
+    // 4. Última copia: el gesto. Cae derecha y la cámara entra en ella hasta que es video
     tl.set("#d-p8", { visibility: "visible" }, k(13.5));
     tl.fromTo("#d-p8", { scale: 1.5, rotation: -14, x: 0, y: -160, opacity: 0 },
       { scale: 1, rotation: -2, x: 0, y: 0, opacity: 1, duration: 0.42, ease: "expo.out" }, k(13.5));
