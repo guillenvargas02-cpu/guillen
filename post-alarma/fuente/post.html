@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Special+Elite&family=Archivo+Black&display=block" rel="stylesheet">
 <style>
   :root{
-    --yellow:#f7e436;
+    --yellow:#fffd39;
     --yellow2:#ffd91a;
     --ink:#141210;
     --paper:#efe4cf;
@@ -16,7 +16,7 @@
   .page{
     position:relative;width:1080px;height:1350px;overflow:hidden;
     background:
-      radial-gradient(ellipse at 50% 45%, rgba(255,250,235,.55) 0%, rgba(255,250,235,0) 60%),
+      linear-gradient(rgba(255,252,242,.45),rgba(255,252,242,.45)),
       url(imgs/img02.png) center/cover,
       var(--paper);
     color:var(--ink);
@@ -24,19 +24,19 @@
   }
   /* ---------- texture overlays ---------- */
   .tex{position:absolute;inset:0;pointer-events:none;z-index:50}
-  .tex.grain{background:url(imgs/img00.png) center/900px;mix-blend-mode:multiply;opacity:.16}
-  .tex.noise{opacity:.33;mix-blend-mode:multiply}
-  .tex.vignette{background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, rgba(70,40,10,.38) 100%)}
+  .tex.grain{background:url(imgs/img00.png) center/900px;mix-blend-mode:multiply;opacity:.07}
+  .tex.noise{opacity:.14;mix-blend-mode:multiply}
+  .tex.vignette{background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 70%, rgba(70,40,10,.10) 100%)}
   .tex.fold{background:
       linear-gradient(90deg, rgba(0,0,0,0) calc(50% - 26px), rgba(80,50,20,.10) calc(50% - 2px), rgba(255,255,255,.35) calc(50% + 1px), rgba(0,0,0,0) calc(50% + 24px)),
       linear-gradient(0deg, rgba(0,0,0,0) calc(50% - 20px), rgba(80,50,20,.07) calc(50% - 1px), rgba(255,255,255,.25) calc(50% + 1px), rgba(0,0,0,0) calc(50% + 18px));
     mix-blend-mode:multiply}
   .tex.stain{background:
-      radial-gradient(circle at 92% 6%, rgba(150,95,30,0) 54px, rgba(150,95,30,.20) 58px, rgba(150,95,30,.06) 64px, rgba(150,95,30,0) 70px),
-      radial-gradient(circle at 6% 97%, rgba(150,95,30,.13) 0, rgba(150,95,30,0) 140px),
-      radial-gradient(circle at 99% 60%, rgba(150,95,30,.10) 0, rgba(150,95,30,0) 120px);
+      radial-gradient(circle at 92% 6%, rgba(150,95,30,0) 54px, rgba(150,95,30,.08) 58px, rgba(150,95,30,.03) 64px, rgba(150,95,30,0) 70px),
+      radial-gradient(circle at 6% 97%, rgba(150,95,30,.05) 0, rgba(150,95,30,0) 140px),
+      radial-gradient(circle at 99% 60%, rgba(150,95,30,.04) 0, rgba(150,95,30,0) 120px);
     mix-blend-mode:multiply}
-  .tex.edges{box-shadow:inset 0 0 0 10px rgba(110,70,30,.10), inset 0 0 60px rgba(90,55,20,.35)}
+  .tex.edges{box-shadow:inset 0 0 40px rgba(90,55,20,.10)}
 
   /* ---------- top strip ---------- */
   .strip{
@@ -46,8 +46,6 @@
     border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);
     box-shadow:0 1px 0 var(--ink), 0 -1px 0 var(--ink);
   }
-  .strip::before,.strip::after{content:"★";position:absolute;top:50%;transform:translateY(-52%);font-size:20px}
-  .strip::before{left:16px}.strip::after{right:16px}
 
   /* ---------- masthead ---------- */
   .mast{position:relative;height:172px;display:flex;align-items:center;justify-content:center;margin-top:6px}
@@ -57,8 +55,7 @@
     -webkit-mask:radial-gradient(circle, #000 0 18%, rgba(0,0,0,.6) 28%, transparent 46%);
             mask:radial-gradient(circle, #000 0 18%, rgba(0,0,0,.6) 28%, transparent 46%);
   }
-  .mast .logo{position:relative;height:160px;transform:rotate(-2deg) translateX(-40px);
-    filter:drop-shadow(5px 6px 0 rgba(20,18,16,.85)) contrast(1.08) saturate(1.1)}
+  .mast .logo{position:relative;height:160px;transform:translateX(-40px)}
   .price{
     position:absolute;right:4px;top:6px;width:186px;height:166px;
     background:var(--ink);color:var(--yellow);
@@ -120,7 +117,7 @@
     font-family:'Playfair Display',serif;font-weight:900;font-size:37px;line-height:1.08;letter-spacing:-.005em;
     margin-top:12px;
   }
-  .crime h2 em{font-style:normal;background:linear-gradient(transparent 60%, rgba(247,228,54,.95) 60%, rgba(247,228,54,.95) 92%, transparent 92%)}
+  .crime h2 em{font-style:normal;background:linear-gradient(transparent 60%, rgba(255,253,57,.95) 60%, rgba(255,253,57,.95) 92%, transparent 92%)}
   .dateline{display:flex;align-items:center;gap:10px;margin-top:10px;font-family:'Special Elite',monospace;font-size:19px;letter-spacing:.12em}
   .dateline::before{content:"";width:24px;height:3px;background:var(--red)}
   .dateline::after{content:"";flex:1;height:1px;background:var(--ink);opacity:.5}
@@ -158,10 +155,10 @@
     border-top:1px solid rgba(20,18,16,.5);padding-top:9px}
 
   .quote{
-    position:relative;background:var(--yellow);padding:30px 16px 8px;margin-top:6px;border:3px solid var(--ink);
+    position:relative;background:var(--yellow);padding:42px 16px 8px;margin-top:6px;border:3px solid var(--ink);
     box-shadow:6px 6px 0 var(--ink);
   }
-  .quote::before{content:"\201C";position:absolute;left:10px;top:-30px;font-family:'Playfair Display',serif;font-weight:900;font-size:96px;line-height:1;color:var(--red)}
+  .quote::before{content:"\201C";position:absolute;left:12px;top:4px;font-family:'Playfair Display',serif;font-weight:900;font-size:72px;line-height:1;color:var(--red)}
   .quote p{font-family:'Oswald',sans-serif;font-weight:600;font-size:21px;line-height:1.24;text-align:center;text-wrap:balance}
   .quote .yr{font-family:'Anton',sans-serif;font-size:60px;line-height:1;letter-spacing:.12em;margin-top:6px;
     display:flex;align-items:center;gap:12px}
@@ -192,7 +189,6 @@
   <div class="strip">NUM 41. MÉXICO DF, NOVIEMBRE 2026. UN PESO EN TODO EL PAÍS</div>
 
   <div class="mast">
-    <div class="burst"></div>
     <img class="logo" src="imgs/logo.png" alt="ALARMA!">
     <div class="price"><div class="amt">$200</div><div class="pp">P/P</div></div>
   </div>
@@ -215,12 +211,12 @@
         <h2>Misteriosos asaltantes entraron a la casa del <em>respetable Joaquín Dongo</em> con intención de robarle</h2>
         <div class="dateline">23 de octubre de 1789</div>
         <div class="photos">
-          <div class="ph plaque"><span class="tape"></span><img src="imgs/img05.png"></div>
-          <div class="ph scene"><span class="tape"></span><img src="imgs/img06.png"></div>
+          <div class="ph plaque"><img src="imgs/img05.png"></div>
+          <div class="ph scene"><img src="imgs/img06.png"></div>
         </div>
       </div>
       <div class="occult">
-        <div class="ph lavey"><span class="tape"></span><img src="imgs/img03.png"></div>
+        <div class="ph lavey"><img src="imgs/img03.png"></div>
         <div class="occ-txt">
           <span class="tag">OCULTISMO</span>
           <h3>Teatro Fru Fru</h3>
@@ -234,7 +230,7 @@
         <p>Se encontró a la mujer que vivía en pecado con un clérigo, con herraduras de caballo clavadas en las plantas de los pies.</p>
         <div class="yr">1670</div>
       </div>
-      <div class="cover"><span class="tape"></span><span class="tape b"></span><img src="imgs/img07.png"></div>
+      <div class="cover"><img src="imgs/img07.png"></div>
     </div>
   </div>
 
