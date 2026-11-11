@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Special+Elite&family=Archivo+Black&display=block" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#f7e436;
+    --yellow2:#ffd91a;
+    --ink:#141210;
+    --paper:#efe4cf;
+    --red:#b3201b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;background:#111}
+  .page{
+    position:relative;width:1080px;height:1350px;overflow:hidden;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(255,250,235,.55) 0%, rgba(255,250,235,0) 60%),
+      url(imgs/img02.png) center/cover,
+      var(--paper);
+    color:var(--ink);
+    padding:28px 36px 30px;display:flex;flex-direction:column;font-variant-numeric:lining-nums;
+  }
+  /* ---------- texture overlays ---------- */
+  .tex{position:absolute;inset:0;pointer-events:none;z-index:50}
+  .tex.grain{background:url(imgs/img00.png) center/900px;mix-blend-mode:multiply;opacity:.16}
+  .tex.noise{opacity:.33;mix-blend-mode:multiply}
+  .tex.vignette{background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, rgba(70,40,10,.38) 100%)}
+  .tex.fold{background:
+      linear-gradient(90deg, rgba(0,0,0,0) calc(50% - 26px), rgba(80,50,20,.10) calc(50% - 2px), rgba(255,255,255,.35) calc(50% + 1px), rgba(0,0,0,0) calc(50% + 24px)),
+      linear-gradient(0deg, rgba(0,0,0,0) calc(50% - 20px), rgba(80,50,20,.07) calc(50% - 1px), rgba(255,255,255,.25) calc(50% + 1px), rgba(0,0,0,0) calc(50% + 18px));
+    mix-blend-mode:multiply}
+  .tex.stain{background:
+      radial-gradient(circle at 92% 6%, rgba(150,95,30,0) 54px, rgba(150,95,30,.20) 58px, rgba(150,95,30,.06) 64px, rgba(150,95,30,0) 70px),
+      radial-gradient(circle at 6% 97%, rgba(150,95,30,.13) 0, rgba(150,95,30,0) 140px),
+      radial-gradient(circle at 99% 60%, rgba(150,95,30,.10) 0, rgba(150,95,30,0) 120px);
+    mix-blend-mode:multiply}
+  .tex.edges{box-shadow:inset 0 0 0 10px rgba(110,70,30,.10), inset 0 0 60px rgba(90,55,20,.35)}
+
+  /* ---------- top strip ---------- */
+  .strip{
+    position:relative;background:var(--yellow);
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:25px;letter-spacing:.16em;
+    text-align:center;padding:7px 10px 6px;
+    border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);
+    box-shadow:0 1px 0 var(--ink), 0 -1px 0 var(--ink);
+  }
+  .strip::before,.strip::after{content:"★";position:absolute;top:50%;transform:translateY(-52%);font-size:20px}
+  .strip::before{left:16px}.strip::after{right:16px}
+
+  /* ---------- masthead ---------- */
+  .mast{position:relative;height:172px;display:flex;align-items:center;justify-content:center;margin-top:6px}
+  .mast .burst{
+    position:absolute;left:50%;top:50%;width:820px;height:820px;transform:translate(-55%,-50%);
+    background:repeating-conic-gradient(from 0deg, rgba(20,18,16,.075) 0 4deg, rgba(0,0,0,0) 4deg 12deg);
+    -webkit-mask:radial-gradient(circle, #000 0 18%, rgba(0,0,0,.6) 28%, transparent 46%);
+            mask:radial-gradient(circle, #000 0 18%, rgba(0,0,0,.6) 28%, transparent 46%);
+  }
+  .mast .logo{position:relative;height:160px;transform:rotate(-2deg) translateX(-40px);
+    filter:drop-shadow(5px 6px 0 rgba(20,18,16,.85)) contrast(1.08) saturate(1.1)}
+  .price{
+    position:absolute;right:4px;top:6px;width:186px;height:166px;
+    background:var(--ink);color:var(--yellow);
+    clip-path:polygon(0 0,100% 0,100% 72%,50% 100%,0 72%);
+    display:flex;flex-direction:column;align-items:center;padding-top:16px;
+    transform:rotate(4deg);
+  }
+  .price .amt{
+    background:#fff;color:var(--ink);font-family:'Archivo Black',sans-serif;font-size:52px;line-height:1;
+    padding:7px 11px 5px;letter-spacing:-.02em;position:relative;
+  }
+  .price .amt::after{content:"";position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);
+    border:14px solid transparent;border-bottom:0;border-top-color:#fff}
+  .price .pp{font-family:'Archivo Black',sans-serif;font-size:32px;margin-top:17px;letter-spacing:.04em}
+
+  /* ---------- title banner ---------- */
+  .banner{
+    position:relative;background:var(--ink);color:#fff;text-align:center;
+    font-family:'Playfair Display',serif;font-weight:800;font-style:italic;font-size:46px;
+    padding:9px 20px 12px;margin:0 6px;
+    box-shadow:6px 6px 0 var(--red);
+  }
+  .banner::before,.banner::after{content:"";position:absolute;top:50%;width:46px;height:3px;background:var(--yellow)}
+  .banner::before{left:20px}.banner::after{right:20px}
+
+  /* ---------- folio ---------- */
+  .folio{
+    display:flex;justify-content:space-between;align-items:center;margin-top:14px;
+    border-top:3px double var(--ink);border-bottom:1px solid var(--ink);
+    padding:5px 4px 4px;font-family:'Oswald',sans-serif;font-weight:500;font-size:17px;letter-spacing:.06em;
+  }
+  .folio .r{font-style:italic}
+  .folio .dots{flex:1;margin:0 18px;height:1px;border-top:2px dotted rgba(20,18,16,.45)}
+
+  /* ---------- ticket info ---------- */
+  .ticket{
+    position:relative;display:grid;grid-template-columns:1.15fr .8fr 1.45fr .85fr;
+    margin-top:14px;border:3px solid var(--ink);background:rgba(255,252,240,.55);
+  }
+  .ticket .c{padding:10px 14px 11px;position:relative}
+  .ticket .c + .c{border-left:2px dashed var(--ink)}
+  .ticket .k{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;letter-spacing:.14em;text-transform:uppercase;
+    display:inline-block;background:var(--ink);color:var(--yellow);padding:1px 8px 0;margin-bottom:6px}
+  .ticket .v{font-family:'Playfair Display',serif;font-weight:900;font-size:30px;line-height:1.05}
+  .ticket .c:nth-child(3) .v{font-size:27px}
+
+  /* ---------- body grid ---------- */
+  .grid{display:grid;grid-template-columns:600px 1fr;gap:0;margin-top:16px;flex:1;min-height:0;border-top:4px solid var(--ink)}
+  .left{padding-right:20px;border-right:2px solid var(--ink);display:flex;flex-direction:column}
+  .right{padding-left:20px;display:flex;flex-direction:column}
+
+  .tag{
+    display:inline-block;align-self:flex-start;background:var(--yellow);font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:22px;letter-spacing:.32em;padding:3px 30px 2px 14px;border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);transform:rotate(-1.5deg);
+  }
+  .crime{padding-top:14px}
+  .crime h2{
+    font-family:'Playfair Display',serif;font-weight:900;font-size:37px;line-height:1.08;letter-spacing:-.005em;
+    margin-top:12px;
+  }
+  .crime h2 em{font-style:normal;background:linear-gradient(transparent 60%, rgba(247,228,54,.95) 60%, rgba(247,228,54,.95) 92%, transparent 92%)}
+  .dateline{display:flex;align-items:center;gap:10px;margin-top:10px;font-family:'Special Elite',monospace;font-size:19px;letter-spacing:.12em}
+  .dateline::before{content:"";width:24px;height:3px;background:var(--red)}
+  .dateline::after{content:"";flex:1;height:1px;background:var(--ink);opacity:.5}
+
+  .photos{display:flex;gap:16px;margin-top:20px;align-items:flex-start}
+  .ph{
+    position:relative;background:#fbf7ec;padding:8px 8px 8px;
+    box-shadow:0 2px 0 rgba(0,0,0,.08), 4px 8px 14px rgba(40,25,10,.35);
+  }
+  .ph img{display:block;width:100%;height:100%;object-fit:cover;filter:sepia(.25) contrast(1.1) saturate(.9)}
+  .ph::after{ /* halftone */
+    content:"";position:absolute;inset:8px;pointer-events:none;mix-blend-mode:multiply;opacity:.28;
+    background:radial-gradient(circle, rgba(0,0,0,.9) 0.9px, transparent 1.4px) 0 0/4px 4px;
+  }
+  .tape{position:absolute;width:86px;height:26px;background:rgba(240,226,170,.72);
+    box-shadow:0 1px 2px rgba(0,0,0,.18);z-index:3;
+    -webkit-mask:linear-gradient(90deg,transparent 0 2px,#000 2px calc(100% - 2px),transparent 0);
+  }
+  .ph.plaque{width:230px;height:196px;transform:rotate(-2.4deg);margin-top:6px}
+  .ph.plaque .tape{top:-12px;left:66px;transform:rotate(-4deg)}
+  .ph.scene{width:330px;height:232px;transform:rotate(1.2deg)}
+  .ph.scene .tape{top:-12px;right:24px;transform:rotate(6deg)}
+  .ph.scene img{filter:sepia(.45) contrast(1.15)}
+
+  .occult{margin-top:auto;border-top:3px double var(--ink);padding-top:16px;display:flex;gap:18px}
+  .ph.lavey{width:220px;height:272px;flex:none;transform:rotate(-1.6deg);background:#1a1412;padding:7px}
+  .ph.lavey::after{inset:7px}
+  .ph.lavey img{filter:contrast(1.12) saturate(1.05)}
+  .ph.lavey .tape{top:-12px;left:70px;transform:rotate(3deg)}
+  .occ-txt{display:flex;flex-direction:column;flex:1}
+  .occ-txt .tag{background:var(--ink);color:var(--yellow);border-color:var(--ink);box-shadow:3px 3px 0 var(--red);align-self:flex-end;transform:rotate(1.5deg)}
+  .occ-txt h3{font-family:'Playfair Display',serif;font-weight:900;font-size:44px;line-height:1;margin-top:14px;text-align:right;white-space:nowrap}
+  .occ-txt .yr{font-family:'Archivo Black',sans-serif;font-size:26px;letter-spacing:.2em;text-align:right;margin-top:4px;color:var(--red)}
+  .occ-txt p{font-family:'Special Elite',monospace;font-size:17px;line-height:1.36;margin-top:8px;text-align:right;
+    border-top:1px solid rgba(20,18,16,.5);padding-top:9px}
+
+  .quote{
+    position:relative;background:var(--yellow);padding:30px 16px 8px;margin-top:6px;border:3px solid var(--ink);
+    box-shadow:6px 6px 0 var(--ink);
+  }
+  .quote::before{content:"\201C";position:absolute;left:10px;top:-30px;font-family:'Playfair Display',serif;font-weight:900;font-size:96px;line-height:1;color:var(--red)}
+  .quote p{font-family:'Oswald',sans-serif;font-weight:600;font-size:21px;line-height:1.24;text-align:center;text-wrap:balance}
+  .quote .yr{font-family:'Anton',sans-serif;font-size:60px;line-height:1;letter-spacing:.12em;margin-top:6px;
+    display:flex;align-items:center;gap:12px}
+  .quote .yr::after{content:"";flex:1;height:6px;background:repeating-linear-gradient(90deg,var(--ink) 0 10px,transparent 10px 16px)}
+  .cover{
+    position:relative;margin-top:22px;flex:1;min-height:0;margin-bottom:6px;transform:rotate(1.8deg);
+    background:#fff;padding:7px;box-shadow:6px 10px 18px rgba(40,25,10,.45);
+  }
+  .cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;filter:contrast(1.06) saturate(1.08)}
+  .cover::after{content:"";position:absolute;inset:7px;pointer-events:none;mix-blend-mode:multiply;opacity:.22;
+    background:radial-gradient(circle, rgba(0,0,0,.9) 0.9px, transparent 1.5px) 0 0/4px 4px}
+  .cover .tape{top:-13px;left:50%;margin-left:-43px;transform:rotate(-3deg)}
+  .cover .tape.b{top:auto;bottom:-12px;left:auto;right:-20px;transform:rotate(-38deg)}
+
+  .misreg{position:relative}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="noise" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 -1.1 1"/>
+  </filter>
+  <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter>
+</svg>
+
+<div class="page">
+  <div class="strip">NUM 41. MÉXICO DF, NOVIEMBRE 2026. UN PESO EN TODO EL PAÍS</div>
+
+  <div class="mast">
+    <div class="burst"></div>
+    <img class="logo" src="imgs/logo.png" alt="ALARMA!">
+    <div class="price"><div class="amt">$200</div><div class="pp">P/P</div></div>
+  </div>
+
+  <div class="banner" style="filter:url(#rough)">"Leyendas: Crímenes famosos de México"</div>
+
+  <div class="folio"><span>PÁG. 1</span><span class="dots"></span><span class="r">PRECIO: $1.00</span></div>
+
+  <div class="ticket">
+    <div class="c"><span class="k">Sábado</span><div class="v">21 de Noviembre</div></div>
+    <div class="c"><span class="k">Hora:</span><div class="v">5:00 PM</div></div>
+    <div class="c"><span class="k">Punto de reunión:</span><div class="v">Plaza de Santo Domingo</div></div>
+    <div class="c"><span class="k">Duración:</span><div class="v">03 horas</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="crime">
+        <span class="tag">CRIMEN</span>
+        <h2>Misteriosos asaltantes entraron a la casa del <em>respetable Joaquín Dongo</em> con intención de robarle</h2>
+        <div class="dateline">23 de octubre de 1789</div>
+        <div class="photos">
+          <div class="ph plaque"><span class="tape"></span><img src="imgs/img05.png"></div>
+          <div class="ph scene"><span class="tape"></span><img src="imgs/img06.png"></div>
+        </div>
+      </div>
+      <div class="occult">
+        <div class="ph lavey"><span class="tape"></span><img src="imgs/img03.png"></div>
+        <div class="occ-txt">
+          <span class="tag">OCULTISMO</span>
+          <h3>Teatro Fru Fru</h3>
+          <div class="yr">1975</div>
+          <p>Anton Zsandor LaVey, fundador de la Iglesia Satánica de México, oficia una misa negra junto a La Tigresa en el Teatro Fru Fru en 1975</p>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="quote">
+        <p>Se encontró a la mujer que vivía en pecado con un clérigo, con herraduras de caballo clavadas en las plantas de los pies.</p>
+        <div class="yr">1670</div>
+      </div>
+      <div class="cover"><span class="tape"></span><span class="tape b"></span><img src="imgs/img07.png"></div>
+    </div>
+  </div>
+
+  <div class="tex grain"></div>
+  <div class="tex noise"><svg width="100%" height="100%"><rect width="100%" height="100%" filter="url(#noise)"/></svg></div>
+  <div class="tex fold"></div>
+  <div class="tex stain"></div>
+  <div class="tex vignette"></div>
+  <div class="tex edges"></div>
+</div>
+</body>
+</html>
