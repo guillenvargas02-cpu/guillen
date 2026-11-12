@@ -1,0 +1,44 @@
+<template>
+  <style>
+    /* Aparece al decir "Favor de leer antes de opinar": la portada en 3D sobre el autor desenfocado */
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #pt-shade { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: radial-gradient(ellipse 80% 55% at 50% 42%, rgba(8, 10, 14, 0.25) 0%, rgba(8, 10, 14, 0.7) 100%); }
+    .pt-glow { position: absolute; border-radius: 50%; }
+    #pt-g { left: -420px; top: 160px; width: 1200px; height: 1200px; background: radial-gradient(circle, rgba(0, 150, 90, 0.55) 0%, rgba(0, 150, 90, 0) 65%); }
+    #pt-r { left: 360px; top: 560px; width: 1200px; height: 1200px; background: radial-gradient(circle, rgba(214, 24, 42, 0.5) 0%, rgba(214, 24, 42, 0) 65%); }
+    #pt-stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 2000px; perspective-origin: 540px 800px; }
+    #pt-book { position: absolute; left: 225px; top: 300px; width: 630px; height: 934px; transform-style: preserve-3d; }
+    #pt-cover { position: absolute; left: 0; top: 0; width: 630px; height: 934px; background: url("assets/book/portada.jpg") center / cover; border-radius: 4px 10px 10px 4px; overflow: hidden; box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6), 0 10px 26px rgba(0, 0, 0, 0.45); }
+    #pt-spine { position: absolute; left: 0; top: 0; width: 26px; height: 934px; background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.18) 45%, rgba(0, 0, 0, 0.12) 70%, rgba(0, 0, 0, 0)); }
+    #pt-edge { position: absolute; left: 630px; top: 8px; width: 28px; height: 918px; transform-origin: 0 50%; transform: rotateY(90deg); background: repeating-linear-gradient(90deg, #f1e9d6 0 1.4px, #c9bc9f 1.8px, #f1e9d6 2.4px); }
+    #pt-sweep { position: absolute; left: -400px; top: -200px; width: 240px; height: 1400px; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0)); }
+    #pt-kick { position: absolute; left: 0; top: 196px; width: 1080px; text-align: center; font-weight: 800; font-size: 30px; letter-spacing: 0.42em; color: #ffd84d; text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6); }
+  </style>
+  <div id="root" data-composition-id="portada" data-width="1080" data-height="1920">
+    <div id="pt-shade"></div>
+    <div id="pt-g" class="pt-glow"></div>
+    <div id="pt-r" class="pt-glow"></div>
+    <div id="pt-kick">EL LIBRO</div>
+    <div id="pt-stage">
+      <div id="pt-book">
+        <div id="pt-edge"></div>
+        <div id="pt-cover"><div id="pt-spine"></div><div id="pt-sweep"></div></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#pt-shade", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0);
+    tl.fromTo(["#pt-g", "#pt-r"], { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1.05, duration: 1.2, ease: "sine.out" }, 0);
+    tl.to(["#pt-g", "#pt-r"], { scale: 1.15, duration: 2.5, ease: "sine.inOut" }, 1.2);
+    // la portada gira y aterriza
+    tl.fromTo("#pt-book", { x: 380, y: 120, z: -500, rotationY: -78, rotationX: 10, rotationZ: 8, opacity: 0 },
+      { x: 0, y: 0, z: 0, rotationY: -16, rotationX: 4, rotationZ: -1.5, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.02);
+    tl.to("#pt-book", { rotationY: -6, rotationX: 2, rotationZ: 0, y: -14, duration: 3.0, ease: "sine.inOut" }, 0.72);
+    tl.fromTo("#pt-sweep", { x: 0 }, { x: 1300, duration: 0.9, ease: "power2.inOut" }, 0.55);
+    tl.fromTo("#pt-kick", { opacity: 0, scaleX: 1.35 }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.25);
+    // salida: el libro se acerca y corta
+    tl.to("#pt-book", { scale: 1.08, duration: 0.25, ease: "power2.in" }, 3.49);
+    window.__timelines["portada"] = tl;
+  </script>
+</template>

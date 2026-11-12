@@ -1,0 +1,84 @@
+<template>
+  <style>
+    @font-face { font-family: "Playfair"; font-weight: 700; font-style: italic; src: url("assets/fonts/playfair-display-latin-700-italic.woff2") format("woff2"); }
+    @font-face { font-family: "Playfair"; font-weight: 900; src: url("assets/fonts/playfair-display-latin-900-normal.woff2") format("woff2"); }
+    /* Cierre: "12 de noviembre · Día Nacional del Libro" — cierra con la paleta del intro (verde / rojo / oro) */
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #co-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: radial-gradient(ellipse 110% 70% at 50% 42%, #171a20 0%, #0b0d11 55%, #040506 100%); }
+    .co-glow { position: absolute; border-radius: 50%; }
+    #co-g { left: -560px; top: 40px; width: 1400px; height: 1400px; background: radial-gradient(circle, rgba(0, 140, 80, 0.5) 0%, rgba(0, 140, 80, 0) 64%); }
+    #co-r { left: 260px; top: 760px; width: 1400px; height: 1400px; background: radial-gradient(circle, rgba(214, 24, 42, 0.45) 0%, rgba(214, 24, 42, 0) 64%); }
+    .co-dust { position: absolute; border-radius: 50%; background: #ffe2a0; }
+    #co-paper { position: absolute; left: -500px; top: -300px; width: 2200px; height: 2600px; transform: rotate(-24deg); background: linear-gradient(90deg, #efe6d2 0%, #f7f1e3 50%, #e9ddc4 100%); box-shadow: -40px 0 80px rgba(0, 0, 0, 0.45), 40px 0 80px rgba(0, 0, 0, 0.45); }
+    #co-num { position: absolute; left: 0; top: 250px; width: 1080px; text-align: center; font-family: "Playfair"; font-weight: 900; font-size: 470px; line-height: 1; letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #fff6d6 0%, #ffd84d 45%, #c08a22 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    #co-numbox { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    #co-shine { position: absolute; left: -300px; top: 230px; width: 200px; height: 560px; transform: skewX(-18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)); mix-blend-mode: overlay; }
+    #co-month { position: absolute; left: 0; top: 760px; width: 1080px; text-align: center; font-weight: 800; font-size: 50px; letter-spacing: 0.52em; text-indent: 0.52em; color: #fff; }
+    #co-line { position: absolute; left: 280px; top: 862px; width: 520px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #00995a 0 33.3%, #ffffff 33.3% 66.6%, #d6182a 66.6% 100%); }
+    #co-dia { position: absolute; left: 0; top: 905px; width: 1080px; text-align: center; font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 112px; line-height: 1.05; color: #fff; }
+    #co-dia b { font-weight: 900; color: #ffd84d; }
+    #co-foot { position: absolute; left: 110px; top: 1290px; width: 860px; height: 380px; }
+    #co-book { position: absolute; left: 0; top: 0; width: 236px; height: 350px; background: url("assets/book/portada.jpg") center / cover; border-radius: 3px 7px 7px 3px; box-shadow: 0 26px 60px rgba(0, 0, 0, 0.6); }
+    #co-info { position: absolute; left: 290px; top: 34px; width: 570px; }
+    #co-title { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1.1; }
+    #co-avail { margin-top: 26px; font-weight: 700; font-size: 30px; letter-spacing: 0.3em; color: rgba(255, 255, 255, 0.8); }
+    #co-logo { margin-top: 14px; display: inline-block; padding: 16px 30px; border-radius: 20px; background: #ffe600; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); }
+    #co-logo img { display: block; width: 330px; height: auto; }
+  </style>
+  <div id="root" data-composition-id="cortinilla" data-width="1080" data-height="1920">
+    <div id="co-bg"></div>
+    <div id="co-g" class="co-glow"></div>
+    <div id="co-r" class="co-glow"></div>
+    <div id="co-dustbox"></div>
+    <div id="co-numbox"><div id="co-num">12</div><div id="co-shine"></div></div>
+    <div id="co-month">DE NOVIEMBRE</div>
+    <div id="co-line"></div>
+    <div id="co-dia">Día Nacional<br />del <b>Libro</b></div>
+    <div id="co-foot">
+      <div id="co-book"></div>
+      <div id="co-info">
+        <div id="co-title">Favor de leer antes de opinar</div>
+        <div id="co-avail">DISPONIBLE EN</div>
+        <div id="co-logo"><img src="assets/gandhi/logo.png" alt="Librerías Gandhi" /></div>
+      </div>
+    </div>
+    <div id="co-paper"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    let seed = 1211;
+    const rnd = () => {
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    // polvo dorado
+    const db = document.getElementById("co-dustbox");
+    for (let i = 0; i < 40; i++) {
+      const d = document.createElement("div");
+      d.className = "co-dust";
+      const s = 3 + rnd() * 6;
+      d.style.cssText = `left:${(rnd() * 1080).toFixed(0)}px;top:${(rnd() * 1920).toFixed(0)}px;width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;opacity:${(0.25 + rnd() * 0.55).toFixed(2)};filter:blur(${(rnd() * 2.5).toFixed(1)}px)`;
+      db.appendChild(d);
+      tl.fromTo(d, { x: 0, y: 0 }, { x: (rnd() - 0.5) * 90, y: -80 - rnd() * 160, duration: 5.8, ease: "none" }, 0);
+    }
+    // barrido de papel: entra desde abajo a la derecha, cubre y sigue de largo
+    tl.fromTo("#co-paper", { x: 1500, y: 900 }, { x: -2600, y: -1500, duration: 0.85, ease: "power2.inOut" }, 0);
+    tl.fromTo(["#co-bg", "#co-g", "#co-r", "#co-dustbox"], { opacity: 0 }, { opacity: 1, duration: 0.01 }, 0.4);
+    tl.fromTo(["#co-g", "#co-r"], { scale: 0.85 }, { scale: 1.12, duration: 5.4, ease: "sine.out" }, 0.4);
+    // "12"
+    tl.fromTo("#co-numbox", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.01 }, 0.4);
+    tl.fromTo("#co-num", { y: 140, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "power4.out" }, 0.5);
+    tl.to("#co-num", { scale: 1.04, duration: 4.5, ease: "sine.inOut" }, 1.2);
+    tl.fromTo("#co-shine", { x: 0 }, { x: 1500, duration: 1.0, ease: "power2.inOut" }, 1.05);
+    tl.fromTo("#co-month", { opacity: 0, scaleX: 1.35 }, { opacity: 1, scaleX: 1, duration: 0.7, ease: "power3.out" }, 0.75);
+    tl.fromTo("#co-line", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.9);
+    tl.fromTo("#co-dia", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.05);
+    // firma: libro + Gandhi
+    tl.fromTo("#co-book", { opacity: 0, y: 80, rotation: -6 }, { opacity: 1, y: 0, rotation: -2, duration: 0.6, ease: "back.out(1.6)" }, 2.1);
+    tl.fromTo(["#co-title", "#co-avail", "#co-logo"], { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.12, ease: "power3.out" }, 2.25);
+    window.__timelines["cortinilla"] = tl;
+  </script>
+</template>

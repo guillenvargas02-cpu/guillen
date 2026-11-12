@@ -1,0 +1,35 @@
+<template>
+  <style>
+    /* "lo que está pasando en el país, que no son cosas menores": páginas reales del libro en abanico 3D */
+    #root { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse 100% 65% at 50% 45%, #1a1d24 0%, #0b0c10 60%, #050506 100%); }
+    .pg-glow { position: absolute; border-radius: 50%; }
+    #pg-g { left: -500px; top: 100px; width: 1300px; height: 1300px; background: radial-gradient(circle, rgba(0, 150, 90, 0.4) 0%, rgba(0, 150, 90, 0) 65%); }
+    #pg-r { left: 320px; top: 700px; width: 1300px; height: 1300px; background: radial-gradient(circle, rgba(214, 24, 42, 0.36) 0%, rgba(214, 24, 42, 0) 65%); }
+    #pg-stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 1800px; perspective-origin: 540px 820px; }
+    .pg { position: absolute; left: 260px; top: 330px; width: 560px; height: 831px; background-size: cover; border-radius: 3px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); transform-origin: 50% 100%; }
+    #pg-kick { position: absolute; left: 0; top: 200px; width: 1080px; text-align: center; font-weight: 800; font-size: 28px; letter-spacing: 0.36em; color: #ffd84d; }
+  </style>
+  <div id="root" data-composition-id="paginas" data-width="1080" data-height="1920">
+    <div id="pg-g" class="pg-glow"></div>
+    <div id="pg-r" class="pg-glow"></div>
+    <div id="pg-kick">FAVOR DE LEER ANTES DE OPINAR</div>
+    <div id="pg-stage">
+      <div id="pg1" class="pg" style="background-image: url('assets/book/p15.jpg')"></div>
+      <div id="pg2" class="pg" style="background-image: url('assets/book/p65.jpg')"></div>
+      <div id="pg3" class="pg" style="background-image: url('assets/book/p69.jpg')"></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(["#pg-g", "#pg-r"], { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0);
+    tl.fromTo("#pg-kick", { opacity: 0, scaleX: 1.3 }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.05);
+    // tres páginas entran una sobre otra y se abren en abanico
+    [["#pg1", 0.0, -11, -150], ["#pg2", 0.35, 0, 0], ["#pg3", 0.7, 11, 150]].forEach(([id, t, rot, dx]) => {
+      tl.fromTo(id, { x: 0, y: 900, rotationX: 55, rotationZ: rot * 2.5, opacity: 0 },
+        { x: dx * 0.4, y: 0, rotationX: 0, rotationZ: rot * 0.4, opacity: 1, duration: 0.55, ease: "power3.out" }, t);
+      tl.to(id, { x: dx, rotationZ: rot, duration: 1.4, ease: "sine.inOut" }, t + 0.55);
+    });
+    tl.to("#pg-stage", { scale: 1.06, duration: 2.6, ease: "none" }, 0);
+    window.__timelines["paginas"] = tl;
+  </script>
+</template>

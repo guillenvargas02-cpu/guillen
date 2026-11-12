@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/timeline.js"></script>
+    <script src="assets/map/mexico.js"></script>
+    <script src="assets/map/mapkit.js"></script>
+    <style>
+      /* "Favor de leer antes de opinar" — Día Nacional del Libro. 1080x1920 renderizado en portrait-4k.
+         Línea de tiempo y subtítulos: assets/timeline.js (lo genera build.py). */
+      @font-face { font-family: "Montserrat"; font-weight: 500; src: url("assets/fonts/montserrat-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 600; src: url("assets/fonts/montserrat-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 700; src: url("assets/fonts/montserrat-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 800; src: url("assets/fonts/montserrat-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 900; src: url("assets/fonts/montserrat-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 800; font-style: italic; src: url("assets/fonts/montserrat-latin-800-italic.woff2") format("woff2"); }
+      @font-face { font-family: "Playfair"; font-weight: 700; src: url("assets/fonts/playfair-display-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Playfair"; font-weight: 900; src: url("assets/fonts/playfair-display-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Playfair"; font-weight: 700; font-style: italic; src: url("assets/fonts/playfair-display-latin-700-italic.woff2") format("woff2"); }
+      @font-face { font-family: "Playfair"; font-weight: 900; font-style: italic; src: url("assets/fonts/playfair-display-latin-900-italic.woff2") format("woff2"); }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; font-family: "Montserrat", sans-serif; color: #fff; }
+      .full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
+      .shot { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; }
+      .shot video, video.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+      .cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 36%; }
+
+      /* ---------- rótulo con el nombre ---------- */
+      #lt { position: absolute; left: 64px; top: 1110px; width: 760px; height: 190px; }
+      #lt-bar { position: absolute; left: 0; top: 0; width: 8px; height: 190px; background: linear-gradient(180deg, #00995a 0%, #00995a 33%, #ffffff 33%, #ffffff 66%, #d6182a 66%, #d6182a 100%); border-radius: 4px; }
+      #lt-panel { position: absolute; left: 22px; top: 0; height: 190px; width: 730px; border-radius: 18px; background: linear-gradient(100deg, rgba(10, 12, 18, 0.78) 0%, rgba(10, 12, 18, 0.55) 70%, rgba(10, 12, 18, 0) 100%); overflow: hidden; }
+      #lt-name { position: absolute; left: 46px; top: 26px; font-weight: 900; font-size: 62px; letter-spacing: -0.01em; white-space: nowrap; }
+      #lt-role { position: absolute; left: 48px; top: 112px; font-weight: 600; font-size: 29px; color: #ffd84d; white-space: nowrap; letter-spacing: 0.01em; }
+      #lt-role i { font-family: "Playfair"; font-style: italic; font-weight: 700; color: #fff; font-size: 31px; }
+
+      /* ---------- insignia "Día del libro" ---------- */
+      #badge { position: absolute; left: 0; top: 150px; width: 1080px; text-align: center; }
+      #badge-in { display: inline-flex; align-items: center; gap: 22px; padding: 20px 40px 20px 26px; border-radius: 80px; background: rgba(10, 12, 18, 0.72); border: 2px solid rgba(255, 216, 77, 0.75); box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4); }
+      #badge-day { font-family: "Playfair"; font-weight: 900; font-size: 64px; line-height: 1; color: #ffd84d; }
+      #badge-txt { text-align: left; line-height: 1.12; }
+      #badge-txt b { display: block; font-weight: 800; font-size: 28px; letter-spacing: 0.22em; color: #ffd84d; }
+      #badge-txt span { display: block; font-weight: 800; font-size: 34px; }
+
+      /* ---------- confeti ---------- */
+      .conf { position: absolute; top: -60px; width: 18px; height: 30px; border-radius: 3px; }
+
+      /* ---------- insertos de foto ---------- */
+      .photo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: #111; }
+      .photo img { position: absolute; top: 0; height: 1920px; width: auto; }
+      .chip { position: absolute; left: 0; width: 1080px; text-align: center; }
+      .chip span { display: inline-block; padding: 18px 40px; border-radius: 60px; font-weight: 800; font-size: 40px; letter-spacing: 0.04em; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35); }
+
+      /* ---------- subtítulos ---------- */
+      #capshade { background: linear-gradient(180deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.42) 78%, rgba(0, 0, 0, 0.5) 100%); }
+      .cap::before { content: ""; position: absolute; left: -40px; right: -40px; top: -40px; bottom: -40px; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0) 100%); z-index: -1; }
+      .cap { position: absolute; z-index: 0; left: 70px; width: 940px; top: 1395px; text-align: center; font-weight: 800; font-size: 60px; line-height: 1.16; letter-spacing: -0.005em; opacity: 0; }
+      .cap .w { display: inline-block; margin: 0 0.17em; color: #fff; text-shadow: 0 4px 24px rgba(0, 0, 0, 0.75), 0 2px 5px rgba(0, 0, 0, 0.6), 0 0 2px rgba(0, 0, 0, 0.5); transform-origin: 50% 70%; }
+      .cap .w.hl { color: #fff; }
+
+      /* ---------- acabado ---------- */
+      #leak { position: absolute; left: -600px; top: 200px; width: 1400px; height: 1400px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 190, 110, 0.45) 0%, rgba(255, 140, 70, 0.16) 40%, rgba(255, 140, 70, 0) 68%); opacity: 0; }
+      #flash { background: #fff; opacity: 0; }
+      #vignette { background: radial-gradient(ellipse 90% 70% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.32) 85%, rgba(0, 0, 0, 0.55) 100%); }
+      #grain { position: absolute; left: -512px; top: -512px; width: 2104px; height: 2944px; background: url("assets/grain.png") repeat; opacity: 0.06; }
+      #fadeout { background: #000; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="62.4" data-width="1080" data-height="1920">
+      <!-- audio final: voz + música + efectos (build.py audio) -->
+      <audio id="mix" class="clip" src="assets/mix.wav" data-start="0" data-duration="62.4" data-track-index="20"></audio>
+
+      <!-- HOOK: la animación del libro -->
+      <video id="v-intro" class="clip full" src="assets/v/intro.mp4" data-start="0" data-duration="4" data-track-index="1" muted style="z-index: 1"></video>
+
+      <!-- tomas del autor (los cortes viven en build.py; aquí sólo se colocan) -->
+      <div id="shot-c1" class="shot" style="z-index: 2"><div class="cam" id="cam-c1"><video id="v-c1" class="clip" src="assets/v/c1.mp4" data-start="4" data-duration="7.7" data-track-index="1" muted></video></div></div>
+      <div id="shot-c2" class="shot" style="z-index: 2"><div class="cam" id="cam-c2"><video id="v-c2" class="clip" src="assets/v/c2.mp4" data-start="11.7" data-duration="7.9" data-track-index="1" muted></video></div></div>
+      <div id="shot-c3" class="shot" style="z-index: 2"><div class="cam" id="cam-c3"><video id="v-c3" class="clip" src="assets/v/c3.mp4" data-start="19.6" data-duration="6.9" data-track-index="1" muted></video></div></div>
+      <div id="shot-c4" class="shot" style="z-index: 2"><div class="cam" id="cam-c4"><video id="v-c4" class="clip" src="assets/v/c4.mp4" data-start="26.5" data-duration="9.7" data-track-index="1" muted></video></div></div>
+      <div id="shot-c5" class="shot" style="z-index: 2"><div class="cam" id="cam-c5"><video id="v-c5" class="clip" src="assets/v/c5.mp4" data-start="36.2" data-duration="20.4" data-track-index="1" muted></video></div></div>
+
+      <!-- b-roll -->
+      <div id="shot-b3" class="shot" style="z-index: 4"><div class="cam" id="cam-b3"><video id="v-b3" class="clip" src="assets/v/b3.mp4" data-start="13.24" data-duration="2.7" data-track-index="2" muted></video></div></div>
+      <div id="shot-b1" class="shot" style="z-index: 4"><div class="cam" id="cam-b1"><video id="v-b1" class="clip" src="assets/v/b1.mp4" data-start="38.47" data-duration="1.84" data-track-index="2" muted></video></div></div>
+
+      <!-- escenas gráficas -->
+      <div id="portada" class="clip" data-composition-id="portada" data-composition-src="compositions/portada.html" data-start="15.86" data-duration="3.74" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="gandhi" class="clip" data-composition-id="gandhi" data-composition-src="compositions/gandhi.html" data-start="22.2" data-duration="3.1" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="nacional" class="clip" data-composition-id="nacional" data-composition-src="compositions/nacional.html" data-start="25.3" data-duration="1.2" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="presenta" class="clip" data-composition-id="presenta" data-composition-src="compositions/presenta.html" data-start="29.73" data-duration="1.28" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="ciudades" class="clip" data-composition-id="ciudades" data-composition-src="compositions/ciudades.html" data-start="31.01" data-duration="5.19" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="paginas" class="clip" data-composition-id="paginas" data-composition-src="compositions/paginas.html" data-start="42.31" data-duration="2.61" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="eventos" class="clip" data-composition-id="eventos" data-composition-src="compositions/eventos.html" data-start="53.43" data-duration="2.06" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+
+      <!-- rótulo y gráficos sobre el autor -->
+      <div id="lt" style="z-index: 8">
+        <div id="lt-panel"><div id="lt-name">Eduardo Contró</div><div id="lt-role">Autor de <i>Favor de leer antes de opinar</i></div></div>
+        <div id="lt-bar"></div>
+      </div>
+      <div id="badge" style="z-index: 8">
+        <div id="badge-in"><div id="badge-day">12</div><div id="badge-txt"><b>NOVIEMBRE</b><span>Día Nacional del Libro</span></div></div>
+      </div>
+      <div id="confetti" class="full" style="z-index: 8"></div>
+
+      <!-- subtítulos -->
+      <div id="capshade" class="full" style="z-index: 9"></div>
+      <div id="caps" class="full" style="z-index: 10"></div>
+
+      <!-- cierre -->
+      <div id="cortinilla" class="clip" data-composition-id="cortinilla" data-composition-src="compositions/cortinilla.html" data-start="56.6" data-duration="5.8" data-track-index="4" data-width="1080" data-height="1920" style="z-index: 12"></div>
+
+      <!-- acabado -->
+      <div class="full" style="z-index: 14"><div id="leak"></div></div>
+      <div id="flash" class="full" style="z-index: 15"></div>
+      <div id="vignette" class="full" style="z-index: 16"></div>
+      <div id="grainbox" class="full" style="z-index: 17; overflow: hidden"><div id="grain"></div></div>
+      <div id="fadeout" class="full" style="z-index: 18"></div>
+    </div>
+
+    <script>
+      (function () {
+        const TL = window.__TL;
+        const tl = gsap.timeline({ paused: true });
+
+        let seed = 1112;
+        const rnd = () => {
+          seed = (seed + 0x6d2b79f5) | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+
+        // ---------- cámara: punch-ins y respiraciones sobre las tomas ----------
+        // [inicio, fin, escala inicial, escala final, ease]
+        const moves = {
+          "#cam-c1": [[4.0, 10.6, 1.0, 1.05, "sine.inOut"], [10.68, 11.7, 1.13, 1.15, "power3.out"]],
+          "#cam-c2": [[11.7, 13.24, 1.06, 1.1, "sine.inOut"], [15.94, 19.6, 1.12, 1.18, "sine.out"]],
+          "#cam-c3": [[19.6, 22.2, 1.0, 1.09, "sine.inOut"]],
+          "#cam-c4": [[26.5, 28.0, 1.04, 1.08, "sine.inOut"], [28.05, 29.73, 1.15, 1.18, "power3.out"]],
+          "#cam-c5": [[36.2, 38.47, 1.0, 1.05, "sine.inOut"], [40.31, 42.31, 1.12, 1.15, "sine.out"], [44.92, 50.0, 1.0, 1.07, "sine.inOut"],
+                      [50.07, 51.35, 1.16, 1.18, "power3.out"], [51.35, 53.43, 1.02, 1.06, "sine.inOut"], [55.49, 56.6, 1.08, 1.1, "sine.out"]],
+          "#cam-b3": [[13.24, 15.94, 1.18, 1.04, "sine.out"]],
+          "#cam-b1": [[38.47, 40.31, 1.12, 1.0, "sine.out"]],
+        };
+        Object.entries(moves).forEach(([id, list]) => {
+          gsap.set(id, { scale: list[0][2] });
+          list.forEach(([a, b, s0, s1, ease], k) => {
+            const punch = k > 0 && s0 > list[k - 1][3] + 0.03;
+            if (punch) {
+              // corte en la toma: zoom rápido con desenfoque breve
+              tl.fromTo(id, { scale: s0 * 0.95 }, { scale: s0, duration: 0.22, ease: "power3.out", immediateRender: false }, a);
+              tl.to(id, { scale: s1, duration: b - a - 0.22, ease }, a + 0.22);
+            } else {
+              tl.fromTo(id, { scale: s0 }, { scale: s1, duration: b - a, ease, immediateRender: k === 0 }, a);
+            }
+          });
+        });
+        // la toma del autor se desenfoca detrás de la portada
+        gsap.set("#cam-c2", { filter: "blur(0px) brightness(1)" });
+        tl.to("#cam-c2", { filter: "blur(26px) brightness(0.42)", duration: 0.35, ease: "power2.out" }, 15.86);
+        // entrada del b-roll con desenfoque de movimiento
+        [["#cam-b3", 13.24], ["#cam-b1", 38.47]].forEach(([id, t]) => {
+          gsap.set(id, { filter: "blur(0px)" });
+          tl.fromTo(id, { filter: "blur(14px)" }, { filter: "blur(0px)", duration: 0.22, ease: "power2.out", immediateRender: false }, t);
+        });
+
+        // ---------- rótulo con el nombre ----------
+        gsap.set("#lt-panel", { clipPath: "inset(0 100% 0 0)" });
+        gsap.set("#lt-bar", { scaleY: 0, transformOrigin: "50% 0%" });
+        gsap.set(["#lt-name", "#lt-role"], { x: -40, opacity: 0 });
+        tl.to("#lt-bar", { scaleY: 1, duration: 0.3, ease: "power3.out" }, 5.72);
+        tl.to("#lt-panel", { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power3.out" }, 5.82);
+        tl.to("#lt-name", { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 5.9);
+        tl.to("#lt-role", { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 6.02);
+        tl.to("#lt", { x: -60, opacity: 0, duration: 0.3, ease: "power2.in" }, 9.3);
+
+        // ---------- insignia "12 de noviembre · Día Nacional del Libro" ----------
+        gsap.set("#badge", { opacity: 0, y: -40, scale: 0.9 });
+        tl.to("#badge", { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 8.75);
+        tl.fromTo("#badge-day", { rotationX: -90 }, { rotationX: 0, duration: 0.5, ease: "back.out(2)" }, 8.85);
+        tl.to("#badge", { opacity: 0, y: -30, duration: 0.3, ease: "power2.in" }, 11.35);
+
+        // ---------- confeti en "estamos de fiesta" ----------
+        const cbox = document.getElementById("confetti");
+        const ccol = ["#00995a", "#ffffff", "#d6182a", "#ffd84d", "#ffd84d", "#6c2a87"];
+        for (let i = 0; i < 70; i++) {
+          const el = document.createElement("div");
+          el.className = "conf";
+          const w = 12 + rnd() * 12;
+          el.style.cssText = `left:${(rnd() * 1080).toFixed(0)}px;width:${w.toFixed(0)}px;height:${(w * (1.4 + rnd())).toFixed(0)}px;background:${ccol[Math.floor(rnd() * ccol.length)]};opacity:0`;
+          cbox.appendChild(el);
+          const t0 = 28.0 + rnd() * 0.12;
+          const y0 = -rnd() * 500;
+          const fall = 1700 + rnd() * 600;
+          const d = 1.3 + rnd() * 0.5;
+          tl.set(el, { opacity: 1, y: y0, x: 0, rotation: rnd() * 360, rotationX: 0 }, t0);
+          tl.to(el, { y: y0 + fall, x: (rnd() - 0.5) * 300, rotation: `+=${(rnd() - 0.5) * 720}`, rotationX: 720 * rnd(), duration: d, ease: "none" }, t0);
+          tl.to(el, { opacity: 0, duration: 0.25 }, Math.min(t0 + d - 0.25, 29.6));
+        }
+
+        // ---------- subtítulos karaoke ----------
+        const capBox = document.getElementById("caps");
+        const ACC = "#ffd84d";
+        TL.captions.forEach((c, i) => {
+          if (c.start >= TL.talkEnd) return;
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap${i}`;
+          c.words.forEach((w, k) => {
+            const s = document.createElement("span");
+            s.className = "w" + (w.hl ? " hl" : "");
+            s.id = `cap${i}w${k}`;
+            s.textContent = w.w;
+            el.appendChild(s);
+          });
+          capBox.appendChild(el);
+          const end = Math.min(c.end, TL.talkEnd);
+          tl.fromTo(el, { opacity: 0, y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "power3.out", immediateRender: i === 0 }, c.start);
+          tl.set(el, { opacity: 0 }, end);
+          c.words.forEach((w, k) => {
+            const id = `#cap${i}w${k}`;
+            gsap.set(id, { opacity: 0.8 });
+            tl.to(id, { opacity: 1, duration: 0.06, ease: "none" }, w.t0 - 0.02);
+            if (w.hl) {
+              tl.to(id, { color: ACC, duration: 0.08, ease: "none" }, w.t0 - 0.02);
+              tl.fromTo(id, { scale: 1 }, { scale: 1.06, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, w.t0 - 0.02);
+            }
+          });
+        });
+        tl.to("#capshade", { opacity: 0, duration: 0.3 }, TL.talkEnd);
+        gsap.set("#capshade", { opacity: 0 });
+        tl.to("#capshade", { opacity: 1, duration: 0.3 }, TL.intro - 0.1);
+
+        // ---------- destellos de luz en los momentos clave ----------
+        [[3.9, 1.1], [15.8, 1.3], [53.35, 1.2]].forEach(([t, d]) => {
+          tl.fromTo("#leak", { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 520, y: -150, duration: d * 0.5, ease: "sine.out", immediateRender: false }, t);
+          tl.to("#leak", { opacity: 0, x: 1000, y: -300, duration: d * 0.5, ease: "sine.in" }, t + d * 0.5);
+        });
+        // cortes con golpe de luz breve
+        [22.26].forEach((t) => {
+          tl.fromTo("#flash", { opacity: 0 }, { opacity: 0.85, duration: 0.03, ease: "none", immediateRender: false }, t);
+          tl.to("#flash", { opacity: 0, duration: 0.3, ease: "power2.out" }, t + 0.03);
+        });
+
+        // salida a negro
+        tl.to("#fadeout", { opacity: 1, duration: 0.45, ease: "power1.in" }, TL.total - 0.45);
+
+        // grano de película
+        for (let k = 0; k < Math.ceil(TL.total * 24); k++) tl.set("#grain", { x: -Math.floor(rnd() * 512), y: -Math.floor(rnd() * 512) }, k / 24);
+        tl.set({}, {}, TL.total);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

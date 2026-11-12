@@ -13,3 +13,8 @@ teaser/renders/
 intro-libro/.hyperframes/
 intro-libro/renders/*
 !intro-libro/renders/intro-favor-de-leer-4k.mp4
+video-libro/.hyperframes/
+video-libro/assets/v/
+video-libro/assets/mix.wav
+video-libro/renders/*
+!video-libro/renders/video-favor-de-leer-4k.mp4

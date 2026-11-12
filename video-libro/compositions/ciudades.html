@@ -1,0 +1,98 @@
+<template>
+  <style>
+    @font-face { font-family: "Playfair"; font-weight: 700; font-style: italic; src: url("assets/fonts/playfair-display-latin-700-italic.woff2") format("woff2"); }
+    @font-face { font-family: "Playfair"; font-weight: 900; src: url("assets/fonts/playfair-display-latin-900-normal.woff2") format("woff2"); }
+    /* Presentaciones: Miguel Hidalgo / Ciudad de México / Monterrey / Guadalajara, cada pin con su palabra */
+    #root { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse 90% 60% at 50% 48%, #2a1040 0%, #12071c 55%, #07030b 100%); }
+    #ci-map { position: absolute; left: 0; top: 0; width: 793px; height: 498px; transform-origin: 0 0; }
+    #ci-arcs { position: absolute; left: 0; top: 0; overflow: visible; }
+    .ci-pin { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+    .ci-dot { position: absolute; left: -15px; top: -15px; width: 30px; height: 30px; border-radius: 50%; background: #ffe600; box-shadow: 0 0 0 6px rgba(108, 42, 135, 0.9), 0 0 30px 8px rgba(255, 230, 0, 0.6); }
+    .ci-ring { position: absolute; left: -15px; top: -15px; width: 30px; height: 30px; border-radius: 50%; border: 4px solid #ffe600; }
+    .ci-lab { position: absolute; top: -34px; white-space: nowrap; padding: 12px 26px; border-radius: 40px; background: #fff; color: #3b1350; font-weight: 900; font-size: 36px; box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45); }
+    .ci-lab.r { left: 36px; }
+    .ci-lab.l { right: 36px; }
+    .ci-lab small { display: block; font-weight: 800; font-size: 28px; letter-spacing: 0.16em; color: #7d35a0; margin-bottom: 2px; }
+    #ci-pip { position: absolute; left: 60px; top: 120px; width: 250px; height: 250px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 7px #ffe600, 0 18px 50px rgba(0, 0, 0, 0.5); background: #222; }
+    #ci-pip video { position: absolute; left: -25px; top: -10px; width: 300px; height: 533px; object-fit: cover; }
+    #ci-title { position: absolute; left: 350px; top: 150px; }
+    #ci-t1 { font-weight: 900; font-size: 50px; letter-spacing: 0.06em; color: #ffe600; }
+    #ci-t2 { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 62px; margin-top: 2px; }
+  </style>
+  <div id="root" data-composition-id="ciudades" data-width="1080" data-height="1920">
+    <div id="ci-map"></div>
+    <div id="ci-pins"></div>
+    <div id="ci-pip"><video id="ci-v" class="clip" src="assets/v/c4.mp4" data-start="0" data-duration="5.19" data-media-start="4.51" muted></video></div>
+    <div id="ci-title"><div id="ci-t1">PRESENTACIONES</div><div id="ci-t2">del libro</div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const box = document.getElementById("ci-map");
+    const { svg, paths } = MXKit.build(box, "ci", { fill: "#3d1857", stroke: "rgba(255,255,255,0.4)", strokeWidth: 1.2 });
+    const C = window.MX_MAP.cities;
+    const AX = 540, AY = 980; // punto de la pantalla donde cae el centro de la cámara
+    // cámara: [tiempo de llegada, duración, centro x, centro y, escala]
+    const cams = [
+      [0, 0, 397, 260, 1.3],
+      [0.62, 0.62, 481, 368, 7.2],
+      [3.0, 0.5, 452, 300, 2.25],
+      [4.02, 0.45, 432, 292, 2.1],
+      [5.19, 1.17, 436, 294, 2.2],
+    ];
+    const camXY = (cx, cy, s) => ({ x: AX - cx * s, y: AY - cy * s, scale: s });
+    gsap.set("#ci-map", camXY(cams[0][2], cams[0][3], cams[0][4]));
+    // pines en pantalla: su posición sigue a la cámara (lineal en el mismo progreso)
+    const pins = [
+      { id: "mh", name: "Miguel Hidalgo", sub: "CDMX", at: 0.56, side: "l", p: C["Miguel Hidalgo"] },
+      { id: "cdmx", name: "Ciudad de México", sub: "", at: 1.61, side: "r", p: [482.8, 374.9] },
+      { id: "mty", name: "Monterrey", sub: "NUEVO LEÓN", at: 3.05, side: "r", p: C["Monterrey"] },
+      { id: "gdl", name: "Guadalajara", sub: "JALISCO", at: 4.09, side: "l", p: C["Guadalajara"] },
+    ];
+    const pbox = document.getElementById("ci-pins");
+    pins.forEach((q) => {
+      const el = document.createElement("div");
+      el.className = "ci-pin";
+      el.id = `ci-${q.id}`;
+      el.innerHTML = `<div class="ci-ring" id="ci-${q.id}-ring"></div><div class="ci-dot" id="ci-${q.id}-dot"></div>` +
+        `<div class="ci-lab ${q.side}" id="ci-${q.id}-lab">${q.sub ? `<small>${q.sub}</small>` : ""}${q.name}</div>`;
+      pbox.appendChild(el);
+      const pos = (cam) => ({ x: AX + (q.p[0] - cam[2]) * cam[4], y: AY + (q.p[1] - cam[3]) * cam[4] });
+      gsap.set(el, pos(cams[0]));
+      cams.slice(1).forEach((cam) => tl.to(el, { ...pos(cam), duration: cam[1], ease: "power3.inOut" }, cam[0] - cam[1]));
+      gsap.set([`#ci-${q.id}-dot`, `#ci-${q.id}-lab`, `#ci-${q.id}-ring`], { opacity: 0 });
+      tl.fromTo(`#ci-${q.id}-dot`, { opacity: 0, scale: 0, y: -60 }, { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "back.out(3)", immediateRender: false }, q.at - 0.05);
+      tl.fromTo(`#ci-${q.id}-ring`, { opacity: 1, scale: 1 }, { opacity: 0, scale: 4, duration: 0.8, ease: "power2.out", immediateRender: false }, q.at + 0.15);
+      tl.fromTo(`#ci-${q.id}-lab`, { opacity: 0, x: q.side === "r" ? -20 : 20, scale: 0.85 }, { opacity: 1, x: 0, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, q.at + 0.05);
+    });
+    // al alejarse, la etiqueta de Miguel Hidalgo cede el lugar
+    tl.to("#ci-mh-lab", { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.45);
+    // la CDMX se ilumina al decir "Ciudad de México"
+    tl.to(paths.cmx, { attr: { fill: "#ffe600" }, duration: 0.25, ease: "power2.out" }, 1.58);
+    [["nle", 3.0], ["jal", 4.05]].forEach(([id, t]) => tl.to(paths[id], { attr: { fill: "#7d35a0" }, duration: 0.3, ease: "power2.out" }, t));
+    // arcos desde la CDMX
+    const arc = (to, t) => {
+      const a = C["Ciudad de México"], b = to;
+      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2 - Math.hypot(b[0] - a[0], b[1] - a[1]) * 0.35;
+      const p = document.createElementNS(MXKit.NS, "path");
+      p.setAttribute("d", `M ${a[0]} ${a[1]} Q ${mx} ${my} ${b[0]} ${b[1]}`);
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", "#ffe600");
+      p.setAttribute("stroke-width", "4");
+      p.setAttribute("stroke-linecap", "round");
+      p.setAttribute("vector-effect", "non-scaling-stroke");
+      p.setAttribute("stroke-dasharray", "1000");
+      p.setAttribute("stroke-dashoffset", "1000");
+      p.setAttribute("pathLength", "1000");
+      svg.appendChild(p);
+      tl.to(p, { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.inOut" }, t);
+    };
+    arc(C["Monterrey"], 2.62);
+    arc(C["Guadalajara"], 3.66);
+    // cámara del mapa
+    cams.slice(1).forEach((cam) => tl.to("#ci-map", { ...camXY(cam[2], cam[3], cam[4]), duration: cam[1], ease: "power3.inOut" }, cam[0] - cam[1]));
+    tl.fromTo("#ci-map", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 0);
+    tl.fromTo("#ci-pip", { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2)" }, 0.1);
+    tl.fromTo(["#ci-t1", "#ci-t2"], { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.08, ease: "power3.out" }, 0.2);
+    window.__timelines["ciudades"] = tl;
+  </script>
+</template>
