@@ -12,13 +12,11 @@
     #pt-spine { position: absolute; left: 0; top: 0; width: 26px; height: 934px; background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.18) 45%, rgba(0, 0, 0, 0.12) 70%, rgba(0, 0, 0, 0)); }
     #pt-edge { position: absolute; left: 630px; top: 8px; width: 28px; height: 918px; transform-origin: 0 50%; transform: rotateY(90deg); background: repeating-linear-gradient(90deg, #f1e9d6 0 1.4px, #c9bc9f 1.8px, #f1e9d6 2.4px); }
     #pt-sweep { position: absolute; left: -400px; top: -200px; width: 240px; height: 1400px; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0)); }
-    #pt-kick { position: absolute; left: 0; top: 196px; width: 1080px; text-align: center; font-weight: 800; font-size: 30px; letter-spacing: 0.42em; color: #e3b85f; text-shadow: 0 3px 16px rgba(0, 0, 0, 0.6); }
   </style>
   <div id="root" data-composition-id="portada" data-width="1080" data-height="1920">
     <div id="pt-shade"></div>
     <div id="pt-g" class="pt-glow"></div>
     <div id="pt-r" class="pt-glow"></div>
-    <div id="pt-kick">EL LIBRO</div>
     <div id="pt-stage">
       <div id="pt-book">
         <div id="pt-edge"></div>
@@ -36,7 +34,6 @@
       { x: 0, y: 0, z: 0, rotationY: -16, rotationX: 4, rotationZ: -1.5, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.02);
     tl.to("#pt-book", { rotationY: -6, rotationX: 2, rotationZ: 0, y: -14, duration: 3.0, ease: "sine.inOut" }, 0.72);
     tl.fromTo("#pt-sweep", { x: 0 }, { x: 1300, duration: 0.9, ease: "power2.inOut" }, 0.55);
-    tl.fromTo("#pt-kick", { opacity: 0, scaleX: 1.35 }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.25);
     // salida: el libro se acerca y corta
     tl.to("#pt-book", { scale: 1.08, duration: 0.25, ease: "power2.in" }, 3.49);
     window.__timelines["portada"] = tl;

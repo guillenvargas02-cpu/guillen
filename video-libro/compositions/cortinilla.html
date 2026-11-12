@@ -1,33 +1,48 @@
 <template>
   <style>
-    @font-face { font-family: "Playfair"; font-weight: 700; font-style: italic; src: url("assets/fonts/playfair-display-latin-700-italic.woff2") format("woff2"); }
-    @font-face { font-family: "Playfair"; font-weight: 900; src: url("assets/fonts/playfair-display-latin-900-normal.woff2") format("woff2"); }
-    /* Cierre: "12 de noviembre · Día Nacional del Libro" — cierra con la paleta del intro (verde / rojo / oro) */
+    @font-face { font-family: "Bodoni Moda"; font-weight: 500; src: url("assets/fonts/bodoni-moda-latin-500-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Bodoni Moda"; font-weight: 900; src: url("assets/fonts/bodoni-moda-latin-900-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-weight: 600; font-style: italic; src: url("assets/fonts/cormorant-garamond-latin-600-italic.woff2") format("woff2"); }
+    /* Cierre editorial: "12 de noviembre · Día Nacional del Libro" (Bodoni + Cormorant, grafito y oro) */
     #root { position: absolute; inset: 0; overflow: hidden; }
-    #co-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: radial-gradient(ellipse 110% 70% at 50% 42%, #171a20 0%, #0b0d11 55%, #040506 100%); }
-    .co-glow { position: absolute; border-radius: 50%; }
-    #co-g { left: -560px; top: 40px; width: 1400px; height: 1400px; background: radial-gradient(circle, rgba(227, 184, 95, 0.22) 0%, rgba(227, 184, 95, 0) 64%); }
-    #co-r { left: 260px; top: 760px; width: 1400px; height: 1400px; background: radial-gradient(circle, rgba(245, 240, 230, 0.1) 0%, rgba(245, 240, 230, 0) 64%); }
-    .co-dust { position: absolute; border-radius: 50%; background: #ffe2a0; }
-    #co-paper { position: absolute; left: -500px; top: -300px; width: 2200px; height: 2600px; transform: rotate(-24deg); background: linear-gradient(90deg, #efe6d2 0%, #f7f1e3 50%, #e9ddc4 100%); box-shadow: -40px 0 80px rgba(0, 0, 0, 0.45), 40px 0 80px rgba(0, 0, 0, 0.45); }
-    #co-num { position: absolute; left: 0; top: 400px; width: 1080px; text-align: center; font-family: "Playfair"; font-weight: 900; font-size: 470px; line-height: 1; letter-spacing: -0.02em;
-      background: linear-gradient(180deg, #fbf1d8 0%, #e9c77a 45%, #b8893a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    #co-numbox { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-    #co-shine { position: absolute; left: -300px; top: 380px; width: 200px; height: 560px; transform: skewX(-18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)); mix-blend-mode: overlay; }
-    #co-month { position: absolute; left: 0; top: 910px; width: 1080px; text-align: center; font-weight: 800; font-size: 50px; letter-spacing: 0.52em; text-indent: 0.52em; color: #fff; }
-    #co-line { position: absolute; left: 280px; top: 1012px; width: 520px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(227, 184, 95, 0) 0%, #e3b85f 30%, #f3d58f 50%, #e3b85f 70%, rgba(227, 184, 95, 0) 100%); }
-    #co-dia { position: absolute; left: 0; top: 1055px; width: 1080px; text-align: center; font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 112px; line-height: 1.05; color: #fff; }
-    #co-dia b { font-weight: 900; color: #e3b85f; }
+    #co-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: radial-gradient(ellipse 110% 70% at 50% 44%, #1b1d22 0%, #0d0e11 58%, #050506 100%); }
+    #co-glow { position: absolute; left: -160px; top: 180px; width: 1400px; height: 1400px; border-radius: 50%; background: radial-gradient(circle, rgba(227, 184, 95, 0.16) 0%, rgba(227, 184, 95, 0) 62%); }
+    .co-dust { position: absolute; border-radius: 50%; background: #f3dca6; }
+    /* marco de ex libris */
+    .co-frame { position: absolute; border: 2px solid rgba(227, 184, 95, 0.55); }
+    #co-f1 { left: 64px; top: 64px; width: 952px; height: 1792px; }
+    #co-f2 { left: 82px; top: 82px; width: 916px; height: 1756px; border-width: 1px; border-color: rgba(227, 184, 95, 0.3); }
+    .co-mask { position: absolute; left: 0; width: 1080px; overflow: hidden; text-align: center; }
+    .co-in { display: block; }
+    #co-m1 { top: 330px; height: 640px; }
+    #co-num { font-family: "Bodoni Moda"; font-weight: 900; font-size: 600px; line-height: 640px; letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #fbf0d4 0%, #ecc97c 42%, #b98a3c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    #co-m2 { top: 960px; height: 170px; }
+    #co-month { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 600; font-size: 134px; line-height: 160px; color: #f5f0e6; }
+    #co-orn { position: absolute; left: 290px; top: 1176px; width: 500px; height: 20px; }
+    .co-rule { position: absolute; top: 9px; width: 214px; height: 2px; background: #e3b85f; }
+    #co-rl { left: 0; transform-origin: 100% 50%; background: linear-gradient(90deg, rgba(227, 184, 95, 0), #e3b85f); }
+    #co-rr { right: 0; transform-origin: 0% 50%; background: linear-gradient(90deg, #e3b85f, rgba(227, 184, 95, 0)); }
+    #co-dia-mark { position: absolute; left: 241px; top: 1px; width: 18px; height: 18px; background: #e3b85f; transform: rotate(45deg); }
+    #co-m3 { top: 1240px; height: 110px; }
+    #co-dia { font-family: "Bodoni Moda"; font-weight: 500; font-size: 78px; line-height: 110px; letter-spacing: 0.16em; text-indent: 0.16em; color: #f5f0e6; }
+    #co-m4 { top: 1340px; height: 190px; }
+    #co-lib { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 600; font-size: 158px; line-height: 180px; color: #e3b85f; }
+    #co-shine { position: absolute; left: -300px; top: 330px; width: 180px; height: 640px; transform: skewX(-18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)); mix-blend-mode: overlay; }
+    #co-paper { position: absolute; left: -500px; top: -300px; width: 2200px; height: 2600px; transform: rotate(-24deg); background: linear-gradient(90deg, #ece4d3 0%, #f6f1e6 50%, #e6dcc8 100%); box-shadow: -40px 0 80px rgba(0, 0, 0, 0.45), 40px 0 80px rgba(0, 0, 0, 0.45); }
   </style>
   <div id="root" data-composition-id="cortinilla" data-width="1080" data-height="1920">
     <div id="co-bg"></div>
-    <div id="co-g" class="co-glow"></div>
-    <div id="co-r" class="co-glow"></div>
+    <div id="co-glow"></div>
     <div id="co-dustbox"></div>
-    <div id="co-numbox"><div id="co-num">12</div><div id="co-shine"></div></div>
-    <div id="co-month">DE NOVIEMBRE</div>
-    <div id="co-line"></div>
-    <div id="co-dia">Día Nacional<br />del <b>Libro</b></div>
+    <div id="co-f1" class="co-frame"></div>
+    <div id="co-f2" class="co-frame"></div>
+    <div id="co-m1" class="co-mask"><span id="co-num" class="co-in">12</span></div>
+    <div id="co-shine"></div>
+    <div id="co-m2" class="co-mask"><span id="co-month" class="co-in">de noviembre</span></div>
+    <div id="co-orn"><div id="co-rl" class="co-rule"></div><div id="co-dia-mark"></div><div id="co-rr" class="co-rule"></div></div>
+    <div id="co-m3" class="co-mask"><span id="co-dia" class="co-in">DÍA NACIONAL</span></div>
+    <div id="co-m4" class="co-mask"><span id="co-lib" class="co-in">del Libro</span></div>
     <div id="co-paper"></div>
   </div>
   <script>
@@ -39,28 +54,30 @@
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
-    // polvo dorado
     const db = document.getElementById("co-dustbox");
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 36; i++) {
       const d = document.createElement("div");
       d.className = "co-dust";
-      const s = 3 + rnd() * 6;
-      d.style.cssText = `left:${(rnd() * 1080).toFixed(0)}px;top:${(rnd() * 1920).toFixed(0)}px;width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;opacity:${(0.25 + rnd() * 0.55).toFixed(2)};filter:blur(${(rnd() * 2.5).toFixed(1)}px)`;
+      const s = 3 + rnd() * 5;
+      d.style.cssText = `left:${(rnd() * 1080).toFixed(0)}px;top:${(rnd() * 1920).toFixed(0)}px;width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;opacity:${(0.2 + rnd() * 0.5).toFixed(2)};filter:blur(${(rnd() * 2.5).toFixed(1)}px)`;
       db.appendChild(d);
-      tl.fromTo(d, { x: 0, y: 0 }, { x: (rnd() - 0.5) * 90, y: -80 - rnd() * 160, duration: 5.8, ease: "none" }, 0);
+      tl.fromTo(d, { x: 0, y: 0 }, { x: (rnd() - 0.5) * 80, y: -70 - rnd() * 150, duration: 5.8, ease: "none" }, 0);
     }
-    // barrido de papel: entra desde abajo a la derecha, cubre y sigue de largo
+    // barrido de papel que descubre el cierre
     tl.fromTo("#co-paper", { x: 1500, y: 900 }, { x: -2600, y: -1500, duration: 0.85, ease: "power2.inOut" }, 0);
-    tl.fromTo(["#co-bg", "#co-g", "#co-r", "#co-dustbox"], { opacity: 0 }, { opacity: 1, duration: 0.01 }, 0.4);
-    tl.fromTo(["#co-g", "#co-r"], { scale: 0.85 }, { scale: 1.12, duration: 5.4, ease: "sine.out" }, 0.4);
-    // "12"
-    tl.fromTo("#co-numbox", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.01 }, 0.4);
-    tl.fromTo("#co-num", { y: 140, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "power4.out" }, 0.5);
-    tl.to("#co-num", { scale: 1.04, duration: 4.5, ease: "sine.inOut" }, 1.2);
-    tl.fromTo("#co-shine", { x: 0 }, { x: 1500, duration: 1.0, ease: "power2.inOut" }, 1.05);
-    tl.fromTo("#co-month", { opacity: 0, scaleX: 1.35 }, { opacity: 1, scaleX: 1, duration: 0.7, ease: "power3.out" }, 0.75);
-    tl.fromTo("#co-line", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.9);
-    tl.fromTo("#co-dia", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.05);
+    tl.fromTo(["#co-bg", "#co-glow", "#co-dustbox"], { opacity: 0 }, { opacity: 1, duration: 0.01 }, 0.4);
+    tl.fromTo("#co-glow", { scale: 0.85 }, { scale: 1.1, duration: 5.4, ease: "sine.out" }, 0.4);
+    // marco: aparece fino
+    tl.fromTo("#co-f1", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }, 0.45);
+    tl.fromTo("#co-f2", { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.0, ease: "power3.out" }, 0.55);
+    // líneas que suben desde su máscara
+    [["#co-num", 0.5, 0.8], ["#co-month", 0.85, 0.7], ["#co-dia", 1.2, 0.7], ["#co-lib", 1.35, 0.75]].forEach(([id, t, d]) => {
+      tl.fromTo(id, { yPercent: 105 }, { yPercent: 0, duration: d, ease: "power4.out" }, t);
+    });
+    tl.fromTo(["#co-rl", "#co-rr"], { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut" }, 1.05);
+    tl.fromTo("#co-dia-mark", { scale: 0, rotation: 0 }, { scale: 1, rotation: 45, duration: 0.5, ease: "back.out(2.5)" }, 1.1);
+    tl.fromTo("#co-shine", { x: 0 }, { x: 1500, duration: 1.1, ease: "power2.inOut" }, 1.4);
+    tl.to("#co-m1", { scale: 1.03, duration: 4.2, ease: "sine.inOut" }, 1.3);
     window.__timelines["cortinilla"] = tl;
   </script>
 </template>

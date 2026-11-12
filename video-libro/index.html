@@ -29,22 +29,6 @@
       .shot video, video.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
       .cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 36%; }
 
-      /* ---------- rótulo con el nombre ---------- */
-      #lt { position: absolute; left: 64px; top: 1110px; width: 760px; height: 190px; }
-      #lt-bar { position: absolute; left: 0; top: 0; width: 8px; height: 190px; background: linear-gradient(180deg, #f3d58f 0%, #c9993f 100%); border-radius: 4px; }
-      #lt-panel { position: absolute; left: 22px; top: 0; height: 190px; width: 730px; border-radius: 18px; background: linear-gradient(100deg, rgba(10, 12, 18, 0.78) 0%, rgba(10, 12, 18, 0.55) 70%, rgba(10, 12, 18, 0) 100%); overflow: hidden; }
-      #lt-name { position: absolute; left: 46px; top: 26px; font-weight: 900; font-size: 62px; letter-spacing: -0.01em; white-space: nowrap; }
-      #lt-role { position: absolute; left: 48px; top: 112px; font-weight: 600; font-size: 29px; color: #e3b85f; white-space: nowrap; letter-spacing: 0.01em; }
-      #lt-role i { font-family: "Playfair"; font-style: italic; font-weight: 700; color: #fff; font-size: 31px; }
-
-      /* ---------- insignia "Día del libro" ---------- */
-      #badge { position: absolute; left: 0; top: 150px; width: 1080px; text-align: center; }
-      #badge-in { display: inline-flex; align-items: center; gap: 22px; padding: 20px 40px 20px 26px; border-radius: 80px; background: rgba(10, 12, 18, 0.72); border: 2px solid rgba(227, 184, 95, 0.75); box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4); }
-      #badge-day { font-family: "Playfair"; font-weight: 900; font-size: 64px; line-height: 1; color: #e3b85f; }
-      #badge-txt { text-align: left; line-height: 1.12; }
-      #badge-txt b { display: block; font-weight: 800; font-size: 28px; letter-spacing: 0.22em; color: #e3b85f; }
-      #badge-txt span { display: block; font-weight: 800; font-size: 34px; }
-
       /* ---------- confeti ---------- */
       .conf { position: absolute; top: -60px; width: 18px; height: 30px; border-radius: 3px; }
 
@@ -90,21 +74,12 @@
 
       <!-- escenas gráficas -->
       <div id="portada" class="clip" data-composition-id="portada" data-composition-src="compositions/portada.html" data-start="15.86" data-duration="3.74" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
-      <div id="gandhi" class="clip" data-composition-id="gandhi" data-composition-src="compositions/gandhi.html" data-start="22.2" data-duration="3.1" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="gandhi" class="clip" data-composition-id="gandhi" data-composition-src="compositions/gandhi.html" data-start="22.2" data-duration="1.15" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
       <div id="nacional" class="clip" data-composition-id="nacional" data-composition-src="compositions/nacional.html" data-start="25.3" data-duration="1.2" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
-      <div id="presenta" class="clip" data-composition-id="presenta" data-composition-src="compositions/presenta.html" data-start="29.73" data-duration="1.28" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
       <div id="ciudades" class="clip" data-composition-id="ciudades" data-composition-src="compositions/ciudades.html" data-start="31.01" data-duration="5.19" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
       <div id="paginas" class="clip" data-composition-id="paginas" data-composition-src="compositions/paginas.html" data-start="42.31" data-duration="2.61" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
-      <div id="eventos" class="clip" data-composition-id="eventos" data-composition-src="compositions/eventos.html" data-start="53.43" data-duration="2.06" data-track-index="3" data-width="1080" data-height="1920" style="z-index: 5"></div>
 
       <!-- rótulo y gráficos sobre el autor -->
-      <div id="lt" style="z-index: 8">
-        <div id="lt-panel"><div id="lt-name">Eduardo Contró</div><div id="lt-role">Autor de <i>Favor de leer antes de opinar</i></div></div>
-        <div id="lt-bar"></div>
-      </div>
-      <div id="badge" style="z-index: 8">
-        <div id="badge-in"><div id="badge-day">12</div><div id="badge-txt"><b>NOVIEMBRE</b><span>Día Nacional del Libro</span></div></div>
-      </div>
       <div id="confetti" class="full" style="z-index: 8"></div>
 
       <!-- subtítulos -->
@@ -140,10 +115,10 @@
         const moves = {
           "#cam-c1": [[4.0, 10.6, 1.0, 1.05, "sine.inOut"], [10.68, 11.7, 1.13, 1.15, "power3.out"]],
           "#cam-c2": [[11.7, 13.24, 1.06, 1.1, "sine.inOut"], [15.94, 19.6, 1.12, 1.18, "sine.out"]],
-          "#cam-c3": [[19.6, 22.2, 1.0, 1.09, "sine.inOut"]],
-          "#cam-c4": [[26.5, 28.0, 1.04, 1.08, "sine.inOut"], [28.05, 29.73, 1.15, 1.18, "power3.out"]],
+          "#cam-c3": [[19.6, 22.2, 1.0, 1.09, "sine.inOut"], [23.35, 25.3, 1.13, 1.17, "sine.out"]],
+          "#cam-c4": [[26.5, 28.0, 1.04, 1.08, "sine.inOut"], [28.05, 29.73, 1.15, 1.18, "power3.out"], [29.73, 31.01, 1.04, 1.08, "sine.inOut"]],
           "#cam-c5": [[36.2, 38.47, 1.0, 1.05, "sine.inOut"], [40.31, 42.31, 1.12, 1.15, "sine.out"], [44.92, 50.0, 1.0, 1.07, "sine.inOut"],
-                      [50.07, 51.35, 1.16, 1.18, "power3.out"], [51.35, 53.43, 1.02, 1.06, "sine.inOut"], [55.49, 56.6, 1.08, 1.1, "sine.out"]],
+                      [50.07, 51.35, 1.16, 1.18, "power3.out"], [51.35, 53.43, 1.02, 1.06, "sine.inOut"], [53.43, 56.6, 1.12, 1.16, "sine.out"]],
           "#cam-b3": [[13.24, 15.94, 1.18, 1.04, "sine.out"]],
           "#cam-b1": [[38.47, 40.31, 1.12, 1.0, "sine.out"]],
         };
@@ -168,22 +143,6 @@
           gsap.set(id, { filter: "blur(0px)" });
           tl.fromTo(id, { filter: "blur(14px)" }, { filter: "blur(0px)", duration: 0.22, ease: "power2.out", immediateRender: false }, t);
         });
-
-        // ---------- rótulo con el nombre ----------
-        gsap.set("#lt-panel", { clipPath: "inset(0 100% 0 0)" });
-        gsap.set("#lt-bar", { scaleY: 0, transformOrigin: "50% 0%" });
-        gsap.set(["#lt-name", "#lt-role"], { x: -40, opacity: 0 });
-        tl.to("#lt-bar", { scaleY: 1, duration: 0.3, ease: "power3.out" }, 5.72);
-        tl.to("#lt-panel", { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power3.out" }, 5.82);
-        tl.to("#lt-name", { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 5.9);
-        tl.to("#lt-role", { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 6.02);
-        tl.to("#lt", { x: -60, opacity: 0, duration: 0.3, ease: "power2.in" }, 9.3);
-
-        // ---------- insignia "12 de noviembre · Día Nacional del Libro" ----------
-        gsap.set("#badge", { opacity: 0, y: -40, scale: 0.9 });
-        tl.to("#badge", { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 8.75);
-        tl.fromTo("#badge-day", { rotationX: -90 }, { rotationX: 0, duration: 0.5, ease: "back.out(2)" }, 8.85);
-        tl.to("#badge", { opacity: 0, y: -30, duration: 0.3, ease: "power2.in" }, 11.35);
 
         // ---------- confeti en "estamos de fiesta" ----------
         const cbox = document.getElementById("confetti");

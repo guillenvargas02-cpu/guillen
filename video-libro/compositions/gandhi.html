@@ -1,43 +1,28 @@
 <template>
   <style>
-    /* "...que Gandhi acaba de aceptar distribuir este libro": golpe de marca + fachada de la librería */
+    /* "...que Gandhi": golpe de marca con el logo oficial (el único momento con los colores de Gandhi) */
     #root { position: absolute; inset: 0; overflow: hidden; }
-    #gd-yellow { position: absolute; left: -300px; top: -200px; width: 1700px; height: 2400px; background: #ffe600; transform: skewX(-12deg); }
-    #gd-purple { position: absolute; left: -300px; top: -200px; width: 260px; height: 2400px; background: #16171b; transform: skewX(-12deg); }
-    #gd-logo { position: absolute; left: 90px; top: 700px; width: 900px; height: auto; }
-    #gd-ring { position: absolute; left: 140px; top: 560px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 62%); }
-    #gd-photo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: #222; }
-    #gd-photo img { position: absolute; left: 0; top: 0; height: 1920px; width: auto; }
-    #gd-photo-shade { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: linear-gradient(180deg, rgba(8, 9, 12, 0.45) 0%, rgba(8, 9, 12, 0) 24%, rgba(0, 0, 0, 0) 55%, rgba(8, 9, 12, 0.55) 100%); }
-    #gd-chip { position: absolute; left: 0; top: 168px; width: 1080px; text-align: center; }
-    #gd-chip span { display: inline-block; padding: 18px 42px; border-radius: 60px; background: rgba(14, 15, 18, 0.82); border: 2px solid rgba(227, 184, 95, 0.8); color: #f5f0e6; font-weight: 800; font-size: 38px; letter-spacing: 0.1em; box-shadow: 0 16px 44px rgba(0, 0, 0, 0.35); }
-    #gd-stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 1600px; }
-    #gd-book { position: absolute; left: 640px; top: 860px; width: 330px; height: 489px; background: url("assets/book/portada.jpg") center / cover; border-radius: 3px 7px 7px 3px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55), 0 0 0 5px rgba(245, 240, 230, 0.9); }
+    #gd-yellow { position: absolute; left: -300px; top: -200px; width: 1700px; height: 2400px; background: #fdef03; transform: skewX(-12deg); }
+    #gd-edge { position: absolute; left: -300px; top: -200px; width: 220px; height: 2400px; background: #16171b; transform: skewX(-12deg); }
+    #gd-logo { position: absolute; left: 110px; top: 770px; width: 860px; height: auto; }
+    #gd-ring { position: absolute; left: 140px; top: 560px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 62%); }
   </style>
   <div id="root" data-composition-id="gandhi" data-width="1080" data-height="1920">
-    <div id="gd-photo"><img id="gd-photo-img" src="assets/gandhi/fachada.jpg" alt="Fachada de Librerías Gandhi" /><div id="gd-photo-shade"></div></div>
-    <div id="gd-chip"><span>DISTRIBUCIÓN NACIONAL</span></div>
-    <div id="gd-stage"><div id="gd-book"></div></div>
     <div id="gd-yellow"></div>
     <div id="gd-ring"></div>
     <img id="gd-logo" src="assets/gandhi/logo.png" alt="Librerías Gandhi" />
-    <div id="gd-purple"></div>
+    <div id="gd-edge"></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     const HIT = 0.08; // "Gandhi"
-    // barrido amarillo + franja morada
     tl.fromTo("#gd-yellow", { x: -1900 }, { x: 0, duration: 0.12, ease: "power3.out" }, 0);
-    tl.fromTo("#gd-purple", { x: -800 }, { x: 1700, duration: 0.42, ease: "power3.inOut" }, 0);
+    tl.fromTo("#gd-edge", { x: -800 }, { x: 1700, duration: 0.42, ease: "power3.inOut" }, 0);
     tl.fromTo("#gd-logo", { scale: 1.45, opacity: 0, rotation: -3 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.32, ease: "back.out(2.2)" }, HIT);
     tl.fromTo("#gd-ring", { scale: 0.3, opacity: 0.9 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: "power2.out" }, HIT);
-    tl.to("#gd-logo", { scale: 1.05, duration: 0.65, ease: "sine.inOut" }, HIT + 0.32);
-    // sale el amarillo hacia la derecha y aparece la fachada
-    tl.to(["#gd-yellow", "#gd-logo"], { x: 1900, duration: 0.3, ease: "power3.in" }, 1.0);
-    tl.fromTo("#gd-photo-img", { x: -1520, scale: 1.12 }, { x: -1180, scale: 1.0, duration: 2.1, ease: "sine.out" }, 1.0);
-    tl.fromTo("#gd-chip", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 1.25);
-    tl.fromTo("#gd-book", { x: 420, rotationY: -60, rotationZ: 6, opacity: 0 }, { x: 0, rotationY: -14, rotationZ: -3, opacity: 1, duration: 0.6, ease: "power3.out" }, 1.45);
-    tl.to("#gd-book", { rotationY: -8, y: -10, duration: 1.0, ease: "sine.inOut" }, 2.05);
+    tl.to("#gd-logo", { scale: 1.05, duration: 0.5, ease: "sine.inOut" }, HIT + 0.32);
+    // sale hacia la derecha y vuelve el autor
+    tl.to(["#gd-yellow", "#gd-logo", "#gd-ring"], { x: 1900, duration: 0.25, ease: "power3.in" }, 0.9);
     window.__timelines["gandhi"] = tl;
   </script>
 </template>
