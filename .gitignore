@@ -10,3 +10,6 @@ __pycache__/
 reel/renders/*.mp4
 teaser/.hyperframes/
 teaser/renders/
+intro-libro/.hyperframes/
+intro-libro/renders/*
+!intro-libro/renders/intro-favor-de-leer-4k.mp4
