@@ -31,18 +31,18 @@
 
       /* ---------- rótulo con el nombre ---------- */
       #lt { position: absolute; left: 64px; top: 1110px; width: 760px; height: 190px; }
-      #lt-bar { position: absolute; left: 0; top: 0; width: 8px; height: 190px; background: linear-gradient(180deg, #00995a 0%, #00995a 33%, #ffffff 33%, #ffffff 66%, #d6182a 66%, #d6182a 100%); border-radius: 4px; }
+      #lt-bar { position: absolute; left: 0; top: 0; width: 8px; height: 190px; background: linear-gradient(180deg, #f3d58f 0%, #c9993f 100%); border-radius: 4px; }
       #lt-panel { position: absolute; left: 22px; top: 0; height: 190px; width: 730px; border-radius: 18px; background: linear-gradient(100deg, rgba(10, 12, 18, 0.78) 0%, rgba(10, 12, 18, 0.55) 70%, rgba(10, 12, 18, 0) 100%); overflow: hidden; }
       #lt-name { position: absolute; left: 46px; top: 26px; font-weight: 900; font-size: 62px; letter-spacing: -0.01em; white-space: nowrap; }
-      #lt-role { position: absolute; left: 48px; top: 112px; font-weight: 600; font-size: 29px; color: #ffd84d; white-space: nowrap; letter-spacing: 0.01em; }
+      #lt-role { position: absolute; left: 48px; top: 112px; font-weight: 600; font-size: 29px; color: #e3b85f; white-space: nowrap; letter-spacing: 0.01em; }
       #lt-role i { font-family: "Playfair"; font-style: italic; font-weight: 700; color: #fff; font-size: 31px; }
 
       /* ---------- insignia "Día del libro" ---------- */
       #badge { position: absolute; left: 0; top: 150px; width: 1080px; text-align: center; }
-      #badge-in { display: inline-flex; align-items: center; gap: 22px; padding: 20px 40px 20px 26px; border-radius: 80px; background: rgba(10, 12, 18, 0.72); border: 2px solid rgba(255, 216, 77, 0.75); box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4); }
-      #badge-day { font-family: "Playfair"; font-weight: 900; font-size: 64px; line-height: 1; color: #ffd84d; }
+      #badge-in { display: inline-flex; align-items: center; gap: 22px; padding: 20px 40px 20px 26px; border-radius: 80px; background: rgba(10, 12, 18, 0.72); border: 2px solid rgba(227, 184, 95, 0.75); box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4); }
+      #badge-day { font-family: "Playfair"; font-weight: 900; font-size: 64px; line-height: 1; color: #e3b85f; }
       #badge-txt { text-align: left; line-height: 1.12; }
-      #badge-txt b { display: block; font-weight: 800; font-size: 28px; letter-spacing: 0.22em; color: #ffd84d; }
+      #badge-txt b { display: block; font-weight: 800; font-size: 28px; letter-spacing: 0.22em; color: #e3b85f; }
       #badge-txt span { display: block; font-weight: 800; font-size: 34px; }
 
       /* ---------- confeti ---------- */
@@ -187,7 +187,7 @@
 
         // ---------- confeti en "estamos de fiesta" ----------
         const cbox = document.getElementById("confetti");
-        const ccol = ["#00995a", "#ffffff", "#d6182a", "#ffd84d", "#ffd84d", "#6c2a87"];
+        const ccol = ["#e3b85f", "#f3d58f", "#f5f0e6", "#c9993f", "#d9d4cb", "#e3b85f"];
         for (let i = 0; i < 70; i++) {
           const el = document.createElement("div");
           el.className = "conf";
@@ -205,7 +205,7 @@
 
         // ---------- subtítulos karaoke ----------
         const capBox = document.getElementById("caps");
-        const ACC = "#ffd84d";
+        const ACC = "#f0c869";
         TL.captions.forEach((c, i) => {
           if (c.start >= TL.talkEnd) return;
           const el = document.createElement("div");
