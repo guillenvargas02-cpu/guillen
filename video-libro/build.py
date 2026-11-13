@@ -5,6 +5,7 @@ Pasos:
   python3 build.py prep        # recorta/escala los clips a 4K con corrección de color -> assets/v/*.mp4
   python3 build.py audio       # mezcla voz + música (con ducking) + efectos -> assets/mix.wav
   npx hyperframes render --resolution portrait-4k --crf 12 -o renders/raw.mp4
+  python3 build.py stories     # 3 historias en 4K -> renders/stories/
   python3 build.py final       # une render + mezcla -> renders/favor-de-leer-dia-del-libro-{4k,1080}.mp4
 
 La línea de tiempo (EDL) y los subtítulos se definen aquí y se escriben en assets/timeline.js,
@@ -324,8 +325,26 @@ def final():
     master.unlink()
 
 
+# Historias: cortes en los cambios de tema (silencio + cambio de toma). (inicio, cuadros a 30 fps)
+STORIES = [(0.0, 588), (19.6333, 497), (36.5, 777)]  # 0-19.6 libro · 19.63-36.2 Gandhi y ciudades · 36.5-62.4 invitación y cierre
+
+
+def stories():
+    """Divide el render 4K en 3 historias, cortadas al cuadro, con micro-fundidos de audio."""
+    (OUT / "stories").mkdir(exist_ok=True)
+    for k, (a, frames) in enumerate(STORIES, 1):
+        d = frames / 30
+        af = "afade=t=in:d=0.06" + ("" if k == len(STORIES) else f",afade=t=out:st={d - 0.3:.3f}:d=0.3")
+        run(["ffmpeg", "-v", "error", "-y", "-ss", a, "-i", OUT / "raw.mp4", "-ss", a, "-i", A / "mix.wav", "-t", round(d, 4),
+             "-frames:v", frames, "-map", "0:v", "-map", "1:a", "-af", af, "-c:v", "libx264", "-preset", "slow", "-crf", "18",
+             "-maxrate", "35M", "-bufsize", "70M", "-profile:v", "high", "-level", "5.2", "-pix_fmt", "yuv420p",
+             "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-r", "30",
+             "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2", "-movflags", "+faststart",
+             OUT / "stories" / f"favor-de-leer-story-{k}-de-{len(STORIES)}-4k.mp4"])
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
-    steps = {"prep": prep, "timeline": write_timeline, "audio": audio, "final": final}
+    steps = {"prep": prep, "timeline": write_timeline, "audio": audio, "final": final, "stories": stories}
     for s in sys.argv[1:] or ["prep", "audio", "final"]:
         steps[s]()
