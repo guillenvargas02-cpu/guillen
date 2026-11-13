@@ -5,7 +5,7 @@ Pasos:
   python3 build.py prep        # recorta/escala los clips a 4K con corrección de color -> assets/v/*.mp4
   python3 build.py audio       # mezcla voz + música (con ducking) + efectos -> assets/mix.wav
   npx hyperframes render --resolution portrait-4k --crf 12 -o renders/raw.mp4
-  python3 build.py stories     # 3 historias en 4K -> renders/stories/
+  python3 build.py stories     # 3 historias en 4K HEVC (< 10 MB c/u) -> renders/stories/
   python3 build.py final       # une render + mezcla -> renders/favor-de-leer-dia-del-libro-{4k,1080}.mp4
 
 La línea de tiempo (EDL) y los subtítulos se definen aquí y se escriben en assets/timeline.js,
@@ -329,18 +329,32 @@ def final():
 STORIES = [(0.0, 588), (19.6333, 497), (36.5, 777)]  # 0-19.6 libro · 19.63-36.2 Gandhi y ciudades · 36.5-62.4 invitación y cierre
 
 
+MAX_MB = 9.6  # cada historia queda por debajo de 10 MB
+
+
 def stories():
-    """Divide el render 4K en 3 historias, cortadas al cuadro, con micro-fundidos de audio."""
-    (OUT / "stories").mkdir(exist_ok=True)
+    """Divide el render 4K en 3 historias cortadas al cuadro, en HEVC 4K de dos pasadas, cada una < 10 MB."""
+    st = OUT / "stories"
+    st.mkdir(exist_ok=True)
     for k, (a, frames) in enumerate(STORIES, 1):
         d = frames / 30
         af = "afade=t=in:d=0.06" + ("" if k == len(STORIES) else f",afade=t=out:st={d - 0.3:.3f}:d=0.3")
-        run(["ffmpeg", "-v", "error", "-y", "-ss", a, "-i", OUT / "raw.mp4", "-ss", a, "-i", A / "mix.wav", "-t", round(d, 4),
-             "-frames:v", frames, "-map", "0:v", "-map", "1:a", "-af", af, "-c:v", "libx264", "-preset", "slow", "-crf", "18",
-             "-maxrate", "35M", "-bufsize", "70M", "-profile:v", "high", "-level", "5.2", "-pix_fmt", "yuv420p",
-             "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-r", "30",
-             "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2", "-movflags", "+faststart",
-             OUT / "stories" / f"favor-de-leer-story-{k}-de-{len(STORIES)}-4k.mp4"])
+        audio_k = 128
+        video_k = int(MAX_MB * 8 * 1000 / d - audio_k - 40)  # 40 kb/s de margen para el contenedor
+        name = st / f"favor-de-leer-story-{k}-de-{len(STORIES)}-4k.mp4"
+        base = ["ffmpeg", "-v", "error", "-y", "-ss", a, "-i", OUT / "raw.mp4", "-ss", a, "-i", A / "mix.wav", "-t", round(d, 4),
+                "-frames:v", frames, "-map", "0:v", "-map", "1:a",
+                # sin el grano de película (es lo que más pesa), nitidez intacta
+                "-vf", "hqdn3d=2.5:2:5:4,format=yuv420p", "-r", "30",
+                "-c:v", "libx265", "-preset", "slow", "-b:v", f"{video_k}k", "-tag:v", "hvc1",
+                "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
+        log = str(st / f"x265-{k}")
+        run(base + ["-x265-params", f"pass=1:stats={log}.log:log-level=error", "-an", "-f", "mp4", "/dev/null"])
+        run(base + ["-x265-params", f"pass=2:stats={log}.log:log-level=error", "-af", af,
+                    "-c:a", "aac", "-b:a", f"{audio_k}k", "-ar", "48000", "-ac", "2", "-movflags", "+faststart", name])
+        for f in st.glob(f"x265-{k}*"):
+            f.unlink()
+        print(f"{name.name}: {name.stat().st_size / 1e6:.2f} MB")
 
 
 if __name__ == "__main__":
