@@ -95,14 +95,14 @@
     }
     #in-sun {
       position: absolute;
-      left: 400px;
-      top: 1220px;
-      width: 230px;
+      left: 430px;
+      top: 300px;
+      width: 220px;
       height: auto;
     }
-    #in-ball { position: absolute; left: 690px; top: 1420px; width: 320px; height: auto; }
-    #in-pina { position: absolute; left: -10px; top: 1380px; width: 240px; height: auto; }
-    #in-pizza { position: absolute; left: 330px; top: 1540px; width: 330px; height: auto; }
+    #in-ball { position: absolute; left: 720px; top: 1440px; width: 300px; height: auto; }
+    #in-pina { position: absolute; left: -10px; top: 1480px; width: 250px; height: auto; }
+    #in-pizza { position: absolute; left: 370px; top: 1560px; width: 330px; height: auto; }
     #in-splash {
       position: absolute;
       left: 140px;
@@ -168,7 +168,7 @@
       tl.to("#in-sun", { rotation: 10, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.8);
       // Stickers del verano: pelota que rebota, piña que saluda, pizza que gira
       tl.fromTo("#in-ball", { x: 520, y: -900, rotation: 0 }, { x: 0, y: 0, rotation: -320, duration: 0.55, ease: "power2.in" }, 1.2);
-      tl.to("#in-ball", { y: -190, duration: 0.3, ease: "power2.out", yoyo: true, repeat: 3 }, 1.75);
+      tl.to("#in-ball", { y: -150, duration: 0.3, ease: "power2.out", yoyo: true, repeat: 3 }, 1.75);
       tl.to("#in-ball", { rotation: -560, duration: 1.2, ease: "none" }, 1.75);
       tl.fromTo("#in-pina", { x: -280 }, { x: 0, duration: 0.4, ease: "back.out(2)" }, 1.55);
       tl.to("#in-pina", { rotation: 9, transformOrigin: "20% 90%", duration: 0.22, ease: "sine.inOut", yoyo: true, repeat: 5 }, 1.95);
