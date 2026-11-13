@@ -11,27 +11,6 @@
       position: absolute;
       opacity: 0;
     }
-    /* Etiqueta de Instagram de quien habla */
-    #st-ig {
-      left: 60px;
-      top: 200px;
-      height: 92px;
-      padding: 0 34px 0 18px;
-      border-radius: 46px;
-      background: #fff;
-      color: #06294a;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 40px;
-      font-weight: 800;
-      box-shadow: 0 10px 0 #e4007c, 0 18px 30px rgba(0, 20, 40, 0.3);
-    }
-    .ig-glyph {
-      width: 62px;
-      height: 62px;
-      flex: none;
-    }
     /* Calendario: DOMINGO 15 NOV */
     #st-cal {
       left: 770px;
@@ -204,7 +183,7 @@
     /* Tarjeta de informes (donde señala) */
     #st-info {
       left: 80px;
-      top: 1000px;
+      top: 1610px;
       width: 920px;
       border-radius: 36px;
       background: #fff;
@@ -228,24 +207,6 @@
     #st-info .row b { color: #e4007c; }
   </style>
   <div id="st-root" data-composition-id="stickers" data-width="1080" data-height="1920">
-    <div id="st-ig" class="st">
-      <svg class="ig-glyph" viewBox="0 0 64 64">
-        <defs>
-          <radialGradient id="st-igg" cx="0.3" cy="1.05" r="1.2">
-            <stop offset="0" stop-color="#fdd75b" />
-            <stop offset="0.25" stop-color="#fd5b3c" />
-            <stop offset="0.6" stop-color="#d43a8f" />
-            <stop offset="1" stop-color="#6b4bd1" />
-          </radialGradient>
-        </defs>
-        <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#st-igg)" />
-        <rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" />
-        <circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" />
-        <circle cx="43.5" cy="20.5" r="3" fill="#fff" />
-      </svg>
-      <span>@eduardocontro</span>
-    </div>
-
     <div id="st-cal" class="st">
       <div class="hd">NOV</div>
       <div class="num">15</div>
@@ -313,10 +274,6 @@
         tl.fromTo(sel, { opacity: 0, scale: 0.2, rotation: -12 }, { opacity: 1, scale: 1, rotation: toRot, duration: 0.38, ease: "back.out(2.6)" }, at(t));
       const popOut = (sel, t) => tl.to(sel, { opacity: 0, scale: 0.4, duration: 0.18, ease: "back.in(2)" }, at(t));
 
-      // @eduardocontro al presentarse
-      tl.fromTo("#st-ig", { opacity: 0, x: -420 }, { opacity: 1, x: 0, duration: 0.42, ease: "back.out(1.8)" }, at(5.15));
-      tl.to("#st-ig", { opacity: 0, x: -420, duration: 0.3, ease: "power2.in" }, at(7.75));
-
       // Domingo 15 nov · 2:00 PM
       popIn("#st-cal", 8.88, 6);
       tl.to("#st-cal", { y: -10, duration: 0.35, ease: "sine.inOut", yoyo: true, repeat: 3 }, at(9.3));
@@ -337,8 +294,7 @@
       tl.fromTo("#st-pq .t", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.24, ease: "back.out(2.4)" }, at(11.8));
       tl.to("#st-pq", { opacity: 0, x: 600, duration: 0.15, ease: "power2.in" }, at(12.24));
 
-      // "…para que conozcan a SOMOS": el logo entra grande con rayos, ondas y destello,
-      // y luego se encoge a insignia arriba mientras habla de las causas.
+      // "…para que conozcan a SOMOS": el logo entra grande con rayos, ondas y destello, y sale.
       const S = 13.86;
       tl.set("#st-somos", { opacity: 1 }, at(S - 0.02));
       tl.fromTo("#st-pill", { scale: 2.6, opacity: 0, rotation: -10 }, { scale: 1, opacity: 1, rotation: -3, duration: 0.3, ease: "power4.out" }, at(S));
@@ -351,9 +307,9 @@
       tl.fromTo("#st-shine", { x: 0 }, { x: 1250, duration: 0.45, ease: "power2.inOut" }, at(S + 0.38));
       tl.to("#st-pill", { scale: 1.06, duration: 0.14, yoyo: true, repeat: 1, ease: "sine.inOut" }, at(S + 0.55));
       tl.to("#st-rays", { opacity: 0, scale: 1.3, duration: 0.25, ease: "power2.in" }, at(S + 0.85));
-      // a insignia arriba (pleca de 400 px)
-      tl.to("#st-pill", { scale: 0.5, y: -926, duration: 0.42, ease: "power3.inOut" }, at(S + 1.0));
-      tl.to("#st-pill", { opacity: 0, scale: 0.2, duration: 0.2, ease: "back.in(2)" }, at(16.7));
+      // sale con un último rebote y desaparece (no se queda en pantalla)
+      tl.to("#st-pill", { scale: 1.12, duration: 0.12, ease: "power2.out" }, at(S + 1.05));
+      tl.to("#st-pill", { scale: 0, opacity: 0, rotation: 8, duration: 0.24, ease: "back.in(2.2)" }, at(S + 1.17));
 
       // Más informes aquí: la tarjeta sale donde señala
       tl.fromTo("#st-info", { opacity: 0, x: 700, rotation: 8 }, { opacity: 1, x: 0, rotation: -2, duration: 0.45, ease: "back.out(1.7)" }, at(33.45));

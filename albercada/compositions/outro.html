@@ -38,7 +38,7 @@
       text-shadow: 0 6px 24px rgba(0, 20, 40, 0.6);
     }
     #ou-kick .k1 { font-size: 64px; line-height: 1.1; }
-    #ou-kick .k2 { font-size: 92px; line-height: 1.05; color: #ffd23f; }
+    #ou-kick .k2 { font-size: 92px; line-height: 1.05; color: #e4007c; -webkit-text-stroke: 9px #fff; paint-order: stroke fill; text-shadow: 0 6px 20px rgba(0, 20, 40, 0.5); }
     .ou-bub {
       position: absolute;
       border-radius: 50%;
@@ -47,7 +47,7 @@
     }
     #ou-te {
       left: 0;
-      top: 560px;
+      top: 540px;
       width: 1080px;
       text-align: center;
       font-weight: 900;
@@ -62,7 +62,7 @@
     #ou-te .t2 { display: block; font-size: 128px; line-height: 1.05; text-shadow: 7px 10px 0 #e4007c; }
     #ou-sumate {
       left: 300px;
-      top: 940px;
+      top: 1060px;
       width: 480px;
       height: 130px;
       border-radius: 65px;
@@ -75,18 +75,6 @@
       font-style: italic;
       box-shadow: 0 12px 0 #06294a, 0 22px 40px rgba(0, 20, 40, 0.35);
     }
-    #ou-info {
-      left: 90px;
-      top: 1140px;
-      width: 900px;
-      padding: 22px 26px 20px;
-      border-radius: 34px;
-      background: rgba(4, 44, 78, 0.72);
-      text-align: center;
-    }
-    #ou-info .d1 { font-size: 44px; font-weight: 800; line-height: 1.2; }
-    #ou-info .d1 b { color: #ffd23f; }
-    #ou-info .d2 { font-size: 44px; font-weight: 700; font-style: italic; line-height: 1.25; }
     #ou-flash {
       position: absolute;
       left: 0;
@@ -109,7 +97,7 @@
       text-shadow: 0 6px 24px rgba(0, 20, 40, 0.6);
     }
     #ou-sig .s1 { display: block; font-size: 120px; line-height: 1; letter-spacing: -0.02em; }
-    #ou-sig .s2 { display: block; font-size: 58px; line-height: 1.3; color: #ffd23f; }
+    #ou-sig .s2 { display: block; font-size: 62px; line-height: 1.3; color: #e4007c; -webkit-text-stroke: 9px #fff; paint-order: stroke fill; text-shadow: 0 6px 20px rgba(0, 20, 40, 0.5); }
     .ou-h {
       left: 90px;
       width: 900px;
@@ -151,7 +139,7 @@
     /* Tarjeta final */
     #ou-entre {
       left: 0;
-      top: 520px;
+      top: 600px;
       width: 1080px;
       text-align: center;
       font-size: 104px;
@@ -162,7 +150,7 @@
     }
     #ou-mas {
       left: 0;
-      top: 650px;
+      top: 730px;
       width: 1080px;
       height: 170px;
       text-align: center;
@@ -187,29 +175,19 @@
       line-height: 150px;
       text-shadow: 0 8px 26px rgba(0, 20, 40, 0.55);
     }
-    /* Logo de colaboración: SOMOS Impacto (sobre la pleca, como pide el manual para video 9:16) */
+    /* Logo de SOMOS Impacto */
     #ou-impacto {
-      left: 290px;
-      top: 930px;
-      width: 500px;
-      height: 340px;
+      left: 160px;
+      top: 1010px;
+      width: 760px;
+      height: 420px;
       border-radius: 40px;
       background: #fff;
       box-shadow: 0 16px 34px rgba(0, 20, 40, 0.35);
       text-align: center;
       color: #e4007c;
     }
-    #ou-impacto img { position: absolute; left: 25px; top: 20px; width: 450px; height: 300px; object-fit: contain; }
-    #ou-pleca {
-      left: 340px;
-      top: 1334px;
-      width: 400px;
-      height: 112px;
-      border-radius: 56px;
-      background: #fff;
-      box-shadow: 0 14px 34px rgba(0, 20, 40, 0.35);
-    }
-    #ou-pleca img { position: absolute; left: 46px; top: 31px; width: 308px; height: auto; }
+    #ou-impacto img { position: absolute; left: 40px; top: 40px; width: 680px; height: 340px; object-fit: contain; }
   </style>
   <div id="ou-root" data-composition-id="outro" data-width="1080" data-height="1920">
     <div id="ou-shade"></div>
@@ -225,10 +203,6 @@
 
     <div id="ou-te" class="o"><span class="t1">¡TE</span><span class="t2">ESPERAMOS!</span></div>
     <div id="ou-sumate" class="o">¡SÚMATE!</div>
-    <div id="ou-info" class="o">
-      <div class="d1">Domingo <b>15 de noviembre</b> • 2:00 PM</div>
-      <div class="d2">Polanco, Miguel Hidalgo</div>
-    </div>
 
     <svg id="ou-igbig" class="o" viewBox="0 0 64 64">
       <defs>
@@ -254,7 +228,6 @@
     <div id="ou-entre" class="o">Entre amigos,</div>
     <div id="ou-mas" class="o"><span class="pl"><img src="assets/brand/somos.png" alt="SOMOS" /></span><span class="ms">más</span></div>
     <div id="ou-impacto" class="o"><img src="assets/brand/somos-impacto.png" alt="SOMOS Impacto" /></div>
-    <div id="ou-pleca" class="o"><img src="assets/brand/somos.png" alt="SOMOS" /></div>
     <div id="ou-flash"></div>
   </div>
   <script>
@@ -287,8 +260,7 @@
       tl.to("#ou-te", { x: 12, y: -8, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, at(39.0));
       tl.fromTo("#ou-sumate", { opacity: 0, scale: 0, rotation: -30 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.42, ease: "back.out(2.6)" }, at(39.38));
       tl.to("#ou-sumate", { scale: 1.08, duration: 0.31, ease: "sine.inOut", yoyo: true, repeat: 3 }, at(40.0));
-      tl.fromTo("#ou-info", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, at(40.1));
-      tl.to(["#ou-te", "#ou-sumate", "#ou-info"], { opacity: 0, y: -260, duration: 0.2, ease: "power2.in", stagger: 0.02 }, at(41.05));
+      tl.to(["#ou-te", "#ou-sumate"], { opacity: 0, y: -260, duration: 0.2, ease: "power2.in", stagger: 0.02 }, at(41.05));
 
       // 41.275: cambio de agua + CTA de Instagram
       tl.fromTo("#ou-flash", { opacity: 0.7 }, { opacity: 0, duration: 0.28, ease: "power2.out", immediateRender: false }, at(41.275));
@@ -314,10 +286,9 @@
       tl.fromTo("#ou-entre", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, at(45.6));
       tl.fromTo("#ou-mas", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2.4)" }, at(45.85));
       tl.fromTo("#ou-impacto", { opacity: 0, scale: 0.3, rotation: -8 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, at(46.15));
-      tl.fromTo("#ou-pleca", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.38, ease: "back.out(2)" }, at(46.35));
       // golpe final de la canción
       tl.fromTo("#ou-flash", { opacity: 0.6 }, { opacity: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, at(47.6));
-      tl.to(["#ou-mas", "#ou-impacto", "#ou-pleca"], { scale: 1.07, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, at(47.6));
+      tl.to(["#ou-mas", "#ou-impacto"], { scale: 1.07, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, at(47.6));
       window.__timelines["outro"] = tl;
     })();
   </script>

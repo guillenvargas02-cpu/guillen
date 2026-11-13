@@ -313,8 +313,7 @@ SFX = [
     (1.12, "swish", -15), (1.28, "pop", -13), (1.40, "pop", -14), (1.55, "swish", -16), (1.75, "pop", -12), (2.36, "pop", -15), (2.10, "bubbles", -12),
     (2.95, "whoosh", -6), (3.40, "splash", -10),                # ola → entra la voz (drop 1)
     # Parte hablada
-    (13.80, "whoosh", -11), (13.86, "boom", -9), (13.92, "pop", -12), (14.24, "ding", -15), (14.86, "swish", -15),  # SOMOS en grande
-    (5.15, "swish", -15),                                       # @eduardocontro
+    (13.80, "whoosh", -11), (13.86, "boom", -9), (13.92, "pop", -12), (14.24, "ding", -15), (15.03, "swish", -14),  # SOMOS en grande
     (8.88, "pop", -12), (9.42, "pop", -12),                     # domingo / 2 PM
     (10.97, "splash", -11), (10.99, "boom", -12), (11.10, "ding", -18),   # ¡ALBERCADA!
     (11.72, "whoosh", -13), (11.80, "boom", -14),               # ¿PARA QUÉ?
@@ -324,11 +323,11 @@ SFX = [
     (35.25, "whoosh", -6), (35.70, "splash", -9),               # ola → agua del cierre
     (36.00, "pop", -13), (37.55, "bubbles", -13),
     (38.75, "boom", -5), (38.75, "splash", -9), (38.90, "boom", -12),   # ¡TE ESPERAMOS!
-    (39.38, "pop", -11), (40.10, "pop", -13),
+    (39.38, "pop", -11),
     (41.05, "whoosh", -11), (41.35, "pop", -11),                # ¡Síguenos!
     (41.85, "swish", -15), (42.17, "swish", -15), (42.49, "swish", -15), (42.81, "swish", -15),
     (43.50, "click", -9), (43.80, "click", -9), (44.10, "click", -9), (44.40, "click", -9), (44.42, "ding", -19),
-    (45.15, "whoosh", -12), (45.60, "swish", -14), (45.85, "pop", -11), (46.15, "pop", -11), (46.35, "ding", -16),
+    (45.15, "whoosh", -12), (45.60, "swish", -14), (45.85, "pop", -11), (46.15, "pop", -11),
     (47.60, "splash", -7), (47.60, "boom", -9),                 # golpe final
 ]
 
