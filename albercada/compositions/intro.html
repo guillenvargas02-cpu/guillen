@@ -95,9 +95,9 @@
     }
     #in-sun {
       position: absolute;
-      left: 430px;
-      top: 300px;
-      width: 220px;
+      left: 440px;
+      top: 270px;
+      width: 200px;
       height: auto;
     }
     #in-ball { position: absolute; left: 720px; top: 1440px; width: 300px; height: auto; }
@@ -122,6 +122,17 @@
     <img id="in-splash" src="assets/figuras/salpicadura.png" alt="" />
     <img id="in-palm-l" class="in-palm" src="assets/figuras/palmeras.png" alt="" />
     <img id="in-palm-r" class="in-palm" src="assets/figuras/palmeras.png" alt="" />
+    <img id="in-sun" src="assets/figuras/sol.png" alt="" />
+    <img id="in-pina" src="assets/figuras/pina.png" alt="" />
+    <img id="in-ball" src="assets/figuras/pelota.png" alt="" />
+    <img id="in-pizza" src="assets/figuras/pizza.png" alt="" />
+    <div class="in-bub" style="left: 40px; top: 1980px; width: 70px; height: 70px"></div>
+    <div class="in-bub" style="left: 150px; top: 2040px; width: 44px; height: 44px"></div>
+    <div class="in-bub" style="left: 930px; top: 1990px; width: 90px; height: 90px"></div>
+    <div class="in-bub" style="left: 990px; top: 2080px; width: 52px; height: 52px"></div>
+    <div class="in-bub" style="left: 70px; top: 2160px; width: 64px; height: 64px"></div>
+    <div class="in-bub" style="left: 960px; top: 2200px; width: 36px; height: 36px"></div>
+    <!-- Textos siempre encima de stickers y burbujas -->
     <div id="in-pleca"><img src="assets/brand/somos.png" alt="SOMOS" /></div>
     <div id="in-kick">te invita a una</div>
     <div id="in-title"><span class="l">A</span><span class="l">l</span><span class="l">b</span><span class="l">e</span><span class="l">r</span><span class="l">c</span><span class="l">a</span><span class="l">d</span><span class="l">a</span></div>
@@ -129,16 +140,6 @@
       <div class="d1">Domingo <b>15 de noviembre</b> • 2:00 PM</div>
       <div class="d2">Polanco, Miguel Hidalgo</div>
     </div>
-    <img id="in-sun" src="assets/figuras/sol.png" alt="" />
-    <img id="in-pina" src="assets/figuras/pina.png" alt="" />
-    <img id="in-ball" src="assets/figuras/pelota.png" alt="" />
-    <img id="in-pizza" src="assets/figuras/pizza.png" alt="" />
-    <div class="in-bub" style="left: 120px; top: 1980px; width: 70px; height: 70px"></div>
-    <div class="in-bub" style="left: 300px; top: 2040px; width: 44px; height: 44px"></div>
-    <div class="in-bub" style="left: 520px; top: 1990px; width: 90px; height: 90px"></div>
-    <div class="in-bub" style="left: 700px; top: 2080px; width: 52px; height: 52px"></div>
-    <div class="in-bub" style="left: 880px; top: 2010px; width: 64px; height: 64px"></div>
-    <div class="in-bub" style="left: 430px; top: 2140px; width: 36px; height: 36px"></div>
   </div>
   <script>
     (function () {
@@ -176,7 +177,7 @@
       tl.to("#in-pizza", { y: -18, rotation: 6, duration: 0.35, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.85);
       // Burbujas que suben antes de la ola
       document.querySelectorAll(".in-bub").forEach((el, i) => {
-        tl.fromTo(el, { y: 0, x: 0 }, { y: -1400 - i * 90, x: i % 2 ? 40 : -40, duration: 1.3, ease: "power1.in" }, 2.1 + i * 0.05);
+        tl.fromTo(el, { y: 0, x: 0 }, { y: -1400 - i * 90, x: i % 2 ? 20 : -20, duration: 1.3, ease: "power1.in" }, 2.1 + i * 0.05);
       });
       // Todo se hunde un poco cuando llega la ola (3.05)
       tl.to(["#in-pleca", "#in-kick", "#in-title", "#in-date"], { y: -120, duration: 0.45, ease: "power2.in" }, 3.0);
