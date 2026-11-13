@@ -232,20 +232,20 @@
   </div>
   <script>
     (function () {
-      const T0 = 35.55;
+      const T0 = 34.34;
       const at = (t) => t - T0;
       const tl = gsap.timeline({ paused: true });
       tl.set("#ou-palm-l", { rotation: 150 }, 0);
       tl.set("#ou-palm-r", { rotation: -150 }, 0);
 
-      tl.fromTo("#ou-shade", { opacity: 0 }, { opacity: 1, duration: 0.4 }, at(35.8));
-      tl.fromTo("#ou-palm-l", { x: -320, y: -260 }, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, at(35.85));
-      tl.fromTo("#ou-palm-r", { x: 320, y: -260 }, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, at(35.9));
-      tl.to("#ou-palm-l", { rotation: 156, duration: 1.26, ease: "sine.inOut", yoyo: true, repeat: 8 }, at(36.5));
-      tl.to("#ou-palm-r", { rotation: -144, duration: 1.26, ease: "sine.inOut", yoyo: true, repeat: 8 }, at(36.55));
+      tl.fromTo("#ou-shade", { opacity: 0 }, { opacity: 1, duration: 0.4 }, at(34.59));
+      tl.fromTo("#ou-palm-l", { x: -320, y: -260 }, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, at(34.64));
+      tl.fromTo("#ou-palm-r", { x: 320, y: -260 }, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, at(34.69));
+      tl.to("#ou-palm-l", { rotation: 156, duration: 1.26, ease: "sine.inOut", yoyo: true, repeat: 9 }, at(35.29));
+      tl.to("#ou-palm-r", { rotation: -144, duration: 1.26, ease: "sine.inOut", yoyo: true, repeat: 9 }, at(35.34));
 
       // Antes del drop: "Este domingo… ¡nos vemos en la alberca!" y crece con el riser
-      tl.fromTo("#ou-kick", { opacity: 0, y: 60, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, at(36.0));
+      tl.fromTo("#ou-kick", { opacity: 0, y: 60, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, at(34.79));
       tl.to("#ou-kick", { scale: 1.12, duration: 1.1, ease: "power2.in" }, at(37.5));
       tl.to("#ou-kick", { opacity: 0, scale: 1.6, duration: 0.14, ease: "power2.in" }, at(38.6));
       document.querySelectorAll(".ou-bub").forEach((el, i) => {

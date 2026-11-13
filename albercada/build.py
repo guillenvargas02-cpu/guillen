@@ -28,8 +28,8 @@ SR = 48000
 
 # ---------------------------------------------------------------- tiempos maestros (segundos)
 INTRO = 3.40          # el drop 1 de la canción cae aquí: entra la persona hablando
-OUTRO_CUT = 35.70     # corte (bajo la ola) de la persona al agua del cierre
-SPLICE = 36.225       # empalme de la canción (en compás) hacia el tramo del drop 2
+OUTRO_CUT = 34.49     # corte (bajo la ola) de la persona al agua del cierre
+SPLICE = 35.015       # empalme de la canción (en compás) hacia el tramo del drop 2
 DROP2 = 38.75         # "¡TE ESPERAMOS!"
 WATER2 = 41.275       # cambio de agua en el cierre (1 compás después del drop 2)
 SONG_END = 47.60      # la canción termina en seco aquí (golpe final)
@@ -58,7 +58,8 @@ SEGS = [
     ("93b3", 0.58, 1.25, 1.38, 1.42),   # ¿Para qué?
     ("93b3", 1.25, 5.68, 1.04, 1.10),   # Para conocernos … nuestras causas.
     ("a205", 0.86, 1.85, 1.00, 1.03),   # hablar de lo que
-    ("a205", 2.15, 5.65, 1.20, 1.25),   # les preocupa … cómo les podemos ayudar
+    ("a205", 2.15, 3.22, 1.20, 1.23),   # les preocupa,  (se quita "a todos los jóvenes": ya lo dijo al inicio)
+    ("a205", 4.43, 5.65, 1.04, 1.07),   # de cómo les podemos ayudar
     ("a205", 5.95, 7.70, 1.03, 1.08),   # y sobre todo … el futuro de México.
     ("8f52", 0.58, 2.30, 1.14, 1.18),   # Pondremos pizzas,
     ("8f52", 2.78, 5.566, 1.00, 1.06),  # pondremos el ambiente … la terraza.
@@ -318,10 +319,10 @@ SFX = [
     (10.97, "splash", -11), (10.99, "boom", -12), (11.10, "ding", -18),   # ¡ALBERCADA!
     (11.72, "whoosh", -13), (11.80, "boom", -14),               # ¿PARA QUÉ?
                       # SOMOS
-    (33.42, "whoosh", -12), (33.62, "pop", -16),                # más informes aquí
+    (32.21, "whoosh", -12), (32.41, "pop", -16),                # más informes aquí
     # Cierre en el agua
-    (35.25, "whoosh", -6), (35.70, "splash", -9),               # ola → agua del cierre
-    (36.00, "pop", -13), (37.55, "bubbles", -13),
+    (34.04, "whoosh", -6), (34.49, "splash", -9),               # ola → agua del cierre
+    (34.79, "pop", -13), (37.55, "bubbles", -13),
     (38.75, "boom", -5), (38.75, "splash", -9), (38.90, "boom", -12),   # ¡TE ESPERAMOS!
     (39.38, "pop", -11),
     (41.05, "whoosh", -11), (41.35, "pop", -11),                # ¡Síguenos!
