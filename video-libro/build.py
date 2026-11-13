@@ -122,10 +122,11 @@ SFX = [
     {"t": 16.45, "type": "shine", "gain": 0.16},                # brillo sobre la portada
     {"t": 19.6, "type": "whoosh", "pre": 0.28, "gain": 0.2},
     {"t": 22.28, "type": "hit", "gain": 0.55},                  # "Gandhi" (cae con el drop de la música)
-    {"t": 23.25, "type": "whoosh", "pre": 0.28, "gain": 0.26},  # sale el logo, vuelve el autor
+    {"t": 23.25, "type": "whoosh", "pre": 0.28, "gain": 0.26},  # sale el logo, entra la fachada
     {"t": 25.3, "type": "whoosh", "pre": 0.28, "gain": 0.32},   # mapa nacional
     {"t": 26.5, "type": "whoosh", "pre": 0.28, "gain": 0.22},
     {"t": 28.07, "type": "pop", "gain": 0.4},                   # confeti
+    {"t": 29.73, "type": "whoosh", "pre": 0.28, "gain": 0.3},   # escalera de Gandhi
     {"t": 31.01, "type": "whoosh", "pre": 0.28, "gain": 0.3},   # mapa de ciudades
     {"t": 31.53, "type": "ping", "gain": 0.3},                  # Miguel Hidalgo
     {"t": 32.58, "type": "ping", "gain": 0.3},                  # Ciudad de México
@@ -134,6 +135,7 @@ SFX = [
     {"t": 36.2, "type": "whoosh", "pre": 0.28, "gain": 0.25},
     {"t": 38.47, "type": "whoosh", "pre": 0.28, "gain": 0.28},  # libro junto al mar
     {"t": 42.31, "type": "whoosh", "pre": 0.28, "gain": 0.3},   # páginas reales
+    {"t": 53.43, "type": "whoosh", "pre": 0.28, "gain": 0.3},   # interior de Gandhi
     {"t": 56.6, "type": "whoosh", "pre": 0.3, "gain": 0.45},    # barrido de papel de la cortinilla
     {"t": 57.05, "type": "hit", "gain": 0.6},                   # "12"
     {"t": 57.6, "type": "shine", "gain": 0.22},

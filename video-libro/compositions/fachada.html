@@ -1,0 +1,19 @@
+<template>
+  <style>
+    /* "acaba de aceptar distribuir este libro": fachada de Librerías Gandhi */
+    #root { position: absolute; inset: 0; overflow: hidden; background: #0b0c0f; }
+    #fachada-img { position: absolute; left: 0; top: 0; height: 1920px; width: auto; transform-origin: 50% 50%; }
+    #fachada-shade { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: linear-gradient(180deg, rgba(8, 9, 12, 0.28) 0%, rgba(8, 9, 12, 0) 22%, rgba(0, 0, 0, 0) 58%, rgba(8, 9, 12, 0.35) 100%); }
+  </style>
+  <div id="root" data-composition-id="fachada" data-width="1080" data-height="1920">
+    <img id="fachada-img" src="assets/gandhi/fachada.jpg" alt="Fachada de Librerías Gandhi" />
+    <div id="fachada-shade"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // foto horizontal en cuadro vertical: paneo lento + entrada con desenfoque de movimiento
+    tl.fromTo("#fachada-img", { x: -1570, scale: 1.08 }, { x: -1420, scale: 1.0, duration: 2.3, ease: "sine.out" }, 0);
+    tl.fromTo("#fachada-img", { filter: "blur(14px)" }, { filter: "blur(0px)", duration: 0.22, ease: "power2.out" }, 0);
+    window.__timelines["fachada"] = tl;
+  </script>
+</template>

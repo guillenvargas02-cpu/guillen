@@ -1,0 +1,19 @@
+<template>
+  <style>
+    /* "varias presentaciones de libros": interior de Gandhi */
+    #root { position: absolute; inset: 0; overflow: hidden; background: #0b0c0f; }
+    #escalera-img { position: absolute; left: 0; top: 0; height: 1920px; width: auto; transform-origin: 50% 50%; }
+    #escalera-shade { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: linear-gradient(180deg, rgba(8, 9, 12, 0.28) 0%, rgba(8, 9, 12, 0) 22%, rgba(0, 0, 0, 0) 58%, rgba(8, 9, 12, 0.35) 100%); }
+  </style>
+  <div id="root" data-composition-id="escalera" data-width="1080" data-height="1920">
+    <img id="escalera-img" src="assets/gandhi/escalera.jpg" alt="Interior de Librerías Gandhi con escalera y libreros" />
+    <div id="escalera-shade"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // foto horizontal en cuadro vertical: paneo lento + entrada con desenfoque de movimiento
+    tl.fromTo("#escalera-img", { x: -640, scale: 1.1 }, { x: -900, scale: 1.0, duration: 1.28, ease: "sine.out" }, 0);
+    tl.fromTo("#escalera-img", { filter: "blur(14px)" }, { filter: "blur(0px)", duration: 0.22, ease: "power2.out" }, 0);
+    window.__timelines["escalera"] = tl;
+  </script>
+</template>
