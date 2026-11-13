@@ -5,7 +5,7 @@ Pasos:
   python3 build.py prep        # recorta/escala los clips a 4K con corrección de color -> assets/v/*.mp4
   python3 build.py audio       # mezcla voz + música (con ducking) + efectos -> assets/mix.wav
   npx hyperframes render --resolution portrait-4k --crf 12 -o renders/raw.mp4
-  python3 build.py final       # une el render con la mezcla -> renders/video-favor-de-leer-4k.mp4
+  python3 build.py final       # une render + mezcla -> renders/favor-de-leer-dia-del-libro-{4k,1080}.mp4
 
 La línea de tiempo (EDL) y los subtítulos se definen aquí y se escriben en assets/timeline.js,
 que lee index.html.
@@ -311,10 +311,17 @@ def synth(kind):
 
 
 def final():
+    """Une el render con la mezcla y entrega dos versiones: 4K (~35 Mbps) y 1080p ligera."""
     raw = OUT / "raw.mp4"
+    master = OUT / "master-4k.mp4"
     run(["ffmpeg", "-v", "error", "-y", "-i", raw, "-i", A / "mix.wav", "-map", "0:v", "-map", "1:a",
-         "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2", "-shortest", "-movflags", "+faststart",
-         OUT / "video-favor-de-leer-4k.mp4"])
+         "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2", "-shortest", master])
+    common = ["-pix_fmt", "yuv420p", "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-movflags", "+faststart"]
+    run(["ffmpeg", "-v", "error", "-y", "-i", master, "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-maxrate", "35M", "-bufsize", "70M",
+         "-profile:v", "high", "-level", "5.2", *common, "-c:a", "copy", OUT / "favor-de-leer-dia-del-libro-4k.mp4"])
+    run(["ffmpeg", "-v", "error", "-y", "-i", master, "-vf", "scale=1080:1920:flags=lanczos", "-c:v", "libx264", "-preset", "slow", "-crf", "20",
+         "-maxrate", "10M", "-bufsize", "20M", *common, "-c:a", "aac", "-b:a", "192k", OUT / "favor-de-leer-dia-del-libro-1080.mp4"])
+    master.unlink()
 
 
 if __name__ == "__main__":
