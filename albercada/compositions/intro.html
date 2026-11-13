@@ -1,0 +1,187 @@
+<template>
+  <style>
+    #in-root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    #in-shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 85% 34% at 50% 38%, rgba(4, 38, 72, 0.42), rgba(4, 38, 72, 0) 100%);
+    }
+    .in-palm {
+      position: absolute;
+      width: 620px;
+      height: auto;
+      filter: drop-shadow(0 18px 30px rgba(0, 40, 70, 0.35));
+    }
+    #in-palm-l { left: -250px; top: -170px; }
+    #in-palm-r { left: 700px; top: -190px; }
+    #in-pleca {
+      position: absolute;
+      left: 340px;
+      top: 560px;
+      width: 400px;
+      height: 112px;
+      border-radius: 56px;
+      background: #fff;
+      box-shadow: 0 14px 34px rgba(0, 30, 60, 0.3);
+    }
+    #in-pleca img {
+      position: absolute;
+      left: 46px;
+      top: 31px;
+      width: 308px;
+      height: auto;
+    }
+    #in-kick {
+      position: absolute;
+      left: 0;
+      top: 712px;
+      width: 1080px;
+      text-align: center;
+      font-size: 54px;
+      font-weight: 800;
+      font-style: italic;
+      letter-spacing: 0.01em;
+      text-shadow: 0 4px 18px rgba(0, 30, 60, 0.55);
+    }
+    #in-title {
+      position: absolute;
+      left: 0;
+      top: 800px;
+      width: 1080px;
+      text-align: center;
+      font-size: 184px;
+      line-height: 1;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+    }
+    #in-title .l {
+      display: inline-block;
+      color: #fff;
+      text-shadow: 7px 9px 0 #e4007c, 0 18px 40px rgba(0, 30, 60, 0.45);
+    }
+    #in-date {
+      position: absolute;
+      left: 60px;
+      top: 1060px;
+      width: 960px;
+      padding: 22px 30px 20px;
+      border-radius: 34px;
+      background: rgba(4, 44, 78, 0.62);
+      text-align: center;
+    }
+    #in-date .d1 {
+      font-size: 42px;
+      white-space: nowrap;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    #in-date .d1 b { color: #ffd23f; }
+    #in-date .d2 {
+      font-size: 44px;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.2;
+    }
+    #in-sun {
+      position: absolute;
+      left: 400px;
+      top: 1220px;
+      width: 230px;
+      height: auto;
+    }
+    #in-ball { position: absolute; left: 690px; top: 1420px; width: 320px; height: auto; }
+    #in-pina { position: absolute; left: -10px; top: 1380px; width: 240px; height: auto; }
+    #in-pizza { position: absolute; left: 330px; top: 1540px; width: 330px; height: auto; }
+    #in-splash {
+      position: absolute;
+      left: 140px;
+      top: 720px;
+      width: 800px;
+      height: auto;
+    }
+    .in-bub {
+      position: absolute;
+      border-radius: 50%;
+      border: 5px solid rgba(255, 255, 255, 0.9);
+      background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.85) 0 14%, rgba(255, 255, 255, 0.12) 15% 100%);
+    }
+  </style>
+  <div id="in-root" data-composition-id="intro" data-width="1080" data-height="1920">
+    <div id="in-shade"></div>
+    <img id="in-splash" src="assets/figuras/salpicadura.png" alt="" />
+    <img id="in-palm-l" class="in-palm" src="assets/figuras/palmeras.png" alt="" />
+    <img id="in-palm-r" class="in-palm" src="assets/figuras/palmeras.png" alt="" />
+    <div id="in-pleca"><img src="assets/brand/somos.png" alt="SOMOS" /></div>
+    <div id="in-kick">te invita a una</div>
+    <div id="in-title"><span class="l">A</span><span class="l">l</span><span class="l">b</span><span class="l">e</span><span class="l">r</span><span class="l">c</span><span class="l">a</span><span class="l">d</span><span class="l">a</span></div>
+    <div id="in-date">
+      <div class="d1">Domingo <b>15 de noviembre</b> • 2:00 PM</div>
+      <div class="d2">Polanco, Miguel Hidalgo</div>
+    </div>
+    <img id="in-sun" src="assets/figuras/sol.png" alt="" />
+    <img id="in-pina" src="assets/figuras/pina.png" alt="" />
+    <img id="in-ball" src="assets/figuras/pelota.png" alt="" />
+    <img id="in-pizza" src="assets/figuras/pizza.png" alt="" />
+    <div class="in-bub" style="left: 120px; top: 1980px; width: 70px; height: 70px"></div>
+    <div class="in-bub" style="left: 300px; top: 2040px; width: 44px; height: 44px"></div>
+    <div class="in-bub" style="left: 520px; top: 1990px; width: 90px; height: 90px"></div>
+    <div class="in-bub" style="left: 700px; top: 2080px; width: 52px; height: 52px"></div>
+    <div class="in-bub" style="left: 880px; top: 2010px; width: 64px; height: 64px"></div>
+    <div class="in-bub" style="left: 430px; top: 2140px; width: 36px; height: 36px"></div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#in-palm-l", { rotation: 150 }, 0);
+      tl.set("#in-palm-r", { rotation: -150 }, 0);
+      // Chapuzón inicial: la salpicadura abre la escena
+      tl.fromTo("#in-splash", { scale: 0.2, opacity: 0, transformOrigin: "50% 80%" }, { scale: 1.15, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, 0.0);
+      tl.to("#in-splash", { scale: 1.3, opacity: 0, duration: 0.45, ease: "power2.in" }, 0.5);
+      // Palmeras desde las esquinas, con vaivén
+      tl.fromTo("#in-palm-l", { x: -320, y: -260 }, { x: 0, y: 0, duration: 0.7, ease: "power3.out" }, 0.05);
+      tl.fromTo("#in-palm-r", { x: 320, y: -260 }, { x: 0, y: 0, duration: 0.7, ease: "power3.out" }, 0.1);
+      tl.to("#in-palm-l", { rotation: 156, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: 2 }, 0.75);
+      tl.to("#in-palm-r", { rotation: -144, duration: 1.2, ease: "sine.inOut", yoyo: true, repeat: 2 }, 0.8);
+      // Pleca SOMOS + "te invita a una"
+      tl.fromTo("#in-pleca", { scale: 0, rotation: -8 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, 0.18);
+      tl.fromTo("#in-kick", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.42);
+      // ALBERCADA: las letras caen como clavados, en el golpe (0.55)
+      tl.fromTo("#in-title .l", { y: -620, opacity: 0, rotation: -14 }, { y: 0, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(1.9)", stagger: 0.045 }, 0.5);
+      // Ola en el título: cada letra sube y baja como en el agua
+      document.querySelectorAll("#in-title .l").forEach((el, i) => {
+        tl.to(el, { y: -16, duration: 0.42, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.2 + i * 0.06);
+      });
+      tl.fromTo("#in-date", { opacity: 0, y: 50, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, 1.12);
+      // Personajes del verano
+      tl.fromTo("#in-sun", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.2)" }, 1.28);
+      tl.to("#in-sun", { rotation: 10, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.8);
+      // Stickers del verano: pelota que rebota, piña que saluda, pizza que gira
+      tl.fromTo("#in-ball", { x: 520, y: -900, rotation: 0 }, { x: 0, y: 0, rotation: -320, duration: 0.55, ease: "power2.in" }, 1.2);
+      tl.to("#in-ball", { y: -190, duration: 0.3, ease: "power2.out", yoyo: true, repeat: 3 }, 1.75);
+      tl.to("#in-ball", { rotation: -560, duration: 1.2, ease: "none" }, 1.75);
+      tl.fromTo("#in-pina", { x: -280 }, { x: 0, duration: 0.4, ease: "back.out(2)" }, 1.55);
+      tl.to("#in-pina", { rotation: 9, transformOrigin: "20% 90%", duration: 0.22, ease: "sine.inOut", yoyo: true, repeat: 5 }, 1.95);
+      tl.fromTo("#in-pizza", { scale: 0, rotation: -60 }, { scale: 1, rotation: -10, duration: 0.45, ease: "back.out(2.4)" }, 1.4);
+      tl.to("#in-pizza", { y: -18, rotation: 6, duration: 0.35, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.85);
+      // Burbujas que suben antes de la ola
+      document.querySelectorAll(".in-bub").forEach((el, i) => {
+        tl.fromTo(el, { y: 0, x: 0 }, { y: -1400 - i * 90, x: i % 2 ? 40 : -40, duration: 1.3, ease: "power1.in" }, 2.1 + i * 0.05);
+      });
+      // Todo se hunde un poco cuando llega la ola (3.05)
+      tl.to(["#in-pleca", "#in-kick", "#in-title", "#in-date"], { y: -120, duration: 0.45, ease: "power2.in" }, 3.0);
+      tl.to(["#in-sun"], { y: "-=160", duration: 0.45, ease: "power2.in" }, 3.0);
+      window.__timelines["intro"] = tl;
+    })();
+  </script>
+</template>

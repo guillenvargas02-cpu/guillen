@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Capa gráfica de la invitación a la Albercada. El footage (agua + persona), la voz, la música y
+         los efectos los arma build.py con ffmpeg y luego compone esta capa (RGBA) encima. */
+      @font-face { font-family: "Montserrat"; font-weight: 700; font-style: normal; src: url("assets/fonts/montserrat-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 800; font-style: normal; src: url("assets/fonts/montserrat-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 900; font-style: normal; src: url("assets/fonts/montserrat-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 700; font-style: italic; src: url("assets/fonts/montserrat-latin-700-italic.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 800; font-style: italic; src: url("assets/fonts/montserrat-latin-800-italic.woff2") format("woff2"); }
+      @font-face { font-family: "Montserrat"; font-weight: 900; font-style: italic; src: url("assets/fonts/montserrat-latin-900-italic.woff2") format("woff2"); }
+      @font-face { font-family: "Hind Siliguri"; font-weight: 500; src: url("assets/fonts/hind-siliguri-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Hind Siliguri"; font-weight: 600; src: url("assets/fonts/hind-siliguri-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Hind Siliguri"; font-weight: 700; src: url("assets/fonts/hind-siliguri-latin-700-normal.woff2") format("woff2"); }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: "Montserrat", sans-serif;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="48.4" data-width="1080" data-height="1920">
+      <!-- 0–3.40 agua + título (build-up y riser de la canción); 3.40 drop 1: entra la voz;
+           35.70 corte al agua del cierre; 38.75 drop 2: ¡TE ESPERAMOS!; 47.60 golpe final -->
+      <div id="intro" class="clip" data-composition-id="intro" data-composition-src="compositions/intro.html" data-start="0" data-duration="3.6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 1"></div>
+      <div id="stickers" class="clip" data-composition-id="stickers" data-composition-src="compositions/stickers.html" data-start="3.4" data-duration="32.4" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="captions" class="clip" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="3.4" data-duration="32.0" data-track-index="3" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="outro" class="clip" data-composition-id="outro" data-composition-src="compositions/outro.html" data-start="35.55" data-duration="12.85" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 4"></div>
+      <div id="wave" class="clip" data-composition-id="wave" data-composition-src="compositions/wave.html" data-start="0" data-duration="48.4" data-track-index="4" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 10"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<template>
+  <style>
+    #cp-root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+      overflow: hidden;
+    }
+    .cap {
+      position: absolute;
+      left: 60px;
+      width: 960px;
+      top: 1390px;
+      text-align: center;
+      font-size: 80px;
+      line-height: 1.16;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #fff;
+      opacity: 0;
+      -webkit-text-stroke: 12px #06294a;
+      paint-order: stroke fill;
+      filter: drop-shadow(0 8px 14px rgba(0, 20, 40, 0.45));
+    }
+    .cap .w {
+      display: inline-block;
+      margin: 0 0.1em;
+    }
+    /* Palabra clave: pleca blanca con texto en rosa cívico (como el logo en pleca del manual) */
+    .cap .w.hl {
+      color: #e4007c;
+      -webkit-text-stroke: 0;
+      background: #fff;
+      border-radius: 0.5em;
+      padding: 0.02em 0.3em 0.04em;
+      margin: 0.04em 0.06em;
+      box-shadow: 0 8px 0 #06294a;
+    }
+  </style>
+  <div id="cp-root" data-composition-id="captions" data-width="1080" data-height="1920"></div>
+  <script>
+    (function () {
+      const T0 = 3.4; // inicio de esta composición en el video
+      // [texto (palabras clave entre *asteriscos*), inicio, fin] — tiempos absolutos del video
+      const G = [
+        ["¿Qué tal?", 3.42, 4.05],
+        ["¿Cómo están?", 4.55, 5.06],
+        ["Oigan, a todos los *jóvenes*", 5.06, 6.4],
+        ["que nos siguen en *redes*", 6.4, 7.02],
+        ["y de *Miguel* *Hidalgo*,", 7.02, 7.86],
+        ["los queremos *invitar*", 7.89, 8.45],
+        ["este próximo *domingo*", 8.45, 9.25],
+        ["a las *2* de la *tarde*", 9.25, 10.15],
+        ["a una…", 10.15, 10.95],
+        ["Para *conocernos*,", 12.35, 13.12],
+        ["para que conozcan a *SOMOS*,", 13.12, 14.42],
+        ["para que conozcan", 14.47, 15.32],
+        ["nuestras *causas*.", 15.32, 16.85],
+        ["hablar de lo que", 16.85, 17.84],
+        ["les *preocupa*", 17.84, 18.62],
+        ["a todos los *jóvenes*,", 18.62, 20.09],
+        ["de cómo les podemos *ayudar*", 20.09, 21.38],
+        ["y sobre todo lo que se viene", 21.4, 22.4],
+        ["para el *futuro* de *México*.", 22.4, 23.09],
+        ["Pondremos *pizzas*,", 23.09, 24.81],
+        ["pondremos el *ambiente*,", 24.81, 25.86],
+        ["pondremos la *alberca*", 25.88, 26.85],
+        ["y la *terraza*.", 26.85, 27.6],
+        ["Y como todo en esta vida,", 27.6, 28.7],
+        ["es *mejor* si se hace", 28.7, 29.95],
+        ["*acompañado*", 29.95, 30.7],
+        ["de personas que *estimamos*.", 30.7, 31.92],
+        ["Así que los *esperamos*", 31.92, 32.75],
+        ["este *domingo*,", 32.75, 33.67],
+        ["más informes *aquí*", 34.0, 35.15],
+      ];
+      const root = document.getElementById("cp-root");
+      const tl = gsap.timeline({ paused: true });
+      G.forEach(([text, a, b], gi) => {
+        const el = document.createElement("div");
+        el.className = "cap";
+        el.id = "cap-" + gi;
+        const words = text.split(" ");
+        el.innerHTML = words
+          .map((w) => (w.includes("*") ? `<span class="w hl">${w.replace(/\*/g, "")}</span>` : `<span class="w">${w}</span>`))
+          .join(" ");
+        root.appendChild(el);
+        const s = a - T0;
+        const e = b - T0;
+        // las palabras entran cuando se dicen (reparto por longitud dentro de la frase)
+        const lens = words.map((w) => w.replace(/[*,.¿?…]/g, "").length + 2);
+        const total = lens.reduce((x, y) => x + y, 0);
+        const span = Math.max(0.2, (e - s) * 0.82);
+        tl.set(el, { opacity: 1 }, s);
+        let acc = 0;
+        el.querySelectorAll(".w").forEach((w, i) => {
+          const t = s + (acc / total) * span;
+          acc += lens[i];
+          const hl = w.classList.contains("hl");
+          tl.fromTo(
+            w,
+            { opacity: 0, y: 30, scale: hl ? 0.4 : 0.75, rotation: hl ? -6 : 0 },
+            { opacity: 1, y: 0, scale: 1, rotation: hl ? -2 : 0, duration: hl ? 0.26 : 0.15, ease: hl ? "back.out(3)" : "back.out(2)" },
+            t
+          );
+        });
+        tl.to(el, { opacity: 0, y: -14, duration: 0.07, ease: "power1.in" }, e - 0.07);
+      });
+      window.__timelines["captions"] = tl;
+    })();
+  </script>
+</template>

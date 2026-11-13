@@ -1,0 +1,324 @@
+<template>
+  <style>
+    #ou-root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    #ou-shade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: radial-gradient(ellipse 90% 42% at 50% 34%, rgba(3, 32, 62, 0.5), rgba(3, 32, 62, 0) 100%);
+    }
+    .ou-palm {
+      position: absolute;
+      width: 560px;
+      height: auto;
+      filter: drop-shadow(0 18px 30px rgba(0, 40, 70, 0.35));
+    }
+    #ou-palm-l { left: -240px; top: -170px; }
+    #ou-palm-r { left: 760px; top: -190px; }
+    .o {
+      position: absolute;
+      opacity: 0;
+    }
+    #ou-kick {
+      left: 0;
+      top: 860px;
+      width: 1080px;
+      text-align: center;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      text-shadow: 0 6px 24px rgba(0, 20, 40, 0.6);
+    }
+    #ou-kick .k1 { font-size: 64px; line-height: 1.1; }
+    #ou-kick .k2 { font-size: 92px; line-height: 1.05; color: #ffd23f; }
+    .ou-bub {
+      position: absolute;
+      border-radius: 50%;
+      border: 5px solid rgba(255, 255, 255, 0.9);
+      background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.85) 0 14%, rgba(255, 255, 255, 0.12) 15% 100%);
+    }
+    #ou-te {
+      left: 0;
+      top: 560px;
+      width: 1080px;
+      text-align: center;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      color: #fff;
+      -webkit-text-stroke: 14px #06294a;
+      paint-order: stroke fill;
+    }
+    #ou-te .t1 { display: block; font-size: 230px; line-height: 0.95; text-shadow: 9px 12px 0 #e4007c; }
+    #ou-te .t2 { display: block; font-size: 128px; line-height: 1.05; text-shadow: 7px 10px 0 #e4007c; }
+    #ou-sumate {
+      left: 300px;
+      top: 940px;
+      width: 480px;
+      height: 130px;
+      border-radius: 65px;
+      background: #ffd23f;
+      color: #06294a;
+      text-align: center;
+      font-size: 78px;
+      line-height: 130px;
+      font-weight: 900;
+      font-style: italic;
+      box-shadow: 0 12px 0 #06294a, 0 22px 40px rgba(0, 20, 40, 0.35);
+    }
+    #ou-info {
+      left: 90px;
+      top: 1140px;
+      width: 900px;
+      padding: 22px 26px 20px;
+      border-radius: 34px;
+      background: rgba(4, 44, 78, 0.72);
+      text-align: center;
+    }
+    #ou-info .d1 { font-size: 44px; font-weight: 800; line-height: 1.2; }
+    #ou-info .d1 b { color: #ffd23f; }
+    #ou-info .d2 { font-size: 44px; font-weight: 700; font-style: italic; line-height: 1.25; }
+    #ou-flash {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background: #fff;
+      opacity: 0;
+    }
+    /* CTA Instagram */
+    #ou-igbig { left: 450px; top: 400px; width: 180px; height: 180px; }
+    #ou-sig {
+      left: 0;
+      top: 605px;
+      width: 1080px;
+      text-align: center;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      text-shadow: 0 6px 24px rgba(0, 20, 40, 0.6);
+    }
+    #ou-sig .s1 { display: block; font-size: 120px; line-height: 1; letter-spacing: -0.02em; }
+    #ou-sig .s2 { display: block; font-size: 58px; line-height: 1.3; color: #ffd23f; }
+    .ou-h {
+      left: 90px;
+      width: 900px;
+      height: 118px;
+      border-radius: 59px;
+      background: #fff;
+      color: #06294a;
+      display: flex;
+      align-items: center;
+      padding: 0 16px 0 22px;
+      gap: 18px;
+      font-size: 46px;
+      font-weight: 800;
+      box-shadow: 0 10px 0 #e4007c, 0 20px 34px rgba(0, 20, 40, 0.3);
+    }
+    .ou-h svg { width: 76px; height: 76px; flex: none; }
+    .ou-h .nm { flex: 1; }
+    .ou-h .bt {
+      position: relative;
+      width: 210px;
+      height: 82px;
+      border-radius: 41px;
+      background: #e4007c;
+      color: #fff;
+      font-size: 34px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 82px;
+    }
+    .ou-h .bt .on {
+      position: absolute;
+      inset: 0;
+      border-radius: 41px;
+      background: #06294a;
+      opacity: 0;
+      font-size: 30px;
+    }
+    #ou-cursor { left: 880px; top: 1320px; width: 120px; height: 120px; }
+    /* Tarjeta final */
+    #ou-entre {
+      left: 0;
+      top: 520px;
+      width: 1080px;
+      text-align: center;
+      font-size: 104px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-shadow: 0 8px 26px rgba(0, 20, 40, 0.55);
+    }
+    #ou-mas {
+      left: 0;
+      top: 650px;
+      width: 1080px;
+      height: 170px;
+      text-align: center;
+    }
+    #ou-mas .pl {
+      display: inline-block;
+      vertical-align: middle;
+      width: 520px;
+      height: 150px;
+      border-radius: 40px;
+      background: #fff;
+      position: relative;
+      box-shadow: 0 16px 34px rgba(0, 20, 40, 0.35);
+    }
+    #ou-mas .pl img { position: absolute; left: 50px; top: 39px; width: 420px; height: auto; }
+    #ou-mas .ms {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 22px;
+      font-size: 120px;
+      font-weight: 900;
+      line-height: 150px;
+      text-shadow: 0 8px 26px rgba(0, 20, 40, 0.55);
+    }
+    /* Logo de colaboración: SOMOS Impacto (sobre la pleca, como pide el manual para video 9:16) */
+    #ou-impacto {
+      left: 290px;
+      top: 930px;
+      width: 500px;
+      height: 340px;
+      border-radius: 40px;
+      background: #fff;
+      box-shadow: 0 16px 34px rgba(0, 20, 40, 0.35);
+      text-align: center;
+      color: #e4007c;
+    }
+    #ou-impacto img { position: absolute; left: 25px; top: 20px; width: 450px; height: 300px; object-fit: contain; }
+    #ou-pleca {
+      left: 340px;
+      top: 1334px;
+      width: 400px;
+      height: 112px;
+      border-radius: 56px;
+      background: #fff;
+      box-shadow: 0 14px 34px rgba(0, 20, 40, 0.35);
+    }
+    #ou-pleca img { position: absolute; left: 46px; top: 31px; width: 308px; height: auto; }
+  </style>
+  <div id="ou-root" data-composition-id="outro" data-width="1080" data-height="1920">
+    <div id="ou-shade"></div>
+    <img id="ou-palm-l" class="ou-palm" src="assets/figuras/palmeras.png" alt="" />
+    <img id="ou-palm-r" class="ou-palm" src="assets/figuras/palmeras.png" alt="" />
+
+    <div id="ou-kick" class="o"><div class="k1">Este domingo</div><div class="k2">¡nos vemos en la alberca!</div></div>
+    <div class="ou-bub" style="left: 140px; top: 1960px; width: 70px; height: 70px"></div>
+    <div class="ou-bub" style="left: 330px; top: 2030px; width: 46px; height: 46px"></div>
+    <div class="ou-bub" style="left: 560px; top: 1990px; width: 90px; height: 90px"></div>
+    <div class="ou-bub" style="left: 760px; top: 2060px; width: 50px; height: 50px"></div>
+    <div class="ou-bub" style="left: 900px; top: 1990px; width: 66px; height: 66px"></div>
+
+    <div id="ou-te" class="o"><span class="t1">¡TE</span><span class="t2">ESPERAMOS!</span></div>
+    <div id="ou-sumate" class="o">¡SÚMATE!</div>
+    <div id="ou-info" class="o">
+      <div class="d1">Domingo <b>15 de noviembre</b> • 2:00 PM</div>
+      <div class="d2">Polanco, Miguel Hidalgo</div>
+    </div>
+
+    <svg id="ou-igbig" class="o" viewBox="0 0 64 64">
+      <defs>
+        <radialGradient id="ou-igg" cx="0.3" cy="1.05" r="1.2">
+          <stop offset="0" stop-color="#fdd75b" />
+          <stop offset="0.25" stop-color="#fd5b3c" />
+          <stop offset="0.6" stop-color="#d43a8f" />
+          <stop offset="1" stop-color="#6b4bd1" />
+        </radialGradient>
+      </defs>
+      <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#ou-igg)" />
+      <rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" />
+      <circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" />
+      <circle cx="43.5" cy="20.5" r="3" fill="#fff" />
+    </svg>
+    <div id="ou-sig" class="o"><span class="s1">¡Síguenos!</span><span class="s2">en Instagram</span></div>
+    <div id="ou-h1" class="o ou-h" style="top: 900px"><svg viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#ou-igg)" /><rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="43.5" cy="20.5" r="3" fill="#fff" /></svg><span class="nm">@somos_mh</span><span class="bt"><span class="tx">Seguir</span><span class="on">Siguiendo</span></span></div>
+    <div id="ou-h2" class="o ou-h" style="top: 1046px"><svg viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#ou-igg)" /><rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="43.5" cy="20.5" r="3" fill="#fff" /></svg><span class="nm">@eduardocontro</span><span class="bt"><span class="tx">Seguir</span><span class="on">Siguiendo</span></span></div>
+    <div id="ou-h3" class="o ou-h" style="top: 1192px"><svg viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#ou-igg)" /><rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="43.5" cy="20.5" r="3" fill="#fff" /></svg><span class="nm">@somosimpactocdmx</span><span class="bt"><span class="tx">Seguir</span><span class="on">Siguiendo</span></span></div>
+    <div id="ou-h4" class="o ou-h" style="top: 1338px"><svg viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#ou-igg)" /><rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" /><circle cx="43.5" cy="20.5" r="3" fill="#fff" /></svg><span class="nm">@somosimpactomx</span><span class="bt"><span class="tx">Seguir</span><span class="on">Siguiendo</span></span></div>
+    <svg id="ou-cursor" class="o" viewBox="0 0 100 100"><path d="M38 8 C44 8 48 12 48 18 V46 L50 46 V36 C50 30 60 30 60 36 V48 L62 48 V40 C62 34 72 34 72 40 V52 L74 52 V46 C74 40 84 40 84 46 V70 C84 86 74 96 58 96 H52 C42 96 36 92 30 84 L14 62 C10 56 18 50 24 54 L28 58 V18 C28 12 32 8 38 8Z" fill="#fff" stroke="#06294a" stroke-width="5" stroke-linejoin="round" /></svg>
+
+    <div id="ou-entre" class="o">Entre amigos,</div>
+    <div id="ou-mas" class="o"><span class="pl"><img src="assets/brand/somos.png" alt="SOMOS" /></span><span class="ms">más</span></div>
+    <div id="ou-impacto" class="o"><img src="assets/brand/somos-impacto.png" alt="SOMOS Impacto" /></div>
+    <div id="ou-pleca" class="o"><img src="assets/brand/somos.png" alt="SOMOS" /></div>
+    <div id="ou-flash"></div>
+  </div>
+  <script>
+    (function () {
+      const T0 = 35.55;
+      const at = (t) => t - T0;
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#ou-palm-l", { rotation: 150 }, 0);
+      tl.set("#ou-palm-r", { rotation: -150 }, 0);
+
+      tl.fromTo("#ou-shade", { opacity: 0 }, { opacity: 1, duration: 0.4 }, at(35.8));
+      tl.fromTo("#ou-palm-l", { x: -320, y: -260 }, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, at(35.85));
+      tl.fromTo("#ou-palm-r", { x: 320, y: -260 }, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, at(35.9));
+      tl.to("#ou-palm-l", { rotation: 156, duration: 1.26, ease: "sine.inOut", yoyo: true, repeat: 8 }, at(36.5));
+      tl.to("#ou-palm-r", { rotation: -144, duration: 1.26, ease: "sine.inOut", yoyo: true, repeat: 8 }, at(36.55));
+
+      // Antes del drop: "Este domingo… ¡nos vemos en la alberca!" y crece con el riser
+      tl.fromTo("#ou-kick", { opacity: 0, y: 60, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, at(36.0));
+      tl.to("#ou-kick", { scale: 1.12, duration: 1.1, ease: "power2.in" }, at(37.5));
+      tl.to("#ou-kick", { opacity: 0, scale: 1.6, duration: 0.14, ease: "power2.in" }, at(38.6));
+      document.querySelectorAll(".ou-bub").forEach((el, i) => {
+        tl.fromTo(el, { y: 0 }, { y: -2200, x: i % 2 ? 50 : -50, duration: 1.2, ease: "power1.in" }, at(37.55 + i * 0.06));
+      });
+
+      // DROP 2 (38.75): ¡TE ESPERAMOS! + ¡SÚMATE!
+      tl.fromTo("#ou-flash", { opacity: 0.85 }, { opacity: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, at(38.75));
+      tl.set("#ou-te", { opacity: 1 }, at(38.75));
+      tl.fromTo("#ou-te .t1", { scale: 3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.22, ease: "power4.out" }, at(38.75));
+      tl.fromTo("#ou-te .t2", { scale: 3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.22, ease: "power4.out" }, at(38.9));
+      tl.to("#ou-te", { x: 12, y: -8, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, at(39.0));
+      tl.fromTo("#ou-sumate", { opacity: 0, scale: 0, rotation: -30 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.42, ease: "back.out(2.6)" }, at(39.38));
+      tl.to("#ou-sumate", { scale: 1.08, duration: 0.31, ease: "sine.inOut", yoyo: true, repeat: 3 }, at(40.0));
+      tl.fromTo("#ou-info", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, at(40.1));
+      tl.to(["#ou-te", "#ou-sumate", "#ou-info"], { opacity: 0, y: -260, duration: 0.2, ease: "power2.in", stagger: 0.02 }, at(41.05));
+
+      // 41.275: cambio de agua + CTA de Instagram
+      tl.fromTo("#ou-flash", { opacity: 0.7 }, { opacity: 0, duration: 0.28, ease: "power2.out", immediateRender: false }, at(41.275));
+      tl.fromTo("#ou-igbig", { opacity: 0, scale: 0, rotation: -40 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, at(41.35));
+      tl.fromTo("#ou-sig", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, at(41.5));
+      ["#ou-h1", "#ou-h2", "#ou-h3", "#ou-h4"].forEach((s, i) => {
+        tl.fromTo(s, { opacity: 0, x: i % 2 ? 900 : -900 }, { opacity: 1, x: 0, duration: 0.38, ease: "back.out(1.6)" }, at(41.85 + i * 0.32));
+      });
+      // Tap en "Seguir" de cada cuenta
+      tl.fromTo("#ou-cursor", { opacity: 0, x: 260, y: 400 }, { opacity: 1, x: 0, y: -400, duration: 0.3, ease: "power3.out" }, at(43.2));
+      ["#ou-h1", "#ou-h2", "#ou-h3", "#ou-h4"].forEach((s, i) => {
+        const t = 43.5 + i * 0.3;
+        if (i > 0) tl.to("#ou-cursor", { y: -400 + i * 146, duration: 0.14, ease: "power2.inOut" }, at(t - 0.16));
+        tl.to("#ou-cursor", { scale: 0.82, duration: 0.06, yoyo: true, repeat: 1, ease: "power1.inOut" }, at(t));
+        tl.to(s + " .bt", { scale: 0.9, duration: 0.06, yoyo: true, repeat: 1 }, at(t));
+        tl.to(s + " .bt .on", { opacity: 1, duration: 0.08 }, at(t + 0.06));
+        tl.to(s + " .bt .tx", { opacity: 0, duration: 0.06 }, at(t + 0.06));
+      });
+      tl.to("#ou-cursor", { opacity: 0, x: 300, duration: 0.25, ease: "power2.in" }, at(44.85));
+      tl.to(["#ou-igbig", "#ou-sig", "#ou-h1", "#ou-h2", "#ou-h3", "#ou-h4"], { opacity: 0, y: -240, duration: 0.22, ease: "power2.in", stagger: 0.025 }, at(45.15));
+
+      // Tarjeta final: Entre amigos, SOMOS más + SOMOS Impacto + pleca SOMOS
+      tl.fromTo("#ou-entre", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(2)" }, at(45.6));
+      tl.fromTo("#ou-mas", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2.4)" }, at(45.85));
+      tl.fromTo("#ou-impacto", { opacity: 0, scale: 0.3, rotation: -8 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, at(46.15));
+      tl.fromTo("#ou-pleca", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.38, ease: "back.out(2)" }, at(46.35));
+      // golpe final de la canción
+      tl.fromTo("#ou-flash", { opacity: 0.6 }, { opacity: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, at(47.6));
+      tl.to(["#ou-mas", "#ou-impacto", "#ou-pleca"], { scale: 1.07, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, at(47.6));
+      window.__timelines["outro"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,80 @@
+<template>
+  <style>
+    #wv-root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .wv {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 2700px;
+    }
+    .wv svg {
+      position: absolute;
+      left: -540px;
+      top: 0;
+      width: 2160px;
+      height: 2700px;
+    }
+    .wv .bub {
+      position: absolute;
+      border-radius: 50%;
+      border: 6px solid rgba(255, 255, 255, 0.75);
+      background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.7) 0 14%, rgba(255, 255, 255, 0.08) 15% 100%);
+    }
+  </style>
+  <div id="wv-root" data-composition-id="wave" data-width="1080" data-height="1920">
+    <!-- Ola de transición (se usa dos veces: agua → persona en 3.40 y persona → agua en 35.70) -->
+    <div class="wv wv-foam">
+      <svg viewBox="0 0 2160 2700" preserveAspectRatio="none"><path fill="#ffffff" d="M0 90 Q135 0 270 90 T540 90 T810 90 T1080 90 T1350 90 T1620 90 T1890 90 T2160 90 V2610 Q2025 2700 1890 2610 T1620 2610 T1350 2610 T1080 2610 T810 2610 T540 2610 T270 2610 T0 2610 Z" /></svg>
+    </div>
+    <div class="wv wv-aqua">
+      <svg viewBox="0 0 2160 2700" preserveAspectRatio="none"><path fill="#36cdf2" d="M0 80 Q180 0 360 80 T720 80 T1080 80 T1440 80 T1800 80 T2160 80 V2620 Q1980 2700 1800 2620 T1440 2620 T1080 2620 T720 2620 T360 2620 T0 2620 Z" /></svg>
+    </div>
+    <div class="wv wv-deep">
+      <svg viewBox="0 0 2160 2700" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="wv-g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#00a6e0" />
+            <stop offset="0.5" stop-color="#0078c8" />
+            <stop offset="1" stop-color="#00a6e0" />
+          </linearGradient>
+        </defs>
+        <path fill="url(#wv-g)" d="M0 70 Q160 0 320 70 T640 70 T960 70 T1280 70 T1600 70 T1920 70 T2240 70 V2630 Q2080 2700 1920 2630 T1600 2630 T1280 2630 T960 2630 T640 2630 T320 2630 T0 2630 Z" />
+      </svg>
+      <div class="bub" style="left: 140px; top: 700px; width: 80px; height: 80px"></div>
+      <div class="bub" style="left: 760px; top: 980px; width: 120px; height: 120px"></div>
+      <div class="bub" style="left: 420px; top: 1300px; width: 56px; height: 56px"></div>
+      <div class="bub" style="left: 880px; top: 1620px; width: 70px; height: 70px"></div>
+      <div class="bub" style="left: 230px; top: 1820px; width: 100px; height: 100px"></div>
+      <div class="bub" style="left: 600px; top: 2150px; width: 60px; height: 60px"></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      // Cada capa recorre de abajo (+1920) a arriba (−2700); la capa profunda cubre todo justo en el corte.
+      function wave(cut) {
+        const d = 0.9;
+        const s = cut - 0.45;
+        [
+          [".wv-foam", -0.09],
+          [".wv-aqua", -0.045],
+          [".wv-deep", 0],
+        ].forEach(([sel, off]) => {
+          tl.fromTo(sel, { y: 1920 }, { y: -2700, duration: d, ease: "none", immediateRender: false }, s + off);
+          tl.fromTo(sel + " svg", { x: 0 }, { x: 540, duration: d, ease: "none", immediateRender: false }, s + off);
+        });
+        tl.fromTo(".wv-deep .bub", { y: 120 }, { y: -260, duration: d, ease: "none", immediateRender: false, stagger: 0.01 }, s);
+      }
+      tl.set(".wv", { y: 1920 }, 0);
+      wave(3.4);
+      wave(35.7);
+      window.__timelines["wave"] = tl;
+    })();
+  </script>
+</template>

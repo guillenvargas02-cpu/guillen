@@ -1,0 +1,365 @@
+<template>
+  <style>
+    #st-root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .st {
+      position: absolute;
+      opacity: 0;
+    }
+    /* Etiqueta de Instagram de quien habla */
+    #st-ig {
+      left: 60px;
+      top: 200px;
+      height: 92px;
+      padding: 0 34px 0 18px;
+      border-radius: 46px;
+      background: #fff;
+      color: #06294a;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 40px;
+      font-weight: 800;
+      box-shadow: 0 10px 0 #e4007c, 0 18px 30px rgba(0, 20, 40, 0.3);
+    }
+    .ig-glyph {
+      width: 62px;
+      height: 62px;
+      flex: none;
+    }
+    /* Calendario: DOMINGO 15 NOV */
+    #st-cal {
+      left: 770px;
+      top: 150px;
+      width: 280px;
+      height: 320px;
+      border-radius: 34px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 12px 0 #06294a, 0 24px 40px rgba(0, 20, 40, 0.35);
+      text-align: center;
+      color: #06294a;
+    }
+    #st-cal .hd {
+      height: 92px;
+      background: #e4007c;
+      color: #fff;
+      font-size: 44px;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 92px;
+      letter-spacing: 0.04em;
+    }
+    #st-cal .num {
+      font-size: 146px;
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 6px;
+      letter-spacing: -0.04em;
+    }
+    #st-cal .dw {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    /* 2:00 PM */
+    #st-hora {
+      left: 30px;
+      top: 200px;
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      background: #ffd23f;
+      box-shadow: 0 12px 0 #06294a, 0 24px 40px rgba(0, 20, 40, 0.35);
+      color: #06294a;
+      text-align: center;
+      font-weight: 900;
+      font-style: italic;
+    }
+    #st-hora .h {
+      font-size: 104px;
+      line-height: 1;
+      margin-top: 56px;
+      letter-spacing: -0.04em;
+    }
+    #st-hora .pm {
+      font-size: 54px;
+      line-height: 1;
+    }
+    /* ¡ALBERCADA! */
+    #st-alb {
+      left: 0;
+      top: 1120px;
+      width: 1080px;
+      height: 520px;
+    }
+    #st-alb img {
+      position: absolute;
+      left: 90px;
+      top: 70px;
+      width: 900px;
+      height: auto;
+    }
+    #st-alb .t {
+      position: absolute;
+      left: 0;
+      top: 150px;
+      width: 1080px;
+      text-align: center;
+      font-size: 126px;
+      font-weight: 900;
+      font-style: italic;
+      white-space: nowrap;
+      letter-spacing: -0.035em;
+      color: #fff;
+      -webkit-text-stroke: 14px #06294a;
+      paint-order: stroke fill;
+      text-shadow: 8px 12px 0 #e4007c;
+    }
+    /* ¿PARA QUÉ? */
+    #st-pq {
+      left: 0;
+      top: 1180px;
+      width: 1080px;
+      height: 420px;
+    }
+    #st-pq .band {
+      position: absolute;
+      left: -100px;
+      top: 60px;
+      width: 1280px;
+      height: 300px;
+      background: #e4007c;
+      box-shadow: 0 14px 0 #06294a;
+    }
+    #st-pq .t {
+      position: absolute;
+      left: 0;
+      top: 125px;
+      width: 1080px;
+      text-align: center;
+      white-space: nowrap;
+      font-size: 136px;
+      line-height: 1;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -0.035em;
+      color: #fff;
+    }
+    /* SOMOS en grande cuando lo dice */
+    #st-somos {
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    #st-rays {
+      position: absolute;
+      left: 40px;
+      top: 692px;
+      width: 1000px;
+      height: 1000px;
+    }
+    .ring {
+      position: absolute;
+      left: 290px;
+      top: 942px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      border: 16px solid #e4007c;
+      opacity: 0;
+    }
+    #st-pill {
+      position: absolute;
+      left: 140px;
+      top: 1080px;
+      width: 800px;
+      height: 224px;
+      border-radius: 112px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 16px 0 #e4007c, 0 30px 60px rgba(0, 20, 40, 0.45);
+    }
+    #st-pill img {
+      position: absolute;
+      left: 90px;
+      top: 58px;
+      width: 620px;
+      height: auto;
+    }
+    #st-shine {
+      position: absolute;
+      left: -260px;
+      top: -40px;
+      width: 160px;
+      height: 320px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+    }
+    /* Tarjeta de informes (donde señala) */
+    #st-info {
+      left: 80px;
+      top: 1000px;
+      width: 920px;
+      border-radius: 36px;
+      background: #fff;
+      color: #06294a;
+      padding: 26px 34px 26px 40px;
+      box-shadow: 0 12px 0 #e4007c, 0 26px 44px rgba(0, 20, 40, 0.35);
+    }
+    #st-info .row {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+    #st-info .row svg {
+      width: 50px;
+      height: 50px;
+      flex: none;
+    }
+    #st-info .row b { color: #e4007c; }
+  </style>
+  <div id="st-root" data-composition-id="stickers" data-width="1080" data-height="1920">
+    <div id="st-ig" class="st">
+      <svg class="ig-glyph" viewBox="0 0 64 64">
+        <defs>
+          <radialGradient id="st-igg" cx="0.3" cy="1.05" r="1.2">
+            <stop offset="0" stop-color="#fdd75b" />
+            <stop offset="0.25" stop-color="#fd5b3c" />
+            <stop offset="0.6" stop-color="#d43a8f" />
+            <stop offset="1" stop-color="#6b4bd1" />
+          </radialGradient>
+        </defs>
+        <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#st-igg)" />
+        <rect x="13" y="13" width="38" height="38" rx="11" fill="none" stroke="#fff" stroke-width="4.5" />
+        <circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4.5" />
+        <circle cx="43.5" cy="20.5" r="3" fill="#fff" />
+      </svg>
+      <span>@eduardocontro</span>
+    </div>
+
+    <div id="st-cal" class="st">
+      <div class="hd">NOV</div>
+      <div class="num">15</div>
+      <div class="dw">DOMINGO</div>
+    </div>
+    <div id="st-hora" class="st"><div class="h">2:00</div><div class="pm">PM</div></div>
+
+    <div id="st-alb" class="st">
+      <img src="assets/figuras/salpicadura.png" alt="" />
+      <div class="t">¡ALBERCADA!</div>
+    </div>
+
+    <div id="st-pq" class="st">
+      <div class="band"></div>
+      <div class="t">¿PARA QUÉ?</div>
+    </div>
+
+    <div id="st-somos" class="st">
+      <svg id="st-rays" viewBox="-500 -500 1000 1000">
+        <g id="st-rays-g">
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#e4007c" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#ffd23f" transform="rotate(30)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#e4007c" transform="rotate(60)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#ffffff" transform="rotate(90)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#e4007c" transform="rotate(120)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#ffd23f" transform="rotate(150)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#e4007c" transform="rotate(180)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#ffffff" transform="rotate(210)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#e4007c" transform="rotate(240)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#ffd23f" transform="rotate(270)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#e4007c" transform="rotate(300)" />
+          <path d="M0 0 L-45 -500 L45 -500Z" fill="#ffffff" transform="rotate(330)" />
+        </g>
+      </svg>
+      <div class="ring" id="st-r1"></div>
+      <div class="ring" id="st-r2"></div>
+      <div class="ring" id="st-r3"></div>
+      <div id="st-pill"><img src="assets/brand/somos.png" alt="SOMOS" /><div id="st-shine"></div></div>
+    </div>
+
+    <div id="st-info" class="st">
+      <div class="row">
+        <svg viewBox="0 0 50 50"><rect x="4" y="8" width="42" height="38" rx="7" fill="#e4007c" /><rect x="4" y="8" width="42" height="11" rx="5" fill="#06294a" /><rect x="12" y="3" width="5" height="10" rx="2" fill="#06294a" /><rect x="33" y="3" width="5" height="10" rx="2" fill="#06294a" /><rect x="11" y="25" width="8" height="7" rx="2" fill="#fff" /><rect x="21" y="25" width="8" height="7" rx="2" fill="#fff" /><rect x="31" y="25" width="8" height="7" rx="2" fill="#fff" /><rect x="11" y="35" width="8" height="7" rx="2" fill="#fff" /></svg>
+        <span>Domingo <b>15 de noviembre</b></span>
+      </div>
+      <div class="row">
+        <svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="21" fill="#e4007c" /><path d="M25 12 V26 L34 31" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" /></svg>
+        <span><b>2:00 PM</b></span>
+      </div>
+      <div class="row">
+        <svg viewBox="0 0 50 50"><path d="M25 48 C14 34 8 26 8 18 A17 17 0 0 1 42 18 C42 26 36 34 25 48Z" fill="#e4007c" /><circle cx="25" cy="18" r="6.5" fill="#fff" /></svg>
+        <span>Polanco, <b>Miguel Hidalgo</b></span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const T0 = 3.4;
+      const at = (t) => t - T0; // tiempos absolutos del video → tiempo de esta composición
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#st-pq .band", { rotation: -5 }, 0);
+      tl.set("#st-pq .t", { rotation: -5 }, 0);
+
+      const popIn = (sel, t, toRot = 0) =>
+        tl.fromTo(sel, { opacity: 0, scale: 0.2, rotation: -12 }, { opacity: 1, scale: 1, rotation: toRot, duration: 0.38, ease: "back.out(2.6)" }, at(t));
+      const popOut = (sel, t) => tl.to(sel, { opacity: 0, scale: 0.4, duration: 0.18, ease: "back.in(2)" }, at(t));
+
+      // @eduardocontro al presentarse
+      tl.fromTo("#st-ig", { opacity: 0, x: -420 }, { opacity: 1, x: 0, duration: 0.42, ease: "back.out(1.8)" }, at(5.15));
+      tl.to("#st-ig", { opacity: 0, x: -420, duration: 0.3, ease: "power2.in" }, at(7.75));
+
+      // Domingo 15 nov · 2:00 PM
+      popIn("#st-cal", 8.88, 6);
+      tl.to("#st-cal", { y: -10, duration: 0.35, ease: "sine.inOut", yoyo: true, repeat: 3 }, at(9.3));
+      popIn("#st-hora", 9.42, -6);
+      popOut(["#st-cal", "#st-hora"], 10.78);
+
+      // ¡ALBERCADA! con salpicadura y sacudida
+      tl.fromTo("#st-alb", { opacity: 0 }, { opacity: 1, duration: 0.01 }, at(10.97));
+      tl.fromTo("#st-alb img", { scale: 0.1, transformOrigin: "50% 70%" }, { scale: 1.1, duration: 0.35, ease: "back.out(2)" }, at(10.97));
+      tl.fromTo("#st-alb .t", { scale: 2.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.24, ease: "power4.out" }, at(10.99));
+      tl.to("#st-alb", { x: 14, y: -10, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, at(11.22));
+      tl.to("#st-alb .t", { scale: 1.06, duration: 0.2, yoyo: true, repeat: 1, ease: "sine.inOut" }, at(11.35));
+      tl.to("#st-alb", { opacity: 0, y: -80, duration: 0.14, ease: "power2.in" }, at(11.66));
+
+      // ¿PARA QUÉ?
+      tl.set("#st-pq", { opacity: 1 }, at(11.74));
+      tl.fromTo("#st-pq .band", { scaleX: 0, rotation: -5, transformOrigin: "0% 50%" }, { scaleX: 1, rotation: -5, duration: 0.18, ease: "power3.out" }, at(11.74));
+      tl.fromTo("#st-pq .t", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.24, ease: "back.out(2.4)" }, at(11.8));
+      tl.to("#st-pq", { opacity: 0, x: 600, duration: 0.15, ease: "power2.in" }, at(12.24));
+
+      // "…para que conozcan a SOMOS": el logo entra grande con rayos, ondas y destello,
+      // y luego se encoge a insignia arriba mientras habla de las causas.
+      const S = 13.86;
+      tl.set("#st-somos", { opacity: 1 }, at(S - 0.02));
+      tl.fromTo("#st-pill", { scale: 2.6, opacity: 0, rotation: -10 }, { scale: 1, opacity: 1, rotation: -3, duration: 0.3, ease: "power4.out" }, at(S));
+      tl.to("#st-pill", { rotation: 0, duration: 0.25, ease: "back.out(3)" }, at(S + 0.3));
+      tl.fromTo("#st-rays", { scale: 0, opacity: 0 }, { scale: 1, opacity: 0.9, duration: 0.35, ease: "back.out(1.6)" }, at(S + 0.04));
+      tl.fromTo("#st-rays-g", { rotation: 0, transformOrigin: "0 0" }, { rotation: 75, duration: 1.0, ease: "none" }, at(S + 0.04));
+      ["#st-r1", "#st-r2", "#st-r3"].forEach((r, i) => {
+        tl.fromTo(r, { scale: 0.5, opacity: 0.95 }, { scale: 2.6, opacity: 0, duration: 0.7, ease: "power2.out" }, at(S + 0.08 + i * 0.16));
+      });
+      tl.fromTo("#st-shine", { x: 0 }, { x: 1250, duration: 0.45, ease: "power2.inOut" }, at(S + 0.38));
+      tl.to("#st-pill", { scale: 1.06, duration: 0.14, yoyo: true, repeat: 1, ease: "sine.inOut" }, at(S + 0.55));
+      tl.to("#st-rays", { opacity: 0, scale: 1.3, duration: 0.25, ease: "power2.in" }, at(S + 0.85));
+      // a insignia arriba (pleca de 400 px)
+      tl.to("#st-pill", { scale: 0.5, y: -926, duration: 0.42, ease: "power3.inOut" }, at(S + 1.0));
+      tl.to("#st-pill", { opacity: 0, scale: 0.2, duration: 0.2, ease: "back.in(2)" }, at(16.7));
+
+      // Más informes aquí: la tarjeta sale donde señala
+      tl.fromTo("#st-info", { opacity: 0, x: 700, rotation: 8 }, { opacity: 1, x: 0, rotation: -2, duration: 0.45, ease: "back.out(1.7)" }, at(33.45));
+      tl.fromTo("#st-info .row", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.22, ease: "power3.out", stagger: 0.12 }, at(33.6));
+      tl.to("#st-info", { scale: 1.04, duration: 0.18, yoyo: true, repeat: 1, ease: "sine.inOut" }, at(34.95));
+      window.__timelines["stickers"] = tl;
+    })();
+  </script>
+</template>
