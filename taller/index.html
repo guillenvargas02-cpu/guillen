@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <title>SOMOS · Comunicación Política en Acción · Taller</title>
 <!--
-  Video del taller (1080x1920 CSS px, 29.5 s, se renderiza a 2160x3840). Composición determinista:
-  window.__seek(t) deja listo el cuadro t. Cada foto, sticker y transición aparece una sola vez.
+  Video del taller (1080x1920 CSS px, 29.5 s; se renderiza a 2160x3840). Composición determinista:
+  window.__seek(t) deja listo el cuadro t. Cada foto, video, sticker y transición aparece una sola vez.
   Identidad (Manual SOMOS 2026): Rosa Cívico #E4007C; logotipo rosa sobre blanco; sobre rosa u oscuro
-  dentro de la pleca blanca; nunca logo blanco sobre rosa. Bernino Sans -> Fira Sans (sustituto libre),
+  dentro de la pleca blanca; nunca logotipo blanco sobre rosa. Bernino Sans -> Fira Sans (sustituto libre),
   Hind Siliguri secundaria; titulares estilo cartel en Archivo.
 -->
 <style>
@@ -18,8 +18,6 @@
 @font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-600-normal.woff2); font-weight: 600; }
 @font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-700-normal.woff2); font-weight: 700; }
 @font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-800-normal.woff2); font-weight: 800; }
-@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-700-italic.woff2); font-weight: 700; font-style: italic; }
-@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-800-italic.woff2); font-weight: 800; font-style: italic; }
 @font-face { font-family: "Hind"; src: url(assets/fonts/hind-siliguri-latin-400-normal.woff2); font-weight: 400; }
 @font-face { font-family: "Hind"; src: url(assets/fonts/hind-siliguri-latin-600-normal.woff2); font-weight: 600; }
 
@@ -31,88 +29,82 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 #world { position: absolute; inset: 0; }
 .scene { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
 .abs { position: absolute; }
-.full { position: absolute; inset: 0; }
+.full { position: absolute; inset: 0; width: 100%; height: 100%; }
 .photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
-.title { font-family: "Archivo"; font-weight: 900; font-stretch: 92%; text-transform: uppercase; line-height: .9;
-  letter-spacing: -.01em; white-space: nowrap; }
+.vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.title { font-family: "Archivo"; font-weight: 900; font-stretch: 92%; text-transform: uppercase; line-height: .9; letter-spacing: -.01em; white-space: nowrap; }
 .line { display: block; overflow: hidden; padding: .07em .1em .03em; margin: -.07em -.1em -.03em; }
 .ch { display: inline-block; will-change: transform; }
-.num { position: absolute; left: 70px; font-family: "Archivo"; font-weight: 800; font-stretch: 100%; font-size: 34px; letter-spacing: .12em; display: flex; align-items: center; gap: 18px; }
-.num i { display: block; height: 3px; width: 90px; background: var(--rosa); transform-origin: left center; }
-.num em { font-style: normal; opacity: .65; }
-.sub { font-family: "Hind"; font-weight: 400; font-size: 46px; line-height: 1.22; }
+.num { position: absolute; left: 66px; font-family: "Archivo"; font-weight: 900; font-style: italic; font-stretch: 100%; font-size: 92px; line-height: 1; color: var(--rosa); letter-spacing: -.02em; }
+.sub { font-family: "Hind"; font-weight: 400; font-size: 46px; line-height: 1.24; }
 .sub b { font-family: "Fira"; font-weight: 700; }
-.kicker { font-family: "Hind"; font-weight: 600; font-size: 30px; letter-spacing: .32em; text-transform: uppercase; }
+.kicker { font-family: "Hind"; font-weight: 600; font-size: 30px; letter-spacing: .3em; text-transform: uppercase; }
 .sticker { position: absolute; filter: drop-shadow(0 24px 40px rgba(0,0,0,.35)); }
-.grade { position: absolute; inset: 0; background:
-  linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.18) 28%, rgba(0,0,0,.2) 52%, rgba(0,0,0,.9) 80%, #000 100%); }
-.tint { position: absolute; inset: 0; background: linear-gradient(200deg, rgba(228,0,124,0) 45%, rgba(228,0,124,.32) 100%); mix-blend-mode: screen; }
-.ttl { position: absolute; left: 70px; right: 70px; }
-.sb { position: absolute; left: 70px; right: 90px; color: rgba(255,255,255,.9); }
+/* degradado solo donde vive el texto */
+.shade-b { position: absolute; left: 0; right: 0; bottom: 0; height: 62%; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 40%, rgba(0,0,0,.88) 100%); }
+.shade-t { position: absolute; left: 0; right: 0; top: 0; height: 45%; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.75) 100%); }
+.ttl { position: absolute; left: 66px; right: 66px; }
+.sb { position: absolute; left: 70px; right: 90px; color: rgba(255,255,255,.92); }
 
-/* ── Intro ── */
-#halo { position: absolute; left: 540px; top: 900px; width: 1400px; height: 1400px; margin: -700px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(228,0,124,.5) 0%, rgba(228,0,124,.12) 35%, rgba(228,0,124,0) 65%); }
-#beam { position: absolute; left: 540px; top: 900px; width: 760px; height: 4px; margin: -2px 0 0 -380px; border-radius: 2px;
-  background: linear-gradient(90deg, rgba(228,0,124,0), #ff4fa8 20%, #fff 50%, #ff4fa8 80%, rgba(228,0,124,0)); box-shadow: 0 0 24px 4px rgba(228,0,124,.8); }
-#shock { position: absolute; left: 540px; top: 900px; width: 200px; height: 200px; margin: -100px; border-radius: 50%; border: 3px solid var(--rosa); }
-#pleca { position: absolute; left: 540px; top: 900px; width: 760px; transform: translate(-50%, -50%); }
-#pleca img { width: 100%; display: block; }
-#presenta { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; color: rgba(255,255,255,.8); }
+/* ── Intro: el celular enciende ── */
+#intro { background: radial-gradient(ellipse 70% 45% at 50% 52%, #1b0a14 0%, #08080a 70%); }
+#pglow { position: absolute; left: 540px; top: 980px; width: 1300px; height: 1700px; margin: -850px 0 0 -650px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(228,0,124,.42), rgba(228,0,124,.1) 55%, rgba(228,0,124,0)); }
+#pwrap { position: absolute; left: 540px; top: 960px; width: 0; height: 0; perspective: 2200px; }
+#phone { position: absolute; width: 500px; height: 1040px; left: -250px; top: -520px; border-radius: 84px; transform-style: preserve-3d;
+  background: linear-gradient(150deg, #3a3a40 0%, #141416 22%, #0b0b0d 60%, #232327 100%);
+  box-shadow: inset 0 0 0 2px #4a4a52, inset 0 0 0 7px #101012, 0 90px 160px rgba(0,0,0,.7); }
+#phone .btn { position: absolute; width: 7px; border-radius: 4px; background: linear-gradient(90deg, #2a2a2e, #4b4b52); }
+#screen { position: absolute; inset: 15px; border-radius: 70px; background: #040405; overflow: hidden; }
+#screenOn { position: absolute; inset: 0; background: #fff; opacity: 0; }
+#island { position: absolute; top: 26px; left: 50%; width: 150px; height: 44px; margin-left: -75px; border-radius: 22px; background: #000; }
+#status { position: absolute; left: 44px; right: 40px; top: 34px; display: flex; justify-content: space-between; align-items: center;
+  font-family: "Fira"; font-weight: 600; font-size: 26px; color: #111; opacity: 0; }
+#status .bat { width: 44px; height: 21px; border: 2.5px solid #111; border-radius: 6px; padding: 2px; }
+#status .bat i { display: block; height: 100%; width: 80%; background: #111; border-radius: 2px; }
+#phoneLogo { position: absolute; left: 50%; top: 50%; width: 330px; transform: translate(-50%, -50%); opacity: 0; }
+#glare { position: absolute; inset: 0; background: linear-gradient(118deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.13) 42%, rgba(255,255,255,0) 54%); mix-blend-mode: screen; }
 
 /* ── Cartel ── */
 #cartel { background: var(--rosa); }
-#c-sesion { left: 0; right: 0; top: 470px; text-align: center; color: #111; font-family: "Fira"; font-weight: 600; font-size: 48px; }
-#c-com { left: 0; right: 0; top: 560px; text-align: center; color: #fff; }
-#c-pol { left: 0; right: 0; top: 700px; text-align: center; color: #111; }
-#c-accion { left: 120px; top: 905px; width: 800px; height: 168px; transform: rotate(-4deg); }
+#c-sesion { left: 0; right: 0; top: 390px; text-align: center; color: #111; font-family: "Fira"; font-weight: 600; font-size: 50px; }
+#c-com { left: 0; right: 0; top: 500px; text-align: center; color: #fff; }
+#c-pol { left: 0; right: 0; top: 650px; text-align: center; color: #111; }
+#c-accion { left: 140px; top: 890px; width: 760px; height: 160px; transform: rotate(-4deg); }
 #c-accion .box { position: absolute; inset: 0; background: #fff; transform-origin: left center; }
-#c-accion .txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--rosa);
-  font-family: "Archivo"; font-weight: 900; font-style: italic; font-stretch: 100%; font-size: 132px; letter-spacing: -.02em; overflow: hidden; white-space: nowrap; }
-#c-lines { left: 905px; top: 885px; width: 140px; height: 200px; }
-#c-lines i { position: absolute; left: 0; height: 14px; border-radius: 7px; background: #fff; transform-origin: left center; }
-#c-taller { left: 0; right: 0; top: 1130px; text-align: center; color: #111; font-family: "Fira"; font-weight: 500; font-size: 37px; letter-spacing: .26em; line-height: 1.4; }
-#c-pill { left: 50%; top: 1268px; transform: translateX(-50%); background: #fff; color: #111; border-radius: 40px; padding: 14px 44px 12px;
-  font-family: "Fira"; font-weight: 700; font-size: 30px; letter-spacing: .2em; white-space: nowrap; }
-#c-mic { left: -150px; top: 1290px; width: 560px; }
+#c-accion .txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--rosa); white-space: nowrap;
+  font-family: "Archivo"; font-weight: 900; font-style: italic; font-stretch: 100%; font-size: 124px; letter-spacing: -.02em; overflow: hidden; }
+#c-lines { left: 915px; top: 868px; width: 140px; height: 200px; }
+#c-lines i { position: absolute; left: 0; height: 13px; border-radius: 7px; background: #fff; transform-origin: left center; }
+#c-taller { left: 0; right: 0; top: 1150px; text-align: center; color: #111; font-family: "Fira"; font-weight: 500; font-size: 34px; letter-spacing: .24em; line-height: 1.55; }
+#c-pill { left: 50%; top: 1300px; transform: translateX(-50%); background: #fff; color: #111; border-radius: 40px; padding: 14px 44px 12px;
+  font-family: "Fira"; font-weight: 700; font-size: 29px; letter-spacing: .2em; white-space: nowrap; }
+#c-mic { left: -170px; top: 1420px; width: 520px; }
 
 /* ── Ráfaga ── */
-.fw { position: absolute; left: 70px; right: 70px; bottom: 380px; color: #fff; font-size: 118px; }
+.fw { position: absolute; left: 66px; right: 66px; bottom: 380px; color: #fff; font-size: 118px; }
 .fw .bar { display: block; width: 120px; height: 10px; background: var(--rosa); margin-bottom: 26px; }
 .fr { position: absolute; inset: 0; border: 0 solid var(--rosa); }
 
 /* ── 01 Comunicación ── */
-#rings { position: absolute; inset: 0; }
-.checks { position: absolute; left: 70px; top: 1410px; display: flex; gap: 16px; flex-wrap: wrap; width: 960px; }
-.checks span { font-family: "Fira"; font-weight: 600; font-size: 38px; padding: 12px 28px 12px 22px; border-radius: 40px; background: rgba(255,255,255,.12);
-  border: 2px solid rgba(255,255,255,.35); }
-.checks span:before { content: "✓ "; color: #ff5aa8; }
+.checks { position: absolute; left: 70px; top: 1450px; display: flex; gap: 14px; flex-wrap: wrap; width: 960px; }
+.checks span { font-family: "Fira"; font-weight: 600; font-size: 38px; padding: 13px 30px 12px; border-radius: 40px; background: #fff; color: var(--rosa); }
 
 /* ── 02 Redes ── */
-#icons { position: absolute; inset: 0; perspective: 1400px; }
-.tile { position: absolute; left: 0; top: 0; width: 200px; height: 200px; margin: -100px; border-radius: 50px; display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.45); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5); }
-.tile svg { width: 100px; height: 100px; fill: #fff; }
+#orbit { position: absolute; inset: 0; }
+.tile { position: absolute; left: 0; top: 0; width: 176px; height: 176px; margin: -88px; border-radius: 44px; display: flex; align-items: center; justify-content: center;
+  background: rgba(20,20,24,.38); border: 2px solid rgba(255,255,255,.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.55); }
+.tile svg { width: 88px; height: 88px; fill: #fff; }
 #split-a, #split-b { position: absolute; top: 0; bottom: 0; overflow: hidden; }
 #split-a { left: 0; width: 540px; } #split-b { left: 540px; width: 540px; }
-#split-a .photo, #split-b .photo { width: 1080px; }
+#split-a .photo, #split-b .photo { width: 1080px; right: auto; }
 #split-b .photo { left: -540px; }
 
-/* ── 03 Imagen ── */
-#vf { position: absolute; }
-#vf i { position: absolute; width: 64px; height: 64px; border-color: #fff; border-style: solid; border-width: 0; }
-#vf .a { left: 0; top: 0; border-left-width: 5px; border-top-width: 5px; }
-#vf .b { right: 0; top: 0; border-right-width: 5px; border-top-width: 5px; }
-#vf .c { left: 0; bottom: 0; border-left-width: 5px; border-bottom-width: 5px; }
-#vf .d { right: 0; bottom: 0; border-right-width: 5px; border-bottom-width: 5px; }
-#vf .dot { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px; border-radius: 50%; background: var(--rosa); }
-.hud { position: absolute; font-family: "Hind"; font-weight: 600; font-size: 26px; letter-spacing: .14em; color: rgba(255,255,255,.85); }
-.hud .rec { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--rosa); margin-right: 10px; vertical-align: 1px; }
-
 /* ── 04 Narrativa ── */
-#c4 { background: var(--rosa); }
-#ncard { position: absolute; left: 190px; top: 640px; width: 700px; height: 760px; background: #fff; padding: 18px; transform: rotate(-3deg);
+#c4 { background: var(--rosa); isolation: isolate; }
+#c4 .vid { filter: grayscale(1) contrast(1.15) brightness(1.15); mix-blend-mode: multiply; opacity: .38; }
+#ncard { position: absolute; left: 200px; top: 640px; width: 680px; height: 740px; background: #fff; padding: 16px; transform: rotate(-3deg);
   box-shadow: 0 40px 80px rgba(80,0,40,.35); }
 #ncard div { width: 100%; height: 100%; background: url(assets/photos/narrativa.jpg) 50% 22% / 160% auto no-repeat; }
 #cursor { display: inline-block; width: .09em; height: .78em; background: #111; margin-left: .05em; vertical-align: -.02em; }
@@ -128,25 +120,20 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 #card-likes img { position: absolute; left: 50%; top: 50%; width: 620px; height: 1102px; transform: translate(-50%, -50%); }
 
 /* ── Cierre ── */
-#close1 { background: var(--rosa); }
+#close1 { background: var(--rosa); isolation: isolate; }
+#close1 .vid { filter: grayscale(1) contrast(1.1) brightness(1.2); mix-blend-mode: multiply; opacity: .32; }
 #impacto { position: absolute; left: 90px; top: 640px; width: 900px; }
 #impacto div { position: absolute; inset: 0; background: url(assets/brand/somos-impacto-white.png) center / 100% 100% no-repeat; }
-#cierre-txt { position: absolute; left: 0; right: 0; top: 1240px; text-align: center; color: #fff; }
+#cierre-txt { position: absolute; left: 0; right: 0; top: 1250px; text-align: center; color: #fff; }
 #close2 { background: #fff; color: #111; }
-#lema { position: absolute; left: 200px; top: 500px; width: 680px; }
+#lema { position: absolute; left: 200px; top: 620px; width: 680px; }
 #lema div { position: absolute; inset: 0; background: url(assets/brand/somos-lema.png) center / 100% 100% no-repeat; }
-#rule { position: absolute; left: 240px; right: 240px; top: 860px; height: 2px; background: #E4007C; transform-origin: center; }
-#sig { position: absolute; left: 0; right: 0; top: 925px; text-align: center; font-family: "Fira"; font-weight: 600; font-size: 50px; color: #111; }
-#socials { position: absolute; left: 0; right: 0; top: 1035px; display: flex; justify-content: center; gap: 44px; }
-.si { width: 128px; height: 128px; position: relative; display: flex; align-items: center; justify-content: center; }
-.si svg { position: absolute; }
-.si.ig { border-radius: 34px; background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
-.si.ig svg { width: 76px; height: 76px; fill: #fff; }
-.si.tt { border-radius: 34px; background: #000; }
-.si.tt svg { width: 70px; height: 70px; }
-.si.fb svg { width: 128px; height: 128px; fill: #0866FF; }
-.si.yt svg { width: 132px; height: 132px; fill: #FF0000; }
-.handles { position: absolute; left: 0; right: 0; top: 1240px; text-align: center; font-family: "Fira"; font-weight: 700; font-size: 62px; line-height: 1.32; color: #111; }
+#sig { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; align-items: center; gap: 22px;
+  font-family: "Fira"; font-weight: 600; font-size: 46px; color: #111; }
+#sig .ig { width: 74px; height: 74px; border-radius: 21px; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+#sig .ig svg { width: 44px; height: 44px; fill: #fff; }
+.handles { position: absolute; left: 0; right: 0; top: 1170px; text-align: center; font-family: "Fira"; font-weight: 700; font-size: 64px; line-height: 1.3; color: #111; }
 .handles span { display: block; }
 .handles i { font-style: normal; color: var(--rosa); }
 
@@ -154,8 +141,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 #wipes { position: absolute; inset: 0; pointer-events: none; }
 .wipe { position: absolute; top: -20%; height: 140%; width: 160%; left: -30%; }
 #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
-#grain { position: absolute; inset: 0; width: 1080px; height: 1920px; mix-blend-mode: overlay; opacity: .3; }
-#vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%); }
+#grain { position: absolute; inset: 0; width: 1080px; height: 1920px; mix-blend-mode: overlay; opacity: .14; }
 #glitch { position: absolute; inset: 0; }
 #glitch i { position: absolute; left: 0; right: 0; }
 </style>
@@ -164,77 +150,84 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 <div id="stage">
  <div id="world">
 
-  <!-- Intro · 0–3.5: haz de luz que se abre en la pleca -->
+  <!-- Intro · 0–3.4: un celular enciende con el logotipo de SOMOS -->
   <section class="scene" id="intro">
-    <div id="halo"></div><div id="shock"></div><div id="beam"></div>
-    <div id="pleca"><img src="assets/brand/somos-pleca.png" alt="SOMOS"></div>
-    <div id="presenta" class="kicker">presenta</div>
+    <div id="pglow"></div>
+    <div id="pwrap"><div id="phone">
+      <i class="btn" style="right:-5px;top:300px;height:130px"></i><i class="btn" style="left:-5px;top:230px;height:66px"></i>
+      <i class="btn" style="left:-5px;top:330px;height:110px"></i><i class="btn" style="left:-5px;top:460px;height:110px"></i>
+      <div id="screen">
+        <div id="screenOn"></div>
+        <img id="phoneLogo" src="assets/brand/somos.png" alt="SOMOS">
+        <div id="status"><span>10:30</span><span class="bat"><i></i></span></div>
+        <div id="island"></div>
+        <div id="glare"></div>
+      </div>
+    </div></div>
   </section>
 
-  <!-- Cartel · 3.5–5.5 -->
+  <!-- Cartel · 3.4–5.5 -->
   <section class="scene" id="cartel">
     <img id="c-mic" class="sticker abs" src="assets/stickers/microfono.png" alt="">
     <div id="c-sesion" class="abs">Primera sesión</div>
-    <div id="c-com" class="abs title fit" data-w="960"><span class="line">COMUNICACIÓN</span></div>
-    <div id="c-pol" class="abs title fit" data-w="980"><span class="line">POLÍTICA</span></div>
+    <div id="c-com" class="abs title fit" data-w="900"><span class="line">COMUNICACIÓN</span></div>
+    <div id="c-pol" class="abs title fit" data-w="910"><span class="line">POLÍTICA</span></div>
     <div id="c-accion" class="abs"><div class="box"></div><div class="txt"><span class="line"><span class="ch-wrap">EN ACCIÓN</span></span></div></div>
-    <div id="c-lines" class="abs"><i style="top:22px;width:110px;transform:rotate(-28deg)"></i><i style="top:92px;width:125px"></i><i style="top:162px;width:110px;transform:rotate(28deg)"></i></div>
-    <div id="c-taller" class="abs">TALLER TEÓRICO-PRÁCTICO<br>DE COMUNICACIÓN POLÍTICA</div>
+    <div id="c-lines" class="abs"><i style="top:22px;width:105px;transform:rotate(-28deg)"></i><i style="top:92px;width:120px"></i><i style="top:162px;width:105px;transform:rotate(28deg)"></i></div>
+    <div id="c-taller" class="abs">TALLER TEÓRICO PRÁCTICO<br>DE COMUNICACIÓN POLÍTICA</div>
     <div id="c-pill" class="abs">DIRIGIDO A JÓVENES DE 18 A 34 AÑOS</div>
   </section>
 
   <!-- Ráfaga · 5.5–7.5 -->
-  <section class="scene" id="f1"><div class="photo" style="background-image:url(assets/photos/banner.jpg);background-position:50% 45%"></div><div class="grade"></div>
+  <section class="scene" id="f1"><img class="vid" data-clip="publico" alt=""><div class="shade-b"></div>
     <div class="fw title"><i class="bar"></i>PRIMERA<br>SESIÓN</div><div class="fr"></div></section>
-  <section class="scene" id="f2"><div class="photo" style="background-image:url(assets/photos/apertura.jpg)"></div><div class="grade"></div>
+  <section class="scene" id="f2"><div class="photo" style="background-image:url(assets/photos/apertura.jpg)"></div><div class="shade-b"></div>
     <div class="fw title"><i class="bar"></i>PRESENCIA<br>PÚBLICA</div><div class="fr"></div></section>
-  <section class="scene" id="f3"><div class="photo" style="background-image:url(assets/photos/sala-impresion.jpg)"></div><div class="grade"></div>
+  <section class="scene" id="f3"><img class="vid" data-clip="conoces" alt=""><div class="shade-b"></div>
     <div class="fw title"><i class="bar"></i>TEORÍA<br>Y PRÁCTICA</div><div class="fr"></div></section>
-  <section class="scene" id="f4"><div class="photo" style="background-image:url(assets/photos/set-camara.jpg)"></div><div class="grade"></div>
+  <section class="scene" id="f4"><img class="vid" data-clip="produccion" alt=""><div class="shade-b"></div>
     <div class="fw title"><i class="bar"></i>14 DE<br>NOVIEMBRE</div><div class="fr"></div></section>
   <section class="scene" id="zoombolt"><svg class="full" viewBox="0 0 1080 1920"><path id="bigBolt" d="M120 4 L30 178 L94 178 L64 316 L174 122 L110 122 L150 4 Z" fill="#E4007C"/></svg></section>
 
   <!-- 01 Comunicación · 7.5–10.5 -->
   <section class="scene" id="c1">
-    <div class="photo" id="p-diag" style="background-image:url(assets/photos/diagrama.jpg);background-position:50% 38%"></div>
+    <div class="full" id="m-diag"><img class="vid" data-clip="diagrama" alt=""></div>
     <div class="photo" id="p-msj" style="background-image:url(assets/photos/buen-mensaje.jpg);background-position:50% 35%"></div>
-    <div class="grade"></div><div class="tint"></div>
-    <canvas id="rings" width="1080" height="1920"></canvas>
-    <img class="sticker" id="s-dialogo" src="assets/stickers/dialogo.png" style="left:300px;top:250px;width:520px" alt="">
-    <div class="num" style="top:1130px"><span>01</span><i></i><em>05</em></div>
-    <div class="ttl title fit" data-w="940" style="top:1195px"><span class="line">COMUNICACIÓN</span></div>
-    <div class="sb sub" id="sub1" style="top:1345px">Mensajes claros que <b>conectan.</b></div>
+    <div class="shade-b"></div>
+    <img class="sticker" id="s-dialogo" src="assets/stickers/dialogo.png" style="left:560px;top:300px;width:440px" alt="">
+    <div class="num" style="top:1080px">01</div>
+    <div class="ttl title fit" data-w="948" style="top:1190px"><span class="line">COMUNICACIÓN</span></div>
+    <div class="sb sub" id="sub1" style="top:1340px">Mensajes claros que <b>conectan.</b></div>
     <div class="checks" id="checks"><span>Entendible</span><span>Memorable</span><span>Con emoción</span></div>
   </section>
 
   <!-- 02 Redes sociales · 10.5–14.0 -->
   <section class="scene" id="c2">
-    <div class="full" id="celular"><img id="celImg" class="full" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+    <div class="full" id="celular"><img class="vid" data-clip="celular" alt=""></div>
     <div id="split-a"><div class="photo" style="background-image:url(assets/photos/redes.jpg);background-position:50% 32%"></div></div>
     <div id="split-b"><div class="photo" style="background-image:url(assets/photos/redes.jpg);background-position:50% 32%"></div></div>
-    <div class="grade"></div><div class="tint"></div>
-    <div class="num" style="top:300px"><span>02</span><i></i><em>05</em></div>
-    <div class="ttl title" style="top:365px;font-size:156px"><span class="line" id="l-redes"><span class="slab">REDES</span></span><span class="line" id="l-soc"><span class="slab">SOCIALES</span></span></div>
-    <div id="icons"></div>
-    <div class="sb sub" style="top:1500px">TikTok, Reels y video breve: <b>una estrategia para cada plataforma.</b></div>
+    <div class="shade-t"></div><div class="shade-b" style="height:40%"></div>
+    <div class="num" style="top:230px">02</div>
+    <div class="ttl title" style="top:340px;font-size:156px"><span class="line" id="l-redes"><span class="slab">REDES</span></span><span class="line" id="l-soc"><span class="slab">SOCIALES</span></span></div>
+    <div id="orbit"></div>
+    <div class="sb sub" style="top:1530px">TikTok, Reels y video breve. <b>Una estrategia para cada plataforma.</b></div>
   </section>
 
   <!-- 03 Imagen · 14.0–17.0 -->
   <section class="scene" id="c3">
     <div class="photo" id="p-img" style="background-image:url(assets/photos/imagen.jpg)"></div>
-    <div class="photo" id="p-pi" style="background-image:url(assets/photos/primera-impresion.jpg);opacity:0"></div>
-    <div class="grade" style="opacity:.9"></div>
-    <div id="vf"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i><span class="dot"></span></div>
-    <div class="hud" id="hud" style="left:70px;top:1590px"><span class="rec"></span>AF · ISO 400 · f/2.8 · 1/250</div>
-    <div class="num" style="top:300px"><span>03</span><i></i><em>05</em></div>
-    <div class="ttl title" id="t-img" style="top:365px;font-size:212px"><span class="line">IMAGEN</span></div>
-    <div class="sb sub" id="sub3" style="top:1660px">La primera impresión <b>también comunica.</b></div>
+    <div class="full" id="m-din" style="opacity:0"><img class="vid" data-clip="dinamica" alt=""></div>
+    <div class="shade-t"></div><div class="shade-b" style="height:36%"></div>
+    <div class="num" style="top:230px">03</div>
+    <div class="ttl title" id="t-img" style="top:340px;font-size:212px"><span class="line">IMAGEN</span></div>
+    <div class="sb sub" id="sub3" style="top:1640px">La primera impresión <b>también comunica.</b></div>
   </section>
 
   <!-- 04 Narrativa · 17.0–20.5 -->
   <section class="scene" id="c4">
-    <div class="num" style="top:300px;color:#fff"><span>04</span><i style="background:#fff"></i><em>05</em></div>
-    <div class="ttl title" style="top:365px;font-size:138px;color:#fff"><span id="typed"></span><span id="cursor"></span></div>
+    <img class="vid" data-clip="ponente" alt="">
+    <div class="num" style="top:230px;color:#fff">04</div>
+    <div class="ttl title" style="top:340px;font-size:138px;color:#fff"><span id="typed"></span><span id="cursor"></span></div>
     <div id="ncard"><div></div></div>
     <div class="sb" style="top:1480px;font-family:Fira;font-size:66px;line-height:1.1;color:#fff;font-weight:400">
       <span class="line"><span class="nl">Historias que conectan.</span></span>
@@ -244,26 +237,25 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
   <!-- 05 Impresiones · 20.5–23.5 -->
   <section class="scene" id="c5">
     <div id="bars"></div>
-    <div class="num" style="top:300px;color:#111"><span>05</span><i></i><em>05</em></div>
-    <div class="ttl title fit" data-w="940" style="top:365px;color:#111"><span class="line">IMPRESIONES</span></div>
+    <div class="num" style="top:230px">05</div>
+    <div class="ttl title fit" data-w="948" style="top:340px;color:#111"><span class="line">IMPRESIONES</span></div>
     <div class="card" id="card-medir"><div></div></div>
-    <div class="card" id="card-likes"><img id="likeImg" alt=""></div>
+    <div class="card" id="card-likes"><img data-clip="likes" alt=""></div>
     <img class="sticker" id="s-rep" src="assets/stickers/reporte.png" style="left:640px;top:1190px;width:340px" alt="">
     <div class="sb sub" style="top:1590px;color:#222">¿Se puede medir el <b style="color:#E4007C">impacto?</b></div>
   </section>
 
-  <!-- Cierre · 23.5–26.4: SOMOS Impacto -->
+  <!-- Cierre 1 · SOMOS Impacto -->
   <section class="scene" id="close1">
+    <img class="vid" data-clip="banner" alt="">
     <div id="impacto"></div>
     <div id="cierre-txt"><div class="kicker">Comunicación Política en Acción</div>
-      <div class="sub" style="font-size:36px;margin-top:14px;opacity:.92">Primera sesión · 14 de noviembre</div></div>
+      <div class="sub" style="font-size:36px;margin-top:16px;opacity:.94">Primera sesión, 14 de noviembre</div></div>
   </section>
-  <!-- Cierre · 26.4–29.5: logotipo con lema y redes -->
+  <!-- Cierre 2 · logotipo con lema e Instagram -->
   <section class="scene" id="close2">
     <div id="lema"></div>
-    <div id="rule"></div>
-    <div id="sig">Síguenos</div>
-    <div id="socials"></div>
+    <div id="sig"><span class="ig" id="igIcon"></span><span>Síguenos en Instagram</span></div>
     <div class="handles"><span id="h1"><i>@</i>somosimpactocdmx</span><span id="h2"><i>@</i>somos_mh</span></div>
   </section>
  </div>
@@ -275,7 +267,6 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
    <div class="wipe" id="w3" style="background:#E4007C"></div>
    <div class="wipe" id="w4" style="background:#fff"></div>
  </div>
- <div id="vignette"></div>
  <canvas id="grain" width="540" height="960"></canvas>
  <div id="flash"></div>
 </div>
@@ -285,7 +276,8 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 (() => {
 const FPS = 30, DUR = 29.5;
 const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
-const CAROUSEL = ["instagram", "facebook", "tiktok", "youtube", "x", "whatsapp", "threads"];
+const ORBIT = ["instagram", "tiktok", "facebook", "youtube", "x", "whatsapp"];
+let CLIPS = {};
 
 function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 function splitChars(el) {
@@ -293,28 +285,16 @@ function splitChars(el) {
   for (const c of txt) { const s = document.createElement("span"); s.className = "ch"; s.textContent = c === " " ? " " : c; el.appendChild(s); }
   return [...el.children];
 }
-function fit(el) {
-  const max = +el.dataset.w; el.style.fontSize = "200px";
-  const w = el.querySelector(".line").scrollWidth; el.style.fontSize = (200 * max / w).toFixed(1) + "px";
-}
-const svgCache = {};
-async function svg(name) { return svgCache[name] ??= await (await fetch(`assets/icons/${name}.svg`)).text(); }
+function fit(el) { const max = +el.dataset.w; el.style.fontSize = "200px"; const w = el.querySelector(".line").scrollWidth; el.style.fontSize = (200 * max / w).toFixed(1) + "px"; }
+async function svg(name) { return (await fetch(`assets/icons/${name}.svg`)).text(); }
 
 async function init() {
+  CLIPS = await (await fetch("clips.json")).json(); delete CLIPS._doc;
   await document.fonts.ready;
-  for (const f of ["900 100px Archivo", "italic 900 100px Archivo", "400 50px Fira", "700 50px Fira", "800 50px Fira", "400 50px Hind", "600 50px Hind"]) await document.fonts.load(f);
+  for (const f of ["900 100px Archivo", "italic 900 100px Archivo", "400 50px Fira", "600 50px Fira", "700 50px Fira", "800 50px Fira", "400 50px Hind", "600 50px Hind"]) await document.fonts.load(f);
   $$(".fit").forEach(fit);
-  // carrusel de redes (glifos blancos sobre vidrio)
-  for (const k of CAROUSEL) { const d = document.createElement("div"); d.className = "tile"; d.innerHTML = await svg(k); $("#icons").appendChild(d); }
-  // íconos oficiales del cierre
-  const so = $("#socials");
-  const ig = document.createElement("div"); ig.className = "si ig"; ig.innerHTML = await svg("instagram");
-  const tt = document.createElement("div"); tt.className = "si tt";
-  const tsvg = await svg("tiktok");
-  tt.innerHTML = [["#25F4EE", -3, -3], ["#FE2C55", 3, 3], ["#fff", 0, 0]].map(([c, x, y]) => tsvg.replace("<svg", `<svg style="fill:${c};transform:translate(${x}px,${y}px)"`)).join("");
-  const fb = document.createElement("div"); fb.className = "si fb"; fb.innerHTML = await svg("facebook");
-  const yt = document.createElement("div"); yt.className = "si yt"; yt.innerHTML = await svg("youtube");
-  [ig, tt, fb, yt].forEach(e => so.appendChild(e));
+  for (const k of ORBIT) { const d = document.createElement("div"); d.className = "tile"; d.innerHTML = await svg(k); $("#orbit").appendChild(d); }
+  $("#igIcon").innerHTML = await svg("instagram");
   const r = mulberry(7);
   for (let i = 0; i < 9; i++) { const b = document.createElement("i"); b.style.height = (25 + i * 8 + r() * 14) + "%"; $("#bars").appendChild(b); }
   buildGrain();
@@ -332,18 +312,10 @@ function buildGrain() {
     grainFrames.push(id);
   }
 }
-
-// Clips como secuencias de cuadros (seek exacto)
-const CLIPS = {
-  cel: { el: "#celImg", dir: ".cache/celular", t0: 12.1, t1: 14.0, off: 1.2, speed: 1.0, n: 184 },
-  likes: { el: "#likeImg", dir: ".cache/likes", t0: 20.5, t1: 23.5, off: 0.15, speed: 1.45, n: 140 },
-};
-const clipSrc = (c, t) => `${c.dir}/${String(Math.min(c.n, Math.max(1, 1 + Math.floor(((t - c.t0) * c.speed + c.off) * FPS)))).padStart(4, "0")}.jpg`;
 async function preload() {
-  const urls = new Set([...$$("img")].map(i => i.getAttribute("src")).filter(Boolean));
+  const urls = new Set([...$$("img[src]")].map(i => i.getAttribute("src")));
   for (const el of $$("[style*='url(']")) { const m = el.getAttribute("style").match(/url\(([^)]+)\)/); if (m) urls.add(m[1]); }
-  urls.add("assets/photos/narrativa.jpg"); urls.add("assets/photos/medir.jpg");
-  urls.add("assets/brand/somos-impacto-white.png"); urls.add("assets/brand/somos-lema.png");
+  ["assets/photos/narrativa.jpg", "assets/photos/medir.jpg", "assets/brand/somos-impacto-white.png", "assets/brand/somos-lema.png"].forEach(u => urls.add(u));
   await Promise.all([...urls].map(s => { const i = new Image(); i.src = s; return i.decode().catch(() => {}); }));
 }
 
@@ -353,43 +325,40 @@ function build() {
   tl = gsap.timeline({ paused: true });
   const show = (sel, a, b) => { tl.set(sel, { visibility: "visible" }, a); if (b !== undefined) tl.set(sel, { visibility: "hidden" }, b); };
   const flash = (t, peak = 1, d = .4) => tl.to("#flash", { opacity: peak, duration: .02, ease: "none" }, t).to("#flash", { opacity: 0, duration: d, ease: "power2.out" }, t + .02);
-  const numIn = (sel, at) => {
-    const n = $(`${sel} .num`); gsap.set(n, { opacity: 0, x: -30 }); gsap.set(`${sel} .num i`, { scaleX: 0 });
-    tl.to(n, { opacity: 1, x: 0, duration: .6 }, at).to(`${sel} .num i`, { scaleX: 1, duration: .8, ease: "expo.inOut" }, at);
-  };
+  const numIn = (sel, at) => { const n = $(`${sel} .num`); gsap.set(n, { opacity: 0, x: -40 }); tl.to(n, { opacity: 1, x: 0, duration: .7 }, at); };
+  gsap.set(".wipe", { skewX: -14, xPercent: -130 });
 
-  // ═══ INTRO 0–3.5 · haz → pleca ═══
-  show("#intro", 0, 3.55);
-  gsap.set("#beam", { scaleX: 0, opacity: 1 });
-  gsap.set("#halo", { scale: .3, opacity: 0 });
-  gsap.set("#shock", { scale: 0, opacity: 0 });
-  gsap.set("#pleca", { clipPath: "inset(49% 0% 49% 0% round 999px)", scale: .96 });
-  gsap.set("#presenta", { opacity: 0, y: 20, letterSpacing: ".6em" });
-  tl.to("#beam", { scaleX: 1, duration: 1.2, ease: "power3.inOut" }, 0.15)
-    .to("#beam", { scaleY: 2.2, duration: .3, ease: "power2.in" }, 1.2)
-    .to("#halo", { opacity: .65, scale: .7, duration: 1.35, ease: "power2.in" }, 0.15)
-    .to("#beam", { opacity: 0, scaleY: 30, duration: .5, ease: "expo.out" }, 1.5)
-    .to("#shock", { scale: 9, opacity: 1, duration: .01 }, 1.5)
-    .to("#shock", { scale: 14, opacity: 0, borderWidth: 0, duration: 1.0 }, 1.51)
-    .to("#halo", { scale: 1.2, opacity: .4, duration: 1.4 }, 1.5)
-    .to("#pleca", { clipPath: "inset(0% 0% 0% 0% round 999px)", duration: .8 }, 1.5)
-    .to("#pleca", { scale: 1.0, duration: 1.0, ease: "power2.out" }, 1.5)
-    .to("#presenta", { opacity: 1, y: 0, letterSpacing: ".32em", duration: 1.0, ease: "power3.out" }, 2.0)
-    .to("#pleca", { scale: 1.04, duration: 1.0, ease: "none" }, 2.5)
-    .to(["#pleca", "#presenta", "#halo"], { opacity: 0, filter: "blur(12px)", duration: .25, ease: "power2.in" }, 3.3);
-  flash(1.5, .85, .45);
+  // ═══ INTRO 0–3.4 · el celular enciende ═══
+  show("#intro", 0, 3.45);
+  gsap.set("#phone", { rotationY: -28, rotationX: 10, rotationZ: -4, y: 140, scale: .9, opacity: 0 });
+  gsap.set("#pglow", { opacity: 0, scale: .7 });
+  gsap.set("#glare", { xPercent: -40 });
+  gsap.set("#phoneLogo", { opacity: 0, scale: .82 });
+  tl.to("#phone", { opacity: 1, duration: .5, ease: "power2.out" }, 0)
+    .to("#phone", { rotationY: -9, rotationX: 4, rotationZ: -1.5, y: 0, scale: 1, duration: 1.5, ease: "power3.out" }, 0)
+    .to("#phone", { rotationY: 0, rotationX: 0, rotationZ: 0, duration: 1.0, ease: "power2.inOut" }, 1.5)
+    .to("#glare", { xPercent: 60, duration: 2.4, ease: "power1.inOut" }, 0);
+  // encendido: pantalla blanca, barra de estado y logotipo
+  tl.to("#screenOn", { opacity: 1, duration: .32, ease: "power2.out" }, 0.72)
+    .to("#pglow", { opacity: 1, scale: 1, duration: .9, ease: "power2.out" }, 0.72)
+    .to("#status", { opacity: 1, duration: .4 }, 0.95)
+    .to("#phoneLogo", { opacity: 1, scale: 1, duration: .9 }, 0.98);
+  // la cámara entra a la pantalla
+  tl.to("#phone", { scale: 5.6, duration: .95, ease: "power3.in" }, 2.45)
+    .to("#pglow", { opacity: 0, duration: .5, ease: "power2.in" }, 2.5)
+    .to(["#phoneLogo", "#status", "#island"], { opacity: 0, duration: .25, ease: "power2.in" }, 2.95);
 
-  // ═══ CARTEL 3.5–5.5 · panel rosa diagonal ═══
-  show("#cartel", 3.25, 5.62);
+  // ═══ CARTEL 3.4–5.5 ═══
+  show("#cartel", 3.2, 5.62);
   gsap.set("#cartel", { clipPath: "polygon(0% 100%, 100% 115%, 100% 115%, 0% 100%)" });
-  tl.to("#cartel", { clipPath: "polygon(0% -15%, 100% 0%, 100% 115%, 0% 100%)", duration: .3, ease: "power3.in" }, 3.25);
+  tl.to("#cartel", { clipPath: "polygon(0% -15%, 100% 0%, 100% 115%, 0% 100%)", duration: .3, ease: "power3.in" }, 3.2);
   const com = splitChars($("#c-com .line")), pol = splitChars($("#c-pol .line"));
   gsap.set("#c-sesion", { opacity: 0, y: 30 });
   gsap.set(com, { yPercent: 115 }); gsap.set(pol, { yPercent: -115 });
   gsap.set("#c-accion .box", { scaleX: 0 }); gsap.set("#c-accion .ch-wrap", { display: "inline-block", xPercent: -110 });
   gsap.set("#c-lines i", { scaleX: 0 }); gsap.set(["#c-taller", "#c-pill"], { opacity: 0, y: 24 });
   gsap.set("#c-mic", { x: -420, y: 380, rotation: 4 });
-  tl.to("#c-sesion", { opacity: 1, y: 0, duration: .5 }, 3.55)
+  tl.to("#c-sesion", { opacity: 1, y: 0, duration: .5 }, 3.5)
     .to(com, { yPercent: 0, duration: .55, stagger: .022 }, 3.55)
     .to(pol, { yPercent: 0, duration: .55, stagger: .03 }, 3.75)
     .to("#c-accion .box", { scaleX: 1, duration: .4, ease: "expo.inOut" }, 3.95)
@@ -398,82 +367,71 @@ function build() {
     .to("#c-mic", { x: 0, y: 0, rotation: 24, duration: .9 }, 4.0)
     .to("#c-taller", { opacity: 1, y: 0, duration: .6 }, 4.4)
     .to("#c-pill", { opacity: 1, y: 0, duration: .6 }, 4.55)
-    .to("#cartel", { scale: 1.06, duration: 1.75, ease: "none" }, 3.55)
+    .to("#cartel", { scale: 1.05, duration: 1.75, ease: "none" }, 3.55)
     .to("#cartel", { scale: 1.6, opacity: 0, filter: "blur(18px)", duration: .3, ease: "power3.in" }, 5.3);
 
-  // ═══ RÁFAGA 5.5–7.5 · una foto por tiempo ═══
+  // ═══ RÁFAGA 5.5–7.5 · un plano por tiempo ═══
   ["#f1", "#f2", "#f3", "#f4"].forEach((s, i) => {
     const a = 5.5 + i * .5;
     show(s, a, i === 3 ? 7.5 : a + .5);
-    const ph = $(`${s} .photo`), w = $(`${s} .fw`), fr = $(`${s} .fr`);
-    gsap.set(ph, { scale: 1.22, filter: "brightness(.66) saturate(.9)" }); gsap.set(w, { opacity: 0, x: -60 }); gsap.set(fr, { borderWidth: 40 });
-    tl.to(ph, { scale: 1.08, duration: .6, ease: "power2.out" }, a)
+    const m = $(`${s} .photo`) || $(`${s} .vid`), w = $(`${s} .fw`), fr = $(`${s} .fr`);
+    gsap.set(m, { scale: 1.2, filter: "brightness(.8) saturate(.95)" }); gsap.set(w, { opacity: 0, x: -60 }); gsap.set(fr, { borderWidth: 40 });
+    tl.to(m, { scale: 1.07, duration: .6, ease: "power2.out" }, a)
       .to(w, { opacity: 1, x: 0, duration: .35 }, a + .02)
       .to(fr, { borderWidth: 0, duration: .3, ease: "power3.out" }, a);
   });
-  // el rayo de SOMOS Impacto atraviesa la cámara hacia el drop
   show("#zoombolt", 7.15, 7.5);
   gsap.set("#bigBolt", { attr: { transform: "translate(540 960) scale(0.2) translate(-100 -160)" } });
   tl.to("#bigBolt", { attr: { transform: "translate(540 960) scale(40) translate(-100 -160)" }, duration: .35, ease: "expo.in" }, 7.15);
   flash(7.5, 1, .5);
 
-  // ═══ 01 COMUNICACIÓN 7.5–10.5 · letras que suben ═══
+  // ═══ 01 COMUNICACIÓN 7.5–10.5 ═══
   show("#c1", 7.5, 10.5); numIn("#c1", 7.6);
   const c1 = splitChars($("#c1 .ttl .line")); gsap.set(c1, { yPercent: 118 });
   tl.to(c1, { yPercent: 0, duration: .7, stagger: .028 }, 7.55);
-  gsap.set("#p-diag", { scale: 1.18, filter: "brightness(.7) saturate(.9)" });
-  gsap.set("#p-msj", { xPercent: 100, filter: "brightness(.66) saturate(.9)" });
-  tl.to("#p-diag", { scale: 1.04, duration: 1.6, ease: "power2.out" }, 7.5)
-    .to("#p-diag", { xPercent: -35, duration: .5, ease: "expo.inOut" }, 8.85)
-    .to("#p-msj", { xPercent: 0, duration: .5, ease: "expo.inOut" }, 8.85)
-    .to("#p-msj", { scale: 1.06, duration: 1.2, ease: "none" }, 9.35);
+  gsap.set("#m-diag", { scale: 1.12, filter: "brightness(.85)" });
+  gsap.set("#p-msj", { xPercent: 100, filter: "brightness(.8)" });
+  tl.to("#m-diag", { scale: 1.0, duration: 1.6, ease: "power2.out" }, 7.5)
+    .to("#m-diag", { xPercent: -35, duration: .5, ease: "expo.inOut" }, 8.95)
+    .to("#p-msj", { xPercent: 0, duration: .5, ease: "expo.inOut" }, 8.95)
+    .to("#p-msj", { scale: 1.06, duration: 1.1, ease: "none" }, 9.45);
   gsap.set("#s-dialogo", { scale: 0, rotation: -18, transformOrigin: "50% 80%" });
   tl.to("#s-dialogo", { scale: 1, rotation: -5, duration: .7, ease: "back.out(2.2)" }, 7.95)
-    .to("#s-dialogo", { y: -18, rotation: -3, duration: 2.0, ease: "sine.inOut" }, 8.6);
-  gsap.set("#sub1", { opacity: 0, y: 40 }); gsap.set("#checks span", { opacity: 0, y: 30, scale: .9 });
+    .to("#s-dialogo", { y: -16, rotation: -3, duration: 2.0, ease: "sine.inOut" }, 8.6);
+  gsap.set("#sub1", { opacity: 0, y: 40 }); gsap.set("#checks span", { opacity: 0, y: 30 });
   tl.to("#sub1", { opacity: 1, y: 0, duration: .8 }, 8.0)
-    .to("#checks span", { opacity: 1, y: 0, scale: 1, duration: .5, stagger: .18, ease: "back.out(2)" }, 9.0);
-  // barras inclinadas
-  gsap.set(".wipe", { skewX: -14, xPercent: -130 });
+    .to("#checks span", { opacity: 1, y: 0, duration: .5, stagger: .18 }, 9.05);
   ["#w1", "#w2", "#w3"].forEach((id, k) => {
     tl.to(id, { xPercent: 0, duration: .26, ease: "power3.in" }, 10.23 + k * .03)
       .to(id, { xPercent: 130, duration: .34, ease: "power3.out" }, 10.5 + k * .04);
   });
 
-  // ═══ 02 REDES SOCIALES 10.5–14.0 · líneas que se cruzan ═══
+  // ═══ 02 REDES SOCIALES 10.5–14.0 ═══
   show("#c2", 10.5, 14.0); numIn("#c2", 10.6);
   gsap.set("#l-redes .slab", { display: "inline-block", xPercent: -120 }); gsap.set("#l-soc .slab", { display: "inline-block", xPercent: 120 });
   tl.to("#l-redes .slab", { xPercent: 0, duration: .8 }, 10.55).to("#l-soc .slab", { xPercent: 0, duration: .8 }, 10.65);
-  gsap.set(["#split-a .photo", "#split-b .photo"], { scale: 1.12, filter: "brightness(.68) saturate(.9)" });
-  tl.to(["#split-a .photo", "#split-b .photo"], { scale: 1.02, duration: 1.7, ease: "power2.out" }, 10.5)
-    .to("#split-a", { xPercent: -101, duration: .55, ease: "expo.inOut" }, 11.85)
-    .to("#split-b", { xPercent: 101, duration: .55, ease: "expo.inOut" }, 11.85);
-  gsap.set("#celular", { scale: 1.12, filter: "brightness(.74)" });
-  tl.to("#celular", { scale: 1.0, duration: 2.0, ease: "power2.out" }, 12.0);
+  gsap.set(["#split-a .photo", "#split-b .photo"], { scale: 1.1, filter: "brightness(.8)" });
+  tl.to(["#split-a .photo", "#split-b .photo"], { scale: 1.02, duration: 1.0, ease: "power2.out" }, 10.5)
+    .to("#split-a", { xPercent: -101, duration: .55, ease: "expo.inOut" }, 11.3)
+    .to("#split-b", { xPercent: 101, duration: .55, ease: "expo.inOut" }, 11.3);
+  gsap.set("#celular", { scale: 1.12, filter: "brightness(.85)" });
+  tl.to("#celular", { scale: 1.0, duration: 2.6, ease: "power2.out" }, 11.3);
   gsap.set("#c2 .sb", { opacity: 0, y: 40 }); tl.to("#c2 .sb", { opacity: 1, y: 0, duration: .8 }, 10.95);
-  // salida: zoom a través del título
   tl.to("#c2 .ttl", { scale: 2.6, opacity: 0, filter: "blur(16px)", transformOrigin: "30% 50%", duration: .35, ease: "power3.in" }, 13.65)
-    .to(["#icons", "#c2 .sb", "#c2 .num"], { opacity: 0, duration: .25, ease: "power2.in" }, 13.7);
+    .to(["#orbit", "#c2 .sb", "#c2 .num"], { opacity: 0, duration: .25, ease: "power2.in" }, 13.7);
   flash(13.98, 1, .55);
 
-  // ═══ 03 IMAGEN 14.0–17.0 · enfoque de cámara ═══
+  // ═══ 03 IMAGEN 14.0–17.0 · enfoque y disparo ═══
   show("#c3", 14.0, 17.0); numIn("#c3", 14.1);
   gsap.set("#t-img", { filter: "blur(30px)", letterSpacing: ".18em", opacity: 0 });
-  tl.to("#t-img", { filter: "blur(0px)", letterSpacing: "-.01em", opacity: 1, duration: .55, ease: "power3.out" }, 14.05);
-  gsap.set("#p-img", { scale: 1.2, filter: "blur(24px) brightness(.8)", transformOrigin: "53% 62%" });
-  tl.to("#p-img", { filter: "blur(0px) brightness(.8)", duration: .5, ease: "power2.inOut" }, 14.05)
-    .to("#p-img", { scale: 1.08, duration: 1.85, ease: "power1.out" }, 14.05);
-  gsap.set("#p-pi", { scale: 1.12, filter: "brightness(.8)", transformOrigin: "38% 55%" });
-  tl.set("#p-pi", { opacity: 1 }, 15.9).to("#p-pi", { scale: 1.2, duration: 1.1, ease: "none" }, 15.9);
-  gsap.set("#vf", { left: 40, top: 260, width: 1000, height: 1400 });
-  gsap.set("#vf .dot", { scale: 0 }); gsap.set("#hud", { opacity: 0 });
-  tl.to("#vf", { left: 455, top: 1010, width: 300, height: 400, duration: .45, ease: "expo.inOut" }, 14.1)
-    .to("#vf .dot", { scale: 1, duration: .2, ease: "back.out(3)" }, 14.55)
-    .to("#vf", { left: 230, top: 930, width: 420, height: 460, duration: .25, ease: "expo.out" }, 15.9)
-    .to("#hud", { opacity: 1, duration: .3 }, 14.5);
+  tl.to("#t-img", { filter: "blur(0px)", letterSpacing: "-.01em", opacity: 1, duration: .6, ease: "power3.out" }, 14.05);
+  gsap.set("#p-img", { scale: 1.22, filter: "blur(24px) brightness(.85)", transformOrigin: "53% 62%" });
+  tl.to("#p-img", { filter: "blur(0px) brightness(.85)", duration: .5, ease: "power2.inOut" }, 14.05)
+    .to("#p-img", { scale: 1.08, duration: 1.2, ease: "power1.out" }, 14.05);
+  gsap.set("#m-din", { scale: 1.1, filter: "brightness(.88)" });
+  tl.set("#m-din", { opacity: 1 }, 15.2).to("#m-din", { scale: 1.0, duration: 1.8, ease: "power2.out" }, 15.2);
   gsap.set("#sub3", { opacity: 0, y: 40 }); tl.to("#sub3", { opacity: 1, y: 0, duration: .8 }, 14.6);
-  flash(14.55, .8, .3); flash(15.88, 1, .35);
-  // iris de salida
+  flash(14.5, .7, .3); flash(15.18, 1, .4);
   gsap.set("#c3", { clipPath: "circle(120% at 50% 50%)" });
   tl.to("#c3", { clipPath: "circle(0% at 50% 50%)", duration: .32, ease: "power3.in" }, 16.68);
 
@@ -505,10 +463,11 @@ function build() {
   gsap.set("#c5 .sb", { opacity: 0, y: 40 }); tl.to("#c5 .sb", { opacity: 1, y: 0, duration: .8 }, 21.1);
   tl.to("#c5", { scale: .9, opacity: 0, duration: .22, ease: "power3.in" }, 23.28);
 
-  // ═══ CIERRE 1 · 23.5–26.4: telón rosa y SOMOS Impacto ═══
+  // ═══ CIERRE 1 · 23.45–26.45: telón rosa y SOMOS Impacto ═══
   show("#close1", 23.45, 26.45);
   gsap.set("#close1", { clipPath: "polygon(0% 120%, 100% 105%, 100% 120%, 0% 120%)" });
   tl.to("#close1", { clipPath: "polygon(0% -10%, 100% -25%, 100% 120%, 0% 120%)", duration: .55, ease: "expo.inOut" }, 23.45);
+  gsap.set("#close1 .vid", { scale: 1.1 }); tl.to("#close1 .vid", { scale: 1.0, duration: 3.0, ease: "none" }, 23.45);
   const imp = $("#impacto"); imp.style.height = (900 * 778 / 1554) + "px";
   imp.innerHTML = '<div id="ip1"></div><div id="ip2"></div><div id="ip3"></div>';
   gsap.set("#ip1", { clipPath: "inset(0% 0% 78% 0%)", y: -80, opacity: 0 });
@@ -519,24 +478,21 @@ function build() {
     .to("#ip3", { y: 0, opacity: 1, duration: .6 }, 24.45)
     .to("#impacto", { scale: 1.05, duration: 2.3, ease: "none" }, 24.05);
   gsap.set("#cierre-txt", { opacity: 0, y: 30 }); tl.to("#cierre-txt", { opacity: 1, y: 0, duration: .8 }, 24.75);
-  // cortinilla blanca
   tl.to("#w4", { xPercent: 0, duration: .3, ease: "power3.in" }, 26.15).to("#w4", { xPercent: 130, duration: .45, ease: "power3.out" }, 26.45);
 
-  // ═══ CIERRE 2 · 26.4–29.5: logotipo, lema y redes ═══
+  // ═══ CIERRE 2 · 26.45–29.5: logotipo, lema e Instagram ═══
   show("#close2", 26.45);
   const lema = $("#lema"); lema.style.height = (680 * 890 / 2708) + "px";
   lema.innerHTML = '<div id="lm1"></div><div id="lm2"></div>';
   gsap.set("#lm1", { clipPath: "inset(0% 0% 30% 0%)", scale: .9, opacity: 0, transformOrigin: "50% 40%" });
   gsap.set("#lm2", { clipPath: "inset(72% 0% 0% 0%)", y: 40, opacity: 0 });
-  gsap.set("#rule", { scaleX: 0 }); gsap.set("#sig", { opacity: 0, y: 24 });
-  gsap.set(".si", { scale: 0, y: 30 }); gsap.set(["#h1", "#h2"], { opacity: 0, y: 30 });
+  gsap.set("#sig", { opacity: 0, y: 24 }); gsap.set("#igIcon", { scale: 0, rotation: -20 }); gsap.set(["#h1", "#h2"], { opacity: 0, y: 30 });
   tl.to("#lm1", { scale: 1, opacity: 1, duration: .9 }, 26.55)
     .to("#lm2", { y: 0, opacity: 1, duration: .8 }, 26.8)
-    .to("#rule", { scaleX: 1, duration: .8, ease: "expo.inOut" }, 26.9)
-    .to("#sig", { opacity: 1, y: 0, duration: .7 }, 27.05)
-    .to(".si", { scale: 1, y: 0, duration: .55, stagger: .08, ease: "back.out(2.2)" }, 27.15)
-    .to("#h1", { opacity: 1, y: 0, duration: .7 }, 27.45)
-    .to("#h2", { opacity: 1, y: 0, duration: .7 }, 27.6)
+    .to("#sig", { opacity: 1, y: 0, duration: .7 }, 27.0)
+    .to("#igIcon", { scale: 1, rotation: 0, duration: .6, ease: "back.out(2.4)" }, 27.05)
+    .to("#h1", { opacity: 1, y: 0, duration: .7 }, 27.35)
+    .to("#h2", { opacity: 1, y: 0, duration: .7 }, 27.5)
     .to("#close2", { scale: 1.02, duration: 3.0, ease: "none" }, 26.5);
 
   tl.set({}, {}, DUR);
@@ -545,31 +501,25 @@ function build() {
 // ── Efectos por cuadro ──
 function shake(t) {
   let x = 0, y = 0;
-  for (const [h, amp, d] of [[1.5, 6, .35], [7.5, 14, .45], [23.45, 10, .4]]) if (t >= h && t < h + d) {
+  for (const [h, amp, d] of [[7.5, 14, .45], [23.45, 10, .4]]) if (t >= h && t < h + d) {
     const k = (t - h) / d, e = amp * (1 - k) * (1 - k); x += Math.sin(t * 91) * e; y += Math.cos(t * 77) * e;
   }
   $("#world").style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
 }
-function drawRings(t) {
-  const g = $("#rings").getContext("2d"); g.clearRect(0, 0, 1080, 1920);
-  if (t < 7.5 || t > 10.5) return;
-  for (let k = 0; k < 8; k++) {
-    const t0 = 7.6 + k * .5; if (t < t0) continue;
-    const a = t - t0, r = 120 + a * 520, al = Math.max(0, .5 - a * .3);
-    g.beginPath(); g.arc(560, 520, r, 0, Math.PI * 2);
-    g.strokeStyle = k % 2 ? `rgba(255,255,255,${al})` : `rgba(228,0,124,${al})`; g.lineWidth = 3; g.stroke();
-  }
-}
-function placeIcons(t) {
+// Órbita lenta de redes: seis íconos en un anillo que gira despacio, todos legibles a la vez
+function placeOrbit(t) {
+  const t0 = 11.45;
   $$(".tile").forEach((el, i) => {
-    const t0 = 12.05 + i * .2, p = (t - t0) / 1.55;
-    if (p < 0 || p > 1) { el.style.opacity = 0; return; }
-    const u = p * 2 - 1, x = 540 - 820 * (0.55 * u * u * u + 0.45 * u);
-    const near = Math.max(0, 1 - Math.abs(x - 540) / 560);
-    const s = .6 + .6 * near * near, y = 1080 + 80 * (1 - near) * (1 - near);
-    el.style.opacity = Math.min(1, near * 2.4).toFixed(3);
-    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)}) rotateY(${(u * -40).toFixed(1)}deg)`;
-    el.style.zIndex = Math.round(near * 100);
+    const appear = Math.max(0, Math.min(1, (t - t0 - i * .09) / .45));
+    if (t < 10.5 || t > 14.0 || appear <= 0) { el.style.opacity = 0; return; }
+    const e = 1 - Math.pow(1 - appear, 3);
+    const ang = (i / ORBIT.length) * Math.PI * 2 + (t - t0) * .55 + Math.PI / 2;
+    const depth = (Math.sin(ang) + 1) / 2;           // 0 atrás, 1 al frente
+    const x = 540 + Math.cos(ang) * 400, y = 1110 + Math.sin(ang) * 150;
+    const s = (.62 + .5 * depth) * (.6 + .4 * e);
+    el.style.opacity = ((.45 + .55 * depth) * e).toFixed(3);
+    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)})`;
+    el.style.zIndex = Math.round(depth * 100);
   });
 }
 function drawGlitch(t) {
@@ -585,27 +535,29 @@ function drawGlitch(t) {
 }
 function drawGrain(t) {
   const c = $("#grain"); c.getContext("2d").putImageData(grainFrames[Math.round(t * FPS) % grainFrames.length], 0, 0);
-  const light = (t >= 20.5 && t < 23.5) || t >= 26.45;
-  c.style.opacity = light ? .12 : .3; $("#vignette").style.opacity = light ? .2 : 1;
+  c.style.opacity = (t >= 20.5 && t < 23.5) || t >= 26.45 || t < 3.45 ? .06 : .14;
 }
+// Clips como secuencias de cuadros (seek exacto). Cuadros en .cache/<id>/0001.jpg…
 const imgCache = {};
 async function updateClips(t) {
   const jobs = [];
-  for (const c of Object.values(CLIPS)) {
-    if (t < c.t0 - .05 || t > c.t1 + .05) continue;
-    const el = $(c.el), src = clipSrc(c, t);
+  for (const el of $$("img[data-clip]")) {
+    const c = CLIPS[el.dataset.clip], n = Math.round(c.dur * FPS) - 1;
+    if (t < c.t0 - .05 || t > c.t0 + c.dur / c.speed + .05) continue;
+    const f = Math.min(n, Math.max(1, 1 + Math.floor((t - c.t0) * c.speed * FPS)));
+    const src = `.cache/${el.dataset.clip}/${String(f).padStart(4, "0")}.jpg`;
     if (el.dataset.src === src) continue;
     el.dataset.src = src;
     if (!imgCache[src]) { const im = new Image(); im.src = src; imgCache[src] = im.decode().then(() => im); }
     jobs.push(imgCache[src].then(() => { el.src = src; return el.decode().catch(() => {}); }));
   }
   await Promise.all(jobs);
-  const keys = Object.keys(imgCache); if (keys.length > 30) keys.slice(0, keys.length - 30).forEach(k => delete imgCache[k]);
+  const keys = Object.keys(imgCache); if (keys.length > 40) keys.slice(0, keys.length - 40).forEach(k => delete imgCache[k]);
 }
 
 window.__seek = async (t) => {
   tl.seek(t, false);
-  shake(t); drawRings(t); placeIcons(t); drawGlitch(t); drawGrain(t);
+  shake(t); placeOrbit(t); drawGlitch(t); drawGrain(t);
   await updateClips(t);
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 };

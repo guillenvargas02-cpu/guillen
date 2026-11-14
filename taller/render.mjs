@@ -13,7 +13,7 @@ const { chromium } = require("playwright");
 const ROOT = path.dirname(new URL(import.meta.url).pathname);
 const args = Object.fromEntries(process.argv.slice(2).reduce((a, v, i, arr) => (v.startsWith("--") ? a.concat([[v.slice(2), arr[i + 1] && !arr[i + 1].startsWith("--") ? arr[i + 1] : true]]) : a), []));
 const FPS = 30, scale = +(args.scale || 1), JPEG = !!args.jpeg;
-const TYPES = { ".html": "text/html", ".js": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".woff2": "font/woff2", ".webp": "image/webp" };
+const TYPES = { ".html": "text/html", ".js": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".woff2": "font/woff2", ".webp": "image/webp", ".json": "application/json" };
 
 const server = http.createServer((req, res) => {
   const p = path.join(ROOT, decodeURIComponent(req.url.split("?")[0]));

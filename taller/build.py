@@ -36,9 +36,16 @@ def run(cmd):
 
 
 def frames():
-    for name, vf in [("celular", "null"), ("likes", "scale=1240:-2")]:
+    """Cuadros de cada clip (clips.json) en .cache/<id>/ para el seek exacto del render."""
+    import json
+    clips = {k: v for k, v in json.loads((ROOT / "clips.json").read_text()).items() if not k.startswith("_")}
+    for name in clips:
         d = CACHE / name
+        if d.exists():
+            for f in d.glob("*.jpg"):
+                f.unlink()
         d.mkdir(parents=True, exist_ok=True)
+        vf = "scale=1240:-2" if name == "likes" else "null"
         run(["ffmpeg", "-v", "error", "-y", "-i", A / "clips" / f"{name}.mp4", "-vf", vf, "-q:v", "3", d / "%04d.jpg"])
 
 

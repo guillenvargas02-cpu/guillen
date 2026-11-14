@@ -1,0 +1,12 @@
+{
+  "_doc": "Clips de video: tramo de la fuente (src, dur) que se recorta a assets/clips/<id>.mp4 y momento del video en que entra (t0). speed = velocidad de reproducción.",
+  "publico":   {"fuente": "publico-paneo",      "src": 1.0, "dur": 0.6,  "t0": 5.5,   "speed": 1.0},
+  "conoces":   {"fuente": "sala-conoces",       "src": 0.6, "dur": 0.6,  "t0": 6.5,   "speed": 1.0},
+  "produccion":{"fuente": "produccion-paneo",   "src": 0.2, "dur": 0.6,  "t0": 7.0,   "speed": 1.0},
+  "diagrama":  {"fuente": "sala-diagrama",      "src": 0.2, "dur": 2.0,  "t0": 7.5,   "speed": 1.0},
+  "celular":   {"fuente": "celular",            "src": 1.0, "dur": 2.8,  "t0": 11.3,  "speed": 1.0},
+  "dinamica":  {"fuente": "dinamica-impresion", "src": 0.0, "dur": 1.9,  "t0": 15.2,  "speed": 1.0},
+  "ponente":   {"fuente": "ponente-paneo",      "src": 1.2, "dur": 3.7,  "t0": 17.0,  "speed": 1.0},
+  "likes":     {"fuente": "likes",              "src": 0.15,"dur": 4.4,  "t0": 20.5,  "speed": 1.45},
+  "banner":    {"fuente": "banner-paneo",       "src": 0.3, "dur": 3.2,  "t0": 23.4,  "speed": 1.0}
+}

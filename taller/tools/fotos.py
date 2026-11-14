@@ -5,9 +5,8 @@ from PIL import Image, ImageOps
 A = Path(__file__).resolve().parent.parent / "assets" / "photos"
 U = Path(sys.argv[1])
 FOTOS = {  # nombre en el proyecto -> archivo subido
-    "banner": "1c366558", "apertura": "0005311f", "sala-impresion": "8b327235", "set-camara": "381eb87b",
-    "diagrama": "e6f5dd10", "buen-mensaje": "21ed7422", "redes": "d415556f", "imagen": "b796c718",
-    "primera-impresion": "a0c112cc", "narrativa": "59467a54", "medir": "4904ecf6",
+    "apertura": "0005311f", "buen-mensaje": "21ed7422", "redes": "d415556f", "imagen": "b796c718",
+    "narrativa": "59467a54", "medir": "4904ecf6",
 }
 for name, uid in FOTOS.items():
     im = ImageOps.exif_transpose(Image.open(U / f"{uid}-image.jpg")).convert("RGB")
