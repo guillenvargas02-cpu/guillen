@@ -29,14 +29,13 @@ SR = 48000
 # (clip, entrada, inicio en el teaser, fin, look)
 EDL = [
     ("v3", 0.30, 0.0, 3.0, "sangre"),    # estatua de noche → rojo
-    ("v2", 0.00, 3.0, 7.0, "noche"),     # Plaza Tolsá / Minería
-    ("v5", 0.40, 7.0, 9.5, "noche"),     # Donceles
-    ("v4", 0.00, 9.5, 13.0, "placa"),    # placa de Joaquín Dongo
-    ("black", 0, 13.0, 19.0, None),      # grabado + La mujer herrada (capa gráfica)
-    ("v6", 0.30, 19.0, 21.0, "noche"),   # Teatro de la Ciudad
-    ("v1", 0.00, 21.0, 25.0, "fru"),     # Teatro Fru Fru
-    ("v2", 4.40, 25.0, 28.0, "noche"),   # El Caballito al anochecer
-    ("v3", 2.55, 28.0, 31.0, "sangre"),  # estatua de noche
+    ("v2", 0.00, 3.0, 6.5, "noche"),     # Plaza Tolsá / Minería
+    ("v5", 0.40, 6.5, 9.0, "noche"),     # Donceles: fecha y hora
+    ("v4", 0.00, 9.0, 13.5, "placa"),    # placa de Joaquín Dongo
+    ("black", 0, 13.5, 21.0, None),      # grabado + La mujer herrada (capa gráfica)
+    ("v6", 0.30, 21.0, 23.0, "noche"),   # punto de reunión
+    ("v1", 0.00, 23.0, 27.5, "fru"),     # Teatro Fru Fru
+    ("v3", 2.05, 27.5, 31.0, "sangre"),  # precio y duración
     ("black", 0, 31.0, 35.0, None),      # e-card
 ]
 
@@ -319,9 +318,9 @@ def build_audio():
     a1 = A / "audio" / "atmosfera_1.m4a"
     for src, dur, at, g in [
         (1.55, 3.0, 2.95, 0.9),    # golpe inicial → título
-        (51.9, 3.0, 11.9, 0.8),    # golpe grave → 11 víctimas
-        (16.9, 2.5, 14.9, 0.8),    # golpe → 1670
-        (64.4, 3.5, 20.9, 0.7),    # gran golpe → Fru Fru
+        (51.9, 3.0, 10.9, 0.8),    # golpe grave → 11 víctimas
+        (16.9, 2.5, 15.4, 0.8),    # golpe → 1670
+        (64.4, 3.5, 22.9, 0.7),    # gran golpe → Fru Fru
     ]:
         place(hits, fade(load(a1, src, dur), 0.004, 0.6), at, g)
     swell = fade(load(a1, 70.0, 6.75), 1.5, 0.05)  # crescendo 70→76.75 (pico 75.5)
