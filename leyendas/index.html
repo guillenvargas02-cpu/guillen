@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Leyendas y Crímenes famosos — teaser</title>
+<style>
+@font-face{font-family:Anton;src:url(assets/fonts/anton-latin-400-normal.woff2)}
+@font-face{font-family:Courier Prime;font-weight:700;src:url(assets/fonts/courier-prime-latin-700-normal.woff2)}
+@font-face{font-family:Oswald;font-weight:500;src:url(assets/fonts/oswald-latin-500-normal.woff2)}
+@font-face{font-family:Oswald;font-weight:700;src:url(assets/fonts/oswald-latin-700-normal.woff2)}
+@font-face{font-family:Pirata;src:url(assets/fonts/pirata-one-latin-400-normal.woff2)}
+@font-face{font-family:Playfair;font-weight:700;font-style:italic;src:url(assets/fonts/playfair-display-latin-700-italic.woff2)}
+@font-face{font-family:Playfair;font-weight:900;font-style:italic;src:url(assets/fonts/playfair-display-latin-900-italic.woff2)}
+@font-face{font-family:Playfair;font-weight:900;font-style:normal;src:url(assets/fonts/playfair-display-latin-900-normal.woff2)}
+@font-face{font-family:Dirt;src:url(assets/fonts/rubik-dirt-latin-400-normal.woff2)}
+@font-face{font-family:Wet;src:url(assets/fonts/rubik-wet-paint-latin-400-normal.woff2)}
+@font-face{font-family:Elite;src:url(assets/fonts/special-elite-latin-400-normal.woff2)}
+@font-face{font-family:Fell;font-style:italic;src:url(assets/fonts/im-fell-english-latin-400-italic.woff2)}
+
+:root{--y:#F5E31B;--r:#E01B24;--k:#0d0b0a;--p:#ECE4CF}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+#stage{position:absolute;inset:0;overflow:hidden}
+.abs{position:absolute}
+.full{position:absolute;inset:0}
+.hid{visibility:hidden;opacity:0}
+.gl{position:absolute;inset:0}
+
+/* legibilidad sobre el footage */
+#scrim{background:
+  linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 55%,rgba(0,0,0,.78) 100%),
+  radial-gradient(ellipse 80% 60% at 50% 48%,rgba(0,0,0,0) 40%,rgba(0,0,0,.55) 100%)}
+
+/* etiquetas estilo periódico (como la e-card) */
+.tag{display:inline-block;font:700 46px/1 Oswald;letter-spacing:.32em;padding:18px 26px 18px 34px;
+  background:var(--y);color:var(--k);border:5px solid var(--k);box-shadow:10px 10px 0 var(--k);white-space:nowrap}
+.tag.dark{background:var(--k);color:var(--y);border-color:var(--k);box-shadow:10px 10px 0 var(--r)}
+.tag.red{background:var(--r);color:#fff;border-color:var(--k)}
+
+.tw{white-space:pre;position:relative}
+.tw .ch{visibility:hidden}
+.caret{position:absolute;width:.09em;height:1em;background:currentColor;top:0;left:0}
+
+/* --- 0 apertura --- */
+#s0 .tw{font:400 94px/1.12 Elite;color:#F1E9D4;left:100px;top:760px;
+  text-shadow:0 0 22px rgba(224,27,36,.75),0 0 2px rgba(255,255,255,.4)}
+#s0-file{left:0;right:0;top:300px;text-align:center;font:700 30px Courier Prime;letter-spacing:.42em;color:var(--r)}
+
+/* --- 1 título --- */
+#t-rec{left:0;right:0;top:420px;text-align:center}
+#t-rec span{display:inline-block;background:var(--k);color:var(--y);font:700 36px/1 Oswald;letter-spacing:.4em;
+  padding:16px 18px 16px 32px;transform:rotate(-2deg)}
+#t-ley{left:0;right:0;top:470px;text-align:center;font:400 262px/1 Pirata;color:var(--y);
+  -webkit-text-stroke:5px var(--k);paint-order:stroke fill;text-shadow:12px 12px 0 var(--k),0 0 60px rgba(224,27,36,.55)}
+#t-ley span{display:inline-block}
+#t-cri{left:0;right:0;top:770px;text-align:center;font:400 150px/1 Wet;color:var(--r);
+  text-shadow:6px 6px 0 var(--k),0 0 30px rgba(0,0,0,.8);transform:rotate(-3deg)}
+#t-fam{left:0;right:0;top:985px;text-align:center}
+#t-fam .band{display:inline-block;background:var(--y);padding:6px 46px 0;transform:rotate(-1.5deg) skewX(-6deg);
+  box-shadow:12px 12px 0 var(--k)}
+#t-fam .band b{display:block;font:400 196px/1.02 Anton;color:var(--k);letter-spacing:.02em;transform:skewX(6deg)}
+#t-sub{left:60px;right:60px;top:1255px;text-align:center;font:700 italic 62px/1.22 Playfair;color:#fff;
+  text-shadow:0 4px 18px rgba(0,0,0,.9)}
+#t-sub .w{display:inline-block}
+.hl{position:relative;display:inline-block}
+.hl i{position:absolute;left:-6px;right:-6px;bottom:6px;height:22px;background:var(--y);z-index:-1;transform-origin:left center}
+#t-sub .hl{color:#fff}
+
+/* --- 2 fecha --- */
+#d-tag{left:110px;top:560px;transform:rotate(-3deg)}
+#d-num{left:96px;top:640px;font:400 460px/1 Anton;color:#fff;text-shadow:14px 14px 0 rgba(0,0,0,.65)}
+#d-circ{left:20px;top:600px;width:600px;height:560px;overflow:visible}
+#d-mes{left:110px;top:1150px;font:400 128px/1 Anton;color:#fff;letter-spacing:.01em;text-shadow:8px 8px 0 rgba(0,0,0,.7)}
+#d-mes em{font-style:normal;color:var(--y)}
+#d-loc{left:112px;top:1300px;font:700 italic 50px/1.2 Playfair;color:#fff;text-shadow:0 3px 14px #000}
+
+/* --- 3 Dongo --- */
+#c-tag{left:80px;top:290px;transform:rotate(-2deg)}
+.paper{background:var(--p);color:#1a1512;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+#c-paper{left:50px;top:400px;width:980px;height:170px;transform:rotate(-1.6deg)}
+#c-paper .tw{position:absolute;left:52px;top:46px;font:400 72px/1 Elite;color:#1a1512}
+#c-11{left:0;right:0;top:850px;text-align:center}
+#c-11 .n{font:400 400px/0.9 Anton;color:var(--r);text-shadow:12px 12px 0 var(--k);display:inline-block}
+#c-11 .v{display:block;font:400 150px/1 Anton;color:#fff;margin-top:-6px;letter-spacing:.04em;text-shadow:8px 8px 0 var(--k)}
+#c-noche{left:0;right:0;top:1380px;text-align:center}
+#c-noche .nbar{display:inline-block;background:var(--k);padding:16px 30px}
+#c-noche .tw{font:400 66px/1 Elite;color:#fff;display:inline-block}
+
+#grab{overflow:hidden;background:#000}
+#grab img{position:absolute;height:1920px;top:0;left:0;filter:sepia(.9) contrast(1.35) brightness(.78) saturate(1.4)}
+.tint{position:absolute;inset:0;mix-blend-mode:multiply}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.55) 30%,transparent 34%);
+  background-size:9px 9px;mix-blend-mode:multiply;opacity:.55}
+#g-lab{left:80px;top:250px}
+#g-txt{left:70px;right:70px;top:1150px;font:900 italic 96px/1.08 Playfair;color:#fff;text-shadow:0 6px 24px rgba(0,0,0,.95)}
+#g-txt .l{display:block}
+#g-txt .hl{color:var(--k);text-shadow:none}
+#g-txt .hl i{bottom:4px;top:12px;height:auto}
+#flash-img{overflow:hidden;background:#000}
+#flash-img img{position:absolute;height:1920px;left:-600px;filter:grayscale(1) contrast(2.2) brightness(.9)}
+
+/* --- 4 La mujer herrada --- */
+#her{overflow:hidden;background:#000}
+#her img{position:absolute;width:1288px;height:1920px;left:-104px;top:0;transform-origin:47% 86%;
+  filter:contrast(1.15) saturate(.85) brightness(.85)}
+#h-year{left:0;right:0;top:200px;text-align:center;font:400 330px/1 Anton;color:transparent;
+  -webkit-text-stroke:7px var(--y);letter-spacing:.02em;text-shadow:0 0 50px rgba(0,0,0,.9)}
+#h-t1,#h-t2{left:0;right:0;text-align:center;font:400 150px/1 Dirt;color:#fff;
+  text-shadow:9px 9px 0 var(--r),0 0 40px rgba(0,0,0,.9)}
+#h-t1{top:560px}
+#h-t2{top:705px;font-size:190px;color:var(--y)}
+#h-quote{left:70px;width:940px;top:1210px;background:var(--y);border:6px solid var(--k);box-shadow:14px 14px 0 var(--k);
+  padding:30px 36px 34px;transform:rotate(-1.5deg)}
+#h-quote .q{font:900 italic 110px/0.6 Playfair;color:var(--r);display:block;height:46px}
+#h-quote .tw{font:400 60px/1.15 Elite;color:var(--k)}
+#h-red{background:var(--r);mix-blend-mode:multiply}
+
+/* --- 5 punto de reunión --- */
+#p-pin{left:470px;top:300px;width:140px;height:200px}
+#p-ring{left:440px;top:440px;width:200px;height:70px;border:6px solid var(--r);border-radius:50%}
+#p-tag{left:0;right:0;top:560px;text-align:center}
+#p-a{left:0;right:0;top:700px;text-align:center;font:400 128px/1 Anton;color:#fff;text-shadow:8px 8px 0 rgba(0,0,0,.75)}
+#p-b{left:0;right:0;top:830px;text-align:center;font:400 152px/1 Anton;color:var(--y);text-shadow:9px 9px 0 var(--k)}
+#p-c{left:0;right:0;top:1015px;text-align:center}
+#p-c .tw{display:inline-block;font:400 66px/1 Elite;color:#fff;text-shadow:0 0 16px #000,0 0 4px #000}
+
+/* --- 6 Fru Fru --- */
+#f-tag{left:0;right:0;top:250px;text-align:center}
+#f-a{left:0;right:0;top:370px;text-align:center;font:900 italic 120px/1 Playfair;color:#fff;text-shadow:0 0 30px rgba(224,27,36,.9),0 6px 0 #000}
+#f-b{left:0;right:0;top:480px;text-align:center;font:900 normal 196px/1 Playfair;color:#fff;
+  text-shadow:0 0 18px rgba(255,60,60,.95),0 0 60px rgba(224,27,36,.9),8px 8px 0 #000}
+#f-y{left:0;right:0;top:700px;text-align:center;font:700 92px/1 Courier Prime;letter-spacing:.42em;color:var(--r);
+  padding-left:.42em;text-shadow:0 0 20px rgba(0,0,0,.95)}
+#f-pol{left:250px;top:850px;width:580px;padding:22px 22px 0;background:#f3efe6;box-shadow:0 30px 60px rgba(0,0,0,.75);transform:rotate(5deg)}
+#f-pol img{display:block;width:536px;height:620px;object-fit:cover;filter:contrast(1.2) saturate(.75)}
+#f-pol .cap{height:96px;padding-top:22px;text-align:center}
+#f-pol .tw{display:inline-block;font:400 44px/1 Elite;color:#1a1512}
+#f-pol .tape{position:absolute;top:-26px;left:190px;width:200px;height:56px;background:rgba(245,227,27,.85);transform:rotate(-4deg)}
+
+/* --- 7 hora / duración --- */
+#hr-tag{left:100px;top:520px;transform:rotate(-2deg)}
+#hr-t{left:90px;top:600px;font:400 400px/1 Anton;color:#fff;text-shadow:14px 14px 0 rgba(0,0,0,.7);white-space:nowrap}
+#hr-t .roll{display:inline-block;height:400px;overflow:hidden;vertical-align:top}
+#hr-t .roll span{display:block;height:400px}
+#hr-t .pm{font-size:150px;color:var(--y);margin-left:18px;vertical-align:top;display:inline-block;margin-top:40px}
+#du-tag{left:100px;top:1090px;transform:rotate(-2deg)}
+#du-t{left:96px;top:1170px;font:400 190px/1 Anton;color:#fff;text-shadow:10px 10px 0 rgba(0,0,0,.75)}
+#du-t em{font-style:normal;color:var(--y)}
+#du-s{left:104px;top:1375px;font:700 italic 56px/1 Playfair;color:#fff;text-shadow:0 3px 14px #000}
+
+/* --- 8 precio --- */
+.tape{position:absolute;left:-200px;width:1480px;height:92px;background:var(--y);border-top:6px solid var(--k);border-bottom:6px solid var(--k);
+  overflow:hidden;white-space:nowrap;box-shadow:0 14px 30px rgba(0,0,0,.6)}
+.tape div{font:700 50px/80px Oswald;letter-spacing:.18em;color:var(--k)}
+#tp1{top:300px;transform:rotate(-9deg)}
+#tp2{top:1430px;transform:rotate(7deg)}
+#pr{left:0;right:0;top:660px;text-align:center}
+#pr .st{display:inline-block;border:16px solid var(--r);border-radius:26px;padding:0 44px 6px;color:var(--r);
+  font:400 330px/1 Anton;transform:rotate(-8deg);background:rgba(10,8,8,.35);position:relative;overflow:hidden}
+#pr .st i{position:absolute;inset:0;background:url(assets/img/ink.png) 0 0/700px 700px}
+#pr-s{left:0;right:0;top:1075px;text-align:center;font:700 italic 64px/1 Playfair;color:#fff;text-shadow:0 3px 16px #000}
+#atr{left:0;right:0;top:1200px;text-align:center;font:400 150px/1 Wet;color:#fff;text-shadow:0 0 30px rgba(224,27,36,.95),6px 6px 0 #000}
+
+/* --- 9 e-card --- */
+#endbg{background:radial-gradient(ellipse 90% 70% at 50% 40%,#3a0709 0%,#120203 55%,#000 100%)}
+#ecard{left:140px;top:100px;width:800px;height:1000px;box-shadow:0 40px 90px rgba(0,0,0,.85),0 0 0 3px rgba(0,0,0,.6)}
+#ecard img{width:100%;height:100%;display:block}
+#rn{left:0;right:0;top:1140px;text-align:center;white-space:nowrap;line-height:1.25}
+#rn .lt{display:inline-block;margin:0 4px;padding:4px 14px 2px;font-size:84px;line-height:1;box-shadow:5px 6px 0 rgba(0,0,0,.6)}
+#rn .sp{display:block;height:14px}
+#dm{left:0;right:0;top:1405px;text-align:center}
+#dm .pill{display:inline-flex;align-items:center;gap:26px;background:var(--y);border:6px solid var(--k);box-shadow:12px 12px 0 var(--r);
+  padding:14px 46px 10px 40px;transform:rotate(-2deg)}
+#dm .pill b{font:400 108px/1 Anton;color:var(--k);letter-spacing:.03em}
+#dm svg{width:96px;height:96px}
+
+/* efectos globales */
+#flick{background:#000}
+#flash{background:#fff}
+#redf{background:var(--r);mix-blend-mode:multiply}
+#vhs{background:repeating-linear-gradient(0deg,rgba(255,255,255,.08) 0 2px,transparent 2px 6px)}
+.bar{position:absolute;left:0;right:0}
+#bars div{position:absolute;left:0;right:0;background:rgba(255,255,255,.75);mix-blend-mode:difference}
+#fadeout{background:#000}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="scrim" class="full"></div>
+
+  <!-- 0 · apertura (0–3) -->
+  <div id="s0" class="gl">
+    <div id="s0-file" class="abs">CDMX · EXPEDIENTE Nº 41</div>
+    <div id="tw0" class="abs tw" data-text="Hay calles&#10;que no&#10;olvidan..."></div>
+  </div>
+
+  <!-- 1 · título (3–7) -->
+  <div id="s1" class="gl hid">
+    <div id="t-rec" class="abs"><span>RECORRIDO TEMÁTICO</span></div>
+    <div id="t-ley" class="abs"><span>L</span><span>E</span><span>Y</span><span>E</span><span>N</span><span>D</span><span>A</span><span>S</span></div>
+    <div id="t-cri" class="abs">y crímenes</div>
+    <div id="t-fam" class="abs"><div class="band"><b>FAMOSOS</b></div></div>
+    <div id="t-sub" class="abs"><span class="w">del</span> <span class="w">Centro</span> <span class="w">Histórico</span> <span class="w">de</span> <span class="w">la</span><br><span class="w hl"><i></i>Ciudad de México</span></div>
+  </div>
+
+  <!-- 2 · fecha (7–9.5) -->
+  <div id="s2" class="gl hid">
+    <div id="d-tag" class="abs tag">SÁBADO</div>
+    <div id="d-num" class="abs">21</div>
+    <svg id="d-circ" class="abs" viewBox="0 0 600 560"><path id="d-circ-p" d="M330 70 C 520 60, 590 200, 560 330 C 530 470, 360 530, 220 500 C 80 470, 30 330, 70 200 C 110 80, 260 40, 390 72 C 450 88, 500 120, 520 150"
+      fill="none" stroke="#E01B24" stroke-width="16" stroke-linecap="round"/></svg>
+    <div id="d-mes" class="abs">DE <em>NOVIEMBRE</em></div>
+    <div id="d-loc" class="abs">Centro Histórico · CDMX</div>
+  </div>
+
+  <!-- 3 · Joaquín Dongo (9.5–15) -->
+  <div id="s3" class="gl hid">
+    <div id="c-tag" class="abs tag">C R I M E N</div>
+    <div id="c-paper" class="abs paper"><div id="tw1" class="tw" data-text="23 de octubre de 1789."></div></div>
+    <div id="c-11" class="abs"><span class="n">11</span><span class="v">VÍCTIMAS</span></div>
+    <div id="c-noche" class="abs"><span class="nbar"><span id="tw2" class="tw" data-text="en una sola noche."></span></span></div>
+  </div>
+  <div id="flash-img" class="full hid"><img src="assets/img/grabado_hd.jpg" alt=""><div class="tint" style="background:#ff1a1a"></div></div>
+  <div id="grab" class="full hid">
+    <img id="grab-img" src="assets/img/grabado_hd.jpg" alt="">
+    <div class="tint" style="background:linear-gradient(180deg,#7a1010 0%,#c9a27a 45%,#5a0b0b 100%)"></div>
+    <div class="dots"></div>
+    <div class="full" style="background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0) 30%,rgba(0,0,0,0) 50%,rgba(0,0,0,.85))"></div>
+    <div id="g-lab" class="abs tag dark">JOAQUÍN DONGO · 1789</div>
+    <div id="g-txt" class="abs"><span class="l">El crimen que</span><span class="l">estremeció a la</span><span class="l"><span class="hl"><i></i>Nueva España</span></span></div>
+  </div>
+
+  <!-- 4 · La mujer herrada (15–19) -->
+  <div id="her" class="full hid">
+    <img id="her-img" src="assets/img/herrada_hd.jpg" alt="">
+    <div class="dots" style="opacity:.35"></div>
+    <div class="full" style="background:linear-gradient(180deg,rgba(0,0,0,.75),rgba(0,0,0,.1) 40%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.7))"></div>
+    <div id="h-red" class="full hid"></div>
+    <div id="h-year" class="abs">1670</div>
+    <div id="h-t1" class="abs">LA MUJER</div>
+    <div id="h-t2" class="abs">HERRADA</div>
+    <div id="h-quote" class="abs"><span class="q">“</span><div id="tw3" class="tw" data-text="...con herraduras clavadas&#10;en las plantas de los pies."></div></div>
+  </div>
+
+  <!-- 5 · punto de reunión (19–21) -->
+  <div id="s5" class="gl hid">
+    <div id="p-ring" class="abs"></div>
+    <svg id="p-pin" class="abs" viewBox="0 0 140 200"><path d="M70 196 C 50 150, 6 112, 6 68 A 64 64 0 1 1 134 68 C 134 112, 90 150, 70 196 Z" fill="#E01B24" stroke="#0d0b0a" stroke-width="6"/><circle cx="70" cy="68" r="24" fill="#0d0b0a"/></svg>
+    <div id="p-tag" class="abs"><span class="tag">PUNTO DE REUNIÓN</span></div>
+    <div id="p-a" class="abs">PLAZA DE</div>
+    <div id="p-b" class="abs">SANTO DOMINGO</div>
+    <div id="p-c" class="abs"><span id="tw4" class="tw" data-text="(frente al templo)"></span></div>
+  </div>
+
+  <!-- 6 · Teatro Fru Fru (21–25) -->
+  <div id="s6" class="gl hid">
+    <div id="f-tag" class="abs"><span class="tag dark">O C U L T I S M O</span></div>
+    <div id="f-a" class="abs">Teatro</div>
+    <div id="f-b" class="abs">Fru Fru</div>
+    <div id="f-y" class="abs">1975</div>
+    <div id="f-pol" class="abs"><div class="tape"></div><img src="assets/img/lavey_hd.jpg" alt=""><div class="cap"><span id="tw5" class="tw" data-text="una misa negra..."></span></div></div>
+  </div>
+
+  <!-- 7 · hora y duración (25–28) -->
+  <div id="s7" class="gl hid">
+    <div id="hr-tag" class="abs tag">HORA</div>
+    <div id="hr-t" class="abs"><span class="roll"><span id="hr-col"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></span></span>:00<span class="pm">PM</span></div>
+    <div id="du-tag" class="abs tag red">DURACIÓN</div>
+    <div id="du-t" class="abs"><em>3</em> HORAS</div>
+    <div id="du-s" class="abs">de recorrido a pie</div>
+  </div>
+
+  <!-- 8 · precio (28–31) -->
+  <div id="s8" class="gl hid">
+    <div id="tp1" class="tape"><div id="tp1t">ESCENA DEL CRIMEN · NO CRUZAR · ESCENA DEL CRIMEN · NO CRUZAR · ESCENA DEL CRIMEN · NO CRUZAR ·</div></div>
+    <div id="tp2" class="tape"><div id="tp2t">LEYENDAS Y CRÍMENES · LEYENDAS Y CRÍMENES · LEYENDAS Y CRÍMENES · LEYENDAS Y CRÍMENES ·</div></div>
+    <div id="pr" class="abs"><span class="st">$200<i></i></span></div>
+    <div id="pr-s" class="abs">por persona</div>
+    <div id="atr" class="abs">¿te atreves?</div>
+  </div>
+
+  <!-- 9 · e-card (31–35) -->
+  <div id="s9" class="full hid">
+    <div id="endbg" class="full"></div>
+    <div id="ecard" class="abs"><img src="assets/img/ecard.jpg" alt=""></div>
+    <div id="rn" class="abs"></div>
+    <div id="dm" class="abs"><span class="pill"><b>POR DM</b>
+      <svg viewBox="0 0 100 100"><path d="M8 46 L92 10 L70 90 L48 60 Z" fill="#0d0b0a"/><path d="M48 60 L92 10 L40 52 Z" fill="#E01B24"/><path d="M48 60 L44 82 L56 68 Z" fill="#0d0b0a"/></svg></span></div>
+  </div>
+
+  <!-- efectos globales -->
+  <div id="redf" class="full" style="opacity:0"></div>
+  <div id="vhs" class="full" style="opacity:0"></div>
+  <div id="bars" class="full"></div>
+  <div id="flick" class="full" style="opacity:0"></div>
+  <div id="flash" class="full" style="opacity:0"></div>
+  <div id="fadeout" class="full" style="opacity:0"></div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+const FPS = 30, TOTAL = 35;
+const $ = s => document.querySelector(s);
+const hash = n => { let x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const SFX = [];     // {t, k, g}
+const SHAKES = [];  // {t, a, d}
+const sfx = (t, k, g = 1) => SFX.push({ t: +t.toFixed(3), k, g });
+const shake = (t, a, d = 0.45) => SHAKES.push({ t, a, d });
+
+// ---------- máquina de escribir ----------
+const TW = [];
+function typewriter(sel, t0, cps, opts = {}) {
+  const el = $(sel), text = el.dataset.text;
+  el.innerHTML = '';
+  const chars = [];
+  let t = t0, i = 0;
+  for (const c of text) {
+    if (c === '\n') { el.appendChild(document.createElement('br')); t += 0.14; sfx(t - 0.07, 'return', 0.8); continue; }
+    const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; el.appendChild(s);
+    const jitter = (hash(i * 7.3 + t0) - 0.5) * 0.5 / cps;
+    const at = t + jitter;
+    chars.push({ s, at });
+    sfx(at, c === ' ' ? 'space' : 'key', c === ' ' ? 0.6 : 0.75 + hash(i + t0) * 0.35);
+    t += 1 / cps * (c === '.' || c === ',' ? 2.2 : 1); i++;
+  }
+  if (opts.ding) sfx(t + 0.02, 'ding', 0.7);
+  const caret = document.createElement('i'); caret.className = 'caret'; el.appendChild(caret);
+  TW.push({ el, chars, caret, t0, t1: t, hideCaretAt: opts.hideCaretAt ?? 99 });
+}
+function updateTW(time) {
+  for (const w of TW) {
+    let last = null;
+    for (const c of w.chars) { const v = time >= c.at; c.s.style.visibility = v ? 'visible' : 'hidden'; if (v) last = c.s; }
+    const typing = time >= w.t0 && time <= w.t1 + 0.05;
+    const blink = Math.floor(time * 2.6) % 2 === 0;
+    const show = time >= w.t0 - 0.4 && time < w.hideCaretAt && (typing || blink);
+    w.caret.style.visibility = show ? 'visible' : 'hidden';
+    if (last) {
+      w.caret.style.left = (last.offsetLeft + last.offsetWidth + 4) + 'px';
+      w.caret.style.top = (last.offsetTop + last.offsetHeight * 0.08) + 'px';
+      w.caret.style.height = (last.offsetHeight * 0.85) + 'px';
+    } else {
+      w.caret.style.left = '0px'; w.caret.style.top = '0px';
+      const fs = parseFloat(getComputedStyle(w.el).fontSize); w.caret.style.height = (fs * 0.95) + 'px';
+    }
+  }
+}
+
+// ---------- glitches (por fotograma, deterministas) ----------
+const GL = []; // {sel, a, b, amp}
+const glitch = (sel, a, b, amp = 1) => GL.push({ el: $(sel), a, b, amp });
+function updateGL(time) {
+  const f = Math.round(time * FPS);
+  const touched = new Set();
+  for (const g of GL) {
+    if (time >= g.a && time < g.b) {
+      touched.add(g.el);
+      const r1 = hash(f * 1.7 + g.a), r2 = hash(f * 3.1 + g.a * 2), r3 = hash(f * 5.9 + 11);
+      const on = r1 > 0.25;
+      const dx = on ? (r2 - 0.5) * 70 * g.amp : 0;
+      const sk = on && r3 > 0.6 ? (r3 - 0.8) * 30 * g.amp : 0;
+      const sp = (6 + 18 * r1) * g.amp;
+      g.el.style.transform = `translateX(${dx.toFixed(1)}px) skewX(${sk.toFixed(1)}deg)`;
+      g.el.style.filter = on ? `drop-shadow(${sp}px 0 0 rgba(255,0,40,.85)) drop-shadow(${-sp}px 0 0 rgba(0,230,255,.75))` : 'none';
+      if (r3 > 0.55) { const y1 = Math.floor(r2 * 70), y2 = Math.floor(hash(f + 99) * 25); g.el.style.clipPath = `inset(${y1}% 0 ${Math.max(0, 100 - y1 - 8 - y2 * 2)}% 0)`; }
+      else g.el.style.clipPath = 'none';
+    }
+  }
+  for (const g of GL) if (!touched.has(g.el)) { g.el.style.transform = ''; g.el.style.filter = ''; g.el.style.clipPath = ''; }
+  // barras VHS durante cualquier glitch
+  const bars = $('#bars'); let html = '';
+  if (touched.size) for (let k = 0; k < 3; k++) { const y = hash(f * 2.3 + k * 17) * 1920, h = 4 + hash(f + k) * 40; if (hash(f * 9 + k) > 0.35) html += `<div style="top:${y | 0}px;height:${h | 0}px"></div>`; }
+  bars.innerHTML = html;
+  $('#vhs').style.opacity = touched.size ? 0.9 : 0.25;
+}
+
+// ---------- parpadeo de luz (película vieja) ----------
+function updateFlicker(time) {
+  const f = Math.round(time * FPS);
+  let o = 0.05 + hash(f * 0.37) * 0.10;
+  if (hash(Math.floor(f / 2) * 13.7) > 0.93) o += 0.32;  // caídas de luz
+  if (time > 31) o *= 0.35;
+  $('#flick').style.opacity = o.toFixed(3);
+}
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+window.__timelines = { leyendas: tl };
+const show = (sel, t) => tl.set(sel, { visibility: 'visible', opacity: 1 }, t);
+const hide = (sel, t) => tl.set(sel, { visibility: 'hidden', opacity: 0 }, t);
+const flash = (t, peak = 1, d = 0.22, sel = '#flash') => tl.fromTo(sel, { opacity: peak }, { opacity: 0, duration: d, ease: 'power2.in', immediateRender: false }, t);
+const slam = (sel, t, from = 2.6, rot = 0, d = 0.28) => tl.fromTo(sel, { scale: from, opacity: 0, rotation: rot + (from > 1 ? 6 : 0), filter: 'blur(14px)' },
+  { scale: 1, opacity: 1, rotation: rot, filter: 'blur(0px)', duration: d, ease: 'power4.in', immediateRender: true }, t);
+
+// 0 · apertura
+tl.fromTo('#s0-file', { opacity: 0, letterSpacing: '.9em' }, { opacity: 1, letterSpacing: '.42em', duration: 1.2 }, 0.1);
+typewriter('#tw0', 0.35, 11.5, { hideCaretAt: 2.45 });
+sfx(0.0, 'drone', 1);
+glitch('#s0', 2.42, 2.98, 1.2);
+sfx(2.42, 'glitch', 0.9);
+tl.to('#s0', { opacity: 0, duration: 0.12, ease: 'none' }, 2.86);
+hide('#s0', 2.99);
+sfx(2.2, 'reverse', 1);
+
+// 1 · título
+show("#s1", 3.0); flash(3.0, 1, 0.2); shake(3.0, 34, 0.6); sfx(3.0, 'boom', 1.0);
+tl.fromTo('#t-ley span', { scale: 3.2, opacity: 0, y: -40, filter: 'blur(18px)' },
+  { scale: 1, opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.22, ease: 'power4.in', stagger: 0.04, immediateRender: true }, 3.0);
+tl.fromTo('#t-rec', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3 }, 3.2);
+slam('#t-cri', 3.5, 2.4, -3); sfx(3.5, 'hit', 0.8); shake(3.5, 16, 0.35);
+tl.fromTo('#t-fam .band', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.22, ease: 'power3.out', immediateRender: true }, 4.0);
+tl.fromTo('#t-fam b', { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.25, immediateRender: true }, 4.08);
+sfx(4.0, 'stamp', 0.9); sfx(3.94, 'whoosh', 0.5); shake(4.0, 12, 0.3);
+tl.fromTo('#t-sub .w', { opacity: 0, y: 30, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, stagger: 0.12, immediateRender: true }, 4.6);
+tl.fromTo('#t-sub .hl i', { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power2.inOut', immediateRender: true }, 5.4);
+sfx(5.4, 'marker', 0.55);
+tl.to('#t-ley', { scale: 1.04, duration: 3.5, ease: 'none' }, 3.3);
+// parpadeo tipo neón que falla en LEYENDAS
+[5.9, 5.97, 6.1, 6.16].forEach((t, i) => tl.set('#t-ley', { opacity: i % 2 ? 1 : 0.15 }, t));
+glitch('#s1', 6.62, 7.0, 1.4); sfx(6.62, 'glitch', 0.8); sfx(6.75, 'whoosh', 0.7);
+hide('#s1', 7.0);
+
+// 2 · fecha
+show('#s2', 7.0); flash(7.0, 0.55, 0.18); sfx(7.0, 'hit', 0.85); shake(7.0, 18, 0.35);
+slam('#d-tag', 7.0, 2.2, -3, 0.22); sfx(7.05, 'stamp', 0.8);
+tl.fromTo('#d-num', { x: -500, opacity: 0, skewX: -20 }, { x: 0, opacity: 1, skewX: 0, duration: 0.3, ease: 'expo.out', immediateRender: true }, 7.12);
+tl.fromTo('#d-mes', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.35, ease: 'power2.out', immediateRender: true }, 7.3);
+const cl = 1900;
+tl.fromTo('#d-circ-p', { strokeDasharray: cl, strokeDashoffset: cl }, { strokeDashoffset: 0, duration: 0.55, ease: 'power1.inOut', immediateRender: true }, 7.55);
+sfx(7.55, 'marker', 0.9);
+tl.fromTo('#d-loc', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, immediateRender: true }, 8.0);
+tl.to('#s2', { x: -1200, duration: 0.25, ease: 'power3.in' }, 9.25); sfx(9.2, 'whoosh', 0.8);
+hide('#s2', 9.5);
+
+// 3 · Dongo
+show('#s3', 9.5); flash(9.5, 0.5, 0.15); sfx(9.5, 'hit', 0.7); shake(9.5, 14, 0.3);
+slam('#c-tag', 9.5, 2, -2, 0.2);
+tl.fromTo('#c-paper', { x: 1100, rotation: 6 }, { x: 0, rotation: -1.6, duration: 0.35, ease: 'back.out(1.4)', immediateRender: true }, 9.55); sfx(9.55, 'paper', 0.9);
+typewriter('#tw1', 9.9, 15, { ding: true, hideCaretAt: 12 });
+show('#flash-img', 11.38); hide('#flash-img', 11.55); sfx(11.38, 'stinger', 1.0); shake(11.38, 26, 0.25);
+tl.fromTo('#flash-img img', { x: 0 }, { x: -80, duration: 0.17, ease: 'none' }, 11.38);
+slam('#c-11 .n', 12.0, 3, 0, 0.22); sfx(12.0, 'boom2', 1.0); shake(12.0, 30, 0.5); flash(12.0, 0.8, 0.25, '#redf');
+tl.fromTo('#c-11 .v', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.25, immediateRender: true }, 12.2);
+tl.fromTo('#c-noche', { opacity: 0 }, { opacity: 1, duration: 0.15, immediateRender: true }, 12.45);
+typewriter('#tw2', 12.5, 17);
+glitch('#s3', 12.85, 13.0, 1.4); sfx(12.85, 'glitch', 0.6);
+hide('#s3', 13.0);
+
+show('#grab', 13.0); flash(13.0, 0.9, 0.25); sfx(13.0, 'hit', 0.8); shake(13.0, 20, 0.4);
+tl.fromTo('#grab-img', { x: -280, scale: 1.12 }, { x: -1250, scale: 1.0, duration: 2.0, ease: 'none', immediateRender: true }, 13.0);
+slam('#g-lab', 13.15, 1.8, -2, 0.2); sfx(13.15, 'stamp', 0.6);
+tl.fromTo('#g-txt .l', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.35, stagger: 0.18, immediateRender: true }, 13.4);
+tl.fromTo('#g-txt .hl i', { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: 'power2.inOut', immediateRender: true }, 13.95);
+sfx(13.95, 'marker', 0.5);
+sfx(13.5, 'heart', 0.9); sfx(14.25, 'heart', 1.0);
+glitch('#grab', 14.82, 15.0, 1.2); sfx(14.8, 'whoosh', 0.7);
+hide('#grab', 15.0);
+
+// 4 · La mujer herrada
+show('#her', 15.0); flash(15.0, 1, 0.3); sfx(15.0, 'boom', 0.9); shake(15.0, 28, 0.5);
+tl.fromTo('#her-img', { scale: 1.0 }, { scale: 1.42, duration: 4.0, ease: 'power1.in', immediateRender: true }, 15.0);
+slam('#h-year', 15.0, 2.8, 0, 0.25);
+tl.to('#h-year', { color: 'rgba(245,227,27,1)', duration: 0.1 }, 16.0);
+slam('#h-t1', 16.0, 2.2, -2, 0.15); sfx(16.0, 'clang', 1.0); shake(16.0, 26, 0.4);
+slam('#h-t2', 16.5, 2.4, 2, 0.15); sfx(16.5, 'clang', 1.0); shake(16.5, 30, 0.45);
+[16.0, 16.5].forEach(t => { tl.set('#h-red', { visibility: 'visible' }, t); tl.fromTo('#h-red', { opacity: 0.85 }, { opacity: 0, duration: 0.3, immediateRender: false }, t); });
+tl.fromTo('#h-quote', { y: 900, rotation: 8 }, { y: 0, rotation: -1.5, duration: 0.4, ease: 'back.out(1.3)', immediateRender: true }, 16.85); sfx(16.85, 'whoosh', 0.6);
+typewriter('#tw3', 17.1, 30, { ding: true });
+glitch('#her', 18.75, 19.0, 1.3); sfx(18.72, 'glitch', 0.7);
+hide('#her', 19.0);
+
+// 5 · punto de reunión
+show('#s5', 19.0); flash(19.0, 0.6, 0.2); sfx(19.0, 'bell', 1.0); shake(19.0, 12, 0.3);
+tl.fromTo('#p-pin', { y: -600, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'bounce.out', immediateRender: true }, 19.05);
+tl.fromTo('#p-ring', { scale: 0.2, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: 'power2.out', immediateRender: true }, 19.3);
+slam('#p-tag', 19.15, 1.8, 0, 0.2); sfx(19.2, 'stamp', 0.6);
+tl.fromTo('#p-a', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.25, immediateRender: true }, 19.35);
+tl.fromTo('#p-b', { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.22, ease: 'power4.in', immediateRender: true }, 19.5); sfx(19.5, 'hit', 0.6);
+typewriter('#tw4', 19.9, 22);
+glitch('#s5', 20.82, 21.0, 1.2);
+hide('#s5', 21.0);
+
+// 6 · Teatro Fru Fru
+show('#s6', 21.0); flash(21.0, 0.8, 0.2, '#redf'); sfx(21.0, 'boom2', 0.8); shake(21.0, 20, 0.4); sfx(21.0, 'glitch', 0.5);
+slam('#f-tag', 21.0, 2, 0, 0.2);
+tl.fromTo('#f-a', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3, immediateRender: true }, 21.25);
+[[21.45, 1], [21.5, 0.1], [21.56, 1], [21.62, 0.2], [21.72, 1], [22.4, 0.3], [22.45, 1]].forEach(([t, o]) => tl.set('#f-b', { opacity: o }, t));
+tl.set('#f-b', { opacity: 0 }, 21.0);
+sfx(21.45, 'buzz', 0.7);
+tl.fromTo('#f-y', { opacity: 0, letterSpacing: '1.2em' }, { opacity: 1, letterSpacing: '.42em', duration: 0.5, immediateRender: true }, 22.0); sfx(22.0, 'hit', 0.5);
+tl.fromTo('#f-pol', { y: 1400, rotation: 25 }, { y: 0, rotation: 5, duration: 0.42, ease: 'back.out(1.2)', immediateRender: true }, 23.0);
+flash(23.12, 0.9, 0.25); sfx(23.1, 'camera', 1.0);
+typewriter('#tw5', 23.55, 16);
+tl.to('#f-pol', { rotation: 3, scale: 1.03, duration: 1.5, ease: 'none' }, 23.45);
+glitch('#s6', 24.72, 25.0, 1.4); sfx(24.72, 'glitch', 0.8);
+hide('#s6', 25.0);
+
+// 7 · hora y duración
+show('#s7', 25.0); flash(25.0, 0.5, 0.18); sfx(25.0, 'hit', 0.8); shake(25.0, 16, 0.35);
+slam('#hr-tag', 25.0, 2, -2, 0.2);
+tl.fromTo('#hr-t', { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.2, immediateRender: true }, 25.05);
+tl.fromTo('#hr-col', { y: 0 }, { y: -1600, duration: 0.55, ease: 'power3.out', immediateRender: true }, 25.05);
+for (let t = 25.5; t < 28; t += 0.5) sfx(t, 'tick', t % 1 === 0 ? 1 : 0.7);
+slam('#du-tag', 26.5, 2, -2, 0.2); sfx(26.5, 'stamp', 0.8); shake(26.5, 12, 0.3);
+tl.fromTo('#du-t', { opacity: 0, scale: 1.8 }, { opacity: 1, scale: 1, duration: 0.22, ease: 'power4.in', immediateRender: true, transformOrigin: 'left center' }, 26.6);
+tl.fromTo('#du-s', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, immediateRender: true }, 27.0);
+glitch('#s7', 27.82, 28.0, 1.2);
+hide('#s7', 28.0);
+
+// 8 · precio
+show('#s8', 28.0); sfx(28.0, 'hit', 0.9); shake(28.0, 20, 0.35);
+tl.fromTo('#tp1', { x: 1500 }, { x: 0, duration: 0.25, ease: 'power3.out', immediateRender: true }, 28.0);
+tl.fromTo('#tp2', { x: -1500 }, { x: 0, duration: 0.25, ease: 'power3.out', immediateRender: true }, 28.08);
+sfx(28.0, 'whoosh', 0.8); sfx(28.08, 'whoosh', 0.6);
+tl.fromTo('#tp1t', { x: 0 }, { x: -300, duration: 3, ease: 'none', immediateRender: true }, 28.0);
+tl.fromTo('#tp2t', { x: -300 }, { x: 0, duration: 3, ease: 'none', immediateRender: true }, 28.0);
+tl.fromTo('#pr .st', { scale: 3, opacity: 0, rotation: 8 }, { scale: 1, opacity: 1, rotation: -8, duration: 0.2, ease: 'power4.in', immediateRender: true }, 28.3);
+sfx(28.5, 'stamp', 1.0); sfx(28.5, 'boom2', 0.6); shake(28.5, 26, 0.4);
+tl.fromTo('#pr-s', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, immediateRender: true }, 28.75);
+tl.fromTo('#atr', { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: true }, 29.5);
+[[29.6, 0.2], [29.66, 1], [29.9, 0.3], [29.95, 1], [30.3, 0.1], [30.36, 1]].forEach(([t, o]) => tl.set('#atr', { opacity: o }, t));
+tl.to('#atr', { color: '#E01B24', scale: 1.08, duration: 1.2, ease: 'none' }, 29.5);
+sfx(29.5, 'whisper', 0.9);
+glitch('#s8', 30.55, 30.9, 1.6); sfx(30.55, 'glitch', 0.9);
+tl.to('#s8', { opacity: 0, duration: 0.1 }, 30.8);
+hide('#s8', 30.92);
+tl.to('#scrim', { opacity: 0, duration: 0.1 }, 30.9);
+
+// 9 · e-card
+show('#s9', 31.0); flash(31.0, 1, 0.45); sfx(31.0, 'boom', 1.0); sfx(31.0, 'paper', 1.0); shake(31.0, 40, 0.7);
+tl.fromTo('#ecard', { scale: 1.9, rotation: -14, opacity: 0 }, { scale: 1, rotation: -1.5, opacity: 1, duration: 0.3, ease: 'power4.in', immediateRender: true }, 31.0);
+tl.to('#ecard', { scale: 1.035, rotation: -0.5, duration: 3.7, ease: 'none' }, 31.3);
+// letras de nota de rescate
+const RN = 'APARTA TU LUGAR';
+const fonts = ["400 84px Anton", "400 92px Pirata", "400 84px Dirt", "900 italic 84px Playfair", "400 84px Elite", "700 80px Oswald", "400 88px Wet"];
+const pal = [['#F5E31B', '#0d0b0a'], ['#ECE4CF', '#0d0b0a'], ['#0d0b0a', '#F5E31B'], ['#E01B24', '#fff'], ['#fff', '#E01B24'], ['#0d0b0a', '#fff']];
+let li = 0, rnHtml = '';
+for (const c of RN) {
+  if (c === ' ') { rnHtml += li === 6 ? '<span class="sp"></span>' : '<span style="display:inline-block;width:30px"></span>'; continue; }
+  const f = fonts[Math.floor(hash(li * 3.3 + 1) * fonts.length)], p = pal[Math.floor(hash(li * 5.7 + 2) * pal.length)];
+  const rot = ((hash(li * 9.1) - 0.5) * 16).toFixed(1), dy = ((hash(li * 2.2) - 0.5) * 18).toFixed(0);
+  rnHtml += `<span class="lt" style="font:${f};background:${p[0]};color:${p[1]};transform:translateY(${dy}px) rotate(${rot}deg)">${c}</span>`;
+  li++;
+}
+$('#rn').innerHTML = rnHtml;
+tl.fromTo('#rn .lt', { scale: 2.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.12, ease: 'power3.in', stagger: 0.065, immediateRender: true }, 32.0);
+for (let k = 0; k < 13; k++) sfx(32.0 + k * 0.065 + 0.1, 'snip', 0.6 + hash(k) * 0.3);
+tl.fromTo('#dm .pill', { scale: 0, rotation: -20 }, { scale: 1, rotation: -2, duration: 0.35, ease: 'back.out(2.2)', immediateRender: true }, 33.1);
+sfx(33.1, 'hit', 0.9); shake(33.1, 14, 0.3);
+tl.to('#dm .pill', { scale: 1.06, duration: 0.25, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 33.5);
+tl.to('#fadeout', { opacity: 1, duration: 0.35, ease: 'power1.in' }, TOTAL - 0.35);
+
+// la línea de tiempo dura exactamente TOTAL
+tl.set({}, {}, TOTAL);
+
+window.SFX = SFX; window.SHAKES = SHAKES; window.TOTAL = TOTAL; window.FPS = FPS;
+window.seek = (time) => { tl.seek(time, false); updateTW(time); updateGL(time); updateFlicker(time); };
+window.ready = Promise.all([document.fonts.ready, ...[...document.images].map(i => i.decode().catch(() => 0))]);
+window.seek(0);
+</script>
+</body>
+</html>

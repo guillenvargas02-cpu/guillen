@@ -10,3 +10,4 @@ __pycache__/
 reel/renders/*.mp4
 teaser/.hyperframes/
 teaser/renders/
+leyendas/renders/
