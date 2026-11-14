@@ -22,3 +22,13 @@ python3 build.py visual:1 final   # pasada rápida a 1080×1920
 Identidad (Manual SOMOS 2026): Rosa Cívico `#E4007C`; logotipo rosa sobre blanco; sobre rosa u oscuro, dentro
 de la pleca blanca; nunca logotipo blanco sobre rosa. Bernino Sans (Adobe Fonts) se sustituye por Fira Sans y se
 usa Hind Siliguri como secundaria. Cada foto, video, sticker y transición aparece una sola vez.
+
+## Propuesta 2 · teaser
+
+`teaser.html` es un teaser de la primera sesión: montaje al ritmo (cortes cada 0.5 s y ráfagas de 0.25 s), casi sin
+texto. Las tomas están en `teaser.json`; `tools/teaser_footage.py` junta esos tramos en
+`assets/clips/teaser-footage.mp4` y `tools/sfx_teaser.py` hace sus efectos.
+
+```bash
+python3 build_teaser.py     # frames sfx audio visual final -> renders/somos-taller-teaser.mp4
+```

@@ -225,23 +225,25 @@ EVENTS = [
 ]
 
 
-def main():
-    n = int(DUR * SR) + SR
+def main(events=None, out=None, dur=DUR):
+    events = EVENTS if events is None else events
+    out = OUT if out is None else out
+    n = int(dur * SR) + SR
     L = np.zeros(n)
     R = np.zeros(n)
-    for t0, x, pan in EVENTS:
+    for t0, x, pan in events:
         i = int(t0 * SR)
         x = x[: n - i]
         gl, gr = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
         L[i:i + len(x)] += x * gl * 1.41
         R[i:i + len(x)] += x * gr * 1.41
-    st = np.stack([L, R], 1)[: int(DUR * SR)]
+    st = np.stack([L, R], 1)[: int(dur * SR)]
     st = np.tanh(st * 1.1) / np.tanh(1.1)  # limitador suave
-    OUT.parent.mkdir(exist_ok=True)
-    with wave.open(str(OUT), "wb") as w:
+    out.parent.mkdir(exist_ok=True)
+    with wave.open(str(out), "wb") as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((np.clip(st, -1, 1) * 32767).astype(np.int16).tobytes())
-    print(OUT, f"{len(EVENTS)} efectos")
+    print(out, f"{len(events)} efectos")
 
 
 if __name__ == "__main__":

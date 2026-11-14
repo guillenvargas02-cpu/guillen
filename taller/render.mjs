@@ -22,7 +22,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(p).pipe(res);
 });
 await new Promise(r => server.listen(0, "127.0.0.1", r));
-const url = `http://127.0.0.1:${server.address().port}/index.html`;
+const url = `http://127.0.0.1:${server.address().port}/${args.page || "index.html"}`;
 
 const browser = await chromium.launch({ args: ["--disable-web-security", "--font-render-hinting=none"] });
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: scale });
@@ -36,7 +36,7 @@ fs.mkdirSync(path.join(ROOT, "renders"), { recursive: true });
 if (args.snap) {
   for (const t of String(args.snap).split(",").map(Number)) {
     await page.evaluate(t => window.__seek(t), t);
-    const f = path.join(ROOT, "renders", `snap-${t.toFixed(2)}.png`);
+    const f = path.join(ROOT, "renders", `${args.prefix || "snap"}-${t.toFixed(2)}.png`);
     await stage.screenshot({ path: f }); console.log(f);
   }
 } else {

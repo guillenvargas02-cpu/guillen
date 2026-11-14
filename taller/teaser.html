@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>SOMOS · Comunicación Política en Acción · Teaser</title>
+<!--
+  Propuesta 2: teaser de la primera sesión (29.5 s, 1080x1920 CSS px, se renderiza a 2160x3840).
+  Montaje al ritmo de la música (120 BPM: cortes cada 0.5 s y ráfagas de 0.25 s), poco texto.
+  Las tomas viven en teaser.json; los cuadros de video en .cache/teaser/00001.jpg… (build_teaser.py frames).
+  Identidad (Manual SOMOS 2026): Rosa Cívico #E4007C; logotipo rosa sobre blanco con lema al cierre.
+-->
+<style>
+@font-face { font-family: "Archivo"; src: url(assets/fonts/archivo-latin-wdth-normal.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
+@font-face { font-family: "Archivo"; src: url(assets/fonts/archivo-latin-wdth-italic.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-600-normal.woff2); font-weight: 600; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-700-normal.woff2); font-weight: 700; }
+:root { --rosa: #E4007C; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; color: #fff; font-family: "Fira", sans-serif; -webkit-font-smoothing: antialiased; }
+#world { position: absolute; inset: 0; }
+.layer { position: absolute; inset: 0; overflow: hidden; }
+.cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.big { font-family: "Archivo"; font-weight: 900; font-style: italic; font-stretch: 100%; text-transform: uppercase; line-height: .86; letter-spacing: -.02em; white-space: nowrap; }
+.scene { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
+
+/* tomas */
+#shotImg { transform-origin: 50% 50%; }
+#vig { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.38) 100%); }
+#shade { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.7)); opacity: 0; }
+#shotTxt { position: absolute; left: 0; right: 0; top: 50%; text-align: center; color: #fff; font-size: 300px; transform: translateY(-50%);
+  text-shadow: 0 20px 60px rgba(0,0,0,.45); }
+#split .band { position: absolute; left: 0; right: 0; height: 640px; overflow: hidden; }
+#split .band img { filter: contrast(1.14) saturate(1.12) brightness(.95); position: absolute; left: 0; top: 50%; width: 1080px; height: 1920px; object-fit: cover; transform: translateY(-50%); }
+#split .sep { position: absolute; left: 0; right: 0; height: 10px; background: var(--rosa); z-index: 2; }
+#word { display: flex; align-items: center; justify-content: center; }
+#wordTxt { position: absolute; inset: 0; font-stretch: 72%; font-style: normal; line-height: .84; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  -webkit-background-clip: text; background-clip: text; color: transparent; background-size: cover; background-position: center; }
+#wordTxt span { display: block; }
+#icons { position: absolute; inset: 0; }
+.tile { position: absolute; left: 0; top: 0; width: 180px; height: 180px; margin: -90px; border-radius: 46px; display: flex; align-items: center; justify-content: center;
+  background: rgba(228,0,124,.92); box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.4); }
+.tile svg { width: 92px; height: 92px; fill: #fff; }
+
+/* La primera sesión */
+#primera { background: var(--rosa); }
+#pr1, #pr2 { position: absolute; left: 0; right: 0; text-align: center; }
+#pr1 { top: 700px; color: #fff; } #pr2 { top: 900px; color: #111; }
+
+/* Cartel */
+#poster { background: var(--rosa); }
+#po-com { position: absolute; left: 0; right: 0; top: 560px; text-align: center; color: #fff; }
+#po-pol { position: absolute; left: 0; right: 0; top: 720px; text-align: center; color: #111; }
+#po-acc { position: absolute; left: 150px; top: 960px; width: 780px; height: 170px; transform: rotate(-4deg); }
+#po-acc .box { position: absolute; inset: 0; background: #fff; transform-origin: left center; }
+#po-acc .txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--rosa); font-size: 128px; overflow: hidden; }
+#po-lines { position: absolute; left: 935px; top: 940px; width: 140px; height: 200px; }
+#po-lines i { position: absolute; left: 0; height: 13px; border-radius: 7px; background: #fff; transform-origin: left center; }
+#po-mic { position: absolute; left: -160px; top: 1250px; width: 560px; filter: drop-shadow(0 24px 40px rgba(0,0,0,.35)); }
+
+/* Esto apenas comienza */
+#hero { visibility: hidden; }
+#he1, #he2 { position: absolute; left: 66px; right: 66px; }
+#he1 { top: 1300px; color: #fff; } #he2 { top: 1440px; color: var(--rosa); }
+.ln { display: block; overflow: hidden; padding: .08em .12em .04em; margin: -.08em -.12em -.04em; }
+.ch { display: inline-block; }
+
+/* Cierre */
+#end1 { background: var(--rosa); }
+#imp { position: absolute; left: 90px; top: 715px; width: 900px; height: 450px; background: url(assets/brand/somos-impacto-white.png) center / contain no-repeat; }
+#end2 { background: #fff; color: #111; }
+#lema { position: absolute; left: 200px; top: 620px; width: 680px; height: 223px; background: url(assets/brand/somos-lema.png) center / contain no-repeat; }
+#sig { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; align-items: center; gap: 22px; font-family: "Fira"; font-weight: 600; font-size: 46px; }
+#sig .ig { width: 74px; height: 74px; border-radius: 21px; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+#sig .ig svg { width: 44px; height: 44px; fill: #fff; }
+.handles { position: absolute; left: 0; right: 0; top: 1170px; text-align: center; font-family: "Fira"; font-weight: 700; font-size: 64px; line-height: 1.3; }
+.handles span { display: block; } .handles i { font-style: normal; color: var(--rosa); }
+#wipe { position: absolute; top: -20%; height: 140%; width: 160%; left: -30%; background: #fff; }
+
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+#grain { position: absolute; inset: 0; width: 1080px; height: 1920px; mix-blend-mode: overlay; opacity: .12; }
+</style>
+</head>
+<body>
+<div id="stage">
+ <div id="world">
+  <div class="layer" id="shot"><img id="shotImg" class="cover" alt=""><div id="vig"></div><div id="shade"></div><div id="shotTxt" class="big"></div><div id="icons"></div></div>
+  <div class="layer" id="split" style="visibility:hidden">
+    <div class="band" style="top:0"><img alt=""></div><div class="sep" style="top:635px"></div>
+    <div class="band" style="top:640px"><img alt=""></div><div class="sep" style="top:1275px"></div>
+    <div class="band" style="top:1280px"><img alt=""></div>
+  </div>
+  <div class="layer" id="word" style="visibility:hidden">
+    <svg id="wordSvg" width="1080" height="1920" viewBox="0 0 1080 1920">
+      <defs><mask id="wm" maskUnits="userSpaceOnUse" x="0" y="0" width="1080" height="1920"><rect width="1080" height="1920" fill="#000"/><g id="wordG" transform="rotate(-90 540 960)"></g></mask></defs>
+      <image id="wordImg" x="0" y="0" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" mask="url(#wm)"/>
+    </svg>
+  </div>
+
+  <section class="scene" id="primera">
+    <div id="pr1" class="big fit" data-w="960"><span class="ln">LA PRIMERA</span></div>
+    <div id="pr2" class="big fit" data-w="900"><span class="ln">SESIÓN</span></div>
+  </section>
+
+  <section class="scene" id="poster">
+    <img id="po-mic" src="assets/stickers/microfono.png" alt="">
+    <div id="po-com" class="big fit" data-w="940" style="font-style:normal;font-stretch:92%"><span class="ln">COMUNICACIÓN</span></div>
+    <div id="po-pol" class="big fit" data-w="950" style="font-style:normal;font-stretch:92%"><span class="ln">POLÍTICA</span></div>
+    <div id="po-acc"><div class="box"></div><div class="txt big"><span class="ln"><span id="acc">EN ACCIÓN</span></span></div></div>
+    <div id="po-lines"><i style="top:22px;width:105px;transform:rotate(-28deg)"></i><i style="top:92px;width:120px"></i><i style="top:162px;width:105px;transform:rotate(28deg)"></i></div>
+  </section>
+
+  <div class="layer" id="hero">
+    <div id="he1" class="big fit" data-w="900"><span class="ln">ESTO APENAS</span></div>
+    <div id="he2" class="big fit" data-w="760"><span class="ln">COMIENZA.</span></div>
+  </div>
+
+  <section class="scene" id="end1"><div id="imp"></div></section>
+  <section class="scene" id="end2">
+    <div id="lema"></div>
+    <div id="sig"><span class="ig" id="igIcon"></span><span>Síguenos en Instagram</span></div>
+    <div class="handles"><span id="h1"><i>@</i>somosimpactocdmx</span><span id="h2"><i>@</i>somos_mh</span></div>
+  </section>
+ </div>
+ <div id="wipe"></div>
+ <canvas id="grain" width="540" height="960"></canvas>
+ <div id="flash"></div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(() => {
+const FPS = 30, DUR = 29.5;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const ICONS = ["instagram", "tiktok", "facebook", "youtube", "x", "whatsapp"];
+let SHOTS = [];
+
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const easeOut = x => 1 - Math.pow(1 - clamp(x), 3);
+const backOut = x => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+function splitChars(el) { const t = el.textContent; el.textContent = ""; for (const c of t) { const s = document.createElement("span"); s.className = "ch"; s.textContent = c === " " ? " " : c; el.appendChild(s); } return [...el.children]; }
+function fitEl(el, max) { el.style.transform = "none"; el.style.fontSize = "200px"; const r = document.createRange(); r.selectNodeContents(el); const w = r.getBoundingClientRect().width; el.style.fontSize = (200 * max / w).toFixed(1) + "px"; }
+
+async function init() {
+  const data = await (await fetch("teaser.json")).json();
+  SHOTS = data.shots;
+  // índice global de cuadros: mismo orden que tools/teaser_footage.py
+  let frame = 1;
+  for (const s of SHOTS) {
+    const parts = s.split ? s.split : (s.v ? [s] : []);
+    s.win = parts.map(p => { const n = Math.round(s.d * (s.sp || 1) * FPS) + 1; const w = { start: frame, n }; frame += n; return w; });
+  }
+  await document.fonts.ready;
+  for (const f of ["900 100px Archivo", "italic 900 100px Archivo", "600 50px Fira", "700 50px Fira"]) await document.fonts.load(f);
+  $$(".fit").forEach(el => fitEl(el, +el.dataset.w));
+  for (const k of ICONS) { const d = document.createElement("div"); d.className = "tile"; d.innerHTML = await (await fetch(`assets/icons/${k}.svg`)).text(); $("#icons").appendChild(d); }
+  $("#igIcon").innerHTML = await (await fetch("assets/icons/instagram.svg")).text();
+  buildGrain();
+  await Promise.all(["assets/stickers/microfono.png", "assets/brand/somos-impacto-white.png", "assets/brand/somos-lema.png",
+    ...SHOTS.filter(s => s.p).map(s => `assets/photos/${s.p}.jpg`)].map(u => { const i = new Image(); i.src = u; return i.decode().catch(() => {}); }));
+  build();
+  window.__ready = true;
+}
+
+const grainFrames = [];
+function buildGrain() {
+  const g = $("#grain").getContext("2d"), r = mulberry(42);
+  for (let k = 0; k < 6; k++) { const id = g.createImageData(540, 960); for (let i = 0; i < id.data.length; i += 4) { const v = 128 + (r() - .5) * 120; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; } grainFrames.push(id); }
+}
+
+let tl;
+function build() {
+  gsap.defaults({ ease: "expo.out" });
+  tl = gsap.timeline({ paused: true });
+  const show = (sel, a, b) => { tl.set(sel, { visibility: "visible" }, a); if (b !== undefined) tl.set(sel, { visibility: "hidden" }, b); };
+
+  // LA PRIMERA SESIÓN · 1.5–2.5
+  show("#primera", 1.5, 2.5);
+  gsap.set("#pr1 .ln", { xPercent: -110, skewX: 12 }); gsap.set("#pr2 .ln", { xPercent: 110, skewX: 12 });
+  tl.to("#pr1 .ln", { xPercent: 0, skewX: 0, duration: .45 }, 1.5).to("#pr2 .ln", { xPercent: 0, skewX: 0, duration: .45 }, 1.6)
+    .to("#primera", { scale: 1.08, duration: 1.0, ease: "none" }, 1.5);
+
+  // CARTEL · 4.0–5.5 (drop)
+  show("#poster", 4.0, 5.5);
+  gsap.set("#po-com", { scale: 1.8, opacity: 0 }); gsap.set("#po-pol", { scale: 1.8, opacity: 0 });
+  gsap.set("#po-acc .box", { scaleX: 0 }); gsap.set("#acc", { display: "inline-block", xPercent: -110 });
+  gsap.set("#po-lines i", { scaleX: 0 }); gsap.set("#po-mic", { x: -480, y: 420, rotation: 0 });
+  tl.to("#po-com", { scale: 1, opacity: 1, duration: .3 }, 4.0)
+    .to("#po-pol", { scale: 1, opacity: 1, duration: .3 }, 4.25)
+    .to("#po-acc .box", { scaleX: 1, duration: .25, ease: "expo.inOut" }, 4.5)
+    .to("#acc", { xPercent: 0, duration: .35 }, 4.6)
+    .to("#po-lines i", { scaleX: 1, duration: .3, stagger: .04, ease: "back.out(3)" }, 4.7)
+    .to("#po-mic", { x: 0, y: 0, rotation: 22, duration: .6 }, 4.5)
+    .to("#poster", { scale: 7, transformOrigin: "50% 55%", duration: .32, ease: "power3.in" }, 5.18);
+
+  // ESTO APENAS COMIENZA · 24.0–26.0
+  tl.set("#hero", { visibility: "visible" }, 24.0).set("#hero", { visibility: "hidden" }, 26.0);
+  const h1 = splitChars($("#he1 .ln")), h2 = splitChars($("#he2 .ln"));
+  gsap.set([...h1, ...h2], { yPercent: 120 });
+  tl.to(h1, { yPercent: 0, duration: .6, stagger: .03 }, 24.05).to(h2, { yPercent: 0, duration: .6, stagger: .035 }, 24.5);
+
+  // CIERRE · 26.0 SOMOS Impacto · 27.0 logotipo con lema e Instagram
+  show("#end1", 26.0, 27.0);
+  gsap.set("#imp", { scale: 1.5, opacity: 0 });
+  tl.to("#imp", { scale: 1, opacity: 1, duration: .45 }, 26.0).to("#imp", { scale: 1.05, duration: .55, ease: "none" }, 26.45);
+  gsap.set("#wipe", { skewX: -14, xPercent: -130 });
+  tl.to("#wipe", { xPercent: 0, duration: .25, ease: "power3.in" }, 26.75).to("#wipe", { xPercent: 130, duration: .4, ease: "power3.out" }, 27.0);
+  show("#end2", 27.0);
+  gsap.set("#lema", { scale: .9, opacity: 0 }); gsap.set("#sig", { opacity: 0, y: 24 }); gsap.set("#igIcon", { scale: 0, rotation: -20 });
+  gsap.set(["#h1", "#h2"], { opacity: 0, y: 30 });
+  tl.to("#lema", { scale: 1, opacity: 1, duration: .8 }, 27.05)
+    .to("#sig", { opacity: 1, y: 0, duration: .6 }, 27.35).to("#igIcon", { scale: 1, rotation: 0, duration: .5, ease: "back.out(2.4)" }, 27.4)
+    .to("#h1", { opacity: 1, y: 0, duration: .6 }, 27.55).to("#h2", { opacity: 1, y: 0, duration: .6 }, 27.7)
+    .to("#end2", { scale: 1.02, duration: 2.4, ease: "none" }, 27.1);
+  tl.set({}, {}, DUR);
+}
+
+const frameUrl = f => `.cache/teaser/${String(f).padStart(5, "0")}.jpg`;
+const cache = {};
+function load(url) { if (!cache[url]) { const i = new Image(); i.src = url; cache[url] = i.decode().then(() => i).catch(() => i); } return cache[url]; }
+async function setImg(el, url) { if (el.dataset.src === url) return; el.dataset.src = url; await load(url); el.src = url; await el.decode().catch(() => {}); }
+function frameOf(s, w, t) { return w.start + Math.min(w.n - 1, Math.floor((t - s.t0) * (s.sp || 1) * FPS)); }
+
+async function renderShots(t) {
+  const s = SHOTS.find(s => t >= s.t0 && t < s.t0 + s.d);
+  const jobs = [];
+  $("#split").style.visibility = s && s.split ? "visible" : "hidden";
+  $("#word").style.visibility = s && s.word ? "visible" : "hidden";
+  $("#shot").style.visibility = s && !s.split && !s.word ? "visible" : "hidden";
+  $$(".tile").forEach(e => e.style.opacity = 0);
+  if (!s) return;
+  const k = SHOTS.indexOf(s), p = (t - s.t0) / s.d, since = t - s.t0;
+  if (s.split) {
+    $$("#split .band").forEach((b, i) => {
+      const img = b.querySelector("img");
+      jobs.push(setImg(img, frameUrl(frameOf(s, s.win[i], t))));
+      const e = easeOut((since - i * .07) / .3);
+      b.style.transform = `translateX(${((i % 2 ? 1 : -1) * 1080 * (1 - e)).toFixed(1)}px)`;
+      img.style.transform = `translateY(-50%) scale(${(1.08 - .06 * p).toFixed(4)})`;
+    });
+  } else if (s.word) {
+    // palabra girada a lo largo de la pantalla; el video queda derecho dentro de las letras
+    $("#word").style.background = s.bg;
+    const g = $("#wordG");
+    if (g.dataset.word !== s.word) {
+      g.dataset.word = s.word;
+      const lines = s.word.split("|"), fs = lines.length > 1 ? 470 : 640, gap = fs * .86;
+      g.innerHTML = lines.map((l, i) => `<text x="540" y="${(960 + fs * .36 + (i - (lines.length - 1) / 2) * gap).toFixed(0)}" text-anchor="middle" textLength="1780" lengthAdjust="spacingAndGlyphs"
+        style="font-family:Archivo;font-weight:900;font-stretch:80%;font-size:${fs}px;fill:#fff">${l}</text>`).join("");
+    }
+    const url = frameUrl(frameOf(s, s.win[0], t)); await load(url);
+    $("#wordImg").setAttribute("href", url);
+    $("#wordImg").style.filter = s.bg === "#fff" ? "brightness(.72) contrast(1.25)" : s.bg === "#000" ? "brightness(1.4) contrast(1.05)" : "brightness(1.15)";
+    const e = easeOut(since / .3);
+    g.setAttribute("transform", `rotate(-90 540 960) translate(540 960) scale(${(1.3 - .3 * e + .05 * p).toFixed(4)}) translate(-540 -960)`);
+  } else {
+    const img = $("#shotImg");
+    jobs.push(setImg(img, s.p ? `assets/photos/${s.p}.jpg` : frameUrl(frameOf(s, s.win[0], t))));
+    const punch = 1 + .14 * (1 - easeOut(since / .35));
+    const dir = k % 2 ? 1 : -1;
+    img.style.transform = `scale(${(punch * (1.03 + .05 * p)).toFixed(4)}) translateX(${(dir * 18 * p).toFixed(1)}px)`;
+    img.style.filter = s.d <= .25 ? "contrast(1.22) saturate(1.18) brightness(.94)" : "contrast(1.14) saturate(1.12) brightness(.95)";
+    const txt = $("#shotTxt");
+    if (s.txt) {
+      if (txt.dataset.t !== s.txt) { txt.dataset.t = s.txt; txt.textContent = s.txt; txt.style.fontSize = "300px"; const w = txt.scrollWidth; if (w > 980) txt.style.fontSize = (300 * 980 / w).toFixed(0) + "px"; }
+      const e = easeOut(since / .14);
+      txt.style.opacity = 1; txt.style.transform = `translateY(-50%) scale(${(1.4 - .4 * e).toFixed(3)})`;
+    } else txt.style.opacity = 0;
+    $("#shade").style.opacity = (t >= 24 && t < 26) ? 1 : 0;
+    if (s.icons) {
+      $$(".tile").forEach((el, i) => {
+        const a = backOut((since - .05 - i * .05) / .45);
+        const ang = -Math.PI / 2 + i * Math.PI / 3 + since * .35;
+        const r = 360 * a;
+        el.style.opacity = clamp(a * 1.5).toFixed(3);
+        el.style.transform = `translate(${(540 + Math.cos(ang) * r).toFixed(1)}px, ${(960 + Math.sin(ang) * r * 1.15).toFixed(1)}px) scale(${(.5 + .5 * clamp(a)).toFixed(3)})`;
+      });
+    }
+  }
+  await Promise.all(jobs);
+}
+
+const FLASHES = [[0, .5, .25], [1.5, .6, .3], [4.0, 1, .35], [5.5, 1, .4], [7.5, .5, .2], [13.5, .6, .15], [20.0, .9, .45], [26.0, 1, .4]];
+const SHAKES = [[4.0, 18, .5], [4.25, 8, .2], [7.5, 6, .2], [20.0, 8, .35], [26.0, 16, .5]];
+function fx(t) {
+  let o = 0; for (const [a, pk, d] of FLASHES) if (t >= a && t < a + d) o = Math.max(o, pk * (1 - (t - a) / d));
+  $("#flash").style.opacity = o.toFixed(3);
+  let x = 0, y = 0; for (const [h, amp, d] of SHAKES) if (t >= h && t < h + d) { const k = (t - h) / d, e = amp * (1 - k) * (1 - k); x += Math.sin(t * 93) * e; y += Math.cos(t * 71) * e; }
+  // ráfagas de 0.25 s: pequeño latigazo lateral
+  const s = SHOTS.find(s => t >= s.t0 && t < s.t0 + s.d);
+  if (s && s.d <= .25) x += (SHOTS.indexOf(s) % 2 ? 1 : -1) * 40 * (1 - easeOut((t - s.t0) / .12));
+  $("#world").style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+  const c = $("#grain"); c.getContext("2d").putImageData(grainFrames[Math.round(t * FPS) % 6], 0, 0);
+  c.style.opacity = t >= 27 ? .04 : .12;
+}
+
+window.__seek = async t => {
+  tl.seek(t, false);
+  fx(t);
+  await renderShots(t);
+  const keys = Object.keys(cache); if (keys.length > 30) keys.slice(0, keys.length - 30).forEach(k => delete cache[k]);
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+};
+window.__duration = DUR;
+init();
+})();
+</script>
+</body>
+</html>
