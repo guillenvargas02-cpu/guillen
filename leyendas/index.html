@@ -42,24 +42,28 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
 .caret{position:absolute;width:.09em;height:1em;background:currentColor;top:0;left:0}
 
 /* --- 0 apertura --- */
-#s0 .tw{font:400 94px/1.12 Elite;color:#F1E9D4;left:100px;top:760px;
+#s0 .tw{font:400 94px/1.12 Elite;color:#F1E9D4;left:100px;top:840px;
   text-shadow:0 0 22px rgba(224,27,36,.75),0 0 2px rgba(255,255,255,.4)}
-#s0-file{left:0;right:0;top:300px;text-align:center;font:700 30px Courier Prime;letter-spacing:.42em;color:var(--r)}
+#s0-mr{left:0;right:0;top:330px;text-align:center}
+#s0-mr .b{display:block;font:400 112px/1 Anton;letter-spacing:.07em;color:#F1E9D4;padding-left:.07em;
+  text-shadow:0 0 26px rgba(224,27,36,.8),6px 6px 0 #000}
+#s0-mr .b::after{content:'';display:block;width:360px;height:6px;background:var(--r);margin:20px auto 0}
+#s0-mr .p{display:block;margin-top:18px;font:700 italic 70px/1 Playfair;color:var(--y);text-shadow:0 4px 18px #000}
 
 /* --- 1 título --- */
-#t-rec{left:0;right:0;top:420px;text-align:center}
+#t-rec{left:0;right:0;top:310px;text-align:center}
 #t-rec span{display:inline-block;background:var(--k);color:var(--y);font:700 36px/1 Oswald;letter-spacing:.4em;
   padding:16px 18px 16px 32px;transform:rotate(-2deg)}
-#t-ley{left:0;right:0;top:470px;text-align:center;font:400 262px/1 Pirata;color:var(--y);
+#t-ley{left:0;right:0;top:440px;text-align:center;font:400 262px/1 Pirata;color:var(--y);
   -webkit-text-stroke:5px var(--k);paint-order:stroke fill;text-shadow:12px 12px 0 var(--k),0 0 60px rgba(224,27,36,.55)}
 #t-ley span{display:inline-block}
 #t-cri{left:0;right:0;top:770px;text-align:center;font:400 150px/1 Wet;color:var(--r);
   text-shadow:6px 6px 0 var(--k),0 0 30px rgba(0,0,0,.8);transform:rotate(-3deg)}
-#t-fam{left:0;right:0;top:985px;text-align:center}
+#t-fam{left:0;right:0;top:1030px;text-align:center}
 #t-fam .band{display:inline-block;background:var(--y);padding:6px 46px 0;transform:rotate(-1.5deg) skewX(-6deg);
   box-shadow:12px 12px 0 var(--k)}
 #t-fam .band b{display:block;font:400 196px/1.02 Anton;color:var(--k);letter-spacing:.02em;transform:skewX(6deg)}
-#t-sub{left:60px;right:60px;top:1255px;text-align:center;font:700 italic 62px/1.22 Playfair;color:#fff;
+#t-sub{left:60px;right:60px;top:1335px;text-align:center;font:700 italic 62px/1.22 Playfair;color:#fff;
   text-shadow:0 4px 18px rgba(0,0,0,.9)}
 #t-sub .w{display:inline-block}
 .hl{position:relative;display:inline-block}
@@ -200,7 +204,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
 
   <!-- 0 · apertura (0–3) -->
   <div id="s0" class="gl">
-    <div id="s0-file" class="abs">CDMX · EXPEDIENTE Nº 41</div>
+    <div id="s0-mr" class="abs"><span class="b">MÉXICO RETRO</span><span class="p">presenta...</span></div>
     <div id="tw0" class="abs tw" data-text="Hay calles&#10;que no&#10;olvidan..."></div>
   </div>
 
@@ -397,11 +401,12 @@ const slam = (sel, t, from = 2.6, rot = 0, d = 0.28) => tl.fromTo(sel, { scale: 
   { scale: 1, opacity: 1, rotation: rot, filter: 'blur(0px)', duration: d, ease: 'power4.in', immediateRender: true }, t);
 
 // 0 · apertura (0–3)
-tl.fromTo('#s0-file', { opacity: 0, letterSpacing: '.9em' }, { opacity: 1, letterSpacing: '.42em', duration: 1.2 }, 0.1);
-typewriter('#tw0', 0.35, 11.5, { hideCaretAt: 2.45 });
+tl.fromTo('#s0-mr .p', { letterSpacing: '0em' }, { letterSpacing: '.06em', duration: 2.4, ease: 'none' }, 0);
+tl.fromTo('#s0-mr .b', { scale: 1 }, { scale: 1.05, duration: 2.6, ease: 'none' }, 0);
+typewriter('#tw0', 0.45, 18, { hideCaretAt: 2.6 });
 sfx(0.0, 'drone', 1);
-glitch('#s0', 2.42, 2.98, 1.2);
-sfx(2.42, 'glitch', 0.9);
+glitch('#s0', 2.6, 2.98, 1.2);
+sfx(2.6, 'glitch', 0.9);
 tl.to('#s0', { opacity: 0, duration: 0.12, ease: 'none' }, 2.86);
 hide('#s0', 2.99);
 sfx(2.2, 'reverse', 1);
