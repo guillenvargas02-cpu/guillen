@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>SOMOS · Comunicación Política en Acción · Taller</title>
+<!--
+  Video del taller (1080x1920 CSS px, 29.5 s, se renderiza a 2160x3840). Composición determinista:
+  window.__seek(t) deja listo el cuadro t. Cada foto, sticker y transición aparece una sola vez.
+  Identidad (Manual SOMOS 2026): Rosa Cívico #E4007C; logotipo rosa sobre blanco; sobre rosa u oscuro
+  dentro de la pleca blanca; nunca logo blanco sobre rosa. Bernino Sans -> Fira Sans (sustituto libre),
+  Hind Siliguri secundaria; titulares estilo cartel en Archivo.
+-->
+<style>
+@font-face { font-family: "Archivo"; src: url(assets/fonts/archivo-latin-wdth-normal.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
+@font-face { font-family: "Archivo"; src: url(assets/fonts/archivo-latin-wdth-italic.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-400-normal.woff2); font-weight: 400; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-500-normal.woff2); font-weight: 500; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-600-normal.woff2); font-weight: 600; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-700-normal.woff2); font-weight: 700; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-800-normal.woff2); font-weight: 800; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-700-italic.woff2); font-weight: 700; font-style: italic; }
+@font-face { font-family: "Fira"; src: url(assets/fonts/fira-sans-latin-800-italic.woff2); font-weight: 800; font-style: italic; }
+@font-face { font-family: "Hind"; src: url(assets/fonts/hind-siliguri-latin-400-normal.woff2); font-weight: 400; }
+@font-face { font-family: "Hind"; src: url(assets/fonts/hind-siliguri-latin-600-normal.woff2); font-weight: 600; }
+
+:root { --rosa: #E4007C; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; color: #fff;
+  font-family: "Fira", sans-serif; -webkit-font-smoothing: antialiased; }
+#world { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
+.abs { position: absolute; }
+.full { position: absolute; inset: 0; }
+.photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.title { font-family: "Archivo"; font-weight: 900; font-stretch: 92%; text-transform: uppercase; line-height: .9;
+  letter-spacing: -.01em; white-space: nowrap; }
+.line { display: block; overflow: hidden; padding: .07em .1em .03em; margin: -.07em -.1em -.03em; }
+.ch { display: inline-block; will-change: transform; }
+.num { position: absolute; left: 70px; font-family: "Archivo"; font-weight: 800; font-stretch: 100%; font-size: 34px; letter-spacing: .12em; display: flex; align-items: center; gap: 18px; }
+.num i { display: block; height: 3px; width: 90px; background: var(--rosa); transform-origin: left center; }
+.num em { font-style: normal; opacity: .65; }
+.sub { font-family: "Hind"; font-weight: 400; font-size: 46px; line-height: 1.22; }
+.sub b { font-family: "Fira"; font-weight: 700; }
+.kicker { font-family: "Hind"; font-weight: 600; font-size: 30px; letter-spacing: .32em; text-transform: uppercase; }
+.sticker { position: absolute; filter: drop-shadow(0 24px 40px rgba(0,0,0,.35)); }
+.grade { position: absolute; inset: 0; background:
+  linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.18) 28%, rgba(0,0,0,.2) 52%, rgba(0,0,0,.9) 80%, #000 100%); }
+.tint { position: absolute; inset: 0; background: linear-gradient(200deg, rgba(228,0,124,0) 45%, rgba(228,0,124,.32) 100%); mix-blend-mode: screen; }
+.ttl { position: absolute; left: 70px; right: 70px; }
+.sb { position: absolute; left: 70px; right: 90px; color: rgba(255,255,255,.9); }
+
+/* ── Intro ── */
+#halo { position: absolute; left: 540px; top: 900px; width: 1400px; height: 1400px; margin: -700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(228,0,124,.5) 0%, rgba(228,0,124,.12) 35%, rgba(228,0,124,0) 65%); }
+#beam { position: absolute; left: 540px; top: 900px; width: 760px; height: 4px; margin: -2px 0 0 -380px; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(228,0,124,0), #ff4fa8 20%, #fff 50%, #ff4fa8 80%, rgba(228,0,124,0)); box-shadow: 0 0 24px 4px rgba(228,0,124,.8); }
+#shock { position: absolute; left: 540px; top: 900px; width: 200px; height: 200px; margin: -100px; border-radius: 50%; border: 3px solid var(--rosa); }
+#pleca { position: absolute; left: 540px; top: 900px; width: 760px; transform: translate(-50%, -50%); }
+#pleca img { width: 100%; display: block; }
+#presenta { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; color: rgba(255,255,255,.8); }
+
+/* ── Cartel ── */
+#cartel { background: var(--rosa); }
+#c-sesion { left: 0; right: 0; top: 470px; text-align: center; color: #111; font-family: "Fira"; font-weight: 600; font-size: 48px; }
+#c-com { left: 0; right: 0; top: 560px; text-align: center; color: #fff; }
+#c-pol { left: 0; right: 0; top: 700px; text-align: center; color: #111; }
+#c-accion { left: 120px; top: 905px; width: 800px; height: 168px; transform: rotate(-4deg); }
+#c-accion .box { position: absolute; inset: 0; background: #fff; transform-origin: left center; }
+#c-accion .txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--rosa);
+  font-family: "Archivo"; font-weight: 900; font-style: italic; font-stretch: 100%; font-size: 132px; letter-spacing: -.02em; overflow: hidden; white-space: nowrap; }
+#c-lines { left: 905px; top: 885px; width: 140px; height: 200px; }
+#c-lines i { position: absolute; left: 0; height: 14px; border-radius: 7px; background: #fff; transform-origin: left center; }
+#c-taller { left: 0; right: 0; top: 1130px; text-align: center; color: #111; font-family: "Fira"; font-weight: 500; font-size: 37px; letter-spacing: .26em; line-height: 1.4; }
+#c-pill { left: 50%; top: 1268px; transform: translateX(-50%); background: #fff; color: #111; border-radius: 40px; padding: 14px 44px 12px;
+  font-family: "Fira"; font-weight: 700; font-size: 30px; letter-spacing: .2em; white-space: nowrap; }
+#c-mic { left: -150px; top: 1290px; width: 560px; }
+
+/* ── Ráfaga ── */
+.fw { position: absolute; left: 70px; right: 70px; bottom: 380px; color: #fff; font-size: 118px; }
+.fw .bar { display: block; width: 120px; height: 10px; background: var(--rosa); margin-bottom: 26px; }
+.fr { position: absolute; inset: 0; border: 0 solid var(--rosa); }
+
+/* ── 01 Comunicación ── */
+#rings { position: absolute; inset: 0; }
+.checks { position: absolute; left: 70px; top: 1410px; display: flex; gap: 16px; flex-wrap: wrap; width: 960px; }
+.checks span { font-family: "Fira"; font-weight: 600; font-size: 38px; padding: 12px 28px 12px 22px; border-radius: 40px; background: rgba(255,255,255,.12);
+  border: 2px solid rgba(255,255,255,.35); }
+.checks span:before { content: "✓ "; color: #ff5aa8; }
+
+/* ── 02 Redes ── */
+#icons { position: absolute; inset: 0; perspective: 1400px; }
+.tile { position: absolute; left: 0; top: 0; width: 200px; height: 200px; margin: -100px; border-radius: 50px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.45); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5); }
+.tile svg { width: 100px; height: 100px; fill: #fff; }
+#split-a, #split-b { position: absolute; top: 0; bottom: 0; overflow: hidden; }
+#split-a { left: 0; width: 540px; } #split-b { left: 540px; width: 540px; }
+#split-a .photo, #split-b .photo { width: 1080px; }
+#split-b .photo { left: -540px; }
+
+/* ── 03 Imagen ── */
+#vf { position: absolute; }
+#vf i { position: absolute; width: 64px; height: 64px; border-color: #fff; border-style: solid; border-width: 0; }
+#vf .a { left: 0; top: 0; border-left-width: 5px; border-top-width: 5px; }
+#vf .b { right: 0; top: 0; border-right-width: 5px; border-top-width: 5px; }
+#vf .c { left: 0; bottom: 0; border-left-width: 5px; border-bottom-width: 5px; }
+#vf .d { right: 0; bottom: 0; border-right-width: 5px; border-bottom-width: 5px; }
+#vf .dot { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px; border-radius: 50%; background: var(--rosa); }
+.hud { position: absolute; font-family: "Hind"; font-weight: 600; font-size: 26px; letter-spacing: .14em; color: rgba(255,255,255,.85); }
+.hud .rec { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--rosa); margin-right: 10px; vertical-align: 1px; }
+
+/* ── 04 Narrativa ── */
+#c4 { background: var(--rosa); }
+#ncard { position: absolute; left: 190px; top: 640px; width: 700px; height: 760px; background: #fff; padding: 18px; transform: rotate(-3deg);
+  box-shadow: 0 40px 80px rgba(80,0,40,.35); }
+#ncard div { width: 100%; height: 100%; background: url(assets/photos/narrativa.jpg) 50% 22% / 160% auto no-repeat; }
+#cursor { display: inline-block; width: .09em; height: .78em; background: #111; margin-left: .05em; vertical-align: -.02em; }
+
+/* ── 05 Impresiones ── */
+#c5 { background: #f4f4f4; color: #111; }
+#bars { position: absolute; left: 70px; right: 70px; bottom: 0; height: 560px; display: flex; align-items: flex-end; gap: 18px; opacity: .1; }
+#bars i { flex: 1; background: var(--rosa); transform-origin: bottom; }
+.card { position: absolute; border-radius: 48px; overflow: hidden; background: #ddd; box-shadow: 0 50px 90px rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.05); }
+#card-medir { left: 330px; top: 600px; width: 640px; height: 820px; }
+#card-medir div { width: 100%; height: 100%; background: url(assets/photos/medir.jpg) 50% 34% / 175% auto no-repeat; }
+#card-likes { left: 110px; top: 640px; width: 620px; height: 800px; }
+#card-likes img { position: absolute; left: 50%; top: 50%; width: 620px; height: 1102px; transform: translate(-50%, -50%); }
+
+/* ── Cierre ── */
+#close1 { background: var(--rosa); }
+#impacto { position: absolute; left: 90px; top: 640px; width: 900px; }
+#impacto div { position: absolute; inset: 0; background: url(assets/brand/somos-impacto-white.png) center / 100% 100% no-repeat; }
+#cierre-txt { position: absolute; left: 0; right: 0; top: 1240px; text-align: center; color: #fff; }
+#close2 { background: #fff; color: #111; }
+#lema { position: absolute; left: 200px; top: 500px; width: 680px; }
+#lema div { position: absolute; inset: 0; background: url(assets/brand/somos-lema.png) center / 100% 100% no-repeat; }
+#rule { position: absolute; left: 240px; right: 240px; top: 860px; height: 2px; background: #E4007C; transform-origin: center; }
+#sig { position: absolute; left: 0; right: 0; top: 925px; text-align: center; font-family: "Fira"; font-weight: 600; font-size: 50px; color: #111; }
+#socials { position: absolute; left: 0; right: 0; top: 1035px; display: flex; justify-content: center; gap: 44px; }
+.si { width: 128px; height: 128px; position: relative; display: flex; align-items: center; justify-content: center; }
+.si svg { position: absolute; }
+.si.ig { border-radius: 34px; background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.si.ig svg { width: 76px; height: 76px; fill: #fff; }
+.si.tt { border-radius: 34px; background: #000; }
+.si.tt svg { width: 70px; height: 70px; }
+.si.fb svg { width: 128px; height: 128px; fill: #0866FF; }
+.si.yt svg { width: 132px; height: 132px; fill: #FF0000; }
+.handles { position: absolute; left: 0; right: 0; top: 1240px; text-align: center; font-family: "Fira"; font-weight: 700; font-size: 62px; line-height: 1.32; color: #111; }
+.handles span { display: block; }
+.handles i { font-style: normal; color: var(--rosa); }
+
+/* ── Capa global ── */
+#wipes { position: absolute; inset: 0; pointer-events: none; }
+.wipe { position: absolute; top: -20%; height: 140%; width: 160%; left: -30%; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+#grain { position: absolute; inset: 0; width: 1080px; height: 1920px; mix-blend-mode: overlay; opacity: .3; }
+#vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%); }
+#glitch { position: absolute; inset: 0; }
+#glitch i { position: absolute; left: 0; right: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+ <div id="world">
+
+  <!-- Intro · 0–3.5: haz de luz que se abre en la pleca -->
+  <section class="scene" id="intro">
+    <div id="halo"></div><div id="shock"></div><div id="beam"></div>
+    <div id="pleca"><img src="assets/brand/somos-pleca.png" alt="SOMOS"></div>
+    <div id="presenta" class="kicker">presenta</div>
+  </section>
+
+  <!-- Cartel · 3.5–5.5 -->
+  <section class="scene" id="cartel">
+    <img id="c-mic" class="sticker abs" src="assets/stickers/microfono.png" alt="">
+    <div id="c-sesion" class="abs">Primera sesión</div>
+    <div id="c-com" class="abs title fit" data-w="960"><span class="line">COMUNICACIÓN</span></div>
+    <div id="c-pol" class="abs title fit" data-w="980"><span class="line">POLÍTICA</span></div>
+    <div id="c-accion" class="abs"><div class="box"></div><div class="txt"><span class="line"><span class="ch-wrap">EN ACCIÓN</span></span></div></div>
+    <div id="c-lines" class="abs"><i style="top:22px;width:110px;transform:rotate(-28deg)"></i><i style="top:92px;width:125px"></i><i style="top:162px;width:110px;transform:rotate(28deg)"></i></div>
+    <div id="c-taller" class="abs">TALLER TEÓRICO-PRÁCTICO<br>DE COMUNICACIÓN POLÍTICA</div>
+    <div id="c-pill" class="abs">DIRIGIDO A JÓVENES DE 18 A 34 AÑOS</div>
+  </section>
+
+  <!-- Ráfaga · 5.5–7.5 -->
+  <section class="scene" id="f1"><div class="photo" style="background-image:url(assets/photos/banner.jpg);background-position:50% 45%"></div><div class="grade"></div>
+    <div class="fw title"><i class="bar"></i>PRIMERA<br>SESIÓN</div><div class="fr"></div></section>
+  <section class="scene" id="f2"><div class="photo" style="background-image:url(assets/photos/apertura.jpg)"></div><div class="grade"></div>
+    <div class="fw title"><i class="bar"></i>PRESENCIA<br>PÚBLICA</div><div class="fr"></div></section>
+  <section class="scene" id="f3"><div class="photo" style="background-image:url(assets/photos/sala-impresion.jpg)"></div><div class="grade"></div>
+    <div class="fw title"><i class="bar"></i>TEORÍA<br>Y PRÁCTICA</div><div class="fr"></div></section>
+  <section class="scene" id="f4"><div class="photo" style="background-image:url(assets/photos/set-camara.jpg)"></div><div class="grade"></div>
+    <div class="fw title"><i class="bar"></i>14 DE<br>NOVIEMBRE</div><div class="fr"></div></section>
+  <section class="scene" id="zoombolt"><svg class="full" viewBox="0 0 1080 1920"><path id="bigBolt" d="M120 4 L30 178 L94 178 L64 316 L174 122 L110 122 L150 4 Z" fill="#E4007C"/></svg></section>
+
+  <!-- 01 Comunicación · 7.5–10.5 -->
+  <section class="scene" id="c1">
+    <div class="photo" id="p-diag" style="background-image:url(assets/photos/diagrama.jpg);background-position:50% 38%"></div>
+    <div class="photo" id="p-msj" style="background-image:url(assets/photos/buen-mensaje.jpg);background-position:50% 35%"></div>
+    <div class="grade"></div><div class="tint"></div>
+    <canvas id="rings" width="1080" height="1920"></canvas>
+    <img class="sticker" id="s-dialogo" src="assets/stickers/dialogo.png" style="left:300px;top:250px;width:520px" alt="">
+    <div class="num" style="top:1130px"><span>01</span><i></i><em>05</em></div>
+    <div class="ttl title fit" data-w="940" style="top:1195px"><span class="line">COMUNICACIÓN</span></div>
+    <div class="sb sub" id="sub1" style="top:1345px">Mensajes claros que <b>conectan.</b></div>
+    <div class="checks" id="checks"><span>Entendible</span><span>Memorable</span><span>Con emoción</span></div>
+  </section>
+
+  <!-- 02 Redes sociales · 10.5–14.0 -->
+  <section class="scene" id="c2">
+    <div class="full" id="celular"><img id="celImg" class="full" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+    <div id="split-a"><div class="photo" style="background-image:url(assets/photos/redes.jpg);background-position:50% 32%"></div></div>
+    <div id="split-b"><div class="photo" style="background-image:url(assets/photos/redes.jpg);background-position:50% 32%"></div></div>
+    <div class="grade"></div><div class="tint"></div>
+    <div class="num" style="top:300px"><span>02</span><i></i><em>05</em></div>
+    <div class="ttl title" style="top:365px;font-size:156px"><span class="line" id="l-redes"><span class="slab">REDES</span></span><span class="line" id="l-soc"><span class="slab">SOCIALES</span></span></div>
+    <div id="icons"></div>
+    <div class="sb sub" style="top:1500px">TikTok, Reels y video breve: <b>una estrategia para cada plataforma.</b></div>
+  </section>
+
+  <!-- 03 Imagen · 14.0–17.0 -->
+  <section class="scene" id="c3">
+    <div class="photo" id="p-img" style="background-image:url(assets/photos/imagen.jpg)"></div>
+    <div class="photo" id="p-pi" style="background-image:url(assets/photos/primera-impresion.jpg);opacity:0"></div>
+    <div class="grade" style="opacity:.9"></div>
+    <div id="vf"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i><span class="dot"></span></div>
+    <div class="hud" id="hud" style="left:70px;top:1590px"><span class="rec"></span>AF · ISO 400 · f/2.8 · 1/250</div>
+    <div class="num" style="top:300px"><span>03</span><i></i><em>05</em></div>
+    <div class="ttl title" id="t-img" style="top:365px;font-size:212px"><span class="line">IMAGEN</span></div>
+    <div class="sb sub" id="sub3" style="top:1660px">La primera impresión <b>también comunica.</b></div>
+  </section>
+
+  <!-- 04 Narrativa · 17.0–20.5 -->
+  <section class="scene" id="c4">
+    <div class="num" style="top:300px;color:#fff"><span>04</span><i style="background:#fff"></i><em>05</em></div>
+    <div class="ttl title" style="top:365px;font-size:138px;color:#fff"><span id="typed"></span><span id="cursor"></span></div>
+    <div id="ncard"><div></div></div>
+    <div class="sb" style="top:1480px;font-family:Fira;font-size:66px;line-height:1.1;color:#fff;font-weight:400">
+      <span class="line"><span class="nl">Historias que conectan.</span></span>
+      <span class="line"><span class="nl" style="font-weight:800">Ideas que movilizan.</span></span></div>
+  </section>
+
+  <!-- 05 Impresiones · 20.5–23.5 -->
+  <section class="scene" id="c5">
+    <div id="bars"></div>
+    <div class="num" style="top:300px;color:#111"><span>05</span><i></i><em>05</em></div>
+    <div class="ttl title fit" data-w="940" style="top:365px;color:#111"><span class="line">IMPRESIONES</span></div>
+    <div class="card" id="card-medir"><div></div></div>
+    <div class="card" id="card-likes"><img id="likeImg" alt=""></div>
+    <img class="sticker" id="s-rep" src="assets/stickers/reporte.png" style="left:640px;top:1190px;width:340px" alt="">
+    <div class="sb sub" style="top:1590px;color:#222">¿Se puede medir el <b style="color:#E4007C">impacto?</b></div>
+  </section>
+
+  <!-- Cierre · 23.5–26.4: SOMOS Impacto -->
+  <section class="scene" id="close1">
+    <div id="impacto"></div>
+    <div id="cierre-txt"><div class="kicker">Comunicación Política en Acción</div>
+      <div class="sub" style="font-size:36px;margin-top:14px;opacity:.92">Primera sesión · 14 de noviembre</div></div>
+  </section>
+  <!-- Cierre · 26.4–29.5: logotipo con lema y redes -->
+  <section class="scene" id="close2">
+    <div id="lema"></div>
+    <div id="rule"></div>
+    <div id="sig">Síguenos</div>
+    <div id="socials"></div>
+    <div class="handles"><span id="h1"><i>@</i>somosimpactocdmx</span><span id="h2"><i>@</i>somos_mh</span></div>
+  </section>
+ </div>
+
+ <div id="glitch"></div>
+ <div id="wipes">
+   <div class="wipe" id="w1" style="background:#E4007C"></div>
+   <div class="wipe" id="w2" style="background:#111"></div>
+   <div class="wipe" id="w3" style="background:#E4007C"></div>
+   <div class="wipe" id="w4" style="background:#fff"></div>
+ </div>
+ <div id="vignette"></div>
+ <canvas id="grain" width="540" height="960"></canvas>
+ <div id="flash"></div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(() => {
+const FPS = 30, DUR = 29.5;
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+const CAROUSEL = ["instagram", "facebook", "tiktok", "youtube", "x", "whatsapp", "threads"];
+
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function splitChars(el) {
+  const txt = el.textContent; el.textContent = "";
+  for (const c of txt) { const s = document.createElement("span"); s.className = "ch"; s.textContent = c === " " ? " " : c; el.appendChild(s); }
+  return [...el.children];
+}
+function fit(el) {
+  const max = +el.dataset.w; el.style.fontSize = "200px";
+  const w = el.querySelector(".line").scrollWidth; el.style.fontSize = (200 * max / w).toFixed(1) + "px";
+}
+const svgCache = {};
+async function svg(name) { return svgCache[name] ??= await (await fetch(`assets/icons/${name}.svg`)).text(); }
+
+async function init() {
+  await document.fonts.ready;
+  for (const f of ["900 100px Archivo", "italic 900 100px Archivo", "400 50px Fira", "700 50px Fira", "800 50px Fira", "400 50px Hind", "600 50px Hind"]) await document.fonts.load(f);
+  $$(".fit").forEach(fit);
+  // carrusel de redes (glifos blancos sobre vidrio)
+  for (const k of CAROUSEL) { const d = document.createElement("div"); d.className = "tile"; d.innerHTML = await svg(k); $("#icons").appendChild(d); }
+  // íconos oficiales del cierre
+  const so = $("#socials");
+  const ig = document.createElement("div"); ig.className = "si ig"; ig.innerHTML = await svg("instagram");
+  const tt = document.createElement("div"); tt.className = "si tt";
+  const tsvg = await svg("tiktok");
+  tt.innerHTML = [["#25F4EE", -3, -3], ["#FE2C55", 3, 3], ["#fff", 0, 0]].map(([c, x, y]) => tsvg.replace("<svg", `<svg style="fill:${c};transform:translate(${x}px,${y}px)"`)).join("");
+  const fb = document.createElement("div"); fb.className = "si fb"; fb.innerHTML = await svg("facebook");
+  const yt = document.createElement("div"); yt.className = "si yt"; yt.innerHTML = await svg("youtube");
+  [ig, tt, fb, yt].forEach(e => so.appendChild(e));
+  const r = mulberry(7);
+  for (let i = 0; i < 9; i++) { const b = document.createElement("i"); b.style.height = (25 + i * 8 + r() * 14) + "%"; $("#bars").appendChild(b); }
+  buildGrain();
+  await preload();
+  build();
+  window.__ready = true;
+}
+
+const grainFrames = [];
+function buildGrain() {
+  const g = $("#grain").getContext("2d"), r = mulberry(42);
+  for (let k = 0; k < 6; k++) {
+    const id = g.createImageData(540, 960);
+    for (let i = 0; i < id.data.length; i += 4) { const v = 128 + (r() - .5) * 120; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; }
+    grainFrames.push(id);
+  }
+}
+
+// Clips como secuencias de cuadros (seek exacto)
+const CLIPS = {
+  cel: { el: "#celImg", dir: ".cache/celular", t0: 12.1, t1: 14.0, off: 1.2, speed: 1.0, n: 184 },
+  likes: { el: "#likeImg", dir: ".cache/likes", t0: 20.5, t1: 23.5, off: 0.15, speed: 1.45, n: 140 },
+};
+const clipSrc = (c, t) => `${c.dir}/${String(Math.min(c.n, Math.max(1, 1 + Math.floor(((t - c.t0) * c.speed + c.off) * FPS)))).padStart(4, "0")}.jpg`;
+async function preload() {
+  const urls = new Set([...$$("img")].map(i => i.getAttribute("src")).filter(Boolean));
+  for (const el of $$("[style*='url(']")) { const m = el.getAttribute("style").match(/url\(([^)]+)\)/); if (m) urls.add(m[1]); }
+  urls.add("assets/photos/narrativa.jpg"); urls.add("assets/photos/medir.jpg");
+  urls.add("assets/brand/somos-impacto-white.png"); urls.add("assets/brand/somos-lema.png");
+  await Promise.all([...urls].map(s => { const i = new Image(); i.src = s; return i.decode().catch(() => {}); }));
+}
+
+let tl;
+function build() {
+  gsap.defaults({ ease: "expo.out" });
+  tl = gsap.timeline({ paused: true });
+  const show = (sel, a, b) => { tl.set(sel, { visibility: "visible" }, a); if (b !== undefined) tl.set(sel, { visibility: "hidden" }, b); };
+  const flash = (t, peak = 1, d = .4) => tl.to("#flash", { opacity: peak, duration: .02, ease: "none" }, t).to("#flash", { opacity: 0, duration: d, ease: "power2.out" }, t + .02);
+  const numIn = (sel, at) => {
+    const n = $(`${sel} .num`); gsap.set(n, { opacity: 0, x: -30 }); gsap.set(`${sel} .num i`, { scaleX: 0 });
+    tl.to(n, { opacity: 1, x: 0, duration: .6 }, at).to(`${sel} .num i`, { scaleX: 1, duration: .8, ease: "expo.inOut" }, at);
+  };
+
+  // ═══ INTRO 0–3.5 · haz → pleca ═══
+  show("#intro", 0, 3.55);
+  gsap.set("#beam", { scaleX: 0, opacity: 1 });
+  gsap.set("#halo", { scale: .3, opacity: 0 });
+  gsap.set("#shock", { scale: 0, opacity: 0 });
+  gsap.set("#pleca", { clipPath: "inset(49% 0% 49% 0% round 999px)", scale: .96 });
+  gsap.set("#presenta", { opacity: 0, y: 20, letterSpacing: ".6em" });
+  tl.to("#beam", { scaleX: 1, duration: 1.2, ease: "power3.inOut" }, 0.15)
+    .to("#beam", { scaleY: 2.2, duration: .3, ease: "power2.in" }, 1.2)
+    .to("#halo", { opacity: .65, scale: .7, duration: 1.35, ease: "power2.in" }, 0.15)
+    .to("#beam", { opacity: 0, scaleY: 30, duration: .5, ease: "expo.out" }, 1.5)
+    .to("#shock", { scale: 9, opacity: 1, duration: .01 }, 1.5)
+    .to("#shock", { scale: 14, opacity: 0, borderWidth: 0, duration: 1.0 }, 1.51)
+    .to("#halo", { scale: 1.2, opacity: .4, duration: 1.4 }, 1.5)
+    .to("#pleca", { clipPath: "inset(0% 0% 0% 0% round 999px)", duration: .8 }, 1.5)
+    .to("#pleca", { scale: 1.0, duration: 1.0, ease: "power2.out" }, 1.5)
+    .to("#presenta", { opacity: 1, y: 0, letterSpacing: ".32em", duration: 1.0, ease: "power3.out" }, 2.0)
+    .to("#pleca", { scale: 1.04, duration: 1.0, ease: "none" }, 2.5)
+    .to(["#pleca", "#presenta", "#halo"], { opacity: 0, filter: "blur(12px)", duration: .25, ease: "power2.in" }, 3.3);
+  flash(1.5, .85, .45);
+
+  // ═══ CARTEL 3.5–5.5 · panel rosa diagonal ═══
+  show("#cartel", 3.25, 5.62);
+  gsap.set("#cartel", { clipPath: "polygon(0% 100%, 100% 115%, 100% 115%, 0% 100%)" });
+  tl.to("#cartel", { clipPath: "polygon(0% -15%, 100% 0%, 100% 115%, 0% 100%)", duration: .3, ease: "power3.in" }, 3.25);
+  const com = splitChars($("#c-com .line")), pol = splitChars($("#c-pol .line"));
+  gsap.set("#c-sesion", { opacity: 0, y: 30 });
+  gsap.set(com, { yPercent: 115 }); gsap.set(pol, { yPercent: -115 });
+  gsap.set("#c-accion .box", { scaleX: 0 }); gsap.set("#c-accion .ch-wrap", { display: "inline-block", xPercent: -110 });
+  gsap.set("#c-lines i", { scaleX: 0 }); gsap.set(["#c-taller", "#c-pill"], { opacity: 0, y: 24 });
+  gsap.set("#c-mic", { x: -420, y: 380, rotation: 4 });
+  tl.to("#c-sesion", { opacity: 1, y: 0, duration: .5 }, 3.55)
+    .to(com, { yPercent: 0, duration: .55, stagger: .022 }, 3.55)
+    .to(pol, { yPercent: 0, duration: .55, stagger: .03 }, 3.75)
+    .to("#c-accion .box", { scaleX: 1, duration: .4, ease: "expo.inOut" }, 3.95)
+    .to("#c-accion .ch-wrap", { xPercent: 0, duration: .5 }, 4.12)
+    .to("#c-lines i", { scaleX: 1, duration: .35, stagger: .05, ease: "back.out(3)" }, 4.3)
+    .to("#c-mic", { x: 0, y: 0, rotation: 24, duration: .9 }, 4.0)
+    .to("#c-taller", { opacity: 1, y: 0, duration: .6 }, 4.4)
+    .to("#c-pill", { opacity: 1, y: 0, duration: .6 }, 4.55)
+    .to("#cartel", { scale: 1.06, duration: 1.75, ease: "none" }, 3.55)
+    .to("#cartel", { scale: 1.6, opacity: 0, filter: "blur(18px)", duration: .3, ease: "power3.in" }, 5.3);
+
+  // ═══ RÁFAGA 5.5–7.5 · una foto por tiempo ═══
+  ["#f1", "#f2", "#f3", "#f4"].forEach((s, i) => {
+    const a = 5.5 + i * .5;
+    show(s, a, i === 3 ? 7.5 : a + .5);
+    const ph = $(`${s} .photo`), w = $(`${s} .fw`), fr = $(`${s} .fr`);
+    gsap.set(ph, { scale: 1.22, filter: "brightness(.66) saturate(.9)" }); gsap.set(w, { opacity: 0, x: -60 }); gsap.set(fr, { borderWidth: 40 });
+    tl.to(ph, { scale: 1.08, duration: .6, ease: "power2.out" }, a)
+      .to(w, { opacity: 1, x: 0, duration: .35 }, a + .02)
+      .to(fr, { borderWidth: 0, duration: .3, ease: "power3.out" }, a);
+  });
+  // el rayo de SOMOS Impacto atraviesa la cámara hacia el drop
+  show("#zoombolt", 7.15, 7.5);
+  gsap.set("#bigBolt", { attr: { transform: "translate(540 960) scale(0.2) translate(-100 -160)" } });
+  tl.to("#bigBolt", { attr: { transform: "translate(540 960) scale(40) translate(-100 -160)" }, duration: .35, ease: "expo.in" }, 7.15);
+  flash(7.5, 1, .5);
+
+  // ═══ 01 COMUNICACIÓN 7.5–10.5 · letras que suben ═══
+  show("#c1", 7.5, 10.5); numIn("#c1", 7.6);
+  const c1 = splitChars($("#c1 .ttl .line")); gsap.set(c1, { yPercent: 118 });
+  tl.to(c1, { yPercent: 0, duration: .7, stagger: .028 }, 7.55);
+  gsap.set("#p-diag", { scale: 1.18, filter: "brightness(.7) saturate(.9)" });
+  gsap.set("#p-msj", { xPercent: 100, filter: "brightness(.66) saturate(.9)" });
+  tl.to("#p-diag", { scale: 1.04, duration: 1.6, ease: "power2.out" }, 7.5)
+    .to("#p-diag", { xPercent: -35, duration: .5, ease: "expo.inOut" }, 8.85)
+    .to("#p-msj", { xPercent: 0, duration: .5, ease: "expo.inOut" }, 8.85)
+    .to("#p-msj", { scale: 1.06, duration: 1.2, ease: "none" }, 9.35);
+  gsap.set("#s-dialogo", { scale: 0, rotation: -18, transformOrigin: "50% 80%" });
+  tl.to("#s-dialogo", { scale: 1, rotation: -5, duration: .7, ease: "back.out(2.2)" }, 7.95)
+    .to("#s-dialogo", { y: -18, rotation: -3, duration: 2.0, ease: "sine.inOut" }, 8.6);
+  gsap.set("#sub1", { opacity: 0, y: 40 }); gsap.set("#checks span", { opacity: 0, y: 30, scale: .9 });
+  tl.to("#sub1", { opacity: 1, y: 0, duration: .8 }, 8.0)
+    .to("#checks span", { opacity: 1, y: 0, scale: 1, duration: .5, stagger: .18, ease: "back.out(2)" }, 9.0);
+  // barras inclinadas
+  gsap.set(".wipe", { skewX: -14, xPercent: -130 });
+  ["#w1", "#w2", "#w3"].forEach((id, k) => {
+    tl.to(id, { xPercent: 0, duration: .26, ease: "power3.in" }, 10.23 + k * .03)
+      .to(id, { xPercent: 130, duration: .34, ease: "power3.out" }, 10.5 + k * .04);
+  });
+
+  // ═══ 02 REDES SOCIALES 10.5–14.0 · líneas que se cruzan ═══
+  show("#c2", 10.5, 14.0); numIn("#c2", 10.6);
+  gsap.set("#l-redes .slab", { display: "inline-block", xPercent: -120 }); gsap.set("#l-soc .slab", { display: "inline-block", xPercent: 120 });
+  tl.to("#l-redes .slab", { xPercent: 0, duration: .8 }, 10.55).to("#l-soc .slab", { xPercent: 0, duration: .8 }, 10.65);
+  gsap.set(["#split-a .photo", "#split-b .photo"], { scale: 1.12, filter: "brightness(.68) saturate(.9)" });
+  tl.to(["#split-a .photo", "#split-b .photo"], { scale: 1.02, duration: 1.7, ease: "power2.out" }, 10.5)
+    .to("#split-a", { xPercent: -101, duration: .55, ease: "expo.inOut" }, 11.85)
+    .to("#split-b", { xPercent: 101, duration: .55, ease: "expo.inOut" }, 11.85);
+  gsap.set("#celular", { scale: 1.12, filter: "brightness(.74)" });
+  tl.to("#celular", { scale: 1.0, duration: 2.0, ease: "power2.out" }, 12.0);
+  gsap.set("#c2 .sb", { opacity: 0, y: 40 }); tl.to("#c2 .sb", { opacity: 1, y: 0, duration: .8 }, 10.95);
+  // salida: zoom a través del título
+  tl.to("#c2 .ttl", { scale: 2.6, opacity: 0, filter: "blur(16px)", transformOrigin: "30% 50%", duration: .35, ease: "power3.in" }, 13.65)
+    .to(["#icons", "#c2 .sb", "#c2 .num"], { opacity: 0, duration: .25, ease: "power2.in" }, 13.7);
+  flash(13.98, 1, .55);
+
+  // ═══ 03 IMAGEN 14.0–17.0 · enfoque de cámara ═══
+  show("#c3", 14.0, 17.0); numIn("#c3", 14.1);
+  gsap.set("#t-img", { filter: "blur(30px)", letterSpacing: ".18em", opacity: 0 });
+  tl.to("#t-img", { filter: "blur(0px)", letterSpacing: "-.01em", opacity: 1, duration: .55, ease: "power3.out" }, 14.05);
+  gsap.set("#p-img", { scale: 1.2, filter: "blur(24px) brightness(.8)", transformOrigin: "53% 62%" });
+  tl.to("#p-img", { filter: "blur(0px) brightness(.8)", duration: .5, ease: "power2.inOut" }, 14.05)
+    .to("#p-img", { scale: 1.08, duration: 1.85, ease: "power1.out" }, 14.05);
+  gsap.set("#p-pi", { scale: 1.12, filter: "brightness(.8)", transformOrigin: "38% 55%" });
+  tl.set("#p-pi", { opacity: 1 }, 15.9).to("#p-pi", { scale: 1.2, duration: 1.1, ease: "none" }, 15.9);
+  gsap.set("#vf", { left: 40, top: 260, width: 1000, height: 1400 });
+  gsap.set("#vf .dot", { scale: 0 }); gsap.set("#hud", { opacity: 0 });
+  tl.to("#vf", { left: 455, top: 1010, width: 300, height: 400, duration: .45, ease: "expo.inOut" }, 14.1)
+    .to("#vf .dot", { scale: 1, duration: .2, ease: "back.out(3)" }, 14.55)
+    .to("#vf", { left: 230, top: 930, width: 420, height: 460, duration: .25, ease: "expo.out" }, 15.9)
+    .to("#hud", { opacity: 1, duration: .3 }, 14.5);
+  gsap.set("#sub3", { opacity: 0, y: 40 }); tl.to("#sub3", { opacity: 1, y: 0, duration: .8 }, 14.6);
+  flash(14.55, .8, .3); flash(15.88, 1, .35);
+  // iris de salida
+  gsap.set("#c3", { clipPath: "circle(120% at 50% 50%)" });
+  tl.to("#c3", { clipPath: "circle(0% at 50% 50%)", duration: .32, ease: "power3.in" }, 16.68);
+
+  // ═══ 04 NARRATIVA 17.0–20.5 · máquina de escribir ═══
+  show("#c4", 17.0, 20.55); numIn("#c4", 17.1);
+  gsap.set("#c4", { clipPath: "circle(0% at 50% 50%)" });
+  tl.to("#c4", { clipPath: "circle(120% at 50% 50%)", duration: .5, ease: "power3.out" }, 17.0);
+  const word = "NARRATIVA";
+  for (let i = 0; i <= word.length; i++) tl.set("#typed", { textContent: word.slice(0, i) }, i === 0 ? 17.0 : 17.12 + (i - 1) * .065);
+  for (let k = 0; k < 10; k++) tl.set("#cursor", { opacity: k % 2 ? 1 : 0 }, 17.8 + k * .25);
+  gsap.set("#ncard", { y: 900, rotation: 14 });
+  tl.to("#ncard", { y: 0, rotation: -3, duration: 1.0 }, 17.45).to("#ncard", { rotation: -1.5, y: -12, duration: 2.0, ease: "sine.inOut" }, 18.45);
+  gsap.set("#ncard div", { scale: 1.15 }); tl.to("#ncard div", { scale: 1.0, duration: 3.0, ease: "power1.out" }, 17.45);
+  const nl = $$("#c4 .nl"); gsap.set(nl, { display: "inline-block", yPercent: 110 });
+  tl.to(nl, { yPercent: 0, duration: .8, stagger: .15 }, 18.0);
+
+  // ═══ 05 IMPRESIONES 20.5–23.5 · tarjetas apiladas ═══
+  show("#c5", 20.5, 23.5); numIn("#c5", 20.6);
+  const c5 = splitChars($("#c5 .ttl .line")); gsap.set(c5, { scale: 0, opacity: 0, transformOrigin: "50% 80%" });
+  tl.to(c5, { scale: 1, opacity: 1, duration: .5, stagger: { each: .03, from: "center" }, ease: "back.out(2.5)" }, 20.55);
+  gsap.set("#card-medir", { x: 400, rotation: 18, opacity: 0 });
+  gsap.set("#card-likes", { y: 300, rotationX: 26, scale: .88, opacity: 0, transformPerspective: 1600, transformOrigin: "50% 100%" });
+  tl.to("#card-medir", { x: 0, rotation: 6, opacity: 1, duration: .9 }, 20.6)
+    .to("#card-likes", { y: 0, rotationX: 0, rotation: -3, scale: 1, opacity: 1, duration: 1.0 }, 20.75)
+    .to("#card-likes", { scale: 1.03, duration: 1.75, ease: "none" }, 21.75);
+  gsap.set("#s-rep", { scale: 0, rotation: 30 });
+  tl.to("#s-rep", { scale: 1, rotation: 9, duration: .7, ease: "back.out(2.2)" }, 21.25);
+  gsap.set("#bars i", { scaleY: 0 }); tl.to("#bars i", { scaleY: 1, duration: 1.2, stagger: .06 }, 20.6);
+  gsap.set("#c5 .sb", { opacity: 0, y: 40 }); tl.to("#c5 .sb", { opacity: 1, y: 0, duration: .8 }, 21.1);
+  tl.to("#c5", { scale: .9, opacity: 0, duration: .22, ease: "power3.in" }, 23.28);
+
+  // ═══ CIERRE 1 · 23.5–26.4: telón rosa y SOMOS Impacto ═══
+  show("#close1", 23.45, 26.45);
+  gsap.set("#close1", { clipPath: "polygon(0% 120%, 100% 105%, 100% 120%, 0% 120%)" });
+  tl.to("#close1", { clipPath: "polygon(0% -10%, 100% -25%, 100% 120%, 0% 120%)", duration: .55, ease: "expo.inOut" }, 23.45);
+  const imp = $("#impacto"); imp.style.height = (900 * 778 / 1554) + "px";
+  imp.innerHTML = '<div id="ip1"></div><div id="ip2"></div><div id="ip3"></div>';
+  gsap.set("#ip1", { clipPath: "inset(0% 0% 78% 0%)", y: -80, opacity: 0 });
+  gsap.set("#ip2", { clipPath: "polygon(0% 22%, 0% 22%, -12% 82%, -12% 82%)" });
+  gsap.set("#ip3", { clipPath: "inset(82% 0% 0% 0%)", y: 40, opacity: 0 });
+  tl.to("#ip1", { y: 0, opacity: 1, duration: .6 }, 23.95)
+    .to("#ip2", { clipPath: "polygon(0% 22%, 112% 22%, 100% 82%, -12% 82%)", duration: .6, ease: "expo.inOut" }, 24.05)
+    .to("#ip3", { y: 0, opacity: 1, duration: .6 }, 24.45)
+    .to("#impacto", { scale: 1.05, duration: 2.3, ease: "none" }, 24.05);
+  gsap.set("#cierre-txt", { opacity: 0, y: 30 }); tl.to("#cierre-txt", { opacity: 1, y: 0, duration: .8 }, 24.75);
+  // cortinilla blanca
+  tl.to("#w4", { xPercent: 0, duration: .3, ease: "power3.in" }, 26.15).to("#w4", { xPercent: 130, duration: .45, ease: "power3.out" }, 26.45);
+
+  // ═══ CIERRE 2 · 26.4–29.5: logotipo, lema y redes ═══
+  show("#close2", 26.45);
+  const lema = $("#lema"); lema.style.height = (680 * 890 / 2708) + "px";
+  lema.innerHTML = '<div id="lm1"></div><div id="lm2"></div>';
+  gsap.set("#lm1", { clipPath: "inset(0% 0% 30% 0%)", scale: .9, opacity: 0, transformOrigin: "50% 40%" });
+  gsap.set("#lm2", { clipPath: "inset(72% 0% 0% 0%)", y: 40, opacity: 0 });
+  gsap.set("#rule", { scaleX: 0 }); gsap.set("#sig", { opacity: 0, y: 24 });
+  gsap.set(".si", { scale: 0, y: 30 }); gsap.set(["#h1", "#h2"], { opacity: 0, y: 30 });
+  tl.to("#lm1", { scale: 1, opacity: 1, duration: .9 }, 26.55)
+    .to("#lm2", { y: 0, opacity: 1, duration: .8 }, 26.8)
+    .to("#rule", { scaleX: 1, duration: .8, ease: "expo.inOut" }, 26.9)
+    .to("#sig", { opacity: 1, y: 0, duration: .7 }, 27.05)
+    .to(".si", { scale: 1, y: 0, duration: .55, stagger: .08, ease: "back.out(2.2)" }, 27.15)
+    .to("#h1", { opacity: 1, y: 0, duration: .7 }, 27.45)
+    .to("#h2", { opacity: 1, y: 0, duration: .7 }, 27.6)
+    .to("#close2", { scale: 1.02, duration: 3.0, ease: "none" }, 26.5);
+
+  tl.set({}, {}, DUR);
+}
+
+// ── Efectos por cuadro ──
+function shake(t) {
+  let x = 0, y = 0;
+  for (const [h, amp, d] of [[1.5, 6, .35], [7.5, 14, .45], [23.45, 10, .4]]) if (t >= h && t < h + d) {
+    const k = (t - h) / d, e = amp * (1 - k) * (1 - k); x += Math.sin(t * 91) * e; y += Math.cos(t * 77) * e;
+  }
+  $("#world").style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+}
+function drawRings(t) {
+  const g = $("#rings").getContext("2d"); g.clearRect(0, 0, 1080, 1920);
+  if (t < 7.5 || t > 10.5) return;
+  for (let k = 0; k < 8; k++) {
+    const t0 = 7.6 + k * .5; if (t < t0) continue;
+    const a = t - t0, r = 120 + a * 520, al = Math.max(0, .5 - a * .3);
+    g.beginPath(); g.arc(560, 520, r, 0, Math.PI * 2);
+    g.strokeStyle = k % 2 ? `rgba(255,255,255,${al})` : `rgba(228,0,124,${al})`; g.lineWidth = 3; g.stroke();
+  }
+}
+function placeIcons(t) {
+  $$(".tile").forEach((el, i) => {
+    const t0 = 12.05 + i * .2, p = (t - t0) / 1.55;
+    if (p < 0 || p > 1) { el.style.opacity = 0; return; }
+    const u = p * 2 - 1, x = 540 - 820 * (0.55 * u * u * u + 0.45 * u);
+    const near = Math.max(0, 1 - Math.abs(x - 540) / 560);
+    const s = .6 + .6 * near * near, y = 1080 + 80 * (1 - near) * (1 - near);
+    el.style.opacity = Math.min(1, near * 2.4).toFixed(3);
+    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)}) rotateY(${(u * -40).toFixed(1)}deg)`;
+    el.style.zIndex = Math.round(near * 100);
+  });
+}
+function drawGlitch(t) {
+  const g = $("#glitch"); g.innerHTML = "";
+  if (t < 20.3 || t >= 20.55) return;
+  const r = mulberry(Math.floor(t * 30) * 13 + 5);
+  for (let i = 0; i < 10; i++) {
+    const el = document.createElement("i");
+    el.style.cssText = `top:${(r() * 1920).toFixed(0)}px;height:${(6 + r() * 70).toFixed(0)}px;background:${r() > .5 ? "#E4007C" : (r() > .5 ? "#fff" : "#000")};transform:translateX(${((r() - .5) * 300).toFixed(0)}px);opacity:${(.5 + r() * .5).toFixed(2)}`;
+    g.appendChild(el);
+  }
+  $("#world").style.transform += ` translateX(${((r() - .5) * 46).toFixed(0)}px)`;
+}
+function drawGrain(t) {
+  const c = $("#grain"); c.getContext("2d").putImageData(grainFrames[Math.round(t * FPS) % grainFrames.length], 0, 0);
+  const light = (t >= 20.5 && t < 23.5) || t >= 26.45;
+  c.style.opacity = light ? .12 : .3; $("#vignette").style.opacity = light ? .2 : 1;
+}
+const imgCache = {};
+async function updateClips(t) {
+  const jobs = [];
+  for (const c of Object.values(CLIPS)) {
+    if (t < c.t0 - .05 || t > c.t1 + .05) continue;
+    const el = $(c.el), src = clipSrc(c, t);
+    if (el.dataset.src === src) continue;
+    el.dataset.src = src;
+    if (!imgCache[src]) { const im = new Image(); im.src = src; imgCache[src] = im.decode().then(() => im); }
+    jobs.push(imgCache[src].then(() => { el.src = src; return el.decode().catch(() => {}); }));
+  }
+  await Promise.all(jobs);
+  const keys = Object.keys(imgCache); if (keys.length > 30) keys.slice(0, keys.length - 30).forEach(k => delete imgCache[k]);
+}
+
+window.__seek = async (t) => {
+  tl.seek(t, false);
+  shake(t); drawRings(t); placeIcons(t); drawGlitch(t); drawGrain(t);
+  await updateClips(t);
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+};
+window.__duration = DUR;
+init();
+})();
+</script>
+</body>
+</html>
