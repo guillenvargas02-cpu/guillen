@@ -25,7 +25,7 @@ usa Hind Siliguri como secundaria. Cada foto, video, sticker y transición apare
 
 ## Propuesta 2 · teaser
 
-`teaser.html` es un teaser de la primera sesión: montaje al ritmo (cortes cada 0.5 s y ráfagas de 0.25 s), casi sin
+`teaser.html` es un teaser de la primera sesión: abre con el celular que enciende con el logotipo de SOMOS y sigue con un montaje al ritmo (cortes cada 0.5 s y ráfagas de 0.25 s), casi sin
 texto. Las tomas están en `teaser.json`; `tools/teaser_footage.py` junta esos tramos en
 `assets/clips/teaser-footage.mp4` y `tools/sfx_teaser.py` hace sus efectos.
 

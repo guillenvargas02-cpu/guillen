@@ -5,7 +5,8 @@
 <title>SOMOS · Comunicación Política en Acción · Teaser</title>
 <!--
   Propuesta 2: teaser de la primera sesión (29.5 s, 1080x1920 CSS px, se renderiza a 2160x3840).
-  Montaje al ritmo de la música (120 BPM: cortes cada 0.5 s y ráfagas de 0.25 s), poco texto.
+  Abre con un celular que enciende con el logotipo de SOMOS; luego montaje al ritmo (120 BPM: cortes cada 0.5 s y
+  ráfagas de 0.25 s), poco texto.
   Las tomas viven en teaser.json; los cuadros de video en .cache/teaser/00001.jpg… (build_teaser.py frames).
   Identidad (Manual SOMOS 2026): Rosa Cívico #E4007C; logotipo rosa sobre blanco con lema al cierre.
 -->
@@ -41,6 +42,26 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 .tile { position: absolute; left: 0; top: 0; width: 180px; height: 180px; margin: -90px; border-radius: 46px; display: flex; align-items: center; justify-content: center;
   background: rgba(228,0,124,.92); box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.4); }
 .tile svg { width: 92px; height: 92px; fill: #fff; }
+
+
+/* Intro: el celular enciende (0–2 s) */
+#intro { background: radial-gradient(ellipse 70% 45% at 50% 52%, #1b0a14 0%, #08080a 70%); }
+#pglow { position: absolute; left: 540px; top: 980px; width: 1300px; height: 1700px; margin: -850px 0 0 -650px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(228,0,124,.42), rgba(228,0,124,.1) 55%, rgba(228,0,124,0)); }
+#pwrap { position: absolute; left: 540px; top: 960px; width: 0; height: 0; perspective: 2200px; }
+#phone { position: absolute; width: 500px; height: 1040px; left: -250px; top: -520px; border-radius: 84px; transform-style: preserve-3d;
+  background: linear-gradient(150deg, #3a3a40 0%, #141416 22%, #0b0b0d 60%, #232327 100%);
+  box-shadow: inset 0 0 0 2px #4a4a52, inset 0 0 0 7px #101012, 0 90px 160px rgba(0,0,0,.7); }
+#phone .btn { position: absolute; width: 7px; border-radius: 4px; background: linear-gradient(90deg, #2a2a2e, #4b4b52); }
+#screen { position: absolute; inset: 15px; border-radius: 70px; background: #040405; overflow: hidden; }
+#screenOn { position: absolute; inset: 0; background: #fff; opacity: 0; }
+#island { position: absolute; top: 26px; left: 50%; width: 150px; height: 44px; margin-left: -75px; border-radius: 22px; background: #000; }
+#status { position: absolute; left: 44px; right: 40px; top: 34px; display: flex; justify-content: space-between; align-items: center;
+  font-family: "Fira"; font-weight: 600; font-size: 26px; color: #111; opacity: 0; }
+#status .bat { width: 44px; height: 21px; border: 2.5px solid #111; border-radius: 6px; padding: 2px; }
+#status .bat i { display: block; height: 100%; width: 80%; background: #111; border-radius: 2px; }
+#phoneLogo { position: absolute; left: 50%; top: 50%; width: 330px; transform: translate(-50%, -50%); opacity: 0; }
+#glare { position: absolute; inset: 0; background: linear-gradient(118deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.13) 42%, rgba(255,255,255,0) 54%); mix-blend-mode: screen; }
 
 /* La primera sesión */
 #primera { background: var(--rosa); }
@@ -97,6 +118,21 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
       <image id="wordImg" x="0" y="0" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" mask="url(#wm)"/>
     </svg>
   </div>
+
+  <section class="scene" id="intro">
+    <div id="pglow"></div>
+    <div id="pwrap"><div id="phone">
+      <i class="btn" style="right:-5px;top:300px;height:130px"></i><i class="btn" style="left:-5px;top:230px;height:66px"></i>
+      <i class="btn" style="left:-5px;top:330px;height:110px"></i><i class="btn" style="left:-5px;top:460px;height:110px"></i>
+      <div id="screen">
+        <div id="screenOn"></div>
+        <img id="phoneLogo" src="assets/brand/somos.png" alt="SOMOS">
+        <div id="status"><span>10:30</span><span class="bat"><i></i></span></div>
+        <div id="island"></div>
+        <div id="glare"></div>
+      </div>
+    </div></div>
+  </section>
 
   <section class="scene" id="primera">
     <div id="pr1" class="big fit" data-w="960"><span class="ln">LA PRIMERA</span></div>
@@ -176,24 +212,40 @@ function build() {
   tl = gsap.timeline({ paused: true });
   const show = (sel, a, b) => { tl.set(sel, { visibility: "visible" }, a); if (b !== undefined) tl.set(sel, { visibility: "hidden" }, b); };
 
-  // LA PRIMERA SESIÓN · 1.5–2.5
-  show("#primera", 1.5, 2.5);
-  gsap.set("#pr1 .ln", { xPercent: -110, skewX: 12 }); gsap.set("#pr2 .ln", { xPercent: 110, skewX: 12 });
-  tl.to("#pr1 .ln", { xPercent: 0, skewX: 0, duration: .45 }, 1.5).to("#pr2 .ln", { xPercent: 0, skewX: 0, duration: .45 }, 1.6)
-    .to("#primera", { scale: 1.08, duration: 1.0, ease: "none" }, 1.5);
+  // INTRO · 0–2.0: el celular enciende con el logotipo de SOMOS y la cámara entra a la pantalla
+  show("#intro", 0, 2.02);
+  gsap.set("#phone", { rotationY: -28, rotationX: 10, rotationZ: -4, y: 160, scale: .9, opacity: 0 });
+  gsap.set("#pglow", { opacity: 0, scale: .7 }); gsap.set("#glare", { xPercent: -40 }); gsap.set("#phoneLogo", { opacity: 0, scale: .8 });
+  tl.to("#phone", { opacity: 1, duration: .3, ease: "power2.out" }, 0)
+    .to("#phone", { rotationY: -6, rotationX: 3, rotationZ: -1, y: 0, scale: 1, duration: .9, ease: "power3.out" }, 0)
+    .to("#phone", { rotationY: 0, rotationX: 0, rotationZ: 0, duration: .5, ease: "power2.inOut" }, .9)
+    .to("#glare", { xPercent: 60, duration: 1.4, ease: "power1.inOut" }, 0)
+    .to("#screenOn", { opacity: 1, duration: .22, ease: "power2.out" }, .42)
+    .to("#pglow", { opacity: 1, scale: 1, duration: .6, ease: "power2.out" }, .42)
+    .to("#status", { opacity: 1, duration: .3 }, .55)
+    .to("#phoneLogo", { opacity: 1, scale: 1, duration: .6 }, .55)
+    .to("#phone", { scale: 5.6, duration: .72, ease: "power3.in" }, 1.28)
+    .to("#pglow", { opacity: 0, duration: .4, ease: "power2.in" }, 1.3)
+    .to(["#phoneLogo", "#status", "#island"], { opacity: 0, duration: .2, ease: "power2.in" }, 1.72);
 
-  // CARTEL · 4.0–5.5 (drop)
-  show("#poster", 4.0, 5.5);
+  // LA PRIMERA SESIÓN · 3.5–4.5
+  show("#primera", 3.5, 4.5);
+  gsap.set("#pr1 .ln", { xPercent: -110, skewX: 12 }); gsap.set("#pr2 .ln", { xPercent: 110, skewX: 12 });
+  tl.to("#pr1 .ln", { xPercent: 0, skewX: 0, duration: .45 }, 3.5).to("#pr2 .ln", { xPercent: 0, skewX: 0, duration: .45 }, 3.6)
+    .to("#primera", { scale: 1.08, duration: 1.0, ease: "none" }, 3.5);
+
+  // CARTEL · 6.0–7.5 (drop)
+  show("#poster", 6.0, 7.5);
   gsap.set("#po-com", { scale: 1.8, opacity: 0 }); gsap.set("#po-pol", { scale: 1.8, opacity: 0 });
   gsap.set("#po-acc .box", { scaleX: 0 }); gsap.set("#acc", { display: "inline-block", xPercent: -110 });
   gsap.set("#po-lines i", { scaleX: 0 }); gsap.set("#po-mic", { x: -480, y: 420, rotation: 0 });
-  tl.to("#po-com", { scale: 1, opacity: 1, duration: .3 }, 4.0)
-    .to("#po-pol", { scale: 1, opacity: 1, duration: .3 }, 4.25)
-    .to("#po-acc .box", { scaleX: 1, duration: .25, ease: "expo.inOut" }, 4.5)
-    .to("#acc", { xPercent: 0, duration: .35 }, 4.6)
-    .to("#po-lines i", { scaleX: 1, duration: .3, stagger: .04, ease: "back.out(3)" }, 4.7)
-    .to("#po-mic", { x: 0, y: 0, rotation: 22, duration: .6 }, 4.5)
-    .to("#poster", { scale: 7, transformOrigin: "50% 55%", duration: .32, ease: "power3.in" }, 5.18);
+  tl.to("#po-com", { scale: 1, opacity: 1, duration: .3 }, 6.0)
+    .to("#po-pol", { scale: 1, opacity: 1, duration: .3 }, 6.25)
+    .to("#po-acc .box", { scaleX: 1, duration: .25, ease: "expo.inOut" }, 6.5)
+    .to("#acc", { xPercent: 0, duration: .35 }, 6.6)
+    .to("#po-lines i", { scaleX: 1, duration: .3, stagger: .04, ease: "back.out(3)" }, 6.7)
+    .to("#po-mic", { x: 0, y: 0, rotation: 22, duration: .6 }, 6.5)
+    .to("#poster", { scale: 7, transformOrigin: "50% 55%", duration: .32, ease: "power3.in" }, 7.18);
 
   // ESTO APENAS COMIENZA · 24.0–26.0
   tl.set("#hero", { visibility: "visible" }, 24.0).set("#hero", { visibility: "hidden" }, 26.0);
@@ -282,8 +334,8 @@ async function renderShots(t) {
   await Promise.all(jobs);
 }
 
-const FLASHES = [[0, .5, .25], [1.5, .6, .3], [4.0, 1, .35], [5.5, 1, .4], [7.5, .5, .2], [13.5, .6, .15], [20.0, .9, .45], [26.0, 1, .4]];
-const SHAKES = [[4.0, 18, .5], [4.25, 8, .2], [7.5, 6, .2], [20.0, 8, .35], [26.0, 16, .5]];
+const FLASHES = [[2.0, 1, .3], [3.5, .6, .3], [6.0, 1, .35], [7.5, 1, .4], [9.5, .5, .2], [15.5, .6, .15], [22.0, .9, .45], [26.0, 1, .4]];
+const SHAKES = [[6.0, 18, .5], [6.25, 8, .2], [9.5, 6, .2], [22.0, 8, .35], [26.0, 16, .5]];
 function fx(t) {
   let o = 0; for (const [a, pk, d] of FLASHES) if (t >= a && t < a + d) o = Math.max(o, pk * (1 - (t - a) / d));
   $("#flash").style.opacity = o.toFixed(3);
@@ -293,7 +345,7 @@ function fx(t) {
   if (s && s.d <= .25) x += (SHOTS.indexOf(s) % 2 ? 1 : -1) * 40 * (1 - easeOut((t - s.t0) / .12));
   $("#world").style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
   const c = $("#grain"); c.getContext("2d").putImageData(grainFrames[Math.round(t * FPS) % 6], 0, 0);
-  c.style.opacity = t >= 27 ? .04 : .12;
+  c.style.opacity = t >= 27 || t < 2 ? .04 : .12;
 }
 
 window.__seek = async t => {

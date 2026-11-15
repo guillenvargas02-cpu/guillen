@@ -4,7 +4,7 @@
 Pasos:
   frames  — cuadros de assets/clips/teaser-footage.mp4 en .cache/teaser/ (tools/teaser_footage.py lo arma)
   sfx     — efectos sintetizados (tools/sfx_teaser.py) -> renders/teaser-sfx.wav
-  audio   — música desde el build (el drop cae en 4.0 s) + efectos, -14 LUFS -> renders/teaser-audio.wav
+  audio   — música desde el build (el drop cae en 6.0 s) + efectos, -14 LUFS -> renders/teaser-audio.wav
   visual  — render de teaser.html a 2160x3840 (visual:1 para 1080x1920)
   final   — renders/somos-taller-teaser.mp4
 
@@ -19,8 +19,8 @@ import build
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "renders"
 DUR = 29.5
-# (inicio, fin) en la canción: build de 4 s, drop y un tramo más del coro; el corte a 26.0 s cae en el outro
-MUSIC = [(11.56, 37.56), (79.56, 83.06)]
+# (inicio, fin) en la canción: build de 6 s (celular + gancho), drop en 6.0 s; el corte a 26.0 s cae en el outro
+MUSIC = [(9.56, 35.56), (79.56, 83.06)]
 FADE = (28.2, DUR)
 
 

@@ -6,7 +6,7 @@ import sfx  # noqa: E402
 from sfx import whoosh, impact, soft_hit, shimmer, tick, thock, pop, shutter, riser, reverse_swell, glitch  # noqa: E402
 
 OUT = Path(__file__).resolve().parent.parent / "renders" / "teaser-sfx.wav"
-EVENTS = [
+BASE = [
     # gancho: ASÍ / SE / VIVIÓ en cada tiempo
     (0.0, thock(0.45), 0.0), (0.0, whoosh(0.4, 300, 4000, 0.25), -0.3),
     (0.5, thock(0.45), 0.0), (0.5, whoosh(0.4, 400, 5000, 0.25), 0.3),
@@ -33,9 +33,16 @@ EVENTS = [
     (17.45, whoosh(0.3, 500, 5000, 0.25, rev=False), -0.3),
     *[(18.0 + 0.25 * i, tick(0.3, 2200 + 200 * i, 0.05), (-1) ** i * 0.4) for i in range(4)],
     (19.0, riser(1.0, 0.35, 400, 8000), 0.0),
+]
+EVENTS = [
+    # intro: el celular aparece, enciende (clic + campana) y la cámara entra a la pantalla
+    (0.0, whoosh(0.9, 200, 1500, 0.2), 0.0), (0.38, tick(0.3, 1600, 0.04), 0.0),
+    (0.42, shimmer(1.8, 1046.5, 0.22), 0.0), (0.44, soft_hit(0.3), 0.0),
+    (1.25, riser(0.75, 0.32, 300, 8000), 0.0),
+    *[(t + 2.0, x, pan) for t, x, pan in BASE],
     # tomas largas
-    (20.0, soft_hit(0.55), 0.0), (20.0, shimmer(2.5, 1046.5, 0.18), 0.0),
-    (20.95, whoosh(0.5, 200, 3000, 0.22), -0.3), (21.95, whoosh(0.5, 200, 3000, 0.22), 0.3), (22.95, whoosh(0.5, 200, 3000, 0.22), -0.3),
+    (22.0, soft_hit(0.55), 0.0), (22.0, shimmer(2.5, 1046.5, 0.18), 0.0),
+    (22.95, whoosh(0.5, 200, 3000, 0.22), 0.3),
     (23.95, whoosh(0.7, 200, 3000, 0.3), 0.0), (24.5, thock(0.3), 0.0),
     # cierre
     (25.5, reverse_swell(0.5, 0.5), 0.0), (26.0, impact(0.95, 42, 2.4), 0.0), (26.0, shimmer(2.5, 1318.5, 0.2), 0.0),
