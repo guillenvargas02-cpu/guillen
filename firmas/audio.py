@@ -82,45 +82,90 @@ def whoosh(dur, f0, f1, q=1.2):
     return out * env
 
 
+MUSIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "musica.m4a")
+MUSIC_DROP = 22.33   # s en la cancion donde entra el ritmo
+VIDEO_DROP = None    # se alinea con el final del cambio de hoja
+
+
+def pen_bus(strokes, total):
+    """pluma fina: un solo roce continuo y suave cuya intensidad sigue los trazos"""
+    n = int(total * SR)
+    envs = np.zeros((n, 2))
+    vmax = np.percentile([e["len"] / max(e["t1"] - e["t0"], 1e-3) for e in strokes], 90)
+    for e in strokes:
+        dur = max(e["t1"] - e["t0"], 0.02)
+        speed = min(1.0, (e["len"] / dur) / vmax)
+        k = int(dur * SR)
+        a, r = min(int(0.03 * SR), k // 2 + 1), int(0.07 * SR)
+        w = np.ones(k + r)
+        w[:a] = 0.5 - 0.5 * np.cos(np.linspace(0, np.pi, a))
+        w[k:] = 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, r))
+        add(envs, e["t0"], w * (0.45 + 0.55 * speed), e["x"])
+    envs = np.tanh(envs * 0.9)  # dos firmas a la vez no suenan al doble
+    envs = lp(envs.T, 25).T.clip(0)
+    out = np.zeros((n, 2))
+    for c in range(2):
+        w = rng.standard_normal(n)
+        body = bp(w, 900, 3800)                               # roce sedoso
+        air = bp(rng.standard_normal(n), 4200, 7500) * 0.22   # un poco de aire
+        nib = bp(rng.standard_normal(n), 2300, 2900, 2) * 0.5  # caracter de la punta
+        flutter = 0.7 + 0.3 * np.tanh(lp(rng.standard_normal(n) * 7, 9))
+        grain = 0.88 + 0.12 * lp(rng.standard_normal(n) * 8, 70)
+        out[:, c] = (body + air + nib) * flutter * grain * envs[:, c]
+    return out
+
+
+def soft_tick():
+    n = int(0.03 * SR)
+    t = np.arange(n) / SR
+    return bp(rng.standard_normal(n), 1500, 5000) * np.exp(-t / 0.004) * 0.6 + np.sin(2 * np.pi * 240 * t) * np.exp(-t / 0.008) * 0.3
+
+
+def load_music(start, total):
+    import subprocess
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-ss", f"{start:.3f}", "-t", f"{total:.3f}", "-i", MUSIC,
+                          "-f", "s16le", "-ar", str(SR), "-ac", "2", "-"], capture_output=True, check=True).stdout
+    m = np.frombuffer(raw, np.int16).reshape(-1, 2).astype(np.float64) / 32768
+    out = np.zeros((int(total * SR), 2))
+    out[:min(len(m), len(out))] = m[:len(out)]
+    return out
+
+
 def main():
     ev = json.load(open(os.path.join(WORK, "events.json")))
     total = ev["total"]
-    buf = np.zeros((int(total * SR), 2))
+    n = int(total * SR)
     strokes = ev["events"]
-    vmax = np.percentile([e["len"] / max(e["t1"] - e["t0"], 1e-3) for e in strokes], 90)
-    last_tap = -1.0
+    pen = pen_bus(strokes, total)
+    ticks = np.zeros((n, 2))
+    seen = set()
     for e in sorted(strokes, key=lambda e: e["t0"]):
-        dur = max(e["t1"] - e["t0"], 0.012)
-        speed = min(1.0, (e["len"] / dur) / vmax)
-        add(buf, e["t0"], scratch(dur, speed) * 0.5, e["x"])
-        if e["len"] > 60 and e["t0"] - last_tap > 0.07:
-            add(buf, e["t0"] - 0.004, tap() * (0.45 + 0.3 * rng.random()), e["x"])
-            last_tap = e["t0"]
-    pen = buf / np.percentile(np.abs(buf), 99.9)
-    buf = np.zeros_like(buf)
-    # entrada suave y paso de hoja
-    add(buf, 0.0, whoosh(0.55, 500, 2400) * 0.5, 0.5)
-    ts, td = ev["trans_start"], ev["trans_dur"]
-    add(buf, ts - 0.05, whoosh(td + 0.15, 350, 3800) * 1.6, 0.35)
-    n = int(0.5 * SR)
-    t = np.arange(n) / SR
-    rustle = bp(rng.standard_normal(n), 2500, 10000) * (lp(np.abs(rng.standard_normal(n)) ** 6, 300) * 3) * np.exp(-((t - 0.2) / 0.16) ** 2)
-    add(buf, ts, rustle * 0.9, 0.4)
-    slap = np.sin(2 * np.pi * 95 * t[:4800]) * np.exp(-t[:4800] / 0.03)
-    add(buf, ts + td - 0.06, slap * 0.5, 0.5)
+        key = (e["page"], e["group"])
+        if key not in seen:           # solo al apoyar la pluma en cada firma
+            seen.add(key)
+            add(ticks, e["t0"] - 0.003, soft_tick(), e["x"])
+    pen = pen / np.percentile(np.abs(pen), 99.9) * 0.20 + ticks * 0.10
 
-    buf = pen * 0.42 + buf / np.percentile(np.abs(buf[buf != 0]), 99.5) * 0.4
-    # un toque de sala y normalizacion
-    wet = np.zeros_like(buf)
-    for d, g in ((0.013, 0.22), (0.029, 0.14), (0.047, 0.08)):
+    ts, td = ev["trans_start"], ev["trans_dur"]
+    fx = np.zeros((n, 2))
+    add(fx, ts - 0.05, whoosh(td + 0.15, 300, 2600) * 1.0, 0.4)
+    fx = fx / np.abs(fx).max() * 0.16
+
+    music = load_music(MUSIC_DROP - (ts + td), total)
+    fi, fo = int(0.35 * SR), int(1.3 * SR)
+    music[:fi] *= np.linspace(0, 1, fi)[:, None] ** 2
+    music[-fo:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, fo)))[:, None]
+    music *= 0.62
+
+    wet = np.zeros_like(pen)
+    for d, g in ((0.017, 0.2), (0.031, 0.12)):
         k = int(d * SR)
-        wet[k:] += buf[:-k][:, ::-1] * g
-    buf = buf + lp(wet.T, 5000).T
-    buf = np.tanh(buf * 1.1) * 0.8
-    f = int(0.25 * SR)
-    buf[-f:] *= np.linspace(1, 0, f)[:, None]
+        wet[k:] += pen[:-k][:, ::-1] * g
+    buf = music + pen + lp(wet.T, 4000).T + fx
+    buf = np.tanh(buf * 1.05) / np.tanh(1.05) * 0.94
     wavfile.write(os.path.join(WORK, "audio.wav"), SR, (buf * 32767).astype(np.int16))
-    print("audio listo", buf.shape[0] / SR, "s  rms", float(np.sqrt((buf ** 2).mean())))
+    wavfile.write(os.path.join(WORK, "pluma_sola.wav"), SR, (np.clip(pen * 3, -1, 1) * 32767).astype(np.int16))
+    print("audio listo", n / SR, "s")
 
 
 if __name__ == "__main__":
