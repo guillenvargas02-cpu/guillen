@@ -83,7 +83,7 @@ def whoosh(dur, f0, f1, q=1.2):
 
 
 MUSIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "musica.m4a")
-MUSIC_DROP = 22.33   # s en la cancion donde entra el ritmo
+MUSIC_DROP = 42.90   # s en la cancion: segunda entrada fuerte del ritmo
 VIDEO_DROP = None    # se alinea con el final del cambio de hoja
 
 
@@ -144,18 +144,18 @@ def main():
         if key not in seen:           # solo al apoyar la pluma en cada firma
             seen.add(key)
             add(ticks, e["t0"] - 0.003, soft_tick(), e["x"])
-    pen = pen / np.percentile(np.abs(pen), 99.9) * 0.20 + ticks * 0.10
+    pen = pen / np.percentile(np.abs(pen), 99.9) * 0.055 + ticks * 0.025
 
     ts, td = ev["trans_start"], ev["trans_dur"]
     fx = np.zeros((n, 2))
     add(fx, ts - 0.05, whoosh(td + 0.15, 300, 2600) * 1.0, 0.4)
-    fx = fx / np.abs(fx).max() * 0.16
+    fx = fx / np.abs(fx).max() * 0.09
 
     music = load_music(MUSIC_DROP - (ts + td), total)
     fi, fo = int(0.35 * SR), int(1.3 * SR)
     music[:fi] *= np.linspace(0, 1, fi)[:, None] ** 2
     music[-fo:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, fo)))[:, None]
-    music *= 0.62
+    music *= 0.66
 
     wet = np.zeros_like(pen)
     for d, g in ((0.017, 0.2), (0.031, 0.12)):
