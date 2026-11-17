@@ -1,8 +1,8 @@
 {
   "intro": {
     "file": "00_intro.wav",
-    "dur": 5.568,
-    "text": "Tutorial para recolectar firmas. Te explicamos, paso a paso, cómo hacerlo desde tu celular."
+    "dur": 5.099,
+    "text": "Equipo de Eduardo Contró: así se recolectan las firmas, paso a paso, desde tu celular."
   },
   "enlace": {
     "file": "01_enlace.wav",
@@ -76,7 +76,7 @@
   },
   "cierre": {
     "file": "15_cierre.wav",
-    "dur": 3.349,
-    "text": "¡Y listo! Su firma queda registrada. Gracias por sumar."
+    "dur": 5.035,
+    "text": "¡Y listo! Su firma queda registrada. Gracias por sumar al equipo de Eduardo Contró."
   }
 }
