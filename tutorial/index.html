@@ -66,6 +66,35 @@
         opacity: 0.07;
       }
 
+      .prog {
+        position: absolute;
+        left: 70px;
+        top: 56px;
+        width: 940px;
+        height: 10px;
+        display: flex;
+        gap: 10px;
+      }
+      .prog i {
+        flex: 1;
+        height: 10px;
+        border-radius: 5px;
+        background: rgba(14, 26, 53, 0.12);
+        overflow: hidden;
+        display: block;
+      }
+      .prog i b {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: #e6087a;
+        transform-origin: 0 50%;
+        transform: scaleX(0);
+      }
+      .prog i.p2 b {
+        background: #0e1a35;
+      }
+
       /* ── Encabezado de paso ── */
       .hdr {
         position: absolute;
@@ -408,7 +437,6 @@
 
       <!-- ═════════ 1 · ENLACE ═════════ -->
       <div id="s1" class="clip" data-start="7.57" data-duration="5.11" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>1</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 1</span><span class="role">TÚ</span></div>
           <h1 class="title">Abre el <mark>enlace oficial</mark> que te enviamos</h1>
@@ -426,8 +454,6 @@
 
       <!-- ═════════ 2/3 · LOGIN + BOTÓN ROSA ═════════ -->
       <div id="s2" class="clip" data-start="12.68" data-duration="27.86" data-track-index="1">
-        <div class="bgnum" data-layout-ignore id="bn2">2</div>
-        <div class="bgnum" data-layout-ignore id="bn3" style="opacity: 0">3</div>
         <div class="hdr" id="h2">
           <div class="hrow"><span class="step">PASO 2</span><span class="role">TÚ</span></div>
           <h1 class="title">Llena <mark>solo 2 campos</mark>: celular y contraseña</h1>
@@ -481,7 +507,6 @@
 
       <!-- ═════════ 4 · COMPARTIR (grabación real) ═════════ -->
       <div id="s4" class="clip" data-start="40.54" data-duration="16.42" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>4</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 4</span><span class="role">TÚ</span></div>
           <h1 class="title">Desliza abajo y <mark>comparte por WhatsApp</mark></h1>
@@ -514,7 +539,6 @@
 
       <!-- ═════════ 5 · MENSAJE ═════════ -->
       <div id="s5" class="clip" data-start="56.96" data-duration="6.31" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>5</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 5</span><span class="role firma">QUIEN FIRMA</span></div>
           <h1 class="title">La persona <mark>toca el enlace</mark> que recibió</h1>
@@ -536,7 +560,6 @@
 
       <!-- ═════════ 6 · INVITACIÓN ═════════ -->
       <div id="s6" class="clip" data-start="63.27" data-duration="6.4" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>6</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 6</span><span class="role firma">QUIEN FIRMA</span></div>
           <h1 class="title">En la invitación, toca <mark>Comenzar</mark></h1>
@@ -557,7 +580,6 @@
 
       <!-- ═════════ 7 · CUESTIONARIO (grabación real) ═════════ -->
       <div id="s7" class="clip" data-start="69.67" data-duration="13.47" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>7</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 7</span><span class="role firma">QUIEN FIRMA</span></div>
           <h1 class="title">Elige nivel, forma de participar y <mark>temas</mark></h1>
@@ -579,7 +601,6 @@
 
       <!-- ═════════ 8 · INE Y DATOS (captura real) ═════════ -->
       <div id="s8" class="clip" data-start="83.14" data-duration="9.19" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>8</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 8</span><span class="role firma">QUIEN FIRMA</span></div>
           <h1 class="title">Foto de su <mark>INE</mark> y sus datos</h1>
@@ -610,7 +631,6 @@
 
       <!-- ═════════ 9 · FOTO Y FIRMA ═════════ -->
       <div id="s9" class="clip" data-start="92.33" data-duration="7.87" data-track-index="1">
-        <div class="bgnum" data-layout-ignore>9</div>
         <div class="hdr">
           <div class="hrow"><span class="step">PASO 9</span><span class="role firma">QUIEN FIRMA</span></div>
           <h1 class="title">Fotografía y <mark>firma igual</mark> a su INE</h1>
@@ -667,6 +687,9 @@
           <div style="font-weight: 700; font-size: 34px; color: #3b4660; margin-top: 10px">al equipo de <mark>Eduardo Contró</mark> · Somos México CDMX</div>
         </div>
       </div>
+
+      <!-- barra de progreso de los 9 pasos (rosa: tú · azul: quien firma) -->
+      <div id="prog" class="prog clip" data-start="7.57" data-duration="92.63" data-track-index="4" style="left: 70px; top: 56px; width: 940px; height: 10px"><i class="p1"><b id="pg1"></b></i><i class="p1"><b id="pg2"></b></i><i class="p1"><b id="pg3"></b></i><i class="p1"><b id="pg4"></b></i><i class="p2"><b id="pg5"></b></i><i class="p2"><b id="pg6"></b></i><i class="p2"><b id="pg7"></b></i><i class="p2"><b id="pg8"></b></i><i class="p2"><b id="pg9"></b></i></div>
 
       <!-- ═════════ SUBTÍTULOS ═════════ -->
       <div class="cap clip" data-start="1.2" data-duration="6.0" data-track-index="2" style="top: 1606px; height: 260px"><p>Equipo de <b>Eduardo Contró</b>: así se recolectan las firmas, paso a paso, desde tu celular.</p></div>
@@ -727,7 +750,6 @@
       function enterScene(sel, t) {
         tl.fromTo(`${sel} .hdr:not([style*="opacity: 0"])`, { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, t);
         tl.fromTo(`${sel} .phone`, { opacity: 0, y: 90, rotation: -2 }, { opacity: 1, y: 0, rotation: 0, duration: 0.65, ease: "back.out(1.3)" }, t + 0.05);
-        tl.fromTo(`${sel} .bgnum`, { opacity: 0, x: 80 }, { opacity: 0.07, x: 0, duration: 0.8, ease: E }, t);
       }
       function tap(sel, t) {
         tl.fromTo(sel, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: E }, t);
@@ -804,8 +826,6 @@
       tl.to(["#cd-pw", "#ar-pw"], { opacity: 0, y: -20, duration: 0.3 }, 35.2);
       tl.to("#h2", { opacity: 0, y: -20, duration: 0.3 }, 35.9);
       tl.fromTo("#h3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 36.1);
-      tl.to("#bn2", { opacity: 0, duration: 0.3 }, 35.9);
-      tl.to("#bn3", { opacity: 0.07, duration: 0.4 }, 36.1);
       tl.to("#sp2", { y: 310, duration: 0.5, ease: "power3.inOut" }, 36.2);
       tap("#t2", 37.9);
       tl.to("#s2 .phone, #s2 #h3", { opacity: 0, duration: 0.25 }, 40.29);
@@ -912,6 +932,13 @@
       tl.fromTo("#c-logo", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 103.0);
       tl.fromTo("#c-g", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 103.3);
       tl.to("#s10", { opacity: 0, duration: 0.4 }, 106.85);
+
+      // barra de progreso: se llena un segmento al entrar a cada paso
+      [7.57, 12.68, 36.1, 40.54, 56.96, 63.27, 69.67, 83.14, 92.33].forEach((t, k) => {
+        tl.fromTo(`#pg${k + 1}`, { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out" }, t + 0.1);
+      });
+      tl.fromTo("#prog", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 7.57);
+      tl.to("#prog", { opacity: 0, duration: 0.3 }, 99.9);
 
       // subtítulos: entrada suave
       document.querySelectorAll(".cap").forEach((c) => {
