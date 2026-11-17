@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Tutorial: cómo recolectar firmas (Somos México CDMX).
+         Tiempos amarrados a la voz guía: ver assets/voz/tiempos.json y voz.py. */
+      @font-face {
+        font-family: "Bricolage";
+        src: url("assets/fonts/Bricolage.ttf") format("truetype");
+        font-weight: 200 800;
+        font-stretch: 75% 100%;
+      }
+      @font-face {
+        font-family: "Jakarta";
+        src: url("assets/fonts/PlusJakarta.ttf") format("truetype");
+        font-weight: 200 800;
+      }
+      @font-face {
+        font-family: "Mono";
+        src: url("assets/fonts/JetBrainsMono-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #f6f0e8;
+      }
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        font-family: "Jakarta", sans-serif;
+        color: #0e1a35;
+        background-color: #f6f0e8;
+        background-image: radial-gradient(rgba(14, 26, 53, 0.11) 2px, transparent 2.4px);
+        background-size: 40px 40px;
+      }
+      .clip {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+      }
+      .bgnum {
+        position: absolute;
+        right: -30px;
+        top: 160px;
+        font-family: "Bricolage";
+        font-weight: 800;
+        font-stretch: 80%;
+        font-size: 820px;
+        line-height: 1;
+        color: #e6087a;
+        opacity: 0.07;
+      }
+
+      /* ── Encabezado de paso ── */
+      .hdr {
+        position: absolute;
+        left: 70px;
+        top: 108px;
+        width: 940px;
+      }
+      .hrow {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .step {
+        background: #e6087a;
+        color: #fff;
+        font-family: "Bricolage";
+        font-weight: 700;
+        font-size: 32px;
+        letter-spacing: 0.12em;
+        padding: 10px 24px 12px;
+        border-radius: 40px;
+      }
+      .role {
+        border: 3px solid #0e1a35;
+        font-weight: 800;
+        font-size: 24px;
+        letter-spacing: 0.12em;
+        padding: 9px 20px;
+        border-radius: 40px;
+      }
+      .role.firma {
+        background: #0e1a35;
+        color: #fff;
+      }
+      .title {
+        margin-top: 24px;
+        font-family: "Bricolage";
+        font-weight: 800;
+        font-stretch: 88%;
+        font-size: 78px;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+      }
+      mark {
+        color: inherit;
+        background: linear-gradient(transparent 56%, #ffd84d 56%, #ffd84d 94%, transparent 94%);
+        padding: 0 6px;
+      }
+      .chips {
+        position: absolute;
+        left: 70px;
+        top: 392px;
+        display: flex;
+        gap: 14px;
+      }
+      .chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        border: 3px solid rgba(14, 26, 53, 0.14);
+        border-radius: 40px;
+        padding: 8px 20px 8px 10px;
+        font-weight: 700;
+        font-size: 25px;
+      }
+      .chip i {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 3px solid rgba(14, 26, 53, 0.25);
+        display: block;
+        position: relative;
+      }
+      .chip i b {
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: #18a957;
+        opacity: 0;
+      }
+      .chip i b::after {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 6px;
+        width: 9px;
+        height: 16px;
+        border: solid #fff;
+        border-width: 0 4px 4px 0;
+        transform: rotate(45deg);
+      }
+
+      /* ── Teléfono ── */
+      .phone {
+        position: absolute;
+        left: 222px;
+        top: 470px;
+        width: 636px;
+        height: 1103px;
+        border-radius: 74px;
+        background: #0e1a35;
+        padding: 18px;
+        box-shadow:
+          0 50px 90px -30px rgba(14, 26, 53, 0.55),
+          0 0 0 3px rgba(255, 255, 255, 0.6) inset;
+      }
+      .screen {
+        position: relative;
+        width: 600px;
+        height: 1067px;
+        border-radius: 56px;
+        overflow: hidden;
+        background: #f3f4f6;
+      }
+      .shot {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1125px;
+        height: 2000px;
+        transform-origin: 0 0;
+      }
+      .shot img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1125px;
+        height: 2000px;
+      }
+      .spot {
+        position: absolute;
+        border: 9px solid #ff3d9a;
+        border-radius: 34px;
+        box-shadow: 0 0 0 4000px rgba(14, 26, 53, 0.55);
+        opacity: 0;
+      }
+      .tag {
+        position: absolute;
+        background: #18a957;
+        color: #fff;
+        font-weight: 800;
+        font-size: 46px;
+        padding: 14px 30px;
+        border-radius: 18px;
+        white-space: nowrap;
+      }
+
+      /* Toque en pantalla */
+      .touch {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.82);
+        border: 10px solid #e6087a;
+        box-shadow: 0 10px 30px rgba(14, 26, 53, 0.35);
+        opacity: 0;
+      }
+      .touch .ring {
+        position: absolute;
+        inset: -18px;
+        border-radius: 50%;
+        border: 8px solid #ff3d9a;
+        opacity: 0;
+      }
+      .touch.sm {
+        width: 84px;
+        height: 84px;
+        margin: -42px 0 0 -42px;
+        border-width: 6px;
+      }
+      .touch.sm .ring {
+        inset: -10px;
+        border-width: 5px;
+      }
+
+      /* ── Tarjetas flotantes ── */
+      .card {
+        position: absolute;
+        background: #fff;
+        border-radius: 30px;
+        box-shadow: 0 30px 70px -20px rgba(14, 26, 53, 0.45);
+        padding: 30px 40px 34px;
+        opacity: 0;
+      }
+      .card .lbl {
+        font-weight: 800;
+        font-size: 26px;
+        letter-spacing: 0.16em;
+        color: #e6087a;
+      }
+      .mono {
+        font-family: "Mono", monospace;
+        font-weight: 700;
+      }
+      .arrow {
+        position: absolute;
+        overflow: visible;
+      }
+      .arrow path {
+        fill: none;
+        stroke: #e6087a;
+        stroke-width: 9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ── Subtítulos ── */
+      .cap {
+        position: absolute;
+        left: 0;
+        top: 1606px;
+        width: 1080px;
+        height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cap p {
+        max-width: 960px;
+        background: #0e1a35;
+        color: #fff;
+        font-weight: 600;
+        font-size: 40px;
+        line-height: 1.3;
+        text-align: center;
+        padding: 22px 38px 24px;
+        border-radius: 26px;
+      }
+      .cap p b {
+        color: #ffd84d;
+        font-weight: 800;
+      }
+
+      /* ── Pantallas ilustrativas ── */
+      .ilus {
+        position: absolute;
+        right: 26px;
+        bottom: 26px;
+        z-index: 9;
+        background: rgba(14, 26, 53, 0.72);
+        color: #fff;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 6px 12px;
+        border-radius: 10px;
+      }
+      .bar {
+        height: 22px;
+        border-radius: 11px;
+        background: #e5e7eb;
+      }
+      .mcard {
+        position: absolute;
+        left: 22px;
+        width: 556px;
+        background: #fff;
+        border-radius: 26px;
+        padding: 28px;
+        box-shadow: 0 2px 8px rgba(14, 26, 53, 0.06);
+      }
+      .mcard h4 {
+        font-weight: 800;
+        font-size: 28px;
+        line-height: 1.2;
+        margin-bottom: 18px;
+      }
+      .apphead {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 600px;
+        background: linear-gradient(135deg, #b0124f, #e6087a);
+        color: #fff;
+        padding: 64px 30px 26px;
+      }
+      .apphead h3 {
+        font-family: "Bricolage";
+        font-weight: 800;
+        font-size: 36px;
+      }
+      .apphead small {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 20px;
+        font-weight: 700;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        border-radius: 30px;
+        padding: 4px 14px;
+      }
+      .btn {
+        border-radius: 20px;
+        color: #fff;
+        font-weight: 800;
+        font-size: 29px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="107.25" data-width="1080" data-height="1920">
+      <!-- ═════════ 0 · INTRO ═════════ -->
+      <div id="s0" class="clip" data-start="0" data-duration="7.57" data-track-index="1">
+        <img id="i-logo" src="assets/brand/somos-cutout.png" alt="SOMOS" style="position: absolute; left: 340px; top: 150px; width: 400px" />
+        <div id="i-kick" style="position: absolute; left: 0; top: 290px; width: 1080px; text-align: center">
+          <span style="display: inline-block; font-weight: 800; font-size: 28px; letter-spacing: 0.3em; border: 3px solid #0e1a35; border-radius: 40px; padding: 10px 28px">TUTORIAL · MÉXICO CDMX</span>
+        </div>
+        <div id="i-title" style="position: absolute; left: 70px; top: 400px; width: 940px; font-family: Bricolage; font-weight: 800; font-stretch: 84%; font-size: 158px; line-height: 0.96; letter-spacing: -0.03em">
+          <div class="it">Cómo</div>
+          <div class="it">recolectar</div>
+          <div class="it"><mark>firmas</mark></div>
+        </div>
+        <div id="i-sub" style="position: absolute; left: 70px; top: 905px; font-size: 46px; font-weight: 600; color: #3b4660">desde tu celular, paso a paso</div>
+        <div id="i-p1" style="position: absolute; left: 70px; top: 1060px; width: 940px; height: 170px; background: #fff; border-radius: 30px; box-shadow: 0 20px 50px -24px rgba(14, 26, 53, 0.4); display: flex; align-items: center; gap: 28px; padding: 0 36px">
+          <div style="font-family: Bricolage; font-weight: 800; font-size: 40px; color: #fff; background: #e6087a; border-radius: 22px; padding: 18px 22px; white-space: nowrap">1–4</div>
+          <div>
+            <div style="font-weight: 800; font-size: 25px; letter-spacing: 0.16em; color: #e6087a">PARTE 1 · TÚ</div>
+            <div style="font-weight: 700; font-size: 38px; margin-top: 6px">Entras y compartes el enlace</div>
+          </div>
+        </div>
+        <svg id="i-arr" class="arrow" style="left: 510px; top: 1236px" width="60" height="70" viewBox="0 0 60 70"><path d="M30 6 L30 58 M14 42 L30 60 L46 42" /></svg>
+        <div id="i-p2" style="position: absolute; left: 70px; top: 1312px; width: 940px; height: 170px; background: #0e1a35; color: #fff; border-radius: 30px; box-shadow: 0 20px 50px -24px rgba(14, 26, 53, 0.4); display: flex; align-items: center; gap: 28px; padding: 0 36px">
+          <div style="font-family: Bricolage; font-weight: 800; font-size: 40px; color: #0e1a35; background: #ffd84d; border-radius: 22px; padding: 18px 22px; white-space: nowrap">5–9</div>
+          <div>
+            <div style="font-weight: 800; font-size: 25px; letter-spacing: 0.16em; color: #ffd84d">PARTE 2 · QUIEN FIRMA</div>
+            <div style="font-weight: 700; font-size: 38px; margin-top: 6px">Cuestionario, INE, foto y firma</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════ 1 · ENLACE ═════════ -->
+      <div id="s1" class="clip" data-start="7.57" data-duration="5.11" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>1</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 1</span><span class="role">TÚ</span></div>
+          <h1 class="title">Abre el <mark>enlace oficial</mark> que te enviamos</h1>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="shot" id="sh1">
+              <img src="assets/capturas/1.webp" alt="Mensaje de WhatsApp con el enlace personal" />
+              <div class="spot" id="sp1" style="left: 40px; top: 1150px; width: 1045px; height: 180px"></div>
+              <div class="touch" id="t1" style="left: 520px; top: 1250px"><div class="ring"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════ 2/3 · LOGIN + BOTÓN ROSA ═════════ -->
+      <div id="s2" class="clip" data-start="12.68" data-duration="27.86" data-track-index="1">
+        <div class="bgnum" data-layout-ignore id="bn2">2</div>
+        <div class="bgnum" data-layout-ignore id="bn3" style="opacity: 0">3</div>
+        <div class="hdr" id="h2">
+          <div class="hrow"><span class="step">PASO 2</span><span class="role">TÚ</span></div>
+          <h1 class="title">Llena <mark>solo 2 campos</mark>: celular y contraseña</h1>
+        </div>
+        <div class="hdr" id="h3" style="opacity: 0">
+          <div class="hrow"><span class="step">PASO 3</span><span class="role">TÚ</span></div>
+          <h1 class="title">Toca el <mark>botón rosa</mark> para entrar</h1>
+        </div>
+        <div class="phone" id="ph2">
+          <div class="screen">
+            <div class="shot" id="sh2">
+              <img src="assets/capturas/2.webp" alt="Pantalla de acceso del Asistente Electoral" />
+              <!-- campos vacíos que se van llenando -->
+              <div id="f-cel" style="position: absolute; left: 205px; top: 1392px; width: 690px; height: 88px; background: #fff; display: flex; align-items: center; font-size: 44px; font-weight: 500; color: #1f2937">
+                <span id="ph-cel" style="color: #9aa3b2; position: absolute; left: 18px">Número celular</span><span id="ty-cel" style="padding-left: 18px; white-space: pre"></span><span class="caret" id="c-cel" style="width: 4px; height: 52px; background: #e6087a; margin-left: 3px; opacity: 0"></span>
+              </div>
+              <div id="f-pw" style="position: absolute; left: 205px; top: 1548px; width: 670px; height: 88px; background: #fff; display: flex; align-items: center; font-size: 44px; font-weight: 500; color: #1f2937">
+                <span id="ph-pw" style="color: #9aa3b2; position: absolute; left: 18px">Contraseña</span><span id="ty-pw" style="padding-left: 18px; white-space: pre"></span><span class="caret" id="c-pw" style="width: 4px; height: 52px; background: #e6087a; margin-left: 3px; opacity: 0"></span>
+              </div>
+              <div id="okbox" style="position: absolute; left: 106px; top: 512px; width: 892px; height: 776px; border: 9px dashed #18a957; border-radius: 40px; opacity: 0"></div>
+              <div class="tag" id="oktag" style="left: 300px; top: 470px; opacity: 0">✓ Ya viene prellenado</div>
+              <div id="n1" style="position: absolute; left: 62px; top: 1386px; width: 100px; height: 100px; border-radius: 50%; background: #e6087a; color: #fff; font-family: Bricolage; font-weight: 800; font-size: 60px; display: flex; align-items: center; justify-content: center; opacity: 0; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25)">1</div>
+              <div id="n2" style="position: absolute; left: 62px; top: 1541px; width: 100px; height: 100px; border-radius: 50%; background: #e6087a; color: #fff; font-family: Bricolage; font-weight: 800; font-size: 60px; display: flex; align-items: center; justify-content: center; opacity: 0; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25)">2</div>
+              <div class="spot" id="sp2" style="left: 106px; top: 1372px; width: 894px; height: 128px"></div>
+              <div class="touch" id="t2" style="left: 551px; top: 1745px"><div class="ring"></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- tarjeta: celular -->
+        <div class="card" id="cd-cel" style="left: 110px; top: 520px; width: 860px; text-align: center">
+          <div class="lbl">CELULAR</div>
+          <div class="mono" style="font-size: 100px; letter-spacing: -0.01em; margin-top: 6px; line-height: 1.1">55 1112 2305</div>
+          <div style="font-size: 27px; font-weight: 600; color: #5b6478; margin-top: 8px">10 dígitos, sin espacios al escribirlo</div>
+        </div>
+        <svg class="arrow" id="ar-cel" style="left: 500px; top: 760px" width="80" height="330" viewBox="0 0 80 330"><path id="ap-cel" d="M40 6 C 18 110, 64 200, 40 318 M20 292 L40 320 L60 292" /></svg>
+        <!-- tarjeta: contraseña -->
+        <div class="card" id="cd-pw" style="left: 110px; top: 500px; width: 860px; text-align: center">
+          <div class="lbl">CONTRASEÑA</div>
+          <div class="mono" style="font-size: 132px; line-height: 1.1; margin-top: 4px"><span id="pw-B" style="color: #e6087a">B</span>erlin<span id="pw-27" style="color: #e6087a">27</span></div>
+          <div style="display: flex; justify-content: center; gap: 14px; margin-top: 14px">
+            <span style="background: #ffe4f1; color: #b0124f; font-weight: 800; font-size: 27px; border-radius: 30px; padding: 8px 20px">B mayúscula</span>
+            <span style="background: #eef0f5; font-weight: 800; font-size: 27px; border-radius: 30px; padding: 8px 20px">sin espacios</span>
+            <span style="background: #ffe4f1; color: #b0124f; font-weight: 800; font-size: 27px; border-radius: 30px; padding: 8px 20px">27 en números</span>
+          </div>
+        </div>
+        <svg class="arrow" id="ar-pw" style="left: 500px; top: 838px" width="80" height="350" viewBox="0 0 80 350"><path id="ap-pw" d="M40 6 C 62 120, 16 220, 40 338 M20 312 L40 340 L60 312" /></svg>
+      </div>
+
+      <!-- ═════════ 4 · COMPARTIR ═════════ -->
+      <div id="s4" class="clip" data-start="40.54" data-duration="16.42" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>4</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 4</span><span class="role">TÚ</span></div>
+          <h1 class="title">Desliza abajo y <mark>comparte por WhatsApp</mark></h1>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="ilus">PANTALLA ILUSTRATIVA</div>
+            <div id="feed" style="position: absolute; left: 0; top: 0; width: 600px; height: 2000px">
+              <div class="apphead" style="height: 196px">
+                <h3>Canal Oficial</h3>
+                <small>🏛 Somos México CDMX</small>
+              </div>
+              <div class="mcard" style="top: 224px; height: 290px"><div class="bar" style="width: 50%; height: 28px; background: #d7dbe2"></div><div class="bar" style="margin-top: 26px"></div><div class="bar" style="margin-top: 16px; width: 86%"></div><div class="bar" style="margin-top: 16px; width: 64%"></div></div>
+              <div class="mcard" style="top: 540px; height: 290px"><div class="bar" style="width: 42%; height: 28px; background: #d7dbe2"></div><div class="bar" style="margin-top: 26px; width: 92%"></div><div class="bar" style="margin-top: 16px"></div><div class="bar" style="margin-top: 16px; width: 58%"></div></div>
+              <div class="mcard" style="top: 856px; height: 290px"><div class="bar" style="width: 56%; height: 28px; background: #d7dbe2"></div><div class="bar" style="margin-top: 26px"></div><div class="bar" style="margin-top: 16px; width: 78%"></div><div class="bar" style="margin-top: 16px; width: 70%"></div></div>
+              <div class="mcard" style="top: 1172px; height: 290px"><div class="bar" style="width: 38%; height: 28px; background: #d7dbe2"></div><div class="bar" style="margin-top: 26px; width: 88%"></div><div class="bar" style="margin-top: 16px"></div><div class="bar" style="margin-top: 16px; width: 62%"></div></div>
+              <div class="mcard" id="invcard" style="top: 1530px; height: 350px; border: 4px solid #e6087a">
+                <h4>🔗 Enlace de invitación</h4>
+                <div class="mono" style="background: #f3f4f6; border-radius: 14px; padding: 18px; font-size: 19px; color: #5b6478; white-space: nowrap; overflow: hidden">somoscdmx.com.mx/pwa_message/?c=…</div>
+                <div class="btn" id="wa-btn" style="margin-top: 26px; height: 96px; background: #1fae54">
+                  <svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 4a16 16 0 0 0-13.8 24.1L4 36l8.1-2.1A16 16 0 1 0 20 4z" fill="none" stroke="#fff" stroke-width="3.4" stroke-linejoin="round" /></svg>
+                  Compartir vía WhatsApp
+                </div>
+              </div>
+            </div>
+            <!-- hoja de compartir -->
+            <div id="sheet" style="position: absolute; left: 0; top: 520px; width: 600px; height: 560px; background: #fff; border-radius: 36px 36px 0 0; box-shadow: 0 -20px 50px rgba(14, 26, 53, 0.25); padding: 30px; opacity: 0">
+              <div style="width: 80px; height: 8px; border-radius: 4px; background: #d7dbe2; margin: 0 auto 22px"></div>
+              <div style="font-weight: 800; font-size: 30px">Enviar a…</div>
+              <div style="font-size: 22px; color: #5b6478; margin-top: 4px">Elige el contacto en WhatsApp</div>
+              <div style="display: flex; align-items: center; gap: 18px; margin-top: 28px; opacity: 0.5"><div style="width: 70px; height: 70px; border-radius: 50%; background: #e5e7eb"></div><div class="bar" style="width: 260px"></div></div>
+              <div id="ct" style="display: flex; align-items: center; gap: 18px; margin-top: 18px; padding: 12px; border-radius: 20px; background: #e9f9ef; border: 3px solid #1fae54">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #1fae54; color: #fff; font-weight: 800; font-size: 32px; display: flex; align-items: center; justify-content: center">✍</div>
+                <div style="font-weight: 800; font-size: 27px">Persona que firmará</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 18px; margin-top: 18px; opacity: 0.5"><div style="width: 70px; height: 70px; border-radius: 50%; background: #e5e7eb"></div><div class="bar" style="width: 220px"></div></div>
+            </div>
+            <div id="dim4" style="position: absolute; inset: 0; background: rgba(14, 26, 53, 0.6); opacity: 0"></div>
+            <div class="touch sm" id="t4" style="left: 300px; top: 820px"><div class="ring"></div></div>
+          </div>
+        </div>
+        <div class="card" id="tip" style="left: 90px; top: 760px; width: 900px; display: flex; gap: 30px; align-items: center; border: 5px solid #ffd84d">
+          <svg width="120" height="150" viewBox="0 0 120 150" style="flex: none"><rect x="22" y="8" width="76" height="134" rx="16" fill="#0e1a35" /><rect x="30" y="20" width="60" height="104" rx="8" fill="#ffd84d" /><circle cx="60" cy="133" r="4" fill="#fff" /><path d="M44 70 l11 11 l22 -24" stroke="#0e1a35" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <div>
+            <div class="lbl">RECOMENDADO</div>
+            <div style="font-weight: 700; font-size: 42px; line-height: 1.2; margin-top: 8px">Que la persona abra el enlace <mark>desde su propio celular</mark></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════ 5 · MENSAJE ═════════ -->
+      <div id="s5" class="clip" data-start="56.96" data-duration="6.31" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>5</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 5</span><span class="role firma">QUIEN FIRMA</span></div>
+          <h1 class="title">La persona <mark>toca el enlace</mark> que recibió</h1>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="shot" id="sh5">
+              <img src="assets/capturas/3.webp" alt="Mensaje de invitación con enlace" />
+              <div class="spot" id="sp5" style="left: 46px; top: 1326px; width: 1010px; height: 330px"></div>
+              <div class="touch" id="t5" style="left: 470px; top: 1500px"><div class="ring"></div></div>
+            </div>
+          </div>
+        </div>
+        <div id="band" style="position: absolute; left: 0; top: 880px; width: 1080px; height: 220px; background: #0e1a35; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-3deg)">
+          <div style="font-weight: 800; font-size: 30px; letter-spacing: 0.24em; color: #ffd84d">PARTE 2</div>
+          <div style="font-family: Bricolage; font-weight: 800; font-stretch: 88%; font-size: 76px">Lo que ve quien firma</div>
+        </div>
+      </div>
+
+      <!-- ═════════ 6 · INVITACIÓN ═════════ -->
+      <div id="s6" class="clip" data-start="63.27" data-duration="6.4" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>6</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 6</span><span class="role firma">QUIEN FIRMA</span></div>
+          <h1 class="title">En la invitación, toca <mark>Comenzar</mark></h1>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="shot" id="sh6">
+              <img src="assets/capturas/4.webp" alt="Invitación a Somos México CDMX" />
+              <div class="spot" id="sp6" style="left: 440px; top: 1396px; width: 247px; height: 113px"></div>
+              <div class="touch" id="t6" style="left: 563px; top: 1452px"><div class="ring"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════ 7 · CUESTIONARIO ═════════ -->
+      <div id="s7" class="clip" data-start="69.67" data-duration="13.47" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>7</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 7</span><span class="role firma">QUIEN FIRMA</span></div>
+          <h1 class="title">Elige nivel, forma de participar y <mark>temas</mark></h1>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="ilus">PANTALLA ILUSTRATIVA</div>
+            <div id="qfeed" style="position: absolute; left: 0; top: 0; width: 600px; height: 1760px">
+              <div class="apphead" style="height: 160px"><h3 style="font-size: 30px">Cuestionario de Participación</h3></div>
+              <div class="mcard" style="top: 184px; height: 610px">
+                <h4>Nivel de participación</h4>
+                <div class="lv" style="display: flex; align-items: center; gap: 18px; height: 88px; border: 3px solid #e5e7eb; border-radius: 18px; padding: 0 20px; margin-bottom: 12px"><i style="width: 34px; height: 34px; border-radius: 50%; border: 4px solid #c3c8d2; display: block"></i><span style="font-weight: 800; font-size: 26px; color: #8a92a3">1</span><div class="bar" style="width: 260px"></div></div>
+                <div class="lv" style="display: flex; align-items: center; gap: 18px; height: 88px; border: 3px solid #e5e7eb; border-radius: 18px; padding: 0 20px; margin-bottom: 12px"><i style="width: 34px; height: 34px; border-radius: 50%; border: 4px solid #c3c8d2; display: block"></i><span style="font-weight: 800; font-size: 26px; color: #8a92a3">2</span><div class="bar" style="width: 220px"></div></div>
+                <div class="lv" id="lv3" style="display: flex; align-items: center; gap: 18px; height: 88px; border: 3px solid #e5e7eb; border-radius: 18px; padding: 0 20px; margin-bottom: 12px"><i id="lv3r" style="width: 34px; height: 34px; border-radius: 50%; border: 4px solid #c3c8d2; display: block"></i><span style="font-weight: 800; font-size: 26px; color: #8a92a3">3</span><div class="bar" style="width: 290px"></div></div>
+                <div class="lv" style="display: flex; align-items: center; gap: 18px; height: 88px; border: 3px solid #e5e7eb; border-radius: 18px; padding: 0 20px; margin-bottom: 12px"><i style="width: 34px; height: 34px; border-radius: 50%; border: 4px solid #c3c8d2; display: block"></i><span style="font-weight: 800; font-size: 26px; color: #8a92a3">4</span><div class="bar" style="width: 240px"></div></div>
+                <div class="lv" style="display: flex; align-items: center; gap: 18px; height: 88px; border: 3px solid #e5e7eb; border-radius: 18px; padding: 0 20px"><i style="width: 34px; height: 34px; border-radius: 50%; border: 4px solid #c3c8d2; display: block"></i><span style="font-weight: 800; font-size: 26px; color: #8a92a3">5</span><div class="bar" style="width: 200px"></div></div>
+              </div>
+              <div class="mcard" style="top: 818px; height: 370px">
+                <h4>¿Cómo te gustaría participar?</h4>
+                <div style="display: flex; align-items: center; gap: 18px; height: 80px"><i id="cb1" style="width: 40px; height: 40px; border-radius: 10px; border: 4px solid #c3c8d2; display: block"></i><div class="bar" style="width: 330px"></div></div>
+                <div style="display: flex; align-items: center; gap: 18px; height: 80px"><i id="cb2" style="width: 40px; height: 40px; border-radius: 10px; border: 4px solid #c3c8d2; display: block"></i><div class="bar" style="width: 280px"></div></div>
+                <div style="display: flex; align-items: center; gap: 18px; height: 80px"><i style="width: 40px; height: 40px; border-radius: 10px; border: 4px solid #c3c8d2; display: block"></i><div class="bar" style="width: 360px"></div></div>
+              </div>
+              <div class="mcard" style="top: 1212px; height: 330px">
+                <h4>¿Qué temas te interesan más?</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px">
+                  <span class="tema" id="tm1" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">💧 Agua</span>
+                  <span class="tema" id="tm2" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">🛡 Seguridad</span>
+                  <span class="tema" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">🚲 Movilidad</span>
+                  <span class="tema" id="tm4" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">🏥 Salud</span>
+                  <span class="tema" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">💼 Empleo</span>
+                  <span class="tema" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">👩 Mujeres</span>
+                  <span class="tema" style="border: 3px solid #d7dbe2; border-radius: 40px; padding: 10px 22px; font-weight: 700; font-size: 25px">🎓 Jóvenes</span>
+                </div>
+              </div>
+              <div class="btn" id="q-next" style="position: absolute; left: 22px; top: 1572px; width: 556px; height: 96px; background: #e6087a">Continuar →</div>
+            </div>
+            <div class="touch sm" id="t7" style="left: 300px; top: 470px"><div class="ring"></div></div>
+          </div>
+        </div>
+        <div class="tag" id="anylv" style="left: 560px; top: 560px; font-size: 36px; line-height: 1.15; white-space: normal; width: 440px; padding: 20px 28px; transform: rotate(4deg); opacity: 0; box-shadow: 0 20px 40px -14px rgba(14, 26, 53, 0.5)">✓ Cualquiera de los 5 niveles sirve para la firma</div>
+      </div>
+
+      <!-- ═════════ 8 · INE Y DATOS ═════════ -->
+      <div id="s8" class="clip" data-start="83.14" data-duration="9.19" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>8</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 8</span><span class="role firma">QUIEN FIRMA</span></div>
+          <h1 class="title">Foto de su <mark>INE</mark> y sus datos</h1>
+        </div>
+        <div class="chips">
+          <div class="chip"><i><b id="k81"></b></i>Foto de INE</div>
+          <div class="chip"><i><b id="k82"></b></i>Datos de registro</div>
+          <div class="chip"><i><b id="k83"></b></i>Celular</div>
+        </div>
+        <div class="phone">
+          <div class="screen" style="background: #12161f">
+            <div class="ilus">PANTALLA ILUSTRATIVA</div>
+            <div style="position: absolute; left: 0; top: 90px; width: 600px; text-align: center; color: #fff; font-weight: 700; font-size: 27px">Coloca tu INE dentro del marco</div>
+            <svg style="position: absolute; left: 50px; top: 300px" width="500" height="320" viewBox="0 0 500 320"><path d="M4 60 V4 H64 M436 4 H496 V60 M496 260 V316 H436 M64 316 H4 V260" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" /></svg>
+            <div id="idcard" style="position: absolute; left: 70px; top: 320px; width: 460px; height: 280px; border-radius: 22px; background: linear-gradient(135deg, #eef3fb, #fbe4ef); padding: 22px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5)">
+              <div style="font-weight: 800; font-size: 22px; letter-spacing: 0.12em; color: #8a3a62">INE · CREDENCIAL</div>
+              <div style="display: flex; gap: 20px; margin-top: 18px">
+                <svg width="120" height="150" viewBox="0 0 120 150" style="border-radius: 12px; background: #d5dbe6"><circle cx="60" cy="58" r="28" fill="#9ba6b9" /><path d="M14 150 C 18 100, 102 100, 106 150 Z" fill="#9ba6b9" /></svg>
+                <div style="flex: 1">
+                  <div class="bar" style="background: #c9d0dd; height: 18px"></div>
+                  <div class="bar" style="background: #c9d0dd; height: 18px; width: 80%; margin-top: 14px"></div>
+                  <div class="bar" style="background: #c9d0dd; height: 18px; width: 90%; margin-top: 14px"></div>
+                  <div class="bar" style="background: #c9d0dd; height: 18px; width: 60%; margin-top: 14px"></div>
+                </div>
+              </div>
+            </div>
+            <div id="shutter" style="position: absolute; left: 250px; top: 860px; width: 100px; height: 100px; border-radius: 50%; border: 8px solid #fff; background: rgba(255, 255, 255, 0.25)"></div>
+            <div id="flash8" style="position: absolute; inset: 0; background: #fff; opacity: 0"></div>
+            <!-- formulario -->
+            <div id="form8" style="position: absolute; inset: 0; background: #f3f4f6">
+              <div class="apphead" style="height: 160px"><h3 style="font-size: 32px">Datos de registro</h3></div>
+              <div class="mcard" style="top: 186px; height: 760px">
+                <div style="display: flex; gap: 16px; align-items: center; background: #e9f9ef; border-radius: 16px; padding: 14px 18px; font-weight: 800; font-size: 24px; color: #12753c">✓ Foto de INE capturada</div>
+                <div style="font-weight: 700; font-size: 23px; color: #5b6478; margin-top: 28px">Nombre completo</div>
+                <div style="height: 76px; border: 3px solid #e5e7eb; border-radius: 14px; margin-top: 10px; padding: 0 18px; display: flex; align-items: center"><div class="bar fill8" style="width: 330px; background: #c9d0dd"></div></div>
+                <div style="font-weight: 700; font-size: 23px; color: #5b6478; margin-top: 22px">Domicilio</div>
+                <div style="height: 76px; border: 3px solid #e5e7eb; border-radius: 14px; margin-top: 10px; padding: 0 18px; display: flex; align-items: center"><div class="bar fill8" style="width: 380px; background: #c9d0dd"></div></div>
+                <div style="font-weight: 700; font-size: 23px; color: #5b6478; margin-top: 22px">Número de celular</div>
+                <div id="cel8" style="height: 76px; border: 3px solid #e5e7eb; border-radius: 14px; margin-top: 10px; padding: 0 18px; display: flex; align-items: center"><span class="mono" id="cel8t" style="font-size: 30px; color: #1f2937; opacity: 0">55 •••• ••••</span></div>
+                <div class="btn" id="next8" style="margin-top: 36px; height: 88px; background: #e6087a">Siguiente →</div>
+              </div>
+            </div>
+            <div class="touch sm" id="t8" style="left: 300px; top: 910px"><div class="ring"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════ 9 · FOTO Y FIRMA ═════════ -->
+      <div id="s9" class="clip" data-start="92.33" data-duration="7.87" data-track-index="1">
+        <div class="bgnum" data-layout-ignore>9</div>
+        <div class="hdr">
+          <div class="hrow"><span class="step">PASO 9</span><span class="role firma">QUIEN FIRMA</span></div>
+          <h1 class="title">Fotografía y <mark>firma igual</mark> a su INE</h1>
+        </div>
+        <div class="chips">
+          <div class="chip"><i><b id="k91"></b></i>Fotografía</div>
+          <div class="chip"><i><b id="k92"></b></i>Firma parecida a la del INE</div>
+        </div>
+        <div class="phone">
+          <div class="screen" style="background: #12161f">
+            <div class="ilus">PANTALLA ILUSTRATIVA</div>
+            <div style="position: absolute; left: 0; top: 90px; width: 600px; text-align: center; color: #fff; font-weight: 700; font-size: 27px">Mira a la cámara</div>
+            <svg id="face" style="position: absolute; left: 100px; top: 200px" width="400" height="520" viewBox="0 0 400 520"><circle cx="200" cy="215" r="92" fill="#4b5568" /><path d="M40 520 C 50 360, 350 360, 360 520 Z" fill="#4b5568" /><ellipse cx="200" cy="250" rx="175" ry="235" fill="none" stroke="#fff" stroke-width="6" stroke-dasharray="18 14" /></svg>
+            <div id="shutter9" style="position: absolute; left: 250px; top: 860px; width: 100px; height: 100px; border-radius: 50%; border: 8px solid #fff; background: rgba(255, 255, 255, 0.25)"></div>
+            <div id="flash9" style="position: absolute; inset: 0; background: #fff; opacity: 0"></div>
+            <div id="pad" style="position: absolute; inset: 0; background: #f3f4f6">
+              <div class="apphead" style="height: 160px"><h3 style="font-size: 32px">Firma</h3></div>
+              <div class="mcard" style="top: 186px; height: 820px">
+                <div style="display: flex; gap: 16px; align-items: center; background: #e9f9ef; border-radius: 16px; padding: 14px 18px; font-weight: 800; font-size: 24px; color: #12753c">✓ Fotografía lista</div>
+                <div style="font-weight: 700; font-size: 23px; color: #5b6478; margin-top: 26px">Firma aquí, igual que en tu INE</div>
+                <div style="position: relative; height: 430px; border: 3px dashed #c3c8d2; border-radius: 18px; margin-top: 12px; background: #fff">
+                  <div style="position: absolute; left: 30px; right: 30px; top: 320px; border-top: 3px solid #d7dbe2"></div>
+                  <svg style="position: absolute; left: 40px; top: 90px" width="420" height="260" viewBox="0 0 420 260"><path id="sig" d="M20 190 C 40 60, 92 40, 84 150 C 80 210, 118 200, 140 130 C 156 80, 170 70, 176 120 C 182 170, 214 170, 230 110 C 240 70, 262 64, 262 112 C 262 150, 290 160, 320 96 C 336 62, 356 60, 352 104 C 348 150, 380 150, 404 120 M 60 226 C 160 210, 280 214, 396 200" fill="none" stroke="#0e1a35" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </div>
+                <div class="btn" id="send9" style="margin-top: 30px; height: 88px; background: #e6087a">Enviar firma ✓</div>
+              </div>
+            </div>
+            <div class="touch sm" id="t9" style="left: 300px; top: 910px"><div class="ring"></div></div>
+          </div>
+        </div>
+        <div class="card" id="inecmp" style="left: 640px; top: 440px; width: 390px; padding: 20px 26px; transform: rotate(3deg); border: 4px solid #ffd84d">
+          <div class="lbl" style="font-size: 22px">ASÍ ESTÁ EN SU INE</div>
+          <svg width="330" height="150" viewBox="0 0 420 260" style="margin-top: 6px"><path id="sig2" d="M20 190 C 40 60, 92 40, 84 150 C 80 210, 118 200, 140 130 C 156 80, 170 70, 176 120 C 182 170, 214 170, 230 110 C 240 70, 262 64, 262 112 C 262 150, 290 160, 320 96 C 336 62, 356 60, 352 104 C 348 150, 380 150, 404 120 M 60 226 C 160 210, 280 214, 396 200" fill="none" stroke="#3b4660" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <div style="font-weight: 800; font-size: 28px; margin-top: 2px">≈ lo más parecida posible</div>
+        </div>
+      </div>
+
+      <!-- ═════════ CIERRE ═════════ -->
+      <div id="s10" class="clip" data-start="100.2" data-duration="7.05" data-track-index="1">
+        <div id="ok" style="position: absolute; left: 430px; top: 150px; width: 220px; height: 220px; border-radius: 50%; background: #18a957; display: flex; align-items: center; justify-content: center; box-shadow: 0 30px 60px -20px rgba(24, 169, 87, 0.6)">
+          <svg width="120" height="120" viewBox="0 0 120 120"><path id="okp" d="M24 62 L50 88 L98 34" stroke="#fff" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </div>
+        <div id="c-t" style="position: absolute; left: 0; top: 400px; width: 1080px; text-align: center; font-family: Bricolage; font-weight: 800; font-stretch: 84%; font-size: 170px; line-height: 1; letter-spacing: -0.03em">¡Listo!</div>
+        <div id="c-s" style="position: absolute; left: 0; top: 580px; width: 1080px; text-align: center; font-size: 50px; font-weight: 700; color: #3b4660">La firma queda <mark>registrada</mark></div>
+        <div id="recap" style="position: absolute; left: 70px; top: 720px; width: 940px; background: #fff; border-radius: 34px; padding: 22px 40px; box-shadow: 0 30px 70px -28px rgba(14, 26, 53, 0.45)">
+          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 2px solid #eef0f5"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">1</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">Entra con <span class="mono" style="background: #ffe4f1; padding: 2px 10px; border-radius: 8px">5511122305</span> y <span class="mono" style="background: #ffe4f1; padding: 2px 10px; border-radius: 8px">Berlin27</span></span></div>
+          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 2px solid #eef0f5"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">2</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">Desliza abajo y toca «Compartir vía WhatsApp»</span></div>
+          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 2px solid #eef0f5"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">3</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">La persona contesta y toma foto de su INE</span></div>
+          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">4</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">Fotografía y firma igual a la de su INE</span></div>
+        </div>
+        <img id="c-logo" src="assets/brand/somos-cutout.png" alt="SOMOS" style="position: absolute; left: 330px; top: 1500px; width: 420px" />
+        <div id="c-g" style="position: absolute; left: 0; top: 1610px; width: 1080px; text-align: center; font-family: Bricolage; font-weight: 800; font-stretch: 88%; font-size: 64px">Gracias por sumar</div>
+      </div>
+
+      <!-- ═════════ SUBTÍTULOS ═════════ -->
+      <div class="cap clip" data-start="1.2" data-duration="6.0" data-track-index="2" style="top: 1606px; height: 260px"><p>Tutorial para recolectar firmas, <b>paso a paso</b>, desde tu celular.</p></div>
+      <div class="cap clip" data-start="8.27" data-duration="4.3" data-track-index="2" style="top: 1606px; height: 260px"><p>Abre el <b>enlace oficial</b> que te compartimos por WhatsApp.</p></div>
+      <div class="cap clip" data-start="13.38" data-duration="7.9" data-track-index="2" style="top: 1606px; height: 260px"><p>Nombre, cargo y folio <b>ya vienen prellenados</b>. No los cambies: solo llena dos campos.</p></div>
+      <div class="cap clip" data-start="21.34" data-duration="6.85" data-track-index="2" style="top: 1606px; height: 260px"><p>Celular: <b>55 1112 2305</b></p></div>
+      <div class="cap clip" data-start="28.24" data-duration="7.7" data-track-index="2" style="top: 1606px; height: 260px"><p>Contraseña: <b>Berlin27</b> — B mayúscula, sin espacios y el 27 con números.</p></div>
+      <div class="cap clip" data-start="36.48" data-duration="4.0" data-track-index="2" style="top: 1606px; height: 260px"><p>Toca el botón rosa: <b>«Confirmar y Entrar al Canal»</b>.</p></div>
+      <div class="cap clip" data-start="41.24" data-duration="5.4" data-track-index="2" style="top: 1606px; height: 260px"><p>Ya dentro, <b>desliza hasta abajo</b>, al apartado «Enlace de invitación».</p></div>
+      <div class="cap clip" data-start="46.7" data-duration="5.65" data-track-index="2" style="top: 1606px; height: 260px"><p>Toca <b>«Compartir vía WhatsApp»</b> y envíalo a la persona que dará su firma.</p></div>
+      <div class="cap clip" data-start="52.39" data-duration="4.5" data-track-index="2" style="top: 1606px; height: 260px"><p>Recomendado: que lo abra <b>desde su propio celular</b>.</p></div>
+      <div class="cap clip" data-start="57.66" data-duration="5.55" data-track-index="2" style="top: 1606px; height: 260px"><p>La persona recibe este mensaje. <b>Solo debe tocar el enlace.</b></p></div>
+      <div class="cap clip" data-start="63.97" data-duration="5.65" data-track-index="2" style="top: 1606px; height: 260px"><p>Verá la invitación a Somos México CDMX. Debe tocar <b>«Comenzar»</b>.</p></div>
+      <div class="cap clip" data-start="70.37" data-duration="8.25" data-track-index="2" style="top: 1606px; height: 260px"><p>Puede elegir <b>cualquiera de los 5 niveles</b>: el nivel no afecta la firma.</p></div>
+      <div class="cap clip" data-start="78.66" data-duration="4.45" data-track-index="2" style="top: 1606px; height: 260px"><p>También elige <b>cómo participar</b> y sus <b>temas de interés</b>.</p></div>
+      <div class="cap clip" data-start="83.84" data-duration="8.45" data-track-index="2" style="top: 1606px; height: 260px"><p>Toma <b>foto de su INE</b> y completa sus datos de registro y su número de celular.</p></div>
+      <div class="cap clip" data-start="93.03" data-duration="7.1" data-track-index="2" style="top: 1606px; height: 260px"><p>Por último: una fotografía y su firma, <b>lo más parecida posible a la de su INE</b>.</p></div>
+
+      <!-- ═════════ AUDIO ═════════ -->
+      <audio id="a-mus" src="assets/musica_fondo.m4a" data-start="0" data-duration="107.25" data-track-index="9" data-volume="0.035" data-fade-in="1.5" data-fade-out="3"></audio>
+      <audio id="a00" src="assets/voz/00_intro.wav" data-start="1.2" data-duration="5.57" data-track-index="8"></audio>
+      <audio id="a01" src="assets/voz/01_enlace.wav" data-start="8.27" data-duration="3.81" data-track-index="8"></audio>
+      <audio id="a02" src="assets/voz/02_pantalla.wav" data-start="13.38" data-duration="7.06" data-track-index="8"></audio>
+      <audio id="a03" src="assets/voz/03_celular.wav" data-start="21.34" data-duration="5.99" data-track-index="8"></audio>
+      <audio id="a04" src="assets/voz/04_contrasena.wav" data-start="28.24" data-duration="6.55" data-track-index="8"></audio>
+      <audio id="a05" src="assets/voz/05_boton.wav" data-start="36.48" data-duration="3.46" data-track-index="8"></audio>
+      <audio id="a06" src="assets/voz/06_scroll.wav" data-start="41.24" data-duration="4.91" data-track-index="8"></audio>
+      <audio id="a07" src="assets/voz/07_compartir.wav" data-start="46.7" data-duration="5.14" data-track-index="8"></audio>
+      <audio id="a08" src="assets/voz/08_recomendacion.wav" data-start="52.39" data-duration="3.67" data-track-index="8"></audio>
+      <audio id="a09" src="assets/voz/09_mensaje.wav" data-start="57.66" data-duration="5.01" data-track-index="8"></audio>
+      <audio id="a10" src="assets/voz/10_invitacion.wav" data-start="63.97" data-duration="5.1" data-track-index="8"></audio>
+      <audio id="a11" src="assets/voz/11_cuestionario.wav" data-start="70.37" data-duration="7.74" data-track-index="8"></audio>
+      <audio id="a12" src="assets/voz/12_temas.wav" data-start="78.66" data-duration="3.88" data-track-index="8"></audio>
+      <audio id="a13" src="assets/voz/13_ine.wav" data-start="83.84" data-duration="7.89" data-track-index="8"></audio>
+      <audio id="a14" src="assets/voz/14_firma.wav" data-start="93.03" data-duration="5.57" data-track-index="8"></audio>
+      <audio id="a15" src="assets/voz/15_cierre.wav" data-start="100.9" data-duration="3.35" data-track-index="8"></audio>
+    </div>
+
+    <script>
+      // Letras que se "teclean" en los campos (deterministas, sin azar).
+      function letters(id, text) {
+        const el = document.getElementById(id);
+        return [...text].map((ch) => {
+          const s = document.createElement("span");
+          s.textContent = ch;
+          s.style.opacity = "0";
+          el.appendChild(s);
+          return s;
+        });
+      }
+      const celChars = letters("ty-cel", "5511122305");
+      const pwChars = letters("ty-pw", "Berlin27");
+
+      const tl = gsap.timeline({ paused: true });
+      const E = "power3.out";
+
+      // ── utilidades ──
+      function enterScene(sel, t) {
+        tl.fromTo(`${sel} .hdr:not([style*="opacity: 0"])`, { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, t);
+        tl.fromTo(`${sel} .phone`, { opacity: 0, y: 90, rotation: -2 }, { opacity: 1, y: 0, rotation: 0, duration: 0.65, ease: "back.out(1.3)" }, t + 0.05);
+        tl.fromTo(`${sel} .bgnum`, { opacity: 0, x: 80 }, { opacity: 0.07, x: 0, duration: 0.8, ease: E }, t);
+      }
+      function tap(sel, t) {
+        tl.fromTo(sel, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: E }, t);
+        tl.to(sel, { scale: 0.8, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.inOut" }, t + 0.45);
+        tl.fromTo(`${sel} .ring`, { opacity: 0.95, scale: 1 }, { opacity: 0, scale: 2.6, duration: 0.65, ease: "power2.out" }, t + 0.5);
+        tl.to(sel, { opacity: 0, duration: 0.3 }, t + 1.3);
+      }
+      function cardIn(sel, t) {
+        tl.fromTo(sel, { opacity: 0, y: 40, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, t);
+      }
+      function draw(sel, t, d) {
+        const p = document.querySelector(sel);
+        const L = Math.ceil(p.getTotalLength());
+        tl.fromTo(sel, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: "power1.inOut" }, t);
+      }
+      function check(sel, t) {
+        tl.fromTo(sel, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, t);
+      }
+      const BASE = 600 / 1125;
+
+      // ═════ 0 · INTRO ═════
+      tl.fromTo("#i-logo", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.15);
+      tl.fromTo("#i-kick", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.35);
+      tl.fromTo(".it", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.14, ease: E }, 0.45);
+      tl.fromTo("#i-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 1.2);
+      tl.fromTo("#i-p1", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 2.3);
+      draw("#i-arr path", 2.9, 0.4);
+      tl.fromTo("#i-p2", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 3.2);
+      tl.to(["#i-p1", "#i-p2"], { scale: 1.025, duration: 1.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 4.0);
+      tl.to("#i-title", { y: -12, duration: 3.0, ease: "sine.inOut" }, 4.0);
+      tl.to("#s0 > *", { opacity: 0, y: -30, duration: 0.3, stagger: 0.02, ease: "power2.in" }, 7.1);
+
+      // ═════ 1 · ENLACE (7.57) ═════
+      tl.set("#sh1", { scale: BASE, x: 0, y: 0 }, 0);
+      enterScene("#s1", 7.57);
+      tl.to("#sh1", { scale: 0.58, x: 300 - 559 * 0.58, y: 640 - 1240 * 0.58, duration: 0.9, ease: "power3.inOut" }, 8.5);
+      tl.to("#sp1", { opacity: 1, duration: 0.4 }, 9.3);
+      tap("#t1", 10.4);
+      tl.to("#s1 .phone, #s1 .hdr", { opacity: 0, duration: 0.25 }, 12.43);
+
+      // ═════ 2 · LOGIN (12.68) ═════
+      tl.set("#sh2", { scale: BASE, x: 0, y: 0 }, 0);
+      tl.set(["#cd-cel", "#cd-pw"], { opacity: 0 }, 0);
+      enterScene("#s2", 12.68);
+      // prellenado
+      tl.fromTo("#okbox", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.45, ease: E }, 14.6);
+      tl.fromTo("#oktag", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 14.9);
+      tl.to(["#okbox", "#oktag"], { opacity: 0, duration: 0.3 }, 18.0);
+      check("#n1", 18.4);
+      check("#n2", 18.9);
+      // celular
+      tl.to(["#n1", "#n2"], { opacity: 0, duration: 0.25 }, 20.9);
+      tl.to("#sh2", { scale: 0.66, x: -63.7, y: -300, duration: 1.0, ease: "power3.inOut" }, 20.9);
+      tl.to("#sp2", { opacity: 1, duration: 0.35 }, 21.6);
+      cardIn("#cd-cel", 21.7);
+      draw("#ap-cel", 22.0, 0.5);
+      tl.set("#c-cel", { opacity: 1 }, 22.3);
+      tl.set("#ph-cel", { opacity: 0 }, 22.6);
+      celChars.forEach((c, i) => tl.set(c, { opacity: 1 }, 22.6 + i * 0.38));
+      tl.set("#c-cel", { opacity: 0 }, 26.6);
+      // contraseña
+      tl.to(["#cd-cel", "#ar-cel"], { opacity: 0, y: -20, duration: 0.3 }, 27.9);
+      tl.to("#sp2", { y: 155, duration: 0.5, ease: "power3.inOut" }, 28.1);
+      cardIn("#cd-pw", 28.4);
+      draw("#ap-pw", 28.7, 0.5);
+      tl.set("#c-pw", { opacity: 1 }, 29.0);
+      tl.set("#ph-pw", { opacity: 0 }, 29.3);
+      pwChars.forEach((c, i) => tl.set(c, { opacity: 1 }, 29.3 + i * 0.32));
+      tl.set("#c-pw", { opacity: 0 }, 32.0);
+      tl.to("#cd-pw", { scale: 1.03, duration: 1.3, yoyo: true, repeat: 1, ease: "sine.inOut" }, 32.2);
+      tl.fromTo("#pw-B", { scale: 1 }, { scale: 1.25, duration: 0.2, yoyo: true, repeat: 1, transformOrigin: "50% 80%" }, 30.6);
+      tl.fromTo("#pw-27", { scale: 1 }, { scale: 1.25, duration: 0.2, yoyo: true, repeat: 1, transformOrigin: "50% 80%" }, 33.4);
+      // botón rosa (paso 3)
+      tl.to(["#cd-pw", "#ar-pw"], { opacity: 0, y: -20, duration: 0.3 }, 35.2);
+      tl.to("#h2", { opacity: 0, y: -20, duration: 0.3 }, 35.9);
+      tl.fromTo("#h3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 36.1);
+      tl.to("#bn2", { opacity: 0, duration: 0.3 }, 35.9);
+      tl.to("#bn3", { opacity: 0.07, duration: 0.4 }, 36.1);
+      tl.to("#sp2", { y: 310, duration: 0.5, ease: "power3.inOut" }, 36.2);
+      tap("#t2", 37.9);
+      tl.to("#s2 .phone, #s2 #h3", { opacity: 0, duration: 0.25 }, 40.29);
+
+      // ═════ 4 · COMPARTIR (40.54) ═════
+      enterScene("#s4", 40.54);
+      tl.set("#t4", { left: 300, top: 820, y: 0 }, 40.54);
+      tl.fromTo("#t4", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3 }, 42.0);
+      tl.to("#t4", { y: -560, duration: 2.0, ease: "power2.inOut" }, 42.4);
+      tl.to("#feed", { y: -900, duration: 2.4, ease: "power2.inOut" }, 42.4);
+      tl.to("#t4", { opacity: 0, duration: 0.25 }, 44.4);
+      tl.fromTo("#invcard", { boxShadow: "0 0 0 0 rgba(230,8,122,0)" }, { boxShadow: "0 0 0 14px rgba(230,8,122,0.25)", duration: 0.4, yoyo: true, repeat: 3 }, 45.0);
+      tl.set("#t4", { left: 300, top: 888, y: 0 }, 47.0);
+      tap("#t4", 47.4);
+      tl.to("#wa-btn", { scale: 0.95, duration: 0.12, yoyo: true, repeat: 1 }, 47.85);
+      tl.fromTo("#sheet", { opacity: 1, y: 600 }, { opacity: 1, y: 0, duration: 0.55, ease: E }, 48.9);
+      tl.set("#t4", { left: 300, top: 780 }, 49.6);
+      tap("#t4", 50.0);
+      tl.fromTo("#ct", { scale: 1 }, { scale: 1.04, duration: 0.15, yoyo: true, repeat: 1 }, 50.5);
+      tl.to("#dim4", { opacity: 1, duration: 0.4 }, 52.2);
+      cardIn("#tip", 52.4);
+      tl.to("#tip", { scale: 1.03, duration: 1.6, yoyo: true, repeat: 1, ease: "sine.inOut" }, 53.0);
+      tl.to("#s4 .phone, #s4 .hdr, #tip", { opacity: 0, duration: 0.25 }, 56.71);
+
+      // ═════ 5 · MENSAJE (56.96) ═════
+      tl.set("#sh5", { scale: BASE, x: 0, y: 0 }, 0);
+      tl.fromTo("#band", { x: -1200 }, { x: 0, duration: 0.45, ease: E }, 56.96);
+      tl.to("#band", { x: 1200, duration: 0.4, ease: "power2.in" }, 58.3);
+      enterScene("#s5", 58.1);
+      tl.to("#sp5", { opacity: 1, duration: 0.4 }, 59.4);
+      tap("#t5", 60.6);
+      tl.to("#s5 .phone, #s5 .hdr", { opacity: 0, duration: 0.25 }, 63.02);
+
+      // ═════ 6 · INVITACIÓN (63.27) ═════
+      tl.set("#sh6", { scale: BASE, x: 0, y: 0 }, 0);
+      enterScene("#s6", 63.27);
+      tl.to("#sh6", { scale: 0.62, x: -49, y: -246, duration: 1.0, ease: "power3.inOut" }, 64.6);
+      tl.to("#sp6", { opacity: 1, duration: 0.4 }, 66.6);
+      tap("#t6", 67.3);
+      tl.to("#s6 .phone, #s6 .hdr", { opacity: 0, duration: 0.25 }, 69.42);
+
+      // ═════ 7 · CUESTIONARIO (69.67) ═════
+      enterScene("#s7", 69.67);
+      tl.set("#t7", { left: 300, top: 470 }, 69.67);
+      tap("#t7", 71.6);
+      tl.to("#lv3", { borderColor: "#e6087a", backgroundColor: "#fff0f7", duration: 0.2 }, 72.1);
+      tl.to("#lv3r", { borderColor: "#e6087a", backgroundColor: "#e6087a", boxShadow: "inset 0 0 0 5px #fff", duration: 0.2 }, 72.1);
+      tl.fromTo("#anylv", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 74.6);
+      tl.to("#anylv", { opacity: 0, duration: 0.3 }, 78.2);
+      tl.to("#qfeed", { y: -460, duration: 0.9, ease: "power2.inOut" }, 78.4);
+      tl.to("#cb1", { borderColor: "#e6087a", backgroundColor: "#e6087a", duration: 0.15 }, 79.5);
+      tl.to("#cb2", { borderColor: "#e6087a", backgroundColor: "#e6087a", duration: 0.15 }, 79.9);
+      tl.to("#qfeed", { y: -720, duration: 0.8, ease: "power2.inOut" }, 80.3);
+      ["#tm1", "#tm2", "#tm4"].forEach((s, i) => {
+        tl.to(s, { backgroundColor: "#e6087a", borderColor: "#e6087a", color: "#fff", duration: 0.15 }, 81.2 + i * 0.3);
+        tl.fromTo(s, { scale: 1 }, { scale: 1.1, duration: 0.12, yoyo: true, repeat: 1 }, 81.2 + i * 0.3);
+      });
+      tl.set("#t7", { left: 300, top: 900 }, 82.0);
+      tap("#t7", 82.1);
+      tl.to("#s7 .phone, #s7 .hdr", { opacity: 0, duration: 0.25 }, 82.89);
+
+      // ═════ 8 · INE (83.14) ═════
+      enterScene("#s8", 83.14);
+      tl.fromTo("#s8 .chip", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: E }, 83.5);
+      tl.set("#form8", { opacity: 0, x: 600 }, 83.14);
+      tl.fromTo("#idcard", { y: 560, rotation: 12 }, { y: 0, rotation: 0, duration: 0.9, ease: "power3.out" }, 84.0);
+      tap("#t8", 84.9);
+      tl.fromTo("#flash8", { opacity: 0 }, { opacity: 1, duration: 0.08, yoyo: true, repeat: 1 }, 85.45);
+      check("#k81", 85.7);
+      tl.to("#form8", { opacity: 1, x: 0, duration: 0.55, ease: E }, 86.6);
+      tl.fromTo("#s8 .fill8", { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.7, stagger: 0.6, ease: "power2.out" }, 87.4);
+      check("#k82", 88.8);
+      tl.to("#cel8", { borderColor: "#e6087a", duration: 0.2 }, 89.6);
+      tl.to("#cel8t", { opacity: 1, duration: 0.3 }, 89.8);
+      check("#k83", 90.3);
+      tl.set("#t8", { left: 300, top: 892 }, 90.6);
+      tap("#t8", 90.7);
+      tl.to("#s8 .phone, #s8 .hdr, #s8 .chips", { opacity: 0, duration: 0.25 }, 92.08);
+
+      // ═════ 9 · FIRMA (92.33) ═════
+      enterScene("#s9", 92.33);
+      tl.fromTo("#s9 .chip", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: E }, 92.6);
+      tl.set("#pad", { opacity: 0, x: 600 }, 92.33);
+      tl.set("#inecmp", { opacity: 0 }, 92.33);
+      tl.fromTo("#face", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.5 }, 92.8);
+      tap("#t9", 93.6);
+      tl.fromTo("#flash9", { opacity: 0 }, { opacity: 1, duration: 0.08, yoyo: true, repeat: 1 }, 94.15);
+      check("#k91", 94.4);
+      tl.to("#pad", { opacity: 1, x: 0, duration: 0.5, ease: E }, 94.9);
+      draw("#sig", 95.6, 1.9);
+      cardIn("#inecmp", 96.2);
+      check("#k92", 97.8);
+      tl.set("#t9", { left: 300, top: 1062 - 96 }, 98.2);
+      tap("#t9", 98.3);
+      tl.to("#s9 .phone, #s9 .hdr, #s9 .chips, #inecmp", { opacity: 0, duration: 0.25 }, 99.95);
+
+      // ═════ CIERRE (100.2) ═════
+      tl.fromTo("#ok", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(2)" }, 100.3);
+      draw("#okp", 100.55, 0.4);
+      tl.fromTo("#c-t", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 100.6);
+      tl.fromTo("#c-s", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 100.9);
+      tl.fromTo("#recap", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 101.4);
+      tl.fromTo(".rc", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.25, ease: E }, 101.7);
+      tl.fromTo("#c-logo", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 103.0);
+      tl.fromTo("#c-g", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 103.3);
+      tl.to("#s10", { opacity: 0, duration: 0.6 }, 106.6);
+
+      // subtítulos: entrada suave
+      document.querySelectorAll(".cap").forEach((c) => {
+        const s = parseFloat(c.dataset.start);
+        tl.fromTo(c.querySelector("p"), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.25, ease: E }, s);
+      });
+
+      tl.set({}, {}, 107.25);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

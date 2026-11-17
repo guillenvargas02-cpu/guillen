@@ -1,0 +1,82 @@
+{
+  "intro": {
+    "file": "00_intro.wav",
+    "dur": 5.568,
+    "text": "Tutorial para recolectar firmas. Te explicamos, paso a paso, cómo hacerlo desde tu celular."
+  },
+  "enlace": {
+    "file": "01_enlace.wav",
+    "dur": 3.806,
+    "text": "Paso uno. Abre el enlace oficial que te compartimos por guátsap."
+  },
+  "pantalla": {
+    "file": "02_pantalla.wav",
+    "dur": 7.061,
+    "text": "Verás esta pantalla. Tu nombre, cargo y folio ya vienen prellenados. No los cambies: solo vas a llenar dos campos."
+  },
+  "celular": {
+    "file": "03_celular.wav",
+    "dur": 5.995,
+    "text": "En el primero, escribe el número de celular: cincuenta y cinco, once, doce, veintitrés, cero cinco."
+  },
+  "contrasena": {
+    "file": "04_contrasena.wav",
+    "dur": 6.547,
+    "text": "En el segundo, la contraseña: Berlin veintisiete. Con be mayúscula, sin espacios, y el veintisiete con números."
+  },
+  "boton": {
+    "file": "05_boton.wav",
+    "dur": 3.462,
+    "text": "Después, toca el botón rosa: Confirmar y entrar al canal."
+  },
+  "scroll": {
+    "file": "06_scroll.wav",
+    "dur": 4.906,
+    "text": "Ya dentro, desliza la pantalla hasta abajo, hasta el apartado Enlace de invitación."
+  },
+  "compartir": {
+    "file": "07_compartir.wav",
+    "dur": 5.141,
+    "text": "Ahí, toca Compartir vía guátsap, y envíalo al número de la persona que nos dará su firma."
+  },
+  "recomendacion": {
+    "file": "08_recomendacion.wav",
+    "dur": 3.669,
+    "text": "Te recomendamos que la persona lo abra desde su propio celular."
+  },
+  "mensaje": {
+    "file": "09_mensaje.wav",
+    "dur": 5.013,
+    "text": "La persona recibirá este mensaje de invitación. Solo tiene que tocar el enlace."
+  },
+  "invitacion": {
+    "file": "10_invitacion.wav",
+    "dur": 5.099,
+    "text": "Al abrirlo, verá la invitación a Somos México, ce de eme equis. Debe tocar Comenzar."
+  },
+  "cuestionario": {
+    "file": "11_cuestionario.wav",
+    "dur": 7.743,
+    "text": "Primero, contestará un breve cuestionario. Puede elegir cualquiera de los cinco niveles de participación: el nivel no afecta la firma."
+  },
+  "temas": {
+    "file": "12_temas.wav",
+    "dur": 3.877,
+    "text": "También elegirá cómo le gustaría participar, y sus temas de interés."
+  },
+  "ine": {
+    "file": "13_ine.wav",
+    "dur": 7.893,
+    "text": "Después pasará a la identificación: tomará una foto de su credencial ine, y completará sus datos de registro y su número de celular."
+  },
+  "firma": {
+    "file": "14_firma.wav",
+    "dur": 5.568,
+    "text": "Por último, se tomará una fotografía, y hará su firma, lo más parecida posible a la de su ine."
+  },
+  "cierre": {
+    "file": "15_cierre.wav",
+    "dur": 3.349,
+    "text": "¡Y listo! Su firma queda registrada. Gracias por sumar."
+  }
+}
