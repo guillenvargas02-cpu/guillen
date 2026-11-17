@@ -21,9 +21,9 @@ VOICE, LANG, SPEED = "ef_dora", "es-419", 0.95
 
 # El texto va escrito "como suena" (guátsap, ine, ce de eme equis) para que la pronunciación sea natural.
 LINES = [
-    ("intro", "Equipo de Eduardo Contró: así se recolectan las firmas, paso a paso, desde tu celular."),
+    ("intro", "Así se recolectan las firmas, paso a paso, desde tu celular."),
     ("enlace", "Paso uno. Abre el enlace oficial que te compartimos por guátsap."),
-    ("pantalla", "Verás esta pantalla. Tu nombre, cargo y folio ya vienen prellenados. No los cambies: solo vas a llenar dos campos."),
+    ("pantalla", "Verás esta pantalla. Los datos de Eduardo ya vienen precargados: no los modifiques. Solo completa dos campos."),
     ("celular", "En el primero, escribe el número de celular: cincuenta y cinco, once, doce, veintitrés, cero cinco."),
     ("contrasena", "En el segundo, la contraseña: Berlin veintisiete. Con be mayúscula, sin espacios, y el veintisiete con números."),
     ("boton", "Después, toca el botón rosa: Confirmar y entrar al canal."),
@@ -36,7 +36,7 @@ LINES = [
     ("temas", "También elegirá cómo le gustaría participar, y sus temas de interés."),
     ("ine", "Después pasará a la identificación: tomará una foto de su credencial ine, y completará sus datos de registro y su número de celular."),
     ("firma", "Por último, se tomará una fotografía, y hará su firma, lo más parecida posible a la de su ine."),
-    ("cierre", "¡Y listo! Su firma queda registrada. Gracias por sumar al equipo de Eduardo Contró."),
+    ("cierre", "¡Y listo! Su firma queda registrada. Gracias por sumar."),
 ]
 
 

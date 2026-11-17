@@ -1,8 +1,8 @@
 {
   "intro": {
     "file": "00_intro.wav",
-    "dur": 5.099,
-    "text": "Equipo de Eduardo Contró: así se recolectan las firmas, paso a paso, desde tu celular."
+    "dur": 3.669,
+    "text": "Así se recolectan las firmas, paso a paso, desde tu celular."
   },
   "enlace": {
     "file": "01_enlace.wav",
@@ -11,8 +11,8 @@
   },
   "pantalla": {
     "file": "02_pantalla.wav",
-    "dur": 7.061,
-    "text": "Verás esta pantalla. Tu nombre, cargo y folio ya vienen prellenados. No los cambies: solo vas a llenar dos campos."
+    "dur": 6.613,
+    "text": "Verás esta pantalla. Los datos de Eduardo ya vienen precargados: no los modifiques. Solo completa dos campos."
   },
   "celular": {
     "file": "03_celular.wav",
@@ -76,7 +76,7 @@
   },
   "cierre": {
     "file": "15_cierre.wav",
-    "dur": 5.035,
-    "text": "¡Y listo! Su firma queda registrada. Gracias por sumar al equipo de Eduardo Contró."
+    "dur": 3.349,
+    "text": "¡Y listo! Su firma queda registrada. Gracias por sumar."
   }
 }

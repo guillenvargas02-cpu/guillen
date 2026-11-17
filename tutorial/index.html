@@ -6,22 +6,21 @@
     <script src="assets/vendor/gsap.min.js"></script>
     <style>
       /* Tutorial: cómo recolectar firmas (Somos México CDMX).
+         Identidad: Manual SOMOS 2026 → Rosa Cívico #E4007C, fondo blanco, negro solo en texto.
+         Tipografía: Hind Siliguri (secundaria oficial; la primaria, Bernino Sans, es de Adobe Fonts).
          Tiempos amarrados a la voz guía: ver assets/voz/tiempos.json y voz.py. */
-      @font-face {
-        font-family: "Bricolage";
-        src: url("assets/fonts/Bricolage.ttf") format("truetype");
-        font-weight: 200 800;
-        font-stretch: 75% 100%;
-      }
-      @font-face {
-        font-family: "Jakarta";
-        src: url("assets/fonts/PlusJakarta.ttf") format("truetype");
-        font-weight: 200 800;
-      }
-      @font-face {
-        font-family: "Mono";
-        src: url("assets/fonts/JetBrainsMono-Bold.ttf") format("truetype");
-        font-weight: 700;
+      @font-face { font-family: "Hind"; src: url("assets/fonts/HindSiliguri-Light.ttf"); font-weight: 300; }
+      @font-face { font-family: "Hind"; src: url("assets/fonts/HindSiliguri-Regular.ttf"); font-weight: 400; }
+      @font-face { font-family: "Hind"; src: url("assets/fonts/HindSiliguri-Medium.ttf"); font-weight: 500; }
+      @font-face { font-family: "Hind"; src: url("assets/fonts/HindSiliguri-SemiBold.ttf"); font-weight: 600; }
+      @font-face { font-family: "Hind"; src: url("assets/fonts/HindSiliguri-Bold.ttf"); font-weight: 700; }
+      :root {
+        --rosa: #e4007c;
+        --rosa-tinte: #fde6f2;
+        --negro: #000;
+        --gris: #6e6e73;
+        --linea: #e8e8ed;
+        --superficie: #f5f5f7;
       }
       * {
         margin: 0;
@@ -33,18 +32,16 @@
         width: 1080px;
         height: 1920px;
         overflow: hidden;
-        background: #f6f0e8;
+        background: #fff;
       }
       #root {
         position: relative;
         width: 1080px;
         height: 1920px;
         overflow: hidden;
-        font-family: "Jakarta", sans-serif;
-        color: #0e1a35;
-        background-color: #f6f0e8;
-        background-image: radial-gradient(rgba(14, 26, 53, 0.11) 2px, transparent 2.4px);
-        background-size: 40px 40px;
+        font-family: "Hind", sans-serif;
+        color: var(--negro);
+        background: #fff;
       }
       .clip {
         position: absolute;
@@ -53,33 +50,22 @@
         width: 1080px;
         height: 1920px;
       }
-      .bgnum {
-        position: absolute;
-        right: -30px;
-        top: 160px;
-        font-family: "Bricolage";
-        font-weight: 800;
-        font-stretch: 80%;
-        font-size: 820px;
-        line-height: 1;
-        color: #e6087a;
-        opacity: 0.07;
-      }
 
+      /* progreso de los 9 pasos */
       .prog {
         position: absolute;
-        left: 70px;
-        top: 56px;
-        width: 940px;
-        height: 10px;
+        left: 80px;
+        top: 64px;
+        width: 920px;
+        height: 6px;
         display: flex;
-        gap: 10px;
+        gap: 8px;
       }
       .prog i {
         flex: 1;
-        height: 10px;
-        border-radius: 5px;
-        background: rgba(14, 26, 53, 0.12);
+        height: 6px;
+        border-radius: 3px;
+        background: var(--linea);
         overflow: hidden;
         display: block;
       }
@@ -87,93 +73,82 @@
         display: block;
         width: 100%;
         height: 100%;
-        background: #e6087a;
+        background: var(--rosa);
         transform-origin: 0 50%;
         transform: scaleX(0);
       }
-      .prog i.p2 b {
-        background: #0e1a35;
-      }
 
-      /* ── Encabezado de paso ── */
+      /* encabezado de paso: eyebrow + titular con dos pesos (como en el manual) */
       .hdr {
         position: absolute;
-        left: 70px;
-        top: 108px;
-        width: 940px;
+        left: 80px;
+        top: 112px;
+        width: 920px;
       }
       .hrow {
         display: flex;
-        gap: 16px;
-        align-items: center;
+        gap: 14px;
+        align-items: baseline;
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
       }
       .step {
-        background: #e6087a;
-        color: #fff;
-        font-family: "Bricolage";
-        font-weight: 700;
-        font-size: 32px;
-        letter-spacing: 0.12em;
-        padding: 10px 24px 12px;
-        border-radius: 40px;
+        color: var(--rosa);
       }
       .role {
-        border: 3px solid #0e1a35;
-        font-weight: 800;
-        font-size: 24px;
-        letter-spacing: 0.12em;
-        padding: 9px 20px;
-        border-radius: 40px;
+        color: var(--gris);
+        font-weight: 500;
       }
-      .role.firma {
-        background: #0e1a35;
-        color: #fff;
+      .role::before {
+        content: "·";
+        margin-right: 14px;
+        color: var(--linea);
       }
       .title {
-        margin-top: 24px;
-        font-family: "Bricolage";
-        font-weight: 800;
-        font-stretch: 88%;
-        font-size: 78px;
-        line-height: 1.02;
-        letter-spacing: -0.02em;
+        margin-top: 14px;
+        font-weight: 500;
+        font-size: 76px;
+        line-height: 1.04;
+        letter-spacing: -0.015em;
       }
       mark {
-        color: inherit;
-        background: linear-gradient(transparent 56%, #ffd84d 56%, #ffd84d 94%, transparent 94%);
-        padding: 0 6px;
+        color: var(--rosa);
+        background: none;
+        font-weight: 700;
       }
       .chips {
         position: absolute;
-        left: 70px;
+        left: 80px;
         top: 392px;
         display: flex;
-        gap: 14px;
+        gap: 12px;
       }
       .chip {
         display: flex;
         align-items: center;
         gap: 10px;
-        background: #fff;
-        border: 3px solid rgba(14, 26, 53, 0.14);
+        background: var(--superficie);
         border-radius: 40px;
-        padding: 8px 20px 8px 10px;
-        font-weight: 700;
-        font-size: 25px;
+        padding: 9px 22px 7px 10px;
+        font-weight: 600;
+        font-size: 26px;
+        color: var(--negro);
       }
       .chip i {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
-        border: 3px solid rgba(14, 26, 53, 0.25);
+        border: 3px solid #c7c7cc;
         display: block;
         position: relative;
+        margin-top: -2px;
       }
       .chip i b {
         position: absolute;
         inset: -3px;
         border-radius: 50%;
-        background: #18a957;
+        background: var(--rosa);
         opacity: 0;
       }
       .chip i b::after {
@@ -181,14 +156,14 @@
         position: absolute;
         left: 11px;
         top: 6px;
-        width: 9px;
-        height: 16px;
+        width: 8px;
+        height: 15px;
         border: solid #fff;
         border-width: 0 4px 4px 0;
         transform: rotate(45deg);
       }
 
-      /* ── Teléfono ── */
+      /* teléfono */
       .phone {
         position: absolute;
         left: 222px;
@@ -196,11 +171,9 @@
         width: 636px;
         height: 1103px;
         border-radius: 74px;
-        background: #0e1a35;
+        background: #000;
         padding: 18px;
-        box-shadow:
-          0 50px 90px -30px rgba(14, 26, 53, 0.55),
-          0 0 0 3px rgba(255, 255, 255, 0.6) inset;
+        box-shadow: 0 70px 120px -50px rgba(0, 0, 0, 0.45), 0 0 0 2px #d2d2d7;
       }
       .screen {
         position: relative;
@@ -208,7 +181,7 @@
         height: 1067px;
         border-radius: 56px;
         overflow: hidden;
-        background: #f3f4f6;
+        background: var(--superficie);
       }
       .shot {
         position: absolute;
@@ -227,9 +200,9 @@
       }
       .spot {
         position: absolute;
-        border: 9px solid #ff3d9a;
+        border: 9px solid var(--rosa);
         border-radius: 34px;
-        box-shadow: 0 0 0 4000px rgba(14, 26, 53, 0.55);
+        box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.52);
         opacity: 0;
       }
       .spot.sm {
@@ -238,32 +211,32 @@
       }
       .tag {
         position: absolute;
-        background: #18a957;
+        background: var(--rosa);
         color: #fff;
-        font-weight: 800;
+        font-weight: 600;
         font-size: 46px;
-        padding: 14px 30px;
-        border-radius: 18px;
+        padding: 16px 34px 12px;
+        border-radius: 60px;
         white-space: nowrap;
       }
 
-      /* Toque en pantalla */
+      /* toque en pantalla */
       .touch {
         position: absolute;
         width: 150px;
         height: 150px;
         margin: -75px 0 0 -75px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.82);
-        border: 10px solid #e6087a;
-        box-shadow: 0 10px 30px rgba(14, 26, 53, 0.35);
+        background: rgba(255, 255, 255, 0.85);
+        border: 10px solid var(--rosa);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         opacity: 0;
       }
       .touch .ring {
         position: absolute;
         inset: -18px;
         border-radius: 50%;
-        border: 8px solid #ff3d9a;
+        border: 8px solid var(--rosa);
         opacity: 0;
       }
       .touch.sm {
@@ -277,24 +250,25 @@
         border-width: 5px;
       }
 
-      /* ── Tarjetas flotantes ── */
+      /* tarjetas flotantes */
       .card {
         position: absolute;
         background: #fff;
-        border-radius: 30px;
-        box-shadow: 0 30px 70px -20px rgba(14, 26, 53, 0.45);
-        padding: 30px 40px 34px;
+        border-radius: 36px;
+        box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        padding: 32px 40px 34px;
         opacity: 0;
       }
       .card .lbl {
-        font-weight: 800;
+        font-weight: 600;
         font-size: 26px;
-        letter-spacing: 0.16em;
-        color: #e6087a;
+        letter-spacing: 0.12em;
+        color: var(--rosa);
       }
       .mono {
-        font-family: "Mono", monospace;
+        font-family: "Hind", sans-serif;
         font-weight: 700;
+        letter-spacing: 0.01em;
       }
       .arrow {
         position: absolute;
@@ -302,13 +276,13 @@
       }
       .arrow path {
         fill: none;
-        stroke: #e6087a;
-        stroke-width: 9;
+        stroke: var(--rosa);
+        stroke-width: 7;
         stroke-linecap: round;
         stroke-linejoin: round;
       }
 
-      /* ── Subtítulos ── */
+      /* subtítulos: texto limpio sobre blanco */
       .cap {
         position: absolute;
         left: 0;
@@ -320,39 +294,36 @@
         justify-content: center;
       }
       .cap p {
-        max-width: 960px;
-        background: #0e1a35;
-        color: #fff;
-        font-weight: 600;
-        font-size: 40px;
-        line-height: 1.3;
+        max-width: 900px;
+        color: var(--negro);
+        font-weight: 500;
+        font-size: 42px;
+        line-height: 1.25;
         text-align: center;
-        padding: 22px 38px 24px;
-        border-radius: 26px;
       }
       .cap p b {
-        color: #ffd84d;
-        font-weight: 800;
+        color: var(--rosa);
+        font-weight: 700;
       }
 
-      /* ── Pantallas ilustrativas ── */
+      /* pantallas ilustrativas */
       .ilus {
         position: absolute;
         right: 26px;
         bottom: 26px;
         z-index: 9;
-        background: rgba(14, 26, 53, 0.72);
+        background: rgba(0, 0, 0, 0.6);
         color: #fff;
         font-size: 17px;
-        font-weight: 700;
+        font-weight: 600;
         letter-spacing: 0.08em;
-        padding: 6px 12px;
+        padding: 6px 12px 3px;
         border-radius: 10px;
       }
       .bar {
         height: 22px;
         border-radius: 11px;
-        background: #e5e7eb;
+        background: var(--linea);
       }
       .mcard {
         position: absolute;
@@ -361,41 +332,24 @@
         background: #fff;
         border-radius: 26px;
         padding: 28px;
-        box-shadow: 0 2px 8px rgba(14, 26, 53, 0.06);
-      }
-      .mcard h4 {
-        font-weight: 800;
-        font-size: 28px;
-        line-height: 1.2;
-        margin-bottom: 18px;
       }
       .apphead {
         position: absolute;
         left: 0;
         top: 0;
         width: 600px;
-        background: linear-gradient(135deg, #b0124f, #e6087a);
+        background: var(--rosa);
         color: #fff;
-        padding: 64px 30px 26px;
+        padding: 70px 30px 26px;
       }
       .apphead h3 {
-        font-family: "Bricolage";
-        font-weight: 800;
-        font-size: 36px;
-      }
-      .apphead small {
-        display: inline-block;
-        margin-top: 10px;
-        font-size: 20px;
         font-weight: 700;
-        border: 2px solid rgba(255, 255, 255, 0.6);
-        border-radius: 30px;
-        padding: 4px 14px;
+        font-size: 36px;
       }
       .btn {
         border-radius: 20px;
         color: #fff;
-        font-weight: 800;
+        font-weight: 600;
         font-size: 29px;
         display: flex;
         align-items: center;
@@ -408,37 +362,26 @@
     <div id="root" data-composition-id="main" data-start="0" data-duration="107.25" data-width="1080" data-height="1920">
       <!-- ═════════ 0 · INTRO ═════════ -->
       <div id="s0" class="clip" data-start="0" data-duration="7.57" data-track-index="1">
-        <img id="i-logo" src="assets/brand/somos-cutout.png" alt="SOMOS" style="position: absolute; left: 340px; top: 150px; width: 400px" />
-        <div id="i-kick" style="position: absolute; left: 0; top: 290px; width: 1080px; text-align: center">
-          <span style="display: inline-block; font-weight: 800; font-size: 28px; letter-spacing: 0.3em; border: 3px solid #0e1a35; border-radius: 40px; padding: 10px 28px">EQUIPO EDUARDO CONTRÓ</span>
+        <img id="i-logo" src="assets/brand/somos-cutout.png" alt="SOMOS" style="position: absolute; left: 360px; top: 190px; width: 360px" />
+        <div id="i-title" style="position: absolute; left: 80px; top: 520px; width: 920px">
+          <div class="it" style="font-weight: 500; font-size: 124px; line-height: 1; letter-spacing: -0.025em">Cómo recolectar</div>
+          <div class="it" style="font-weight: 700; font-size: 236px; line-height: 0.92; letter-spacing: -0.035em; color: #E4007C">firmas.</div>
         </div>
-        <div id="i-title" style="position: absolute; left: 70px; top: 400px; width: 940px; font-family: Bricolage; font-weight: 800; font-stretch: 84%; font-size: 158px; line-height: 0.96; letter-spacing: -0.03em">
-          <div class="it">Cómo</div>
-          <div class="it">recolectar</div>
-          <div class="it"><mark>firmas</mark></div>
+        <div id="i-sub" style="position: absolute; left: 84px; top: 905px; font-size: 44px; font-weight: 400; color: #6e6e73">Tutorial paso a paso, desde tu celular.</div>
+        <div id="i-p1" style="position: absolute; left: 80px; top: 1130px; width: 920px; padding: 34px 0; border-top: 2px solid #e8e8ed; display: flex; align-items: baseline; gap: 36px">
+          <div style="font-weight: 700; font-size: 64px; color: #E4007C; width: 170px; letter-spacing: -0.02em">1–4</div>
+          <div><div style="font-weight: 700; font-size: 42px">Tú</div><div style="font-weight: 400; font-size: 36px; color: #6e6e73">Entras y compartes el enlace</div></div>
         </div>
-        <div id="i-sub" style="position: absolute; left: 70px; top: 905px; font-size: 46px; font-weight: 600; color: #3b4660">tutorial paso a paso, desde tu celular</div>
-        <div id="i-p1" style="position: absolute; left: 70px; top: 1060px; width: 940px; height: 170px; background: #fff; border-radius: 30px; box-shadow: 0 20px 50px -24px rgba(14, 26, 53, 0.4); display: flex; align-items: center; gap: 28px; padding: 0 36px">
-          <div style="font-family: Bricolage; font-weight: 800; font-size: 40px; color: #fff; background: #e6087a; border-radius: 22px; padding: 18px 22px; white-space: nowrap">1–4</div>
-          <div>
-            <div style="font-weight: 800; font-size: 25px; letter-spacing: 0.16em; color: #e6087a">PARTE 1 · TÚ</div>
-            <div style="font-weight: 700; font-size: 38px; margin-top: 6px">Entras y compartes el enlace</div>
-          </div>
-        </div>
-        <svg id="i-arr" class="arrow" style="left: 510px; top: 1236px" width="60" height="70" viewBox="0 0 60 70"><path d="M30 6 L30 58 M14 42 L30 60 L46 42" /></svg>
-        <div id="i-p2" style="position: absolute; left: 70px; top: 1312px; width: 940px; height: 170px; background: #0e1a35; color: #fff; border-radius: 30px; box-shadow: 0 20px 50px -24px rgba(14, 26, 53, 0.4); display: flex; align-items: center; gap: 28px; padding: 0 36px">
-          <div style="font-family: Bricolage; font-weight: 800; font-size: 40px; color: #0e1a35; background: #ffd84d; border-radius: 22px; padding: 18px 22px; white-space: nowrap">5–9</div>
-          <div>
-            <div style="font-weight: 800; font-size: 25px; letter-spacing: 0.16em; color: #ffd84d">PARTE 2 · QUIEN FIRMA</div>
-            <div style="font-weight: 700; font-size: 38px; margin-top: 6px">Cuestionario, INE, foto y firma</div>
-          </div>
+        <div id="i-p2" style="position: absolute; left: 80px; top: 1316px; width: 920px; padding: 34px 0; border-top: 2px solid #e8e8ed; border-bottom: 2px solid #e8e8ed; display: flex; align-items: baseline; gap: 36px">
+          <div style="font-weight: 700; font-size: 64px; color: #E4007C; width: 170px; letter-spacing: -0.02em">5–9</div>
+          <div><div style="font-weight: 700; font-size: 42px">Quien firma</div><div style="font-weight: 400; font-size: 36px; color: #6e6e73">Cuestionario, INE, foto y firma</div></div>
         </div>
       </div>
 
       <!-- ═════════ 1 · ENLACE ═════════ -->
       <div id="s1" class="clip" data-start="7.57" data-duration="5.11" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 1</span><span class="role">TÚ</span></div>
+          <div class="hrow"><span class="step">Paso 1</span><span class="role">Tú</span></div>
           <h1 class="title">Abre el <mark>enlace oficial</mark> que te enviamos</h1>
         </div>
         <div class="phone">
@@ -455,11 +398,11 @@
       <!-- ═════════ 2/3 · LOGIN + BOTÓN ROSA ═════════ -->
       <div id="s2" class="clip" data-start="12.68" data-duration="27.86" data-track-index="1">
         <div class="hdr" id="h2">
-          <div class="hrow"><span class="step">PASO 2</span><span class="role">TÚ</span></div>
-          <h1 class="title">Llena <mark>solo 2 campos</mark>: celular y contraseña</h1>
+          <div class="hrow"><span class="step">Paso 2</span><span class="role">Tú</span></div>
+          <h1 class="title">Solo llenas <mark>celular y contraseña</mark></h1>
         </div>
         <div class="hdr" id="h3" style="opacity: 0">
-          <div class="hrow"><span class="step">PASO 3</span><span class="role">TÚ</span></div>
+          <div class="hrow"><span class="step">Paso 3</span><span class="role">Tú</span></div>
           <h1 class="title">Toca el <mark>botón rosa</mark> para entrar</h1>
         </div>
         <div class="phone" id="ph2">
@@ -468,15 +411,15 @@
               <img src="assets/capturas/2.webp" alt="Pantalla de acceso del Asistente Electoral" />
               <!-- campos vacíos que se van llenando -->
               <div id="f-cel" style="position: absolute; left: 205px; top: 1392px; width: 690px; height: 88px; background: #fff; display: flex; align-items: center; font-size: 44px; font-weight: 500; color: #1f2937">
-                <span id="ph-cel" style="color: #9aa3b2; position: absolute; left: 18px">Número celular</span><span id="ty-cel" style="padding-left: 18px; white-space: pre"></span><span class="caret" id="c-cel" style="width: 4px; height: 52px; background: #e6087a; margin-left: 3px; opacity: 0"></span>
+                <span id="ph-cel" style="color: #9aa3b2; position: absolute; left: 18px">Número celular</span><span id="ty-cel" style="padding-left: 18px; white-space: pre"></span><span class="caret" id="c-cel" style="width: 4px; height: 52px; background: #E4007C; margin-left: 3px; opacity: 0"></span>
               </div>
               <div id="f-pw" style="position: absolute; left: 205px; top: 1548px; width: 670px; height: 88px; background: #fff; display: flex; align-items: center; font-size: 44px; font-weight: 500; color: #1f2937">
-                <span id="ph-pw" style="color: #9aa3b2; position: absolute; left: 18px">Contraseña</span><span id="ty-pw" style="padding-left: 18px; white-space: pre"></span><span class="caret" id="c-pw" style="width: 4px; height: 52px; background: #e6087a; margin-left: 3px; opacity: 0"></span>
+                <span id="ph-pw" style="color: #9aa3b2; position: absolute; left: 18px">Contraseña</span><span id="ty-pw" style="padding-left: 18px; white-space: pre"></span><span class="caret" id="c-pw" style="width: 4px; height: 52px; background: #E4007C; margin-left: 3px; opacity: 0"></span>
               </div>
-              <div id="okbox" style="position: absolute; left: 106px; top: 512px; width: 892px; height: 776px; border: 9px dashed #18a957; border-radius: 40px; opacity: 0"></div>
-              <div class="tag" id="oktag" style="left: 300px; top: 470px; opacity: 0">✓ Ya viene prellenado</div>
-              <div id="n1" style="position: absolute; left: 62px; top: 1386px; width: 100px; height: 100px; border-radius: 50%; background: #e6087a; color: #fff; font-family: Bricolage; font-weight: 800; font-size: 60px; display: flex; align-items: center; justify-content: center; opacity: 0; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25)">1</div>
-              <div id="n2" style="position: absolute; left: 62px; top: 1541px; width: 100px; height: 100px; border-radius: 50%; background: #e6087a; color: #fff; font-family: Bricolage; font-weight: 800; font-size: 60px; display: flex; align-items: center; justify-content: center; opacity: 0; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25)">2</div>
+              <div id="okbox" style="position: absolute; left: 106px; top: 512px; width: 892px; height: 776px; border: 9px dashed #E4007C; border-radius: 40px; opacity: 0"></div>
+              <div class="tag" id="oktag" style="left: 160px; top: 418px; opacity: 0; font-size: 50px">Datos de Eduardo · no modificar</div>
+              <div id="n1" style="position: absolute; left: 62px; top: 1386px; width: 100px; height: 100px; border-radius: 50%; background: #E4007C; color: #fff; font-weight: 700; font-size: 60px; display: flex; align-items: center; justify-content: center; opacity: 0; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25)">1</div>
+              <div id="n2" style="position: absolute; left: 62px; top: 1541px; width: 100px; height: 100px; border-radius: 50%; background: #E4007C; color: #fff; font-weight: 700; font-size: 60px; display: flex; align-items: center; justify-content: center; opacity: 0; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25)">2</div>
               <div class="spot" id="sp2" style="left: 106px; top: 1372px; width: 894px; height: 128px"></div>
               <div class="touch" id="t2" style="left: 551px; top: 1745px"><div class="ring"></div></div>
             </div>
@@ -486,17 +429,17 @@
         <div class="card" id="cd-cel" style="left: 110px; top: 520px; width: 860px; text-align: center">
           <div class="lbl">CELULAR</div>
           <div class="mono" style="font-size: 100px; letter-spacing: -0.01em; margin-top: 6px; line-height: 1.1">55 1112 2305</div>
-          <div style="font-size: 27px; font-weight: 600; color: #5b6478; margin-top: 8px">10 dígitos, sin espacios al escribirlo</div>
+          <div style="font-size: 27px; font-weight: 600; color: #6e6e73; margin-top: 8px">10 dígitos, sin espacios al escribirlo</div>
         </div>
         <svg class="arrow" id="ar-cel" style="left: 500px; top: 760px" width="80" height="330" viewBox="0 0 80 330"><path id="ap-cel" d="M40 6 C 18 110, 64 200, 40 318 M20 292 L40 320 L60 292" /></svg>
         <!-- tarjeta: contraseña -->
         <div class="card" id="cd-pw" style="left: 110px; top: 500px; width: 860px; text-align: center">
           <div class="lbl">CONTRASEÑA</div>
-          <div class="mono" style="font-size: 132px; line-height: 1.1; margin-top: 4px"><span id="pw-B" style="color: #e6087a">B</span>erlin<span id="pw-27" style="color: #e6087a">27</span></div>
+          <div class="mono" style="font-size: 132px; line-height: 1.1; margin-top: 4px"><span id="pw-B" style="color: #E4007C">B</span>erlin<span id="pw-27" style="color: #E4007C">27</span></div>
           <div style="display: flex; justify-content: center; gap: 14px; margin-top: 14px">
-            <span style="background: #ffe4f1; color: #b0124f; font-weight: 800; font-size: 27px; border-radius: 30px; padding: 8px 20px">B mayúscula</span>
-            <span style="background: #eef0f5; font-weight: 800; font-size: 27px; border-radius: 30px; padding: 8px 20px">sin espacios</span>
-            <span style="background: #ffe4f1; color: #b0124f; font-weight: 800; font-size: 27px; border-radius: 30px; padding: 8px 20px">27 en números</span>
+            <span style="background: #fde6f2; color: #E4007C; font-weight: 700; font-size: 27px; border-radius: 30px; padding: 8px 20px">B mayúscula</span>
+            <span style="background: #eef0f5; font-weight: 700; font-size: 27px; border-radius: 30px; padding: 8px 20px">sin espacios</span>
+            <span style="background: #fde6f2; color: #E4007C; font-weight: 700; font-size: 27px; border-radius: 30px; padding: 8px 20px">27 en números</span>
           </div>
         </div>
         <svg class="arrow" id="ar-pw" style="left: 500px; top: 838px" width="80" height="350" viewBox="0 0 80 350"><path id="ap-pw" d="M40 6 C 62 120, 16 220, 40 338 M20 312 L40 340 L60 312" /></svg>
@@ -508,28 +451,28 @@
       <!-- ═════════ 4 · COMPARTIR (grabación real) ═════════ -->
       <div id="s4" class="clip" data-start="40.54" data-duration="16.42" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 4</span><span class="role">TÚ</span></div>
+          <div class="hrow"><span class="step">Paso 4</span><span class="role">Tú</span></div>
           <h1 class="title">Desliza abajo y <mark>comparte por WhatsApp</mark></h1>
         </div>
-        <div class="phone" style="background: transparent; padding: 0; border: 18px solid #0e1a35">
+        <div class="phone" style="background: transparent; padding: 0; border: 18px solid #000">
           <div class="screen" style="background: transparent">
             <div class="spot sm" id="sp4a" style="left: 10px; top: 636px; width: 580px; height: 356px"></div>
             <div class="spot sm" id="sp4b" style="left: 16px; top: 918px; width: 480px; height: 48px"></div>
-            <div id="dim4" style="position: absolute; inset: 0; background: rgba(14, 26, 53, 0.6); opacity: 0"></div>
+            <div id="dim4" style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); opacity: 0"></div>
             <div class="touch sm" id="t4" style="left: 300px; top: 820px"><div class="ring"></div></div>
           </div>
         </div>
-        <div class="card" id="wa-next" style="left: 90px; top: 520px; width: 900px; border: 5px solid #1fae54; padding: 26px 34px">
-          <div class="lbl" style="color: #12753c">SE ABRE WHATSAPP</div>
+        <div class="card" id="wa-next" style="left: 90px; top: 520px; width: 900px; border: 5px solid #E4007C; padding: 26px 34px">
+          <div class="lbl" style="color: #E4007C">SE ABRE WHATSAPP</div>
           <div style="font-weight: 700; font-size: 40px; line-height: 1.2; margin-top: 8px">Elige el contacto de la <mark>persona que dará su firma</mark> y envía</div>
-          <div style="display: flex; align-items: center; gap: 18px; margin-top: 20px; padding: 14px 18px; border-radius: 20px; background: #e9f9ef">
-            <div style="width: 64px; height: 64px; border-radius: 50%; background: #1fae54; color: #fff; font-weight: 800; font-size: 30px; display: flex; align-items: center; justify-content: center">✍</div>
-            <div style="font-weight: 800; font-size: 30px; flex: 1">Persona que firmará</div>
-            <svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#1fae54" /><path d="M16 27 L38 17 L32 39 L27 30 Z" fill="#fff" /></svg>
+          <div style="display: flex; align-items: center; gap: 18px; margin-top: 20px; padding: 14px 18px; border-radius: 20px; background: #fde6f2">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #E4007C; color: #fff; font-weight: 700; font-size: 30px; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="12" r="7" fill="#fff" /><path d="M4 32 C 6 21, 28 21, 30 32 Z" fill="#fff" /></svg></div>
+            <div style="font-weight: 700; font-size: 30px; flex: 1">Persona que firmará</div>
+            <svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#E4007C" /><path d="M16 27 L38 17 L32 39 L27 30 Z" fill="#fff" /></svg>
           </div>
         </div>
-        <div class="card" id="tip" style="left: 90px; top: 760px; width: 900px; display: flex; gap: 30px; align-items: center; border: 5px solid #ffd84d">
-          <svg width="120" height="150" viewBox="0 0 120 150" style="flex: none"><rect x="22" y="8" width="76" height="134" rx="16" fill="#0e1a35" /><rect x="30" y="20" width="60" height="104" rx="8" fill="#ffd84d" /><circle cx="60" cy="133" r="4" fill="#fff" /><path d="M44 70 l11 11 l22 -24" stroke="#0e1a35" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <div class="card" id="tip" style="left: 90px; top: 760px; width: 900px; display: flex; gap: 30px; align-items: center; border: 5px solid #E4007C">
+          <svg width="120" height="150" viewBox="0 0 120 150" style="flex: none"><rect x="22" y="8" width="76" height="134" rx="16" fill="#000" /><rect x="30" y="20" width="60" height="104" rx="8" fill="#E4007C" /><circle cx="60" cy="133" r="4" fill="#fff" /><path d="M44 70 l11 11 l22 -24" stroke="#000" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
           <div>
             <div class="lbl">RECOMENDADO</div>
             <div style="font-weight: 700; font-size: 42px; line-height: 1.2; margin-top: 8px">Que la persona abra el enlace <mark>desde su propio celular</mark></div>
@@ -540,7 +483,7 @@
       <!-- ═════════ 5 · MENSAJE ═════════ -->
       <div id="s5" class="clip" data-start="56.96" data-duration="6.31" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 5</span><span class="role firma">QUIEN FIRMA</span></div>
+          <div class="hrow"><span class="step">Paso 5</span><span class="role firma">Quien firma</span></div>
           <h1 class="title">La persona <mark>toca el enlace</mark> que recibió</h1>
         </div>
         <div class="phone">
@@ -552,16 +495,17 @@
             </div>
           </div>
         </div>
-        <div id="band" style="position: absolute; left: 0; top: 880px; width: 1080px; height: 220px; background: #0e1a35; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-3deg)">
-          <div style="font-weight: 800; font-size: 30px; letter-spacing: 0.24em; color: #ffd84d">PARTE 2</div>
-          <div style="font-family: Bricolage; font-weight: 800; font-stretch: 88%; font-size: 76px">Lo que ve quien firma</div>
+        <div id="band" style="position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #fff; padding: 0 80px; display: flex; flex-direction: column; justify-content: center">
+          <div style="font-weight: 600; font-size: 30px; letter-spacing: 0.04em; color: #E4007C">Parte 2</div>
+          <div style="font-weight: 500; font-size: 124px; line-height: 1; letter-spacing: -0.025em; margin-top: 18px">Ahora,</div>
+          <div style="font-weight: 700; font-size: 168px; line-height: 0.95; letter-spacing: -0.03em; color: #E4007C">quien firma.</div>
         </div>
       </div>
 
       <!-- ═════════ 6 · INVITACIÓN ═════════ -->
       <div id="s6" class="clip" data-start="63.27" data-duration="6.4" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 6</span><span class="role firma">QUIEN FIRMA</span></div>
+          <div class="hrow"><span class="step">Paso 6</span><span class="role firma">Quien firma</span></div>
           <h1 class="title">En la invitación, toca <mark>Comenzar</mark></h1>
         </div>
         <div class="phone">
@@ -581,7 +525,7 @@
       <!-- ═════════ 7 · CUESTIONARIO (grabación real) ═════════ -->
       <div id="s7" class="clip" data-start="69.67" data-duration="13.47" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 7</span><span class="role firma">QUIEN FIRMA</span></div>
+          <div class="hrow"><span class="step">Paso 7</span><span class="role firma">Quien firma</span></div>
           <h1 class="title">Elige nivel, forma de participar y <mark>temas</mark></h1>
         </div>
         <div class="chips">
@@ -589,20 +533,20 @@
           <div class="chip"><i><b id="k72"></b></i>Cómo participar</div>
           <div class="chip"><i><b id="k73"></b></i>Temas</div>
         </div>
-        <div class="phone" style="background: transparent; padding: 0; border: 18px solid #0e1a35">
+        <div class="phone" style="background: transparent; padding: 0; border: 18px solid #000">
           <div class="screen" style="background: transparent">
             <div class="spot sm" id="sp7a" style="left: 24px; top: 144px; width: 552px; height: 104px"></div>
             <div class="spot sm" id="sp7b" style="left: 12px; top: 946px; width: 576px; height: 64px"></div>
             <div class="touch sm" id="t7" style="left: 300px; top: 978px"><div class="ring"></div></div>
           </div>
         </div>
-        <div class="tag" id="anylv" style="left: 600px; top: 520px; font-size: 36px; line-height: 1.15; white-space: normal; width: 430px; padding: 20px 28px; transform: rotate(4deg); opacity: 0; box-shadow: 0 20px 40px -14px rgba(14, 26, 53, 0.5)">✓ Cualquiera de los 5 niveles sirve para la firma</div>
+        <div class="tag" id="anylv" style="left: 600px; top: 520px; font-size: 36px; line-height: 1.15; white-space: normal; width: 430px; padding: 22px 30px 18px; border-radius: 30px; opacity: 0; box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.5)">✓ Cualquiera de los 5 niveles sirve para la firma</div>
       </div>
 
       <!-- ═════════ 8 · INE Y DATOS (captura real) ═════════ -->
       <div id="s8" class="clip" data-start="83.14" data-duration="9.19" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 8</span><span class="role firma">QUIEN FIRMA</span></div>
+          <div class="hrow"><span class="step">Paso 8</span><span class="role firma">Quien firma</span></div>
           <h1 class="title">Foto de su <mark>INE</mark> y sus datos</h1>
         </div>
         <div class="chips">
@@ -623,8 +567,8 @@
             </div>
           </div>
         </div>
-        <div class="card" id="ine-tip" style="left: 90px; top: 1300px; width: 900px; display: flex; gap: 26px; align-items: center; border: 5px solid #ffd84d; padding: 24px 34px">
-          <svg width="96" height="70" viewBox="0 0 96 70" style="flex: none"><rect x="3" y="3" width="90" height="64" rx="10" fill="#fbe4ef" stroke="#0e1a35" stroke-width="5" /><circle cx="28" cy="30" r="10" fill="#0e1a35" /><path d="M14 56 C 16 42, 40 42, 42 56" fill="#0e1a35" /><rect x="52" y="22" width="30" height="6" rx="3" fill="#0e1a35" /><rect x="52" y="36" width="24" height="6" rx="3" fill="#0e1a35" /></svg>
+        <div class="card" id="ine-tip" style="left: 90px; top: 1300px; width: 900px; display: flex; gap: 26px; align-items: center; border: 5px solid #E4007C; padding: 24px 34px">
+          <svg width="96" height="70" viewBox="0 0 96 70" style="flex: none"><rect x="3" y="3" width="90" height="64" rx="10" fill="#fbe4ef" stroke="#000" stroke-width="5" /><circle cx="28" cy="30" r="10" fill="#000" /><path d="M14 56 C 16 42, 40 42, 42 56" fill="#000" /><rect x="52" y="22" width="30" height="6" rx="3" fill="#000" /><rect x="52" y="36" width="24" height="6" rx="3" fill="#000" /></svg>
           <div style="font-weight: 700; font-size: 36px; line-height: 1.22">Foto <mark>clara y de frente</mark>: sus datos se llenan solos al escanearla</div>
         </div>
       </div>
@@ -632,7 +576,7 @@
       <!-- ═════════ 9 · FOTO Y FIRMA ═════════ -->
       <div id="s9" class="clip" data-start="92.33" data-duration="7.87" data-track-index="1">
         <div class="hdr">
-          <div class="hrow"><span class="step">PASO 9</span><span class="role firma">QUIEN FIRMA</span></div>
+          <div class="hrow"><span class="step">Paso 9</span><span class="role firma">Quien firma</span></div>
           <h1 class="title">Fotografía y <mark>firma igual</mark> a su INE</h1>
         </div>
         <div class="chips">
@@ -646,55 +590,52 @@
             <svg id="face" style="position: absolute; left: 100px; top: 200px" width="400" height="520" viewBox="0 0 400 520"><circle cx="200" cy="215" r="92" fill="#4b5568" /><path d="M40 520 C 50 360, 350 360, 360 520 Z" fill="#4b5568" /><ellipse cx="200" cy="250" rx="175" ry="235" fill="none" stroke="#fff" stroke-width="6" stroke-dasharray="18 14" /></svg>
             <div id="shutter9" style="position: absolute; left: 250px; top: 860px; width: 100px; height: 100px; border-radius: 50%; border: 8px solid #fff; background: rgba(255, 255, 255, 0.25)"></div>
             <div id="flash9" style="position: absolute; inset: 0; background: #fff; opacity: 0"></div>
-            <div id="pad" style="position: absolute; inset: 0; background: #f3f4f6">
+            <div id="pad" style="position: absolute; inset: 0; background: #f5f5f7">
               <div class="apphead" style="height: 160px"><h3 style="font-size: 32px">Firma</h3></div>
               <div class="mcard" style="top: 186px; height: 820px">
-                <div style="display: flex; gap: 16px; align-items: center; background: #e9f9ef; border-radius: 16px; padding: 14px 18px; font-weight: 800; font-size: 24px; color: #12753c">✓ Fotografía lista</div>
-                <div style="font-weight: 700; font-size: 23px; color: #5b6478; margin-top: 26px">Firma aquí, igual que en tu INE</div>
+                <div style="display: flex; gap: 16px; align-items: center; background: #fde6f2; border-radius: 16px; padding: 14px 18px; font-weight: 700; font-size: 24px; color: #E4007C">✓ Fotografía lista</div>
+                <div style="font-weight: 700; font-size: 23px; color: #6e6e73; margin-top: 26px">Firma aquí, igual que en tu INE</div>
                 <div style="position: relative; height: 430px; border: 3px dashed #c3c8d2; border-radius: 18px; margin-top: 12px; background: #fff">
                   <div style="position: absolute; left: 30px; right: 30px; top: 320px; border-top: 3px solid #d7dbe2"></div>
-                  <svg style="position: absolute; left: 40px; top: 90px" width="420" height="260" viewBox="0 0 420 260"><path id="sig" d="M20 190 C 40 60, 92 40, 84 150 C 80 210, 118 200, 140 130 C 156 80, 170 70, 176 120 C 182 170, 214 170, 230 110 C 240 70, 262 64, 262 112 C 262 150, 290 160, 320 96 C 336 62, 356 60, 352 104 C 348 150, 380 150, 404 120 M 60 226 C 160 210, 280 214, 396 200" fill="none" stroke="#0e1a35" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  <svg style="position: absolute; left: 40px; top: 90px" width="420" height="260" viewBox="0 0 420 260"><path id="sig" d="M20 190 C 40 60, 92 40, 84 150 C 80 210, 118 200, 140 130 C 156 80, 170 70, 176 120 C 182 170, 214 170, 230 110 C 240 70, 262 64, 262 112 C 262 150, 290 160, 320 96 C 336 62, 356 60, 352 104 C 348 150, 380 150, 404 120 M 60 226 C 160 210, 280 214, 396 200" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </div>
-                <div class="btn" id="send9" style="margin-top: 30px; height: 88px; background: #e6087a">Enviar firma ✓</div>
+                <div class="btn" id="send9" style="margin-top: 30px; height: 88px; background: #E4007C">Enviar firma ✓</div>
               </div>
             </div>
             <div class="touch sm" id="t9" style="left: 300px; top: 910px"><div class="ring"></div></div>
           </div>
         </div>
-        <div class="card" id="inecmp" style="left: 640px; top: 440px; width: 390px; padding: 20px 26px; transform: rotate(3deg); border: 4px solid #ffd84d">
+        <div class="card" id="inecmp" style="left: 650px; top: 478px; width: 380px; padding: 20px 26px; border: 4px solid #E4007C">
           <div class="lbl" style="font-size: 22px">ASÍ ESTÁ EN SU INE</div>
-          <svg width="330" height="150" viewBox="0 0 420 260" style="margin-top: 6px"><path id="sig2" d="M20 190 C 40 60, 92 40, 84 150 C 80 210, 118 200, 140 130 C 156 80, 170 70, 176 120 C 182 170, 214 170, 230 110 C 240 70, 262 64, 262 112 C 262 150, 290 160, 320 96 C 336 62, 356 60, 352 104 C 348 150, 380 150, 404 120 M 60 226 C 160 210, 280 214, 396 200" fill="none" stroke="#3b4660" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          <div style="font-weight: 800; font-size: 28px; margin-top: 2px">≈ lo más parecida posible</div>
+          <svg width="330" height="150" viewBox="0 0 420 260" style="margin-top: 6px"><path id="sig2" d="M20 190 C 40 60, 92 40, 84 150 C 80 210, 118 200, 140 130 C 156 80, 170 70, 176 120 C 182 170, 214 170, 230 110 C 240 70, 262 64, 262 112 C 262 150, 290 160, 320 96 C 336 62, 356 60, 352 104 C 348 150, 380 150, 404 120 M 60 226 C 160 210, 280 214, 396 200" fill="none" stroke="#6e6e73" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <div style="font-weight: 700; font-size: 28px; margin-top: 2px">≈ lo más parecida posible</div>
         </div>
       </div>
 
       <!-- ═════════ CIERRE ═════════ -->
       <div id="s10" class="clip" data-start="100.2" data-duration="7.05" data-track-index="1">
-        <div id="ok" style="position: absolute; left: 430px; top: 150px; width: 220px; height: 220px; border-radius: 50%; background: #18a957; display: flex; align-items: center; justify-content: center; box-shadow: 0 30px 60px -20px rgba(24, 169, 87, 0.6)">
-          <svg width="120" height="120" viewBox="0 0 120 120"><path id="okp" d="M24 62 L50 88 L98 34" stroke="#fff" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <div id="ok" style="position: absolute; left: 80px; top: 170px; width: 132px; height: 132px; border-radius: 50%; background: #E4007C; display: flex; align-items: center; justify-content: center">
+          <svg width="72" height="72" viewBox="0 0 120 120"><path id="okp" d="M24 62 L50 88 L98 34" stroke="#fff" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </div>
-        <div id="c-t" style="position: absolute; left: 0; top: 400px; width: 1080px; text-align: center; font-family: Bricolage; font-weight: 800; font-stretch: 84%; font-size: 170px; line-height: 1; letter-spacing: -0.03em">¡Listo!</div>
-        <div id="c-s" style="position: absolute; left: 0; top: 580px; width: 1080px; text-align: center; font-size: 50px; font-weight: 700; color: #3b4660">La firma queda <mark>registrada</mark></div>
-        <div id="recap" style="position: absolute; left: 70px; top: 720px; width: 940px; background: #fff; border-radius: 34px; padding: 22px 40px; box-shadow: 0 30px 70px -28px rgba(14, 26, 53, 0.45)">
-          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 2px solid #eef0f5"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">1</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">Entra con <span class="mono" style="background: #ffe4f1; padding: 2px 10px; border-radius: 8px">5511122305</span> y <span class="mono" style="background: #ffe4f1; padding: 2px 10px; border-radius: 8px">Berlin27</span></span></div>
-          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 2px solid #eef0f5"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">2</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">Desliza abajo y toca «Compartir vía WhatsApp»</span></div>
-          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 2px solid #eef0f5"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">3</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">La persona contesta y toma foto de su INE</span></div>
-          <div class="rc" style="display: flex; gap: 24px; align-items: center; padding: 22px 0"><span style="font-family: Bricolage; font-weight: 800; font-size: 50px; color: #e6087a; width: 44px">4</span><span style="font-weight: 700; font-size: 34px; line-height: 1.25">Fotografía y firma igual a la de su INE</span></div>
+        <div id="c-t" style="position: absolute; left: 76px; top: 340px; font-weight: 700; font-size: 200px; line-height: 1; letter-spacing: -0.035em; color: #E4007C">¡Listo!</div>
+        <div id="c-s" style="position: absolute; left: 82px; top: 560px; font-size: 56px; font-weight: 500; letter-spacing: -0.01em">La firma queda registrada.</div>
+        <div id="recap" style="position: absolute; left: 80px; top: 720px; width: 920px">
+          <div class="rc" style="display: flex; gap: 30px; align-items: baseline; padding: 30px 0; border-top: 2px solid #e8e8ed"><span style="font-weight: 700; font-size: 48px; color: #E4007C; width: 40px">1</span><span style="font-weight: 500; font-size: 38px; line-height: 1.3">Entra con <b style="font-weight: 700">5511122305</b> y <b style="font-weight: 700">Berlin27</b></span></div>
+          <div class="rc" style="display: flex; gap: 30px; align-items: baseline; padding: 30px 0; border-top: 2px solid #e8e8ed"><span style="font-weight: 700; font-size: 48px; color: #E4007C; width: 40px">2</span><span style="font-weight: 500; font-size: 38px; line-height: 1.3">Desliza abajo y toca <b style="font-weight: 700">Compartir por WhatsApp</b></span></div>
+          <div class="rc" style="display: flex; gap: 30px; align-items: baseline; padding: 30px 0; border-top: 2px solid #e8e8ed"><span style="font-weight: 700; font-size: 48px; color: #E4007C; width: 40px">3</span><span style="font-weight: 500; font-size: 38px; line-height: 1.3">La persona contesta y toma <b style="font-weight: 700">foto de su INE</b></span></div>
+          <div class="rc" style="display: flex; gap: 30px; align-items: baseline; padding: 30px 0; border-top: 2px solid #e8e8ed; border-bottom: 2px solid #e8e8ed"><span style="font-weight: 700; font-size: 48px; color: #E4007C; width: 40px">4</span><span style="font-weight: 500; font-size: 38px; line-height: 1.3">Fotografía y <b style="font-weight: 700">firma igual a su INE</b></span></div>
         </div>
-        <img id="c-logo" src="assets/brand/somos-cutout.png" alt="SOMOS" style="position: absolute; left: 330px; top: 1500px; width: 420px" />
-        <div id="c-g" style="position: absolute; left: 0; top: 1600px; width: 1080px; text-align: center">
-          <div style="font-family: Bricolage; font-weight: 800; font-stretch: 88%; font-size: 64px">Gracias por sumar</div>
-          <div style="font-weight: 700; font-size: 34px; color: #3b4660; margin-top: 10px">al equipo de <mark>Eduardo Contró</mark> · Somos México CDMX</div>
-        </div>
+        <img id="c-logo" src="assets/brand/somos-cutout.png" alt="SOMOS" style="position: absolute; left: 380px; top: 1560px; width: 320px" />
+        <div id="c-g" style="position: absolute; left: 0; top: 1680px; width: 1080px; text-align: center; font-size: 40px; font-weight: 500; color: #6e6e73">Gracias por sumar.</div>
       </div>
 
       <!-- barra de progreso de los 9 pasos (rosa: tú · azul: quien firma) -->
       <div id="prog" class="prog clip" data-start="7.57" data-duration="92.63" data-track-index="4" style="left: 70px; top: 56px; width: 940px; height: 10px"><i class="p1"><b id="pg1"></b></i><i class="p1"><b id="pg2"></b></i><i class="p1"><b id="pg3"></b></i><i class="p1"><b id="pg4"></b></i><i class="p2"><b id="pg5"></b></i><i class="p2"><b id="pg6"></b></i><i class="p2"><b id="pg7"></b></i><i class="p2"><b id="pg8"></b></i><i class="p2"><b id="pg9"></b></i></div>
 
       <!-- ═════════ SUBTÍTULOS ═════════ -->
-      <div class="cap clip" data-start="1.2" data-duration="6.0" data-track-index="2" style="top: 1606px; height: 260px"><p>Equipo de <b>Eduardo Contró</b>: así se recolectan las firmas, paso a paso, desde tu celular.</p></div>
+      <div class="cap clip" data-start="1.2" data-duration="4.4" data-track-index="2" style="top: 1606px; height: 260px"><p>Así se recolectan las firmas, <b>paso a paso</b>, desde tu celular.</p></div>
       <div class="cap clip" data-start="8.27" data-duration="4.3" data-track-index="2" style="top: 1606px; height: 260px"><p>Abre el <b>enlace oficial</b> que te compartimos por WhatsApp.</p></div>
-      <div class="cap clip" data-start="13.38" data-duration="7.9" data-track-index="2" style="top: 1606px; height: 260px"><p>Nombre, cargo y folio <b>ya vienen prellenados</b>. No los cambies: solo llena dos campos.</p></div>
+      <div class="cap clip" data-start="13.38" data-duration="7.6" data-track-index="2" style="top: 1606px; height: 260px"><p>Los <b>datos de Eduardo ya vienen precargados</b>: no los modifiques. Solo completa dos campos.</p></div>
       <div class="cap clip" data-start="21.34" data-duration="6.85" data-track-index="2" style="top: 1606px; height: 260px"><p>Celular: <b>55 1112 2305</b></p></div>
       <div class="cap clip" data-start="28.24" data-duration="7.7" data-track-index="2" style="top: 1606px; height: 260px"><p>Contraseña: <b>Berlin27</b> — B mayúscula, sin espacios y el 27 con números.</p></div>
       <div class="cap clip" data-start="36.48" data-duration="4.0" data-track-index="2" style="top: 1606px; height: 260px"><p>Toca el botón rosa: <b>«Confirmar y Entrar al Canal»</b>.</p></div>
@@ -710,9 +651,9 @@
 
       <!-- ═════════ AUDIO ═════════ -->
       <audio id="a-mus" src="assets/musica_fondo.m4a" data-start="0" data-duration="107.25" data-track-index="9" data-volume="0.035" data-fade-in="1.5" data-fade-out="3"></audio>
-      <audio id="a00" src="assets/voz/00_intro.wav" data-start="1.2" data-duration="5.1" data-track-index="8"></audio>
+      <audio id="a00" src="assets/voz/00_intro.wav" data-start="1.2" data-duration="3.67" data-track-index="8"></audio>
       <audio id="a01" src="assets/voz/01_enlace.wav" data-start="8.27" data-duration="3.81" data-track-index="8"></audio>
-      <audio id="a02" src="assets/voz/02_pantalla.wav" data-start="13.38" data-duration="7.06" data-track-index="8"></audio>
+      <audio id="a02" src="assets/voz/02_pantalla.wav" data-start="13.38" data-duration="6.61" data-track-index="8"></audio>
       <audio id="a03" src="assets/voz/03_celular.wav" data-start="21.34" data-duration="5.99" data-track-index="8"></audio>
       <audio id="a04" src="assets/voz/04_contrasena.wav" data-start="28.24" data-duration="6.55" data-track-index="8"></audio>
       <audio id="a05" src="assets/voz/05_boton.wav" data-start="36.48" data-duration="3.46" data-track-index="8"></audio>
@@ -725,7 +666,7 @@
       <audio id="a12" src="assets/voz/12_temas.wav" data-start="78.66" data-duration="3.88" data-track-index="8"></audio>
       <audio id="a13" src="assets/voz/13_ine.wav" data-start="83.84" data-duration="7.89" data-track-index="8"></audio>
       <audio id="a14" src="assets/voz/14_firma.wav" data-start="93.03" data-duration="5.57" data-track-index="8"></audio>
-      <audio id="a15" src="assets/voz/15_cierre.wav" data-start="100.9" data-duration="5.03" data-track-index="8"></audio>
+      <audio id="a15" src="assets/voz/15_cierre.wav" data-start="100.9" data-duration="3.35" data-track-index="8"></audio>
     </div>
 
     <script>
@@ -771,16 +712,13 @@
       const BASE = 600 / 1125;
 
       // ═════ 0 · INTRO ═════
-      tl.fromTo("#i-logo", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.15);
-      tl.fromTo("#i-kick", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.35);
-      tl.fromTo(".it", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.14, ease: E }, 0.45);
-      tl.fromTo("#i-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 1.2);
-      tl.fromTo("#i-p1", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 2.3);
-      draw("#i-arr path", 2.9, 0.4);
-      tl.fromTo("#i-p2", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 3.2);
-      tl.to(["#i-p1", "#i-p2"], { scale: 1.025, duration: 1.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 4.0);
-      tl.to("#i-title", { y: -12, duration: 3.0, ease: "sine.inOut" }, 4.0);
-      tl.to("#s0 > *", { opacity: 0, y: -30, duration: 0.3, stagger: 0.02, ease: "power2.in" }, 7.1);
+      tl.fromTo("#i-logo", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.7, ease: E }, 0.15);
+      tl.fromTo(".it", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.18, ease: "expo.out" }, 0.45);
+      tl.fromTo("#i-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 1.2);
+      tl.fromTo("#i-p1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 2.4);
+      tl.fromTo("#i-p2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 3.0);
+      tl.to("#i-title", { y: -14, duration: 3.6, ease: "sine.inOut" }, 3.6);
+      tl.to("#s0 > *", { opacity: 0, y: -24, duration: 0.3, stagger: 0.03, ease: "power2.in" }, 7.05);
 
       // ═════ 1 · ENLACE (7.57) ═════
       tl.set("#sh1", { scale: BASE, x: 0, y: 0 }, 0);
@@ -797,7 +735,7 @@
       // prellenado
       tl.fromTo("#okbox", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.45, ease: E }, 14.6);
       tl.fromTo("#oktag", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 14.9);
-      tl.to(["#okbox", "#oktag"], { opacity: 0, duration: 0.3 }, 18.0);
+      tl.to(["#okbox", "#oktag"], { opacity: 0, duration: 0.3 }, 18.3);
       check("#n1", 18.4);
       check("#n2", 18.9);
       // celular
@@ -852,8 +790,8 @@
 
       // ═════ 5 · MENSAJE (56.96) ═════
       tl.set("#sh5", { scale: BASE, x: 0, y: 0 }, 0);
-      tl.fromTo("#band", { x: -1200 }, { x: 0, duration: 0.45, ease: E }, 56.96);
-      tl.to("#band", { x: 1200, duration: 0.4, ease: "power2.in" }, 58.3);
+      tl.fromTo("#band > div", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "expo.out" }, 56.96);
+      tl.to("#band", { opacity: 0, duration: 0.4, ease: "power2.in" }, 58.2);
       enterScene("#s5", 58.1);
       tl.to("#sp5", { opacity: 1, duration: 0.4 }, 59.4);
       tap("#t5", 60.6);
@@ -923,11 +861,11 @@
       tl.to("#s9 .phone, #s9 .hdr, #s9 .chips, #inecmp", { opacity: 0, duration: 0.25 }, 99.95);
 
       // ═════ CIERRE (100.2) ═════
-      tl.fromTo("#ok", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(2)" }, 100.3);
+      tl.fromTo("#ok", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 100.3);
       draw("#okp", 100.55, 0.4);
-      tl.fromTo("#c-t", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 100.6);
+      tl.fromTo("#c-t", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 100.55);
       tl.fromTo("#c-s", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 100.9);
-      tl.fromTo("#recap", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 101.4);
+      tl.set("#recap", { opacity: 1 }, 101.4);
       tl.fromTo(".rc", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.25, ease: E }, 101.7);
       tl.fromTo("#c-logo", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 103.0);
       tl.fromTo("#c-g", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 103.3);
