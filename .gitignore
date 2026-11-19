@@ -10,3 +10,5 @@ __pycache__/
 reel/renders/*.mp4
 teaser/.hyperframes/
 teaser/renders/
+somos-teaser/work/
+somos-teaser/renders/
