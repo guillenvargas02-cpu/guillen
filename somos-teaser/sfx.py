@@ -143,15 +143,14 @@ def sparkle(d=0.7):
 
 
 def tv_on_sound(d):
-    """Encendido de televisor de tubo: clic del interruptor, 'bwong' de desmagnetizado y whine que sube."""
+    """Aparece el punto de luz: golpe grave suave, 'ping' cristalino en Re-La y aire que sube hasta la apertura."""
     t = tt(d)
-    click = hp(noise(d), 2500) * np.exp(-t / 0.004) * 0.6 + np.sin(2 * np.pi * 180 * t) * np.exp(-t / 0.02) * 0.4
-    deg = (np.sin(2 * np.pi * 60 * t) * 0.6 + np.sin(2 * np.pi * 120 * t) * 0.35 + np.tanh(3 * np.sin(2 * np.pi * 180 * t)) * 0.08)
-    deg *= np.exp(-t / 0.35) * (1 - np.exp(-t / 0.01)) * 0.5
-    f = 6500 + 1500 * np.minimum(1, t / 1.0)
-    whine = np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.03 * np.minimum(1, t / 0.6)
-    hiss = hp(noise(d), 4000) * 0.008 * np.minimum(1, t / 0.4)
-    return reverb(click + deg + whine + hiss, 0.9, 5000, 0.2)
+    att = 1 - np.exp(-t / 0.003)
+    thump = np.sin(2 * np.pi * 55 * t) * np.exp(-t / 0.09) * att * 0.5
+    ping = sum(np.sin(2 * np.pi * f * t) * a * np.exp(-t / dec) for f, a, dec in
+               ((1174.66, 0.10, 0.50), (1760.0, 0.06, 0.35), (2349.32, 0.03, 0.25))) * att
+    air = bp(noise(d), 2000, 9000) * 0.015 * (t / d) ** 2
+    return reverb(thump + ping + air, 1.6, 9000, 0.35)
 
 
 def tv_off_sound():
@@ -212,7 +211,7 @@ def build():
     mix += m * 0.92
 
     # --- intro: la TV vieja se enciende (reverso del apagado del cierre)
-    add(tv_on_sound(T.T_OPEN - T.T_DOT), T.T_DOT, 0.8)
+    add(tv_on_sound(T.T_OPEN - T.T_DOT), T.T_DOT, 0.7)
     add(whoosh(0.22, 500, 7000, 0, 0, 0.5, 1.0), T.T_LINE - 0.08, 0.32)  # el punto se dispara en línea
     add(reverse_swell(0.40), T.T_OPEN - 0.40, 0.6)
     add(boom(2.0, 64, 32, 0.85), T.T_OPEN, 0.6)
