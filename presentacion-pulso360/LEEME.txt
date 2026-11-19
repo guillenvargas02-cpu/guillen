@@ -1,0 +1,33 @@
+PULSO 360° · Capacitación: IA aplicada a campañas electorales
+================================================================
+Propuesta provisional · presentación animada en HTML (funciona sin internet)
+
+CÓMO PRESENTAR
+1. Copia la carpeta completa "presentacion-pulso360" a la computadora.
+2. Abre "index.html" con Google Chrome o Microsoft Edge (también funciona en Safari y Firefox).
+3. Presiona F para pantalla completa.
+
+CONTROLES
+  →  /  Espacio  /  Clic ........ avanzar (cada diapositiva tiene animaciones por pasos)
+  ←  /  Clic derecho ............ regresar
+  F ............................. pantalla completa
+  12 + Enter .................... ir a la diapositiva 12
+  Inicio / Fin .................. primera / última
+  H ............................. ayuda
+
+CALIDAD
+- Diseñada sobre un escenario de 16:9 que se adapta a cualquier resolución (HD, 2K, 4K)
+  sin perder nitidez: todo el texto y los gráficos son vectoriales.
+- El video de apertura se elige solo: 4K en pantallas grandes y 1080p en las demás.
+- Las fuentes van incluidas dentro de la presentación; no requiere conexión.
+
+ESTRUCTURA DE ARCHIVOS
+  index.html ........... contenido de las diapositivas
+  css/deck.css ......... diseño y animaciones
+  css/fonts.css ........ fuentes incrustadas (Inter Tight, Instrument Serif, JetBrains Mono · licencia OFL)
+  js/deck.js ........... navegación, fondo de pulsos y efectos
+  assets/video/ ........ video PULSO 360° (H.264 4K y 1080p)
+
+NOTA
+Las pantallas de herramientas son vistas conceptuales con datos ilustrativos.
+Se sustituirán por los materiales oficiales de PULSO cuando estén disponibles.
