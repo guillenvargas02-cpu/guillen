@@ -72,10 +72,10 @@ PRE, POST = 0.3, 0.3  # márgenes extraídos alrededor de cada fragmento
 _CUTS = [77.30, 78.37, 79.81, 81.22, 82.52, 83.57, 84.61, 85.40, 86.70, 87.75, 88.79, 89.84, 90.88, 92.32, 93.74,
          94.53, 95.71, 96.87, 97.87]
 _SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy)) — encuadres distintos, sin repetir
-    ("A", 0.20, "tvon", (1.06, 1.12, 0.5, 0.5, 0, 0)),      # la TV se enciende: cámara y micrófonos
+    ("L", 1.00, "tvon", (1.06, 1.12, 0.45, 0.45, 0, 0)),    # la TV se enciende: el conductor escribe sus notas
     ("K", 4.20, "cut", (1.04, 1.10, 0.5, 0.4, 0, 0)),       # el equipo arma las lámparas bajo el candil
     ("H", 0.50, "punch", (1.04, 1.10, 0.45, 0.5, 0, 0)),    # conductor tras la cámara
-    ("L", 1.00, "cut", (1.06, 1.12, 0.45, 0.45, 0, 0)),     # el conductor escribe notas
+    ("A", 9.60, "cut", (1.06, 1.12, 0.5, 0.45, 0, 0)),      # el conductor gesticula, de frente
     ("B", 11.0, "cut", (1.06, 1.14, 0.5, 0.42, 0, 0)),      # pantalla del switcher
     ("E", 2.40, "leak", (1.04, 1.10, 0.6, 0.35, 0, 0)),     # se revela la lámpara de globo
     ("C", 5.20, "flash", (1.08, 1.12, 0.55, 0.5, 0, 0)),    # el saludo (breve)
