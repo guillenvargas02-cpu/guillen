@@ -22,3 +22,8 @@ conv I 98f81749-20261117_171755_1.mp4 "" &
 conv J a1e80d0a-IMG_8111.MOV "" &
 wait
 echo ALLDONE
+# material adicional (17:32–17:40)
+conv K 370ffb39-20261117_173204_4K.mp4 "" &
+conv L c25de236-20261117_173909_4K.mp4 "" &
+conv M a6fb5c3a-20261117_174057_4K.mp4 "" &
+wait

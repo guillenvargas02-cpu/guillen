@@ -3,7 +3,7 @@
 
 Música: propuesta 3 (152 BPM, Re). Tramo A (tensión → silencio → drop = claqueta) y tramo B
 (tensión → silencio → golpe = SOMOS).
-Efectos sintetizados: clunk de reflector viejo + zumbido de balastro, claqueta, whooshes, glitch, riser, impacto.
+Efectos sintetizados: encendido/apagado de TV de tubo, whooshes, impactos, acorde del logo.
 Uso: python3 sfx.py   -> renders/audio.wav (48 kHz estéreo, -14 LUFS)
 """
 import subprocess
@@ -18,7 +18,6 @@ SR = 48000
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "renders"
 MUSIC = ROOT / "assets" / "music" / "propuesta_teaser_3.m4a"
-CLIP_J = Path("/root/.claude/uploads/55edaf88-889f-5488-977a-7b311e9e3b41/a1e80d0a-IMG_8111.MOV")
 rng = np.random.default_rng(7)
 
 
@@ -70,48 +69,6 @@ def reverb(x, size=1.6, damp=4000, mix=0.3, predelay=0.012):
 
 
 # ------------------------------------------------------------------ efectos
-def clunk(big=1.0):
-    """Interruptor/breaker de un reflector viejo: golpe mecánico doble, cuerpo grave y resonancia metálica."""
-    d = 0.6
-    t = tt(d)
-    x = np.zeros_like(t)
-    for off, g in ((0.0, 1.0), (0.032, 0.55)):
-        k = int(off * SR)
-        tr = hp(noise(d), 1800) * np.exp(-t / 0.0035) * 0.9
-        mech = bp(noise(d), 250, 1400) * np.exp(-t / 0.028) * 0.8
-        x[k:] += (tr + mech)[: len(x) - k] * g
-    f = 95 * np.exp(-t * 4) + 42
-    thump = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.11) * 1.1 * big
-    ring = sum(np.sin(2 * np.pi * fr * t + p) * a for fr, a, p in
-               ((1180, 0.05, 0.3), (1735, 0.035, 1.1), (2645, 0.025, 2.0), (3820, 0.015, 0.7))) * np.exp(-t / 0.10)
-    y = x * 0.55 + thump + ring
-    return reverb(y, 1.8, 3500, 0.32) * 0.9
-
-
-def hum(d, fade_in=0.5, fade_out=0.3, level=1.0, start_pitch=1.0):
-    """Zumbido de balastro / filamento (60 Hz y armónicos con un poco de 'buzz')."""
-    t = tt(d)
-    f0 = 60 * start_pitch
-    x = 0.5 * np.sin(2 * np.pi * f0 * t) + 0.32 * np.sin(2 * np.pi * 2 * f0 * t) + 0.12 * np.sin(2 * np.pi * 3 * f0 * t)
-    buzz = hp(np.tanh(4 * np.sin(2 * np.pi * 2 * f0 * t)), 400) * 0.06
-    fil = bp(noise(d), 3000, 9000) * 0.012 * (1 + 0.5 * np.sin(2 * np.pi * 7 * t))
-    y = (x * 0.35 + buzz + fil) * level
-    env = np.minimum(1, t / fade_in) * np.minimum(1, (d - t) / fade_out)
-    return stereo(y * env, 0, 0.4)
-
-
-def clap_sound():
-    """Golpe de claqueta de madera + sala."""
-    d = 0.5
-    t = tt(d)
-    tr = hp(noise(d), 700) * np.exp(-t / 0.005)
-    body = (np.sin(2 * np.pi * 540 * t) * np.exp(-t / 0.022) * 0.6 + np.sin(2 * np.pi * 1960 * t) * np.exp(-t / 0.011) * 0.3)
-    k = int(0.0045 * SR)
-    tr2 = np.concatenate([np.zeros(k), tr[:-k]]) * 0.5
-    y = tr * 0.9 + tr2 + body
-    return reverb(y, 1.2, 6000, 0.28) * 1.0
-
-
 def boom(d=2.2, f_start=62, f_end=30, level=1.0):
     t = tt(d)
     f = f_end + (f_start - f_end) * np.exp(-t * 3.5)
@@ -152,29 +109,6 @@ def whoosh(d=0.45, f0=300, f1=4000, pan0=0.6, pan1=-0.6, peak=0.6, level=1.0):
     return np.stack([y * np.sqrt(0.5 * (1 - pan)), y * np.sqrt(0.5 * (1 + pan))], 1)
 
 
-def zap(d=0.11, seed=0):
-    r = np.random.default_rng(seed)
-    t = tt(d)
-    y = np.zeros_like(t)
-    seg = int(0.012 * SR)
-    for k in range(0, len(t), seg):
-        f = r.choice([180, 420, 880, 1600, 3100])
-        y[k:k + seg] = np.sign(np.sin(2 * np.pi * f * t[k:k + seg])) * r.uniform(0.3, 1)
-    y = np.round(y * 6) / 6
-    y = hp(y, 150) * np.exp(-t / 0.08) * 0.35
-    return stereo(y, r.uniform(-0.5, 0.5), 0.3)
-
-
-def riser(d=0.9):
-    t = tt(d)
-    p = t / d
-    n = sweep_noise(d, 400, 9000, 1.6, 0.9) * 1.5
-    f = 180 * (8 ** p ** 1.5)
-    tone = np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.25 + np.sin(2 * np.pi * np.cumsum(f * 1.5) / SR) * 0.12
-    y = (n + tone) * p ** 2.2
-    return reverb(y, 1.4, 6000, 0.25)[: len(y)]
-
-
 def reverse_swell(d=0.6):
     y = boom(1.6, 80, 40, 0.6)[:, 0]
     y = reverb(hp(noise(1.0), 400) * np.exp(-tt(1.0) / 0.25), 1.6, 5000, 0.8)[:, 0][: int(d * SR)]
@@ -208,6 +142,18 @@ def sparkle(d=0.7):
     return reverb(y, 1.2, 12000, 0.4)
 
 
+def tv_on_sound(d):
+    """Encendido de televisor de tubo: clic del interruptor, 'bwong' de desmagnetizado y whine que sube."""
+    t = tt(d)
+    click = hp(noise(d), 2500) * np.exp(-t / 0.004) * 0.6 + np.sin(2 * np.pi * 180 * t) * np.exp(-t / 0.02) * 0.4
+    deg = (np.sin(2 * np.pi * 60 * t) * 0.6 + np.sin(2 * np.pi * 120 * t) * 0.35 + np.tanh(3 * np.sin(2 * np.pi * 180 * t)) * 0.08)
+    deg *= np.exp(-t / 0.35) * (1 - np.exp(-t / 0.01)) * 0.5
+    f = 6500 + 1500 * np.minimum(1, t / 1.0)
+    whine = np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.03 * np.minimum(1, t / 0.6)
+    hiss = hp(noise(d), 4000) * 0.008 * np.minimum(1, t / 0.4)
+    return reverb(click + deg + whine + hiss, 0.9, 5000, 0.2)
+
+
 def tv_off_sound():
     """Apagado de televisor de tubo: whine que cae, 'pop' eléctrico y estática breve."""
     d = 0.55
@@ -227,12 +173,6 @@ def tv_off_sound():
 def load_music():
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(MUSIC), "-f", "f32le", "-ac", "2", "-ar", str(SR), "-"],
                          capture_output=True, check=True).stdout
-    return np.frombuffer(raw, np.float32).reshape(-1, 2).astype(np.float64)
-
-
-def load_clip_audio(path, start, dur):
-    raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(start), "-t", str(dur), "-i", str(path), "-vn", "-f", "f32le",
-                          "-ac", "2", "-ar", str(SR), "-"], capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.float32).reshape(-1, 2).astype(np.float64)
 
 
@@ -271,16 +211,12 @@ def build():
     m *= np.where(t > T.T_LOGO + 0.5, fade, 1.0)[:, None]
     mix += m * 0.92
 
-    # --- intro: tono de sala, todos los reflectores encienden juntos, claqueta en el drop
-    room = stereo(lp(noise(T.T_CLAP1 + 0.3), 900) * 0.006, 0, 0.6)
-    add(room, 0.0)
-    add(clunk(1.25), T.T_ON - 0.004, 0.7)
-    add(clunk(0.9), T.T_ON + 0.012, 0.35)
-    add(hum(T.T_CLAP1 + 0.25 - T.T_ON, 0.25, 0.2, 0.10), T.T_ON + 0.02, 1.0)
-    add(stereo(bp(noise(0.4), 300, 2500) * np.exp(-tt(0.4) / 0.12) * 0.08, 0.2), T.fr(1.05))  # la barra se abre
-    add(reverse_swell(0.45), T.T_CLAP1 - 0.45, 0.5)
-    add(clap_sound(), T.T_CLAP1 - 0.003, 0.85)
-    add(boom(2.0, 64, 32, 0.85), T.T_CLAP1, 0.6)
+    # --- intro: la TV vieja se enciende (reverso del apagado del cierre)
+    add(tv_on_sound(T.T_OPEN - T.T_DOT), T.T_DOT, 0.8)
+    add(whoosh(0.32, 400, 5000, 0, 0, 0.6, 1.0), T.T_LINE - 0.06, 0.28)  # el punto se estira en línea
+    add(reverse_swell(0.45), T.T_OPEN - 0.45, 0.6)
+    add(boom(2.0, 64, 32, 0.85), T.T_OPEN, 0.6)
+    add(stereo(hp(noise(0.2), 1500) * np.exp(-tt(0.2) / 0.05) * 0.25, 0, 0.5), T.T_OPEN, 0.6)  # chispazo de estática
 
     # --- montaje: acentos discretos en las transiciones
     for i, (st, en, clip, src, sp, tin, mot) in enumerate(T.EDL[1:], 1):

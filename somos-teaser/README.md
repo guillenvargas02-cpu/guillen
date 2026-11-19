@@ -1,22 +1,22 @@
 # Teaser SOMOS — programa de entrevistas
 
-Teaser vertical 4K (2160×3840, 30 fps, ~30 s) con estética oscura y misteriosa.
+Teaser vertical 4K (2160×3840, 30 fps, 28.8 s) con estética oscura y misteriosa. Abre y cierra como una TV vieja.
 
 ## Estructura (segundos)
 | Tiempo | Qué pasa | Audio |
 |---|---|---|
-| 0.0 – 3.57 | Plató a oscuras; todos los reflectores encienden juntos; claqueta grande (blanco/negro, solo SOMOS) se abre y espera en el silencio | clunk + zumbido de balastro |
-| 3.57 | **Hook**: la claqueta cierra en el drop y cortamos directo al material | claqueta + impacto |
-| 3.57 – 24.17 | Montaje de 15 encuadres distintos (1–1.8 s), cada momento usado una sola vez, cortes en los golpes (152 BPM). Transiciones limpias: corte, flash, acercamiento, fuga de luz | acentos discretos |
-| 24.17 – 27.37 | Línea de luz → cuadro aparte **MUY PRONTO** → silencio | grave en Re |
-| 27.37 – 29.47 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
-| 29.47 – 29.93 | Salida: se apaga como televisor viejo | whine + pop eléctrico |
+| 0.0 – 2.4 | Negro → un punto de luz calienta → se estira en una línea que se tensa en el silencio | clic, "bwong" de desmagnetizado, whine |
+| 2.4 | **Encendido**: en el drop la línea se abre a la imagen (reverso exacto del apagado final) | impacto + chispazo |
+| 2.4 – 23.0 | Montaje de 18 encuadres distintos (0.8–1.5 s), cada momento usado una sola vez, cortes en los golpes (152 BPM). Transiciones limpias: corte, flash, acercamiento, fuga de luz | acentos discretos |
+| 23.0 – 26.2 | Línea de luz → cuadro aparte **MUY PRONTO** → silencio | grave en Re |
+| 26.2 – 28.3 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
+| 28.3 – 28.8 | **Apagado**: la imagen se comprime en una línea y un punto, como TV vieja | whine + pop eléctrico |
 
-Marca (Manual de identidad 2026): rosa cívico #E4007C; logo vectorial extraído del manual; sobre fondo oscuro se usa la
-pleca blanca (pág. 16–17, 57); nunca blanco sobre rosa ni el logo rotado/recoloreado. Texto: Hind Siliguri
+Marca (Manual de identidad 2026): rosa cívico #E4007C; logo vectorial extraído del manual;
+logo rosa sobre blanco (uso oficial); nunca blanco sobre rosa ni el logo rotado/recoloreado. Texto: Hind Siliguri
 (secundaria); "MUY PRONTO" en blanco/negro.
 
-Música: propuesta 3 (152 BPM): tramo 73.70–97.87 s y tramo 124.17 s→ (golpe en 127.37 s). Material: 10 tomas del set (B = IMG_8114 solo la parte de la pantalla).
+Música: propuesta 3 (152 BPM): tramo 74.87–97.87 s (drop en 77.27 s) y tramo 124.17 s→ (golpe en 127.37 s). Material: 13 tomas del set (B = IMG_8114 solo la parte de la pantalla).
 
 ## Render
 ```bash

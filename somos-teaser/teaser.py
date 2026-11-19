@@ -32,29 +32,27 @@ PREVIEW = os.environ.get("TEASER_PREVIEW") == "1"
 W, H = (1080, 1920) if PREVIEW else (2160, 3840)
 S = W / 1080.0  # px por unidad de diseño (diseño en 1080x1920)
 FPS = 30
-TOTAL = 898 / 30  # ≈29.93 s
-NFRAMES = int(round(TOTAL * FPS))
-
-
 def fr(t):
     """Redondea un tiempo al cuadro exacto."""
     return round(t * FPS) / FPS
 
 
 # ------------------------------------------------------------------ tiempos — música: propuesta 3 (152 BPM, Re)
-# Tramo A de la canción: 73.703 s → 97.870 s (tensión, silencio y drop en 77.27 s = golpe de la claqueta).
-# Tramo B: 124.17 s → final (tensión, silencio y golpe en 127.37 s = SOMOS en solitario).
-MUSIC_A_IN = 77.27 - 107 / 30
-T_ON = fr(0.40)  # todos los reflectores encienden juntos
-T_LIGHTS = [T_ON, T_ON, T_ON + 2 / FPS]
-T_CLAP1 = 107 / 30  # drop: la claqueta cierra y cortamos al material
-T_END = 725 / 30  # fin del montaje (corte al tramo B de la canción)
+# Tramo A de la canción: tensión → silencio → drop (77.27 s) = la TV se enciende y entra el material.
+# Tramo B: tensión → silencio → golpe (127.37 s) = SOMOS en solitario; cierra con la TV apagándose.
+T_OPEN = 72 / 30  # drop: la línea de luz se abre a la imagen
+MUSIC_A_IN = 77.27 - T_OPEN
+T_DOT = fr(0.25)  # aparece el punto de luz
+T_LINE = fr(1.00)  # el punto se estira en línea
+T_END = fr(97.87 - MUSIC_A_IN)  # fin del montaje (corte al tramo B de la canción)
 MUSIC_B_IN = 124.17
-T_CLAP2 = 749 / 30  # aparece MUY PRONTO (en el compás)
+T_CLAP2 = T_END + 24 / 30  # aparece MUY PRONTO (en el compás)
 T_SIL = T_END + (126.83 - MUSIC_B_IN)  # silencio previo al golpe
-T_LOGO = 821 / 30  # golpe 127.37 s: SOMOS en solitario
+T_LOGO = T_END + 96 / 30  # golpe 127.37 s: SOMOS en solitario
 T_TV = fr(T_LOGO + 2.1)
 TV_END = T_TV + 0.42
+TOTAL = fr(TV_END + 0.07)
+NFRAMES = int(round(TOTAL * FPS))
 
 
 def m2t(m):
@@ -62,35 +60,38 @@ def m2t(m):
     return fr(m - MUSIC_A_IN)
 
 
-HITS = [(T_CLAP1, 0.7), (T_LOGO, 0.45)]
+HITS = [(T_LOGO, 0.45)]
 
 PRE, POST = 0.3, 0.3  # márgenes extraídos alrededor de cada fragmento
 
 # ------------------------------------------------------------------ EDL
 # clips: A=IMG_8097 B=IMG_8114(solo pantalla) C=IMG_8115 D=IMG_8120 E=163428 F=163233 G=163217
-#        H=170555 I=171755 J=IMG_8111
+#        H=170555 I=171755 J=IMG_8111 K=173204 L=173909 M=174057
 # Cada momento del material se usa una sola vez, a velocidad real. Cortes en los golpes de la canción.
 # Transiciones limpias (sin deformar a nadie): cut, flash, punch (acercamiento rápido), leak (fuga de luz).
-_CUTS = [77.30, 78.37, 79.81, 81.22, 82.52, 83.57, 85.40, 86.70, 88.54, 89.84, 91.67, 92.72, 94.02, 95.71, 96.87,
-         97.87]
-_SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy)) — 15 encuadres distintos, sin repetir
-    ("A", 0.20, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # paneo entre cámara y micrófonos
-    ("E", 2.40, "cut", (1.04, 1.10, 0.6, 0.35, 0, 0)),      # se revela la lámpara de globo
+_CUTS = [77.30, 78.37, 79.81, 81.22, 82.52, 83.57, 84.61, 85.40, 86.70, 87.75, 88.79, 89.84, 90.88, 92.32, 93.74,
+         94.53, 95.71, 96.87, 97.87]
+_SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy)) — encuadres distintos, sin repetir
+    ("A", 0.20, "tvon", (1.06, 1.12, 0.5, 0.5, 0, 0)),      # la TV se enciende: cámara y micrófonos
+    ("K", 4.20, "cut", (1.04, 1.10, 0.5, 0.4, 0, 0)),       # el equipo arma las lámparas bajo el candil
     ("H", 0.50, "punch", (1.04, 1.10, 0.45, 0.5, 0, 0)),    # conductor tras la cámara
+    ("L", 1.00, "cut", (1.06, 1.12, 0.45, 0.45, 0, 0)),     # el conductor escribe notas
     ("B", 11.0, "cut", (1.06, 1.14, 0.5, 0.42, 0, 0)),      # pantalla del switcher
-    ("D", 9.20, "leak", (1.04, 1.10, 0.5, 0.45, 0, 0)),     # equipo ajustando luces
-    ("C", 4.80, "flash", (1.06, 1.12, 0.55, 0.5, 0, 0)),    # el saludo
+    ("E", 2.40, "leak", (1.04, 1.10, 0.6, 0.35, 0, 0)),     # se revela la lámpara de globo
+    ("C", 5.20, "flash", (1.08, 1.12, 0.55, 0.5, 0, 0)),    # el saludo (breve)
     ("A", 5.30, "cut", (1.10, 1.04, 0.55, 0.45, 0, 0)),     # conductor de perfil, de cerca
-    ("G", 0.20, "punch", (1.04, 1.10, 0.5, 0.6, 0, 0)),     # visor de cámara en primer plano
+    ("M", 3.00, "punch", (1.04, 1.10, 0.5, 0.45, 0, 0)),    # escribe mientras lo observan
+    ("G", 0.20, "cut", (1.04, 1.10, 0.5, 0.6, 0, 0)),       # visor de cámara en primer plano
     ("J", 0.30, "flash", (1.04, 1.10, 0.5, 0.45, 0, 0)),    # conductor riendo
-    ("D", 0.50, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # charla del equipo, de pie
-    ("F", 6.30, "leak", (1.04, 1.10, 0.6, 0.4, 0, 0)),      # libreros y luces
+    ("K", 9.50, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # camarógrafo ajusta la cámara
+    ("D", 9.20, "leak", (1.04, 1.10, 0.5, 0.45, 0, 0)),     # equipo ajustando luces
     ("C", 11.0, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # entrevista a dos
+    ("D", 0.50, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # charla del equipo, de pie
     ("J", 6.40, "cut", (1.06, 1.14, 0.55, 0.5, 0, 0)),      # invitado tras la cámara
-    ("C", 0.40, "punch", (1.04, 1.10, 0.5, 0.5, 0, 0)),     # set completo entre trípodes
+    ("K", 0.30, "punch", (1.04, 1.10, 0.5, 0.5, 0, 0)),     # el set con el softbox
     ("B", 14.6, "flash", (1.08, 1.18, 0.5, 0.42, 0, 0)),    # el programa en pantalla
 ]
-EDL = [(T_CLAP1 if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else m2t(_CUTS[k + 1]),
+EDL = [(T_OPEN if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else m2t(_CUTS[k + 1]),
         c, src, 1.0, tin, mot) for k, (c, src, tin, mot) in enumerate(_SHOTS)]
 
 
@@ -123,481 +124,6 @@ def logo_alpha_hi():
     a = im[..., 3]
     ys, xs = np.where(a > 8)
     return a[ys.min():ys.max() + 1, xs.min():xs.max() + 1].astype(np.float32) / 255.0
-
-
-PLECA_RATIO = 568.79 / 157.36  # medida en el manual (pág. 17)
-LOGO_IN_PLECA = 432.17 / 568.79
-
-
-def build_pleca(pw):
-    """Pleca blanca con el logo rosa. Devuelve dict con rgb, a, counter (hueco de la primera O), en un lienzo
-    con margen."""
-    pw = int(round(pw))
-    ph = int(round(pw / PLECA_RATIO))
-    pad = int(ph * 0.25)
-    cw, ch = pw + 2 * pad, ph + 2 * pad
-    pill = fx.rounded_rect_mask(cw, ch, pw, ph, ph / 2)
-    la = logo_alpha_hi()
-    lw = int(round(pw * LOGO_IN_PLECA))
-    lh = int(round(lw * la.shape[0] / la.shape[1]))
-    lsm = cv2.resize(la, (lw, lh), interpolation=cv2.INTER_AREA)
-    logo = np.zeros((ch, cw), np.float32)
-    lx, ly = (cw - lw) // 2, (ch - lh) // 2
-    logo[ly:ly + lh, lx:lx + lw] = lsm
-    # hueco de la primera O
-    binv = (la < 0.5).astype(np.uint8)
-    n, lab, st, cen = cv2.connectedComponentsWithStats(binv, connectivity=4)
-    holes = [i for i in range(1, n) if st[i, 0] > 0 and st[i, 1] > 0 and st[i, 0] + st[i, 2] < la.shape[1]
-             and st[i, 1] + st[i, 3] < la.shape[0] and st[i, 4] > 1000]
-    first = min(holes, key=lambda i: st[i, 0])
-    hole = (lab == first).astype(np.float32)
-    hole = cv2.resize(hole, (lw, lh), interpolation=cv2.INTER_AREA)
-    counter = np.zeros((ch, cw), np.float32)
-    counter[ly:ly + lh, lx:lx + lw] = hole
-    hx = lx + cen[first][0] * lw / la.shape[1]
-    hy = ly + cen[first][1] * lh / la.shape[0]
-    rgb = np.ones((ch, cw, 3), np.float32) * (1 - logo[..., None]) + PINK * logo[..., None]
-    return dict(rgb=rgb, a=pill, logo=logo, counter=counter, w=cw, h=ch, pw=pw, ph=ph, hole=(hx, hy))
-
-
-# ------------------------------------------------------------------ claqueta
-CL_W, CL_BH, CL_SH = 700, 470, 70  # ancho, alto del pizarrón y de cada barra (diseño)
-CL_GAP = 4
-BOARD_PLECA_W = 520  # ancho de la pleca impresa en la pizarra (diseño)
-
-
-def stripes_img(w, h, flip=False):
-    """Barra con franjas diagonales blanco / negro (claqueta clásica, sin rosa)."""
-    ss = 2
-    W2, H2 = w * ss, h * ss
-    img = np.zeros((H2, W2, 3), np.float32)
-    img[:] = (0.94, 0.94, 0.94)
-    sw = int(70 * S * ss)
-    slant = int(46 * S * ss) * (-1 if flip else 1)
-    k = 0
-    for x in range(-2 * sw, W2 + 2 * sw, sw):
-        if k % 2 == 0:
-            pts = np.array([[x, 0], [x + sw, 0], [x + sw + slant, H2], [x + slant, H2]], np.int32)
-            cv2.fillPoly(img, [pts], (0.035, 0.035, 0.04), cv2.LINE_AA)
-        k += 1
-    img = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
-    return img
-
-
-def rgba(rgb, a):
-    return np.dstack([rgb, a]).astype(np.float32)
-
-
-@lru_cache(None)
-def clapper_parts():
-    s = S
-    bw, bh, sh = int(CL_W * s), int(CL_BH * s), int(CL_SH * s)
-    # pizarrón
-    board = np.zeros((bh, bw, 3), np.float32)
-    yy = np.linspace(0, 1, bh, dtype=np.float32)[:, None]
-    board[:] = (0.030, 0.030, 0.034)
-    board += (0.018 * (1 - yy))[..., None]
-    a = fx.rounded_rect_mask(bw, bh, bw, bh, 10 * s)
-    lay = rgba(board, a)
-    # marco fino de gis; la pizarra solo lleva SOMOS (en su pleca, como pide el manual sobre fondo oscuro)
-    ink = np.zeros((bh, bw), np.float32)
-    lw = max(1, int(2.0 * s))
-    cv2.rectangle(ink, (int(16 * s), int(16 * s)), (int((CL_W - 16) * s), int((CL_BH - 16) * s)), 0.35, lw, cv2.LINE_AA)
-    lay[..., :3] = lay[..., :3] * (1 - ink[..., None]) + 0.9 * ink[..., None]
-    plain = lay.copy()
-    Pq = build_pleca(BOARD_PLECA_W * s)
-    _paste_rgba(lay, np.dstack([Pq["rgb"], Pq["a"]]), (bw - Pq["w"]) / 2, (bh - Pq["h"]) / 2)
-    # barras
-    def stick(flip):
-        st = stripes_img(bw, sh, flip)
-        m = fx.rounded_rect_mask(bw, sh, bw, sh, 4 * s)
-        edge = np.zeros((sh, bw), np.float32)
-        cv2.rectangle(edge, (0, 0), (bw - 1, sh - 1), 1.0, max(1, int(2 * s)))
-        st = st * (1 - 0.6 * edge[..., None])
-        return rgba(st, m)
-
-    top = stick(False)
-    bot = stick(True)
-    # bisagra
-    for L in (top, bot):
-        cv2.circle(L, (int(14 * s), int(sh / 2)), int(9 * s), (0.55, 0.55, 0.58, 1.0), -1, cv2.LINE_AA)
-    return dict(board=lay, plain=plain, top=top, bot=bot, bw=bw, bh=bh, sh=sh)
-
-
-@lru_cache(None)
-def closed_plain_clapper():
-    lay, pad, oy = clapper_layer(0.0, plain=True)
-    lay = lay.copy()
-    gy = np.linspace(1.0, 0.0, lay.shape[0], dtype=np.float32)[:, None, None]
-    gx = np.linspace(-1.0, 1.0, lay.shape[1], dtype=np.float32)[None, :, None]
-    lay[..., :3] *= (0.62 + 0.55 * gy ** 1.5) * (1 - 0.12 * gx ** 2)
-    return lay, pad, oy
-
-
-def clapper_layer(angle_deg, blur_steps=1, prev_angle=None, plain=False):
-    """Claqueta completa (RGBA) en un lienzo local. Origen de diseño = esquina sup-izq del pizarrón."""
-    P = clapper_parts()
-    s = S
-    pad = int(260 * s)
-    cw = P["bw"] + 2 * pad
-    ch = P["bh"] + P["sh"] * 2 + int(CL_GAP * s) + 2 * pad
-    oy = pad + P["sh"] * 2 + int(CL_GAP * s)  # y del pizarrón
-    lay = np.zeros((ch, cw, 4), np.float32)
-    _paste_rgba(lay, P["plain" if plain else "board"], pad, oy)
-    _paste_rgba(lay, P["bot"], pad, oy - P["sh"])
-    # barra superior girando en la bisagra (izquierda)
-    piv = (pad + 6 * s, oy - P["sh"] - CL_GAP * s)
-    angles = [angle_deg] if blur_steps <= 1 or prev_angle is None else \
-        list(np.linspace(prev_angle, angle_deg, blur_steps))
-    acc = np.zeros_like(lay)
-    for ang in angles:
-        tl = np.zeros_like(lay)
-        _paste_rgba(tl, P["top"], pad, piv[1] - P["sh"])
-        M = cv2.getRotationMatrix2D(piv, ang, 1.0)
-        acc += cv2.warpAffine(tl, M, (cw, ch), flags=cv2.INTER_LINEAR)
-    acc /= len(angles)
-    _paste_rgba(lay, acc, 0, 0)
-    return lay, pad, oy
-
-
-def _paste_rgba(dst, src, x, y):
-    """Composición RGBA sobre RGBA (premultiplicando)."""
-    H_, W_ = dst.shape[:2]
-    h, w = src.shape[:2]
-    x, y = int(round(x)), int(round(y))
-    x0, y0, x1, y1 = max(0, x), max(0, y), min(W_, x + w), min(H_, y + h)
-    if x0 >= x1 or y0 >= y1:
-        return
-    s_ = src[y0 - y:y1 - y, x0 - x:x1 - x]
-    d = dst[y0:y1, x0:x1]
-    sa = s_[..., 3:4]
-    da = d[..., 3:4]
-    oa = sa + da * (1 - sa)
-    rgb = (s_[..., :3] * sa + d[..., :3] * da * (1 - sa)) / np.maximum(oa, 1e-6)
-    dst[y0:y1, x0:x1, :3] = rgb
-    dst[y0:y1, x0:x1, 3:4] = oa
-
-
-def place_layer(frame, layer, cx, cy, scale=1.0, rot_y=0.0, rot_x=0.0, light=1.0, opacity=1.0, anchor=None):
-    """Coloca una capa RGBA con perspectiva (giro Y/X en grados) centrada en (cx, cy) px."""
-    h, w = layer.shape[:2]
-    ax, ay = anchor if anchor else (w / 2, h / 2)
-    pts = np.array([[0, 0], [w, 0], [w, h], [0, h]], np.float32) - [ax, ay]
-    f = 2200 * S
-    ry, rx = math.radians(rot_y), math.radians(rot_x)
-    out = []
-    for x, y in pts:
-        x, y = x * scale, y * scale
-        z = 0.0
-        x, z = x * math.cos(ry) + z * math.sin(ry), -x * math.sin(ry) + z * math.cos(ry)
-        y, z = y * math.cos(rx) - z * math.sin(rx), y * math.sin(rx) + z * math.cos(rx)
-        k = f / (f + z)
-        out.append([cx + x * k, cy + y * k])
-    M = cv2.getPerspectiveTransform((pts + np.array([ax, ay], np.float32)).astype(np.float32), np.array(out, np.float32))
-    warped = cv2.warpPerspective(layer, M, (W, H), flags=cv2.INTER_LINEAR)
-    a = warped[..., 3:4] * opacity
-    return frame * (1 - a) + warped[..., :3] * light * a
-
-
-# ------------------------------------------------------------------ estudio (reflectores de tungsteno)
-LW, LH = W // 4, H // 4
-LIGHTS = [  # pos, objetivo (diseño), semiapertura (grados)
-    dict(pos=(130, 150), tgt=(600, 1330), half=13.0),
-    dict(pos=(950, 120), tgt=(480, 1330), half=13.0),
-    dict(pos=(540, -120), tgt=(540, 1460), half=10.5),
-]
-
-
-@lru_cache(None)
-def haze_tex():
-    return fx.fbm(LW * 2, LH * 2, 7, octaves=6, base=3)
-
-
-@lru_cache(None)
-def beam_fields():
-    yy, xx = np.mgrid[0:LH, 0:LW].astype(np.float32)
-    out = []
-    sl = LW / 1080.0
-    for L in LIGHTS:
-        px, py = L["pos"][0] * sl, L["pos"][1] * sl
-        tx, ty = L["tgt"][0] * sl, L["tgt"][1] * sl
-        dx, dy = tx - px, ty - py
-        n = math.hypot(dx, dy)
-        dx, dy = dx / n, dy / n
-        vx, vy = xx - px, yy - py
-        along = vx * dx + vy * dy
-        perp = np.abs(vx * dy - vy * dx)
-        ang = np.degrees(np.arctan2(perp, np.maximum(along, 1e-3)))
-        half = L["half"]
-        cone = smooth((half + 3.5 - ang) / 7.0) * (along > 0)
-        core = np.exp(-(ang / half) ** 2 * 1.6)
-        fall = 1.0 / (1.0 + (along / (n * 1.15)) ** 2)
-        beam = cone * (0.55 + 0.45 * core) * fall
-        rx = math.tan(math.radians(half)) * n * 1.25
-        pool = np.exp(-((xx - tx) / rx) ** 2 - ((yy - ty) / (rx * 0.22)) ** 2)
-        out.append((beam.astype(np.float32), pool.astype(np.float32)))
-    return out
-
-
-def light_state(i, t, ons, offs):
-    """Intensidad (0..~1.3) y color de un reflector viejo: parpadeo al encender, filamento calentando."""
-    ton = ons[i]
-    toff = offs[i] if offs else None
-    if ton is None or t < ton:
-        return 0.0, np.array([1.0, 0.5, 0.2], np.float32)
-    dt = t - ton
-    if dt < 0.16:
-        fl = [0.55, 0.12, 0.7, 0.3, 0.85][int(dt * FPS) % 5]
-        inten = fl
-    else:
-        inten = 0.55 + 0.45 * ease_out((dt - 0.16) / 0.7, 2)
-    warm = ease_out(dt / 0.9, 2)
-    hum = 1 + 0.025 * math.sin(t * 47 + i) + 0.015 * math.sin(t * 13.3 + 2 * i)
-    inten *= hum
-    if toff is not None and t >= toff:
-        k = math.exp(-(t - toff) / 0.22)
-        inten *= k
-        warm *= k ** 0.5
-    col = np.array([1.0, 0.50 + 0.30 * warm, 0.20 + 0.36 * warm], np.float32)
-    return inten, col
-
-
-@lru_cache(None)
-def dust():
-    r = np.random.RandomState(3)
-    n = 260
-    return dict(x=r.rand(n) * 1080, y=r.rand(n) * 1700 + 60, s=0.6 + r.rand(n) ** 3 * 2.6, ph=r.rand(n) * 6.28,
-                sp=0.3 + r.rand(n))
-
-
-def studio(t, ons, offs=None, surge=0.0, cam=1.0, cam_c=(540, 1000)):
-    """Plató oscuro con haces volumétricos. Devuelve imagen HxWx3 y las intensidades."""
-    fields = beam_fields()
-    hz = haze_tex()
-    ox = int((t * 9) % LW)
-    oy = int((t * 4) % LH)
-    haze = hz[oy:oy + LH, ox:ox + LW]
-    haze2 = hz[(LH - oy // 2) % LH:(LH - oy // 2) % LH + LH, (ox // 2):(ox // 2) + LW]
-    hzm = 0.35 + 0.65 * (0.6 * haze + 0.4 * haze2)
-    img = np.zeros((LH, LW, 3), np.float32)
-    yy = np.linspace(0, 1, LH, dtype=np.float32)[:, None, None]
-    base = np.array([0.010, 0.010, 0.012], np.float32)
-    img[:] = base * (1.2 - 0.5 * yy)
-    states = []
-    total = 0.0
-    for i, (beam, pool) in enumerate(fields):
-        inten, col = light_state(i, t, ons, offs)
-        inten *= 1 + surge
-        states.append((inten, col))
-        total += inten
-        if inten <= 0:
-            continue
-        img += (beam * hzm * 0.42)[..., None] * col * inten
-        img += (pool * 0.055)[..., None] * col * inten
-    # rebote en el fondo (ciclorama) y piso
-    img += (np.exp(-((yy - 0.62) / 0.35) ** 2) * 0.020 * total) * np.array([1.0, 0.8, 0.62], np.float32)
-    img = cv2.resize(img, (W // 2, H // 2), interpolation=cv2.INTER_LINEAR)
-    # polvo en suspensión, solo visible dentro de los haces
-    D = dust()
-    sh = (W // 2) / 1080.0
-    lit = cv2.resize(sum(f[0] * st[0] for f, st in zip(fields, states)) if total > 0 else np.zeros((LH, LW), np.float32),
-                     (W // 2, H // 2))
-    if total > 0:
-        part = np.zeros((H // 2, W // 2), np.float32)
-        for x, y, s_, ph, sp in zip(D["x"], D["y"], D["s"], D["ph"], D["sp"]):
-            px = (x + 14 * math.sin(t * 0.4 * sp + ph)) * sh
-            py = (y - t * 9 * sp + 10 * math.cos(t * 0.3 + ph)) % 1800 * sh + 40 * sh
-            b = lit[int(min(H // 2 - 1, max(0, py))), int(min(W // 2 - 1, max(0, px)))]
-            if b < 0.03:
-                continue
-            tw = 0.6 + 0.4 * math.sin(t * 3 * sp + ph * 3)
-            cv2.circle(part, (int(px * 16), int(py * 16)), max(1, int(s_ * sh * 16)), float(b * tw * 1.4), -1,
-                       cv2.LINE_AA, 4)
-        part = fx.blur(part, 0.6 * sh)
-        img += part[..., None] * np.array([1.0, 0.86, 0.7], np.float32)
-    # lentes de los fresnel y destellos anamórficos
-    for i, L in enumerate(LIGHTS):
-        inten, col = states[i]
-        if inten <= 0 or L["pos"][1] < 0:
-            continue
-        px, py = L["pos"][0] * sh, L["pos"][1] * sh
-        g = np.zeros((H // 2, W // 2), np.float32)
-        cv2.circle(g, (int(px), int(py)), int(30 * sh), 1.0, -1, cv2.LINE_AA)
-        core = fx.blur(g, 3 * sh) * 1.6 + fx.soft_blur(g, 40 * sh) * 0.9 + fx.soft_blur(g, 120 * sh) * 0.35
-        img += core[..., None] * col * inten
-        st = np.zeros((H // 2, W // 2), np.float32)
-        cv2.ellipse(st, (int(px), int(py)), (int(520 * sh), int(3 * sh)), 0, 0, 360, 1.0, -1, cv2.LINE_AA)
-        st = fx.blur(st, 4 * sh)
-        img += st[..., None] * np.array([1.0, 0.72, 0.5], np.float32) * inten * 0.55
-    img = cv2.resize(img, (W, H), interpolation=cv2.INTER_LINEAR)
-    if cam != 1.0:
-        img = fx.affine(img, cam, cx=cam_c[0] * S, cy=cam_c[1] * S, border=cv2.BORDER_REFLECT)
-    return img, states
-
-
-# ------------------------------------------------------------------ pleca / logo en escena
-@lru_cache(None)
-def pleca_std():
-    return build_pleca(620 * S)
-
-
-@lru_cache(None)
-def pleca_hi():
-    return build_pleca(2400 if not PREVIEW else 1400)
-
-
-def draw_pleca(frame, cx, cy, scale=1.0, opacity=1.0, glint=None, logo_reveal=1.0, glow=0.0, P=None, rot_y=0.0,
-               rot_x=0.0, light=1.0):
-    P = P or pleca_std()
-    rgb = P["rgb"].copy()
-    a = P["a"] * opacity
-    if logo_reveal < 1.0:
-        w = P["w"]
-        xs = np.linspace(0, 1, w, dtype=np.float32)[None, :]
-        lx0 = (P["w"] - P["pw"] * LOGO_IN_PLECA) / 2 / w
-        lx1 = 1 - lx0
-        edge = lx0 + (lx1 - lx0 + 0.08) * logo_reveal
-        m = clamp01((edge - xs) / 0.06)
-        lg = P["logo"] * m
-        rgb = np.ones_like(rgb) * (1 - lg[..., None]) + PINK * lg[..., None]
-    if glint is not None:
-        hh, ww = a.shape
-        yy, xx = np.mgrid[0:hh, 0:ww].astype(np.float32)
-        d = (xx + yy * 0.6) / (ww + hh * 0.6)
-        band = np.exp(-((d - glint) / 0.035) ** 2) * 0.55
-        rgb = rgb + band[..., None] * (1 - P["logo"][..., None] * 0.6)
-    lay = np.dstack([rgb, a])
-    if glow > 0:
-        g = fx.soft_blur(np.ascontiguousarray(a), 40 * S)
-        lay_g = np.dstack([np.ones_like(rgb) * np.array([1, 0.85, 0.92], np.float32), g * glow])
-        frame = place_layer(frame, lay_g, cx, cy, scale, rot_y, rot_x)
-    return place_layer(frame, lay, cx, cy, scale, rot_y, rot_x, light=light)
-
-
-def pleca_frame(cx, cy, scale=1.0, P=None):
-    """Pleca transformada al cuadro completo: (rgb, alfa)."""
-    P = P or pleca_std()
-    M = np.array([[scale, 0, cx - P["w"] / 2 * scale], [0, scale, cy - P["h"] / 2 * scale]], np.float32)
-    rgb = cv2.warpAffine(P["rgb"], M, (W, H), flags=cv2.INTER_LINEAR, borderValue=(1, 1, 1))
-    a = cv2.warpAffine(P["a"], M, (W, H), flags=cv2.INTER_LINEAR)
-    return rgb, a
-
-
-def light_cut(frame, cx, cy, dt):
-    """Corte de luz anamórfico horizontal al golpe de la claqueta (sin círculos)."""
-    if dt < 0 or dt > 0.7:
-        return frame
-    grow = ease_out(dt / 0.16, 3)
-    k = math.exp(-dt / 0.22)
-    yy = (np.arange(H, dtype=np.float32) - cy)[:, None]
-    xx = (np.arange(W, dtype=np.float32) - cx)[None, :]
-    half = 40 * S + W * 0.75 * grow
-    hx = np.exp(-(xx / half) ** 2 * 2.2)
-    core = np.exp(-(yy / (3.0 * S)) ** 2) * hx
-    soft = np.exp(-(yy / (26 * S)) ** 2) * hx * 0.35
-    col = np.array([1.0, 0.92, 0.86], np.float32)
-    return frame + (core * 1.4 + soft)[..., None] * col * k
-
-
-def shockwave(frame, cx, cy, dt, strength=1.0):
-    if dt < 0 or dt > 0.6:
-        return frame
-    r = (60 + 1100 * ease_out(dt / 0.6, 3)) * S
-    th = (40 * (1 - dt / 0.6) + 6) * S
-    m = np.zeros((H // 4, W // 4), np.float32)
-    cv2.circle(m, (int(cx / 4), int(cy / 4)), int(r / 4), 1.0, max(1, int(th / 4)), cv2.LINE_AA)
-    m = cv2.resize(fx.blur(m, th / 10), (W, H))
-    k = (1 - dt / 0.6) ** 2 * 0.8 * strength
-    return frame + m[..., None] * PINK * k + m[..., None] * 0.25 * k
-
-
-# ------------------------------------------------------------------ secuencias claqueta → pleca
-CLAP_C = (540, 1190)  # centro de la claqueta en diseño
-CLAP_SCALE = 1.22  # claqueta grande, completa en cuadro
-PLECA_C = (540, 960)
-
-
-def clapper_sequence(t, tc, ons, offs, intro=True):
-    """Claqueta en el plató, cierra en `tc` y se transforma en la pleca."""
-    dt = t - tc
-    surge = 0.4 * env_hit(t, tc, 0.0, 0.22)
-    if intro:
-        cam = 1.0 + 0.10 * ease_in_out(lin(t, 0.0, tc), 2) + 0.03 * ease_out(lin(t, tc, tc + 1.6))
-    else:
-        cam = 1.06 + 0.06 * ease_out(lin(t, T_END, tc)) + 0.03 * ease_out(lin(t, tc, tc + 2.5))
-    img, states = studio(t, ons, offs, surge, cam=cam)
-    s = S
-    lightk = 0.10 * (states[0][0] + states[1][0]) + 0.85 * states[2][0]
-    lightk = min(1.25, lightk) * (1 + surge * 0.4)
-    # ángulo de la barra
-    if intro:
-        open_t0, open_t1 = fr(1.05), fr(1.40)
-        close_t0 = tc - 4 / FPS
-    else:
-        open_t0, open_t1 = T_END - 0.3, T_END + 0.05
-        close_t0 = tc - 4 / FPS
-    def ang_at(tt):
-        if tt >= tc:
-            return 0.0
-        if tt >= close_t0:
-            return 32.0 * (1 - ease_in((tt - close_t0) / (tc - close_t0), 2.4))
-        a = 32.0 * ease_out((tt - open_t0) / (open_t1 - open_t0), 3) if tt >= open_t0 else 0.0
-        if tt > open_t1:
-            a += 1.2 * math.sin((tt - open_t1) * 9) * math.exp(-(tt - open_t1) * 2)
-        return a
-    ang = ang_at(t)
-    blur_steps = 5 if close_t0 <= t < tc + 0.5 / FPS and dt < 0 else 1
-    floaty = 10 * math.sin(t * 1.3) * s
-    if dt < 0 or intro:
-        rot_y = (-10 + 6 * ease_in_out(lin(t, 0, tc))) if intro else -8 + 8 * lin(t, T_END, tc)
-        rise = (1 - ease_out(lin(t, T_ON - 0.1, T_ON + 0.7), 3)) * 90 * s if intro else (1 - ease_out(lin(t, T_END, T_END + 0.5))) * 120 * s
-        lay, pad, oy = clapper_layer(ang, blur_steps, ang_at(t - 1 / FPS))
-        lay = lay.copy()
-        gy = np.linspace(1.0, 0.0, lay.shape[0], dtype=np.float32)[:, None, None]
-        gx = np.linspace(-1.0, 1.0, lay.shape[1], dtype=np.float32)[None, :, None]
-        lay[..., :3] *= (0.62 + 0.55 * gy ** 1.5) * (1 - 0.12 * gx ** 2)
-        cx, cy = CLAP_C[0] * s, CLAP_C[1] * s + floaty + rise
-        anchor = (pad + CL_W * s / 2, oy + CL_BH * s / 2 - 70 * s)
-        img = place_layer(img, lay, cx, cy - 70 * s, scale=cam * CLAP_SCALE, rot_y=rot_y, rot_x=4, light=lightk,
-                          anchor=anchor)
-        if dt >= 0:  # el golpe: destello y corte de luz, y pasamos directo al material
-            img = light_cut(img, cx, cy - 330 * s, dt)
-            img += 0.6 * np.array([1.0, 0.9, 0.86], np.float32)
-        return img
-    # --- tras el golpe: la claqueta cae y la pleca SOMOS se libera y avanza al centro
-    rot_end = -4.0 if intro else 0.0
-    board_cy = CLAP_C[1] * s + floaty
-    pb = ease_in(dt / 0.5, 2)
-    if pb < 0.98:
-        lay, pad, oy = closed_plain_clapper()
-        vb = int(pb * 160 * s)
-        if vb > 2:
-            lay = np.dstack([fx.box_blur_v(lay[..., :3], vb), fx.box_blur_v(lay[..., 3], vb)])
-        anchor = (pad + CL_W * s / 2, oy + CL_BH * s / 2 - 70 * s)
-        img = place_layer(img, lay, CLAP_C[0] * s, board_cy - 70 * s + 1150 * s * pb, scale=cam * (1 - 0.06 * pb),
-                          rot_y=rot_end, rot_x=4 + 18 * pb, light=lightk * (1 - 0.5 * pb), opacity=1 - pb ** 2,
-                          anchor=anchor)
-    q = ease_out(dt / 0.45, 3)
-    qs = ease_out_back(dt / 0.50, 1.5)
-    k0 = BOARD_PLECA_W / 620.0
-    grow = 1.0 + 0.04 * ease_out(lin(t, tc + 0.4, tc + 1.6 if intro else tc + 3.0), 2)
-    sc = cam * (k0 + (1 - k0) * qs) * grow
-    cx = CLAP_C[0] * s
-    cy = board_cy + (PLECA_C[1] * s - board_cy) * q
-    gl = None
-    g0 = tc + (0.75 if intro else 1.05)
-    if g0 <= t <= g0 + 0.55:
-        gl = -0.1 + 1.2 * ease_in_out((t - g0) / 0.55, 2)
-    glow = 0.10 + 0.25 * env_hit(t, tc, 0, 0.3)
-    if not intro and offs:
-        glow += 0.30 * ease_out(lin(t, offs[0], offs[0] + 0.4), 2)
-    img = draw_pleca(img, cx, cy, sc, glint=gl, glow=glow,
-                     rot_y=rot_end * (1 - q), rot_x=4 * (1 - q), light=lightk + (1 - lightk) * ease_out(dt / 0.12, 2))
-    if 0 <= dt < 0.22:  # impulso de la pleca hacia cámara
-        img = fx.zoom_blur(img, 0.10 * (1 - dt / 0.22) ** 2, cx, cy)
-    img = light_cut(img, cx, cy, dt)
-    img += ((0.55 if intro else 0.35) * env_hit(t, tc, 0, 0.05)) * np.array([1.0, 0.9, 0.86], np.float32)
-    return img
 
 
 # ------------------------------------------------------------------ material
@@ -708,11 +234,48 @@ def montage(t, fi):
 
 
 # ------------------------------------------------------------------ escena completa
+def tv_on_pre(t):
+    """Antes del drop: un punto de luz que calienta y se estira en una línea (reverso del apagado)."""
+    img = np.zeros((H, W, 3), np.float32)
+    if t < T_DOT:
+        return img
+    if t < T_LINE:
+        q = ease_out(lin(t, T_DOT, T_DOT + 0.35), 2)
+        g = np.zeros((H, W), np.float32)
+        cv2.circle(g, (W // 2, H // 2), max(1, int(7 * S * q)), 1.0, -1, cv2.LINE_AA)
+        pulse = 1 + 0.12 * math.sin((t - T_DOT) * 18) * (1 - lin(t, T_DOT, T_LINE))
+        g = fx.blur(g, 3 * S) * 1.6 + fx.soft_blur(g, 30 * S) * 0.8
+        return img + g[..., None] * q * pulse
+    p = ease_out(lin(t, T_LINE, T_LINE + 0.30), 3)
+    tens = ease_in(lin(t, T_LINE + 0.6, T_OPEN), 2)  # en el silencio la línea se tensa
+    return img + streak(W / 2, H / 2, (8 + 520 * p + 60 * tens) * S, (2.0 + 1.6 * tens) * S, 1.2 + 0.5 * tens)
+
+
+def tv_on(img, u):
+    """En el drop: la línea se abre verticalmente a la imagen (reverso exacto de `tv_off`)."""
+    D = 0.16
+    if u >= D:
+        return img * (1 + 0.45 * math.exp(-(u - D) / 0.10))
+    q = ease_out(u / D, 2.6)
+    sy = max(2.0 / H, q)
+    sx = 1 + 0.06 * (1 - q)
+    hh, ww = max(2, int(H * sy)), int(W * sx)
+    sq = cv2.resize(img, (ww, hh), interpolation=cv2.INTER_AREA) * (1 + 1.2 * (1 - q))
+    out = np.zeros_like(img)
+    x0, y0 = (W - ww) // 2, (H - hh) // 2
+    xa, xb = max(0, x0), min(W, x0 + ww)
+    out[y0:y0 + hh, xa:xb] = sq[:, xa - x0:xb - x0]
+    return out + streak(W / 2, H / 2, W * 0.6, 3 * S, 0.8 * (1 - q))
+
+
 def scene(t, fi):
-    if t <= T_CLAP1 + 1e-6:
-        return clapper_sequence(t, T_CLAP1, T_LIGHTS, None, intro=True)
+    if t < T_OPEN:
+        return tv_on_pre(t)
     if t < T_END:
-        return montage(t, fi)
+        img = montage(t, fi)
+        if t - T_OPEN < 0.5:
+            img = tv_on(img, t - T_OPEN)
+        return img
     return ending(t, fi)
 
 
@@ -875,7 +438,7 @@ def hit_env(t, decay=0.16):
 
 def post(img, t, fi):
     e = hit_env(t)
-    if e > 0.02 and not (T_CLAP1 < t < T_END):  # sacudida solo en la claqueta y en el logo, nunca en el material
+    if e > 0.02 and not (T_OPEN <= t < T_END):  # sacudida solo en el logo, nunca en el material
         amp = 12 * S * e
         sx = amp * fx.hash_noise(11, t, 9)
         sy = amp * fx.hash_noise(29, t, 11)
