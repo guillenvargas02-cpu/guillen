@@ -213,8 +213,8 @@ def build():
 
     # --- intro: la TV vieja se enciende (reverso del apagado del cierre)
     add(tv_on_sound(T.T_OPEN - T.T_DOT), T.T_DOT, 0.8)
-    add(whoosh(0.32, 400, 5000, 0, 0, 0.6, 1.0), T.T_LINE - 0.06, 0.28)  # el punto se estira en línea
-    add(reverse_swell(0.45), T.T_OPEN - 0.45, 0.6)
+    add(whoosh(0.22, 500, 7000, 0, 0, 0.5, 1.0), T.T_LINE - 0.08, 0.32)  # el punto se dispara en línea
+    add(reverse_swell(0.40), T.T_OPEN - 0.40, 0.6)
     add(boom(2.0, 64, 32, 0.85), T.T_OPEN, 0.6)
     add(stereo(hp(noise(0.2), 1500) * np.exp(-tt(0.2) / 0.05) * 0.25, 0, 0.5), T.T_OPEN, 0.6)  # chispazo de estática
 

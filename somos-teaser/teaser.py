@@ -40,10 +40,10 @@ def fr(t):
 # ------------------------------------------------------------------ tiempos — música: propuesta 3 (152 BPM, Re)
 # Tramo A de la canción: tensión → silencio → drop (77.27 s) = la TV se enciende y entra el material.
 # Tramo B: tensión → silencio → golpe (127.37 s) = SOMOS en solitario; cierra con la TV apagándose.
-T_OPEN = 72 / 30  # drop: la línea de luz se abre a la imagen
+T_OPEN = 36 / 30  # drop: la línea de luz se abre a la imagen
 MUSIC_A_IN = 77.27 - T_OPEN
-T_DOT = fr(0.25)  # aparece el punto de luz
-T_LINE = fr(1.00)  # el punto se estira en línea
+T_DOT = fr(0.10)  # aparece el punto de luz
+T_LINE = fr(0.40)  # el punto se estira en línea
 T_END = fr(97.87 - MUSIC_A_IN)  # fin del montaje (corte al tramo B de la canción)
 MUSIC_B_IN = 124.17
 T_CLAP2 = T_END + 24 / 30  # aparece MUY PRONTO (en el compás)
@@ -88,7 +88,7 @@ _SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy)) �
     ("C", 11.0, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # entrevista a dos
     ("D", 0.50, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # charla del equipo, de pie
     ("J", 6.40, "cut", (1.06, 1.14, 0.55, 0.5, 0, 0)),      # invitado tras la cámara
-    ("K", 0.30, "punch", (1.04, 1.10, 0.5, 0.5, 0, 0)),     # el set con el softbox
+    ("G", 2.70, "punch", (1.04, 1.10, 0.5, 0.55, 0, 0)),    # conductor e invitado conversan, cámara en primer plano
     ("B", 14.6, "flash", (1.08, 1.18, 0.5, 0.42, 0, 0)),    # el programa en pantalla
 ]
 EDL = [(T_OPEN if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else m2t(_CUTS[k + 1]),
@@ -235,27 +235,27 @@ def montage(t, fi):
 
 # ------------------------------------------------------------------ escena completa
 def tv_on_pre(t):
-    """Antes del drop: un punto de luz que calienta y se estira en una línea (reverso del apagado)."""
+    """Antes del drop: un punto de luz que aparece de golpe y se dispara en una línea (reverso del apagado)."""
     img = np.zeros((H, W, 3), np.float32)
     if t < T_DOT:
         return img
     if t < T_LINE:
-        q = ease_out(lin(t, T_DOT, T_DOT + 0.35), 2)
+        q = ease_out_back(lin(t, T_DOT, T_DOT + 0.12), 2.2)
         g = np.zeros((H, W), np.float32)
-        cv2.circle(g, (W // 2, H // 2), max(1, int(7 * S * q)), 1.0, -1, cv2.LINE_AA)
-        pulse = 1 + 0.12 * math.sin((t - T_DOT) * 18) * (1 - lin(t, T_DOT, T_LINE))
-        g = fx.blur(g, 3 * S) * 1.6 + fx.soft_blur(g, 30 * S) * 0.8
-        return img + g[..., None] * q * pulse
-    p = ease_out(lin(t, T_LINE, T_LINE + 0.30), 3)
-    tens = ease_in(lin(t, T_LINE + 0.6, T_OPEN), 2)  # en el silencio la línea se tensa
-    return img + streak(W / 2, H / 2, (8 + 520 * p + 60 * tens) * S, (2.0 + 1.6 * tens) * S, 1.2 + 0.5 * tens)
+        cv2.circle(g, (W // 2, H // 2), max(1, int(8 * S * q)), 1.0, -1, cv2.LINE_AA)
+        g = fx.blur(g, 3 * S) * 1.7 + fx.soft_blur(g, 34 * S) * 0.9
+        return img + g[..., None] * min(1.0, q)
+    p = fx.ease_out_expo(lin(t, T_LINE, T_LINE + 0.14))
+    tens = ease_in(lin(t, T_LINE + 0.25, T_OPEN), 2)  # en el silencio la línea se tensa
+    flick = 1 + 0.06 * math.sin(t * 110) * tens
+    return img + streak(W / 2, H / 2, (10 + 540 * p + 60 * tens) * S, (2.0 + 1.8 * tens) * S, (1.25 + 0.6 * tens) * flick)
 
 
 def tv_on(img, u):
     """En el drop: la línea se abre verticalmente a la imagen (reverso exacto de `tv_off`)."""
-    D = 0.16
+    D = 0.11
     if u >= D:
-        return img * (1 + 0.45 * math.exp(-(u - D) / 0.10))
+        return img * (1 + 0.45 * math.exp(-(u - D) / 0.07))
     q = ease_out(u / D, 2.6)
     sy = max(2.0 / H, q)
     sx = 1 + 0.06 * (1 - q)
