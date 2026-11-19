@@ -1,25 +1,22 @@
 # Teaser SOMOS — programa de entrevistas
 
-Teaser vertical 4K (2160×3840, 30 fps, 35 s) con estética oscura y misteriosa.
+Teaser vertical 4K (2160×3840, 30 fps, ~30 s) con estética oscura y misteriosa.
 
 ## Estructura (segundos)
 | Tiempo | Qué pasa | Audio |
 |---|---|---|
-| 0.0 – 5.5 | Plató a oscuras; 3 reflectores de tungsteno viejos se encienden en los golpes de la música | clunk de breaker + zumbido de balastro |
-| 5.5 | **Hook**: la claqueta (blanco/negro, solo SOMOS en la pizarra) corta; cae y la pleca SOMOS avanza al centro con un corte de luz anamórfico | claqueta de madera + impacto |
-| 6.8 – 7.2 | Entramos atravesando la primera **O** de SOMOS | whoosh |
-| 7.2 – 19.0 | Montaje 1 al compás (cortes 1.72 / 0.86 s, redoble de 0.21 s), cortinilla con la pleca | whooshes, zaps |
-| 19.0 – 22.4 | Quiebre: cámara lenta, oscuro (invitado tras cámara → pantalla del switcher) | risas lejanas filtradas |
-| 22.4 – 30.3 | Montaje 2: escalada, estrobo con la pleca en el golpe fuerte | |
-| 30.3 – 32.5 | Línea de luz → cuadro aparte **MUY PRONTO** (suspenso) | riser, grave en Fa |
-| 32.5 – 34.5 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Fa–Do, ticks, destello |
-| 34.55 – 35.0 | Salida: se apaga como televisor viejo | whine + pop eléctrico |
+| 0.0 – 3.57 | Plató a oscuras; todos los reflectores encienden juntos; claqueta grande (blanco/negro, solo SOMOS) se abre y espera en el silencio | clunk + zumbido de balastro |
+| 3.57 | **Hook**: la claqueta cierra en el drop y cortamos directo al material | claqueta + impacto |
+| 3.57 – 24.17 | Montaje de 23 tomas, cada momento usado una sola vez, cortes en los golpes (152 BPM), se acelera al final. Transiciones limpias: corte, flash, acercamiento, fuga de luz | acentos discretos |
+| 24.17 – 27.37 | Línea de luz → cuadro aparte **MUY PRONTO** → silencio | grave en Re |
+| 27.37 – 29.47 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
+| 29.47 – 29.93 | Salida: se apaga como televisor viejo | whine + pop eléctrico |
 
 Marca (Manual de identidad 2026): rosa cívico #E4007C; logo vectorial extraído del manual; sobre fondo oscuro se usa la
 pleca blanca (pág. 16–17, 57); nunca blanco sobre rosa ni el logo rotado/recoloreado. Texto: Hind Siliguri
 (secundaria); "MUY PRONTO" en blanco/negro.
 
-Música: propuesta 1 (desde 2.30 s). Material: 10 tomas del set (B = IMG_8114 solo la parte de la pantalla).
+Música: propuesta 3 (152 BPM): tramo 73.70–97.87 s y tramo 124.17 s→ (golpe en 127.37 s). Material: 10 tomas del set (B = IMG_8114 solo la parte de la pantalla).
 
 ## Render
 ```bash

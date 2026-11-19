@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Diseño sonoro y mezcla del teaser SOMOS.
 
-Música: propuesta 1 desde 2.30 s (los golpes de su intro = encendido de los reflectores).
+Música: propuesta 3 (152 BPM, Re). Tramo A (tensión → silencio → drop = claqueta) y tramo B
+(tensión → silencio → golpe = SOMOS).
 Efectos sintetizados: clunk de reflector viejo + zumbido de balastro, claqueta, whooshes, glitch, riser, impacto.
 Uso: python3 sfx.py   -> renders/audio.wav (48 kHz estéreo, -14 LUFS)
 """
@@ -16,7 +17,7 @@ import teaser as T
 SR = 48000
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "renders"
-MUSIC = ROOT / "assets" / "music" / "propuesta_teaser_1.m4a"
+MUSIC = ROOT / "assets" / "music" / "propuesta_teaser_3.m4a"
 CLIP_J = Path("/root/.claude/uploads/55edaf88-889f-5488-977a-7b311e9e3b41/a1e80d0a-IMG_8111.MOV")
 rng = np.random.default_rng(7)
 
@@ -182,11 +183,11 @@ def reverse_swell(d=0.6):
 
 
 def sting(d=3.2):
-    """Acorde del logo: Fa-Do (quintas) con ataque de campana y cola larga."""
+    """Acorde del logo: Re-La (quintas) con ataque de campana y cola larga."""
     t = tt(d)
     y = np.zeros_like(t)
-    for f, a, dec in ((87.31, 0.30, 1.6), (174.61, 0.22, 1.4), (349.23, 0.16, 1.2), (523.25, 0.12, 1.0),
-                      (698.46, 0.09, 0.9), (1046.5, 0.06, 0.7), (2093.0, 0.03, 0.4)):
+    for f, a, dec in ((73.42, 0.30, 1.6), (146.83, 0.22, 1.4), (293.66, 0.16, 1.2), (440.0, 0.12, 1.0),
+                      (587.33, 0.09, 0.9), (880.0, 0.06, 0.7), (1760.0, 0.03, 0.4)):
         for det in (-0.6, 0.6):
             y += np.sin(2 * np.pi * (f + det) * t) * a * np.exp(-t / dec)
     y *= 1 - np.exp(-t / 0.004)
@@ -249,89 +250,67 @@ def build():
         e = min(N, k + len(x))
         mix[k:e] += x[: e - k] * gain
 
-    # --- música
+    # --- música: tramo A + tramo B
     mus = load_music()
-    m0 = int(T.MUSIC_OFFSET * SR)
-    m = mus[m0:m0 + N].copy()
-    if len(m) < N:
-        m = np.concatenate([m, np.zeros((N - len(m), 2))])
     t = np.arange(N) / SR
-    # final: tras la segunda claqueta, filtro que cierra y desvanece
-    kf = int(T.T_CLAP2 * SR)
-    lpm = np.stack([lp(m[:, c], 420, 4) for c in (0, 1)], 1)
-    x = np.clip((t - T.T_CLAP2) / 1.4, 0, 1)[:, None]
+    ka, kb = int(T.MUSIC_A_IN * SR), int(T.T_END * SR)
+    A = mus[ka:ka + kb].copy()
+    fo = int(0.012 * SR)
+    A[-fo:] *= np.linspace(1, 0, fo)[:, None]
+    m = np.zeros((N, 2))
+    m[:len(A)] = A
+    kbin = int(T.MUSIC_B_IN * SR)
+    B = mus[kbin:kbin + (N - kb)].copy()
+    B[:fo] *= np.linspace(0, 1, fo)[:, None]
+    m[kb:kb + len(B)] += B
+    # tras el golpe de SOMOS: filtro que cierra y se desvanece
+    lpm = np.stack([lp(m[:, c], 480, 4) for c in (0, 1)], 1)
+    x = np.clip((t - T.T_LOGO - 0.3) / 1.2, 0, 1)[:, None]
     m = m * (1 - x) + lpm * x
-    fade = np.clip(1 - (t - (T.T_CLAP2 + 0.4)) / (T.TOTAL - 0.25 - (T.T_CLAP2 + 0.4)), 0, 1) ** 1.6
-    m *= np.where(t > T.T_CLAP2 + 0.4, fade, 1.0)[:, None]
-    # ducking ligero bajo los golpes de claqueta
+    fade = np.clip(1 - (t - (T.T_LOGO + 0.5)) / (T.TV_END - (T.T_LOGO + 0.5)), 0, 1) ** 1.5
+    m *= np.where(t > T.T_LOGO + 0.5, fade, 1.0)[:, None]
     mix += m * 0.92
 
-    # --- intro: tono de sala + reflectores
-    room = stereo(lp(noise(T.T_M1 + 0.5), 900) * 0.006, 0, 0.6)
-    room[:, :] *= np.minimum(1, np.arange(len(room))[:, None] / (0.4 * SR))
+    # --- intro: tono de sala, todos los reflectores encienden juntos, claqueta en el drop
+    room = stereo(lp(noise(T.T_CLAP1 + 0.3), 900) * 0.006, 0, 0.6)
     add(room, 0.0)
-    for i, tl in enumerate(T.T_LIGHTS):
-        add(clunk(1.0 + 0.15 * i), tl - 0.004, 0.55)
-        add(hum(T.T_M1 + 0.3 - tl, 0.35, 0.45, 0.10 - 0.02 * i, 1.0 + 0.004 * i), tl + 0.02, 1.0)
-    # claqueta 1
-    add(stereo(bp(noise(0.5), 300, 2500) * np.exp(-tt(0.5) / 0.15) * 0.08, 0.2), 3.92)  # roce al abrir
-    add(clap_sound(), T.T_CLAP1 - 0.003, 0.75)
-    add(boom(2.0, 64, 32, 0.85), T.T_CLAP1, 0.7)
-    add(whoosh(0.30, 2500, 600, -0.3, 0.3, 0.2, 0.5), T.T_CLAP1 + 0.05, 0.35)  # el pizarrón cae
-    # zoom a través de la O
-    add(whoosh(0.55, 250, 7000, 0, 0, 0.85, 1.0), T.T_ZOOM0 - 0.1, 0.55)
+    add(clunk(1.25), T.T_ON - 0.004, 0.7)
+    add(clunk(0.9), T.T_ON + 0.012, 0.35)
+    add(hum(T.T_CLAP1 + 0.25 - T.T_ON, 0.25, 0.2, 0.10), T.T_ON + 0.02, 1.0)
+    add(stereo(bp(noise(0.4), 300, 2500) * np.exp(-tt(0.4) / 0.12) * 0.08, 0.2), T.fr(1.05))  # la barra se abre
+    add(reverse_swell(0.45), T.T_CLAP1 - 0.45, 0.5)
+    add(clap_sound(), T.T_CLAP1 - 0.003, 0.85)
+    add(boom(2.0, 64, 32, 0.85), T.T_CLAP1, 0.6)
 
-    # --- transiciones del montaje
-    for i, (st, en, clip, src, sp, tin, mot) in enumerate(T.EDL):
-        if tin == "whip":
-            add(whoosh(0.32, 500, 5000, 0.7, -0.7, 0.45, 1.0), st - 0.16, 0.32)
-        elif tin == "zoom":
-            add(whoosh(0.34, 300, 6000, 0, 0, 0.5, 1.0), st - 0.17, 0.32)
-        elif tin == "glitch":
-            add(zap(0.12, i), st - 0.03, 0.45)
-        elif tin == "logo":
-            add(whoosh(0.70, 400, 6000, 0.8, -0.8, 0.5, 1.0), st - 0.35, 0.42)
-        elif tin == "flash":
-            add(stereo(hp(noise(0.25), 3000) * np.exp(-tt(0.25) / 0.05) * 0.25, 0, 0.5), st, 0.5)
-        elif tin == "strobe":
-            add(boom(1.6, 70, 36, 0.7), st, 0.55)
-            for k in range(3):
-                add(zap(0.06, 40 + k), st + k * 0.066, 0.35)
-    # quiebre: risas del set, lejanas y filtradas (misterio)
-    try:
-        ja = load_clip_audio(CLIP_J, 6.2, T.T_M2 - T.T_BREAK + 0.2)
-        ja = np.stack([bp(ja[:, c], 350, 2600) for c in (0, 1)], 1)
-        ja = reverb(ja, 2.2, 3000, 0.55)[: len(ja)]
-        env = np.minimum(1, np.arange(len(ja)) / (0.5 * SR)) * np.minimum(1, (len(ja) - np.arange(len(ja))) / (0.6 * SR))
-        add(ja * env[:, None], T.T_BREAK + 0.1, 0.35)
-    except Exception as e:  # noqa: BLE001
-        print("sin audio del clip J:", e)
-    add(boom(2.6, 46, 28, 0.6), T.T_BREAK, 0.45)
-    add(reverse_swell(0.55), T.T_M2 - 0.55, 0.8)
+    # --- montaje: acentos discretos en las transiciones
+    for i, (st, en, clip, src, sp, tin, mot) in enumerate(T.EDL[1:], 1):
+        if tin == "flash":
+            add(stereo(hp(noise(0.25), 3000) * np.exp(-tt(0.25) / 0.05) * 0.22, 0, 0.5), st, 0.45)
+        elif tin == "punch":
+            add(whoosh(0.22, 600, 4000, 0, 0, 0.7, 1.0), st - 0.15, 0.22)
+        elif tin == "leak":
+            add(whoosh(0.5, 300, 3000, -0.5, 0.5, 0.4, 1.0), st - 0.2, 0.22)
 
-    # --- cierre: línea de luz → apertura a blanco → SOMOS → TV vieja que se apaga
-    d_line = T.T_CLAP2 - T.T_END
+    # --- cierre: corte a la línea de luz → MUY PRONTO → silencio → SOMOS en solitario → TV vieja
+    add(boom(2.4, 58, 30, 0.8), T.T_END, 0.55)
+    d_line = T.T_SIL - T.T_END
     tl = tt(d_line)
-    whine = np.sin(2 * np.pi * (3900 + 500 * tl / d_line) * tl) * 0.018 * (tl / d_line) ** 1.5
-    add(stereo(whine, 0, 0.4), T.T_END, 1.0)  # zumbido eléctrico de la línea de luz
-    add(riser(d_line), T.T_END, 0.55)
-    add(reverse_swell(0.45), T.T_CLAP2 - 0.45, 0.7)
-    add(boom(3.0, 62, 28, 1.0), T.T_CLAP2, 0.85)  # golpe: MUY PRONTO
-    add(whoosh(0.35, 800, 8000, 0, 0, 0.15, 1.0), T.T_CLAP2 - 0.02, 0.35)
-    # suspenso bajo el texto: grave en Fa y aire filtrado
-    ds = T.T_LOGO - T.T_CLAP2
+    whine = np.sin(2 * np.pi * (3900 + 400 * tl / d_line) * tl) * 0.014 * np.minimum(1, tl / 0.3)
+    add(stereo(whine, 0, 0.4), T.T_END, 1.0)
+    add(whoosh(0.35, 800, 8000, 0, 0, 0.15, 1.0), T.T_CLAP2 - 0.03, 0.35)
+    add(boom(2.0, 62, 30, 0.6), T.T_CLAP2, 0.45)
+    ds = T.T_SIL - T.T_CLAP2
     ts = tt(ds)
-    drone = (np.sin(2 * np.pi * 43.65 * ts) * 0.35 + np.sin(2 * np.pi * 87.31 * ts) * 0.12 +
-             lp(noise(ds), 500) * 0.05) * np.minimum(1, ts / 0.2) * np.minimum(1, (ds - ts) / 0.15)
-    add(stereo(drone, 0, 0.5), T.T_CLAP2 + 0.05, 0.8)
-    add(reverse_swell(0.40), T.T_LOGO - 0.40, 0.8)
-    # SOMOS en solitario
-    add(boom(2.6, 70, 30, 0.8), T.T_LOGO, 0.6)
-    add(whoosh(0.40, 600, 9000, 0, 0, 0.12, 1.0), T.T_LOGO - 0.02, 0.45)  # se abre el obturador de luz
-    add(sting(), T.T_LOGO, 0.55)  # acorde brillante en Fa (tonalidad de la música)
+    drone = (np.sin(2 * np.pi * 36.71 * ts) * 0.35 + np.sin(2 * np.pi * 73.42 * ts) * 0.12 +
+             lp(noise(ds), 500) * 0.05) * np.minimum(1, ts / 0.2) * np.minimum(1, (ds - ts) / 0.1)
+    add(stereo(drone, 0, 0.5), T.T_CLAP2 + 0.03, 0.75)
+    add(reverse_swell(0.45), T.T_LOGO - 0.45, 0.8)
+    add(boom(2.6, 70, 30, 0.8), T.T_LOGO, 0.55)
+    add(whoosh(0.40, 600, 9000, 0, 0, 0.12, 1.0), T.T_LOGO - 0.02, 0.4)  # se abre el obturador de luz
+    add(sting(), T.T_LOGO, 0.5)  # acorde Re-La (tonalidad de la canción)
     for k in range(5):  # cada letra aterriza
         add(tick(1.0 + 0.12 * k), T.T_LOGO + 0.07 + 0.055 * k + 0.24, 0.5)
-    add(sparkle(), T.T_LOGO + 1.0, 0.35)  # destello sobre el logo
+    add(sparkle(), T.T_LOGO + 1.0, 0.3)
     add(tv_off_sound(), T.T_TV, 0.75)
 
     mix = mix[: int(T.TOTAL * SR)]

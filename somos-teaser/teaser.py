@@ -32,7 +32,7 @@ PREVIEW = os.environ.get("TEASER_PREVIEW") == "1"
 W, H = (1080, 1920) if PREVIEW else (2160, 3840)
 S = W / 1080.0  # px por unidad de diseño (diseño en 1080x1920)
 FPS = 30
-TOTAL = 35.0
+TOTAL = 898 / 30  # ≈29.93 s
 NFRAMES = int(round(TOTAL * FPS))
 
 
@@ -41,69 +41,65 @@ def fr(t):
     return round(t * FPS) / FPS
 
 
-# ------------------------------------------------------------------ tiempos (música desde 2.30 s)
-MUSIC_OFFSET = 2.30
-T_LIGHTS = [fr(0.32), fr(2.04), fr(3.76)]  # golpes de la intro = encendido de reflectores
-T_CLAP1 = fr(5.48)  # entra la batería
-T_ZOOM0, T_ZOOM1 = fr(6.78), fr(7.20)
-T_M1 = fr(7.20)
-T_BREAK = fr(18.99)
-T_M2 = fr(22.41)
-T_HUGE = fr(24.33)
-T_END = fr(30.30)
-T_CLAP2 = fr(31.18)
-T_TEXT = fr(32.05)
-T_OFF = fr(33.75)
+# ------------------------------------------------------------------ tiempos — música: propuesta 3 (152 BPM, Re)
+# Tramo A de la canción: 73.703 s → 97.870 s (tensión, silencio y drop en 77.27 s = golpe de la claqueta).
+# Tramo B: 124.17 s → final (tensión, silencio y golpe en 127.37 s = SOMOS en solitario).
+MUSIC_A_IN = 77.27 - 107 / 30
+T_ON = fr(0.40)  # todos los reflectores encienden juntos
+T_LIGHTS = [T_ON, T_ON, T_ON + 2 / FPS]
+T_CLAP1 = 107 / 30  # drop: la claqueta cierra y cortamos al material
+T_END = 725 / 30  # fin del montaje (corte al tramo B de la canción)
+MUSIC_B_IN = 124.17
+T_CLAP2 = 749 / 30  # aparece MUY PRONTO (en el compás)
+T_SIL = T_END + (126.83 - MUSIC_B_IN)  # silencio previo al golpe
+T_LOGO = 821 / 30  # golpe 127.37 s: SOMOS en solitario
+T_TV = fr(T_LOGO + 2.1)
+TV_END = T_TV + 0.42
 
-# Golpes para sacudida/aberración (tiempo, fuerza)
-HITS = [(T_CLAP1, 1.0), (fr(8.89), 0.45), (fr(12.33), 0.35), (fr(14.05), 0.3), (fr(15.74), 0.5),
-        (T_M2, 0.55), (T_HUGE, 1.0), (fr(27.77), 0.55), (T_CLAP2, 0.8), (fr(32.47), 0.8)]
 
-PRE, POST = 0.6, 0.6
-CORT = 0.22  # media duración de la cortinilla  # márgenes extraídos alrededor de cada fragmento
+def m2t(m):
+    """Tiempo de la canción (tramo A) → tiempo del video, redondeado a cuadro."""
+    return fr(m - MUSIC_A_IN)
+
+
+HITS = [(T_CLAP1, 0.7), (T_LOGO, 0.45)]
+
+PRE, POST = 0.3, 0.3  # márgenes extraídos alrededor de cada fragmento
 
 # ------------------------------------------------------------------ EDL
 # clips: A=IMG_8097 B=IMG_8114(solo pantalla) C=IMG_8115 D=IMG_8120 E=163428 F=163233 G=163217
 #        H=170555 I=171755 J=IMG_8111
-# (inicio, fin, clip, entrada, velocidad, transición de entrada, movimiento(z0, z1, cx, cy, dx, dy))
-EDL = [
-    # --- Montaje 1 (cortes en compases: 1.72 s / 0.86 s)
-    (T_M1, fr(8.89), "A", 0.30, 1.0, "zoomO", (1.30, 1.04, 0.5, 0.5, 0, 0)),
-    (fr(8.89), fr(9.76), "E", 2.40, 1.0, "flash", (1.10, 1.02, 0.6, 0.35, 0, 0)),
-    (fr(9.76), fr(10.63), "H", 1.20, 1.0, "whip", (1.08, 1.16, 0.45, 0.5, 0, 0)),
-    (fr(10.63), fr(11.48), "B", 11.2, 1.0, "zoom", (1.05, 1.18, 0.5, 0.42, 0, 0)),
-    (fr(11.48), fr(12.33), "D", 9.40, 1.0, "whip", (1.12, 1.04, 0.5, 0.45, 0, 0)),
-    (fr(12.33), fr(13.19), "G", 0.60, 1.0, "logo", (1.04, 1.12, 0.5, 0.6, 0, 0)),
-    (fr(13.19), fr(14.05), "A", 5.20, 1.0, "leak", (1.15, 1.06, 0.55, 0.45, 0, 0)),
-    # redoble: cortes de 0.21 s
-    (fr(14.05), fr(14.26), "C", 1.00, 1.0, "flash", (1.10, 1.14, 0.5, 0.5, 0, 0)),
-    (fr(14.26), fr(14.47), "F", 4.60, 1.0, "glitch", (1.10, 1.14, 0.5, 0.4, 0, 0)),
-    (fr(14.47), fr(14.68), "B", 13.0, 1.0, "cut", (1.25, 1.30, 0.5, 0.42, 0, 0)),
-    (fr(14.68), fr(14.89), "J", 1.20, 1.0, "flash", (1.05, 1.10, 0.5, 0.45, 0, 0)),
-    (fr(14.89), fr(15.10), "D", 10.6, 1.0, "glitch", (1.10, 1.14, 0.5, 0.5, 0, 0)),
-    (fr(15.10), fr(15.31), "E", 5.60, 1.0, "cut", (1.10, 1.14, 0.6, 0.3, 0, 0)),
-    (fr(15.31), fr(15.52), "G", 2.60, 1.0, "flash", (1.10, 1.16, 0.5, 0.6, 0, 0)),
-    (fr(15.52), fr(15.74), "H", 3.20, 1.0, "glitch", (1.20, 1.26, 0.45, 0.5, 0, 0)),
-    (fr(15.74), fr(17.07), "C", 4.70, 0.85, "zoom", (1.22, 1.08, 0.55, 0.5, 0, 0)),
-    (fr(17.07), T_BREAK, "F", 3.40, 1.0, "whip", (1.04, 1.12, 0.65, 0.35, 0, 0)),
-    # --- Quiebre: cámara lenta, oscuro, misterio
-    (T_BREAK, fr(20.71), "J", 6.40, 0.55, "dip", (1.10, 1.20, 0.55, 0.5, 0, 0)),
-    (fr(20.71), T_M2, "B", 12.2, 0.6, "leak", (1.10, 1.32, 0.5, 0.40, 0, 0)),
-    # --- Montaje 2: escalada
-    (T_M2, fr(23.06), "I", 1.00, 1.0, "flash", (1.18, 1.08, 0.45, 0.5, 0, 0)),
-    (fr(23.06), fr(23.71), "B", 14.4, 1.0, "whip", (1.10, 1.22, 0.5, 0.42, 0, 0)),
-    (fr(23.71), T_HUGE, "D", 1.20, 1.0, "glitch", (1.08, 1.16, 0.5, 0.45, 0, 0)),
-    (T_HUGE, fr(24.98), "C", 15.4, 1.0, "strobe", (1.16, 1.06, 0.5, 0.5, 0, 0)),
-    (fr(24.98), fr(25.40), "A", 9.20, 1.0, "whip", (1.10, 1.16, 0.55, 0.45, 0, 0)),
-    (fr(25.40), fr(25.84), "E", 7.00, 1.0, "flash", (1.06, 1.14, 0.6, 0.4, 0, 0)),
-    (fr(25.84), fr(26.49), "J", 2.40, 1.0, "zoom", (1.15, 1.05, 0.5, 0.45, 0, 0)),
-    (fr(26.49), fr(27.14), "G", 3.80, 1.0, "whip", (1.06, 1.16, 0.5, 0.6, 0, 0)),
-    (fr(27.14), fr(27.77), "C", 17.4, 1.0, "glitch", (1.10, 1.18, 0.5, 0.5, 0, 0)),
-    (fr(27.77), fr(28.42), "F", 6.20, 1.0, "flash", (1.20, 1.06, 0.6, 0.35, 0, 0)),
-    (fr(28.42), fr(29.07), "B", 15.2, 1.0, "zoom", (1.12, 1.30, 0.5, 0.42, 0, 0)),
-    (fr(29.07), fr(29.74), "H", 4.40, 1.0, "whip", (1.08, 1.18, 0.45, 0.5, 0, 0)),
-    (fr(29.74), T_END, "C", 19.0, 0.7, "glitch", (1.10, 1.30, 0.5, 0.5, 0, 0)),
+# Cada momento del material se usa una sola vez, a velocidad real. Cortes en los golpes de la canción.
+# Transiciones limpias (sin deformar a nadie): cut, flash, punch (acercamiento rápido), leak (fuga de luz).
+_CUTS = [77.30, 78.37, 79.16, 80.43, 81.22, 82.52, 83.57, 84.61, 85.40, 86.70, 87.75, 88.79, 89.84, 90.88,
+         91.67, 92.72, 93.74, 94.53, 95.71, 96.08, 96.50, 96.87, 97.41, 97.87]
+_SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy))
+    ("A", 0.20, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # paneo entre cámara y micrófonos
+    ("E", 2.60, "flash", (1.04, 1.10, 0.6, 0.35, 0, 0)),    # se revela la lámpara de globo
+    ("H", 0.50, "cut", (1.04, 1.10, 0.45, 0.5, 0, 0)),      # conductor tras la cámara
+    ("B", 11.0, "punch", (1.06, 1.14, 0.5, 0.42, 0, 0)),    # pantalla del switcher
+    ("D", 9.20, "leak", (1.04, 1.10, 0.5, 0.45, 0, 0)),     # equipo ajustando luces
+    ("A", 5.50, "cut", (1.10, 1.04, 0.55, 0.45, 0, 0)),     # conductor de perfil
+    ("G", 0.30, "flash", (1.04, 1.10, 0.5, 0.6, 0, 0)),     # visor de cámara en primer plano
+    ("F", 0.50, "punch", (1.04, 1.10, 0.5, 0.45, 0, 0)),    # set completo con softbox
+    ("C", 4.60, "flash", (1.06, 1.12, 0.55, 0.5, 0, 0)),    # el saludo
+    ("J", 0.30, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # conductor riendo
+    ("B", 14.2, "punch", (1.08, 1.16, 0.5, 0.42, 0, 0)),    # monitor + laptop
+    ("D", 0.50, "leak", (1.04, 1.10, 0.5, 0.45, 0, 0)),     # charla del equipo
+    ("C", 11.2, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # entrevista a dos
+    ("E", 7.20, "cut", (1.04, 1.10, 0.6, 0.4, 0, 0)),       # entra el productor
+    ("I", 1.50, "punch", (1.04, 1.12, 0.45, 0.5, 0, 0)),    # conductor tras cámara (otro ángulo)
+    ("G", 2.30, "flash", (1.04, 1.10, 0.5, 0.6, 0, 0)),     # llega el invitado
+    ("A", 9.30, "cut", (1.08, 1.14, 0.55, 0.45, 0, 0)),     # manos del conductor
+    ("J", 6.60, "leak", (1.06, 1.14, 0.55, 0.5, 0, 0)),     # invitado tras la cámara
+    ("F", 3.80, "flash", (1.06, 1.12, 0.65, 0.35, 0, 0)),   # lámparas
+    ("C", 14.5, "cut", (1.08, 1.12, 0.5, 0.5, 0, 0)),
+    ("B", 9.00, "punch", (1.10, 1.16, 0.55, 0.42, 0, 0)),
+    ("D", 13.5, "flash", (1.06, 1.12, 0.5, 0.45, 0, 0)),
+    ("C", 17.8, "cut", (1.08, 1.16, 0.5, 0.5, 0, 0)),
 ]
+EDL = [(T_CLAP1 if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else m2t(_CUTS[k + 1]),
+        c, src, 1.0, tin, mot) for k, (c, src, tin, mot) in enumerate(_SHOTS)]
 
 
 # ------------------------------------------------------------------ utilidades de recursos
@@ -524,7 +520,8 @@ def shockwave(frame, cx, cy, dt, strength=1.0):
 
 
 # ------------------------------------------------------------------ secuencias claqueta → pleca
-CLAP_C = (540, 1000)  # centro de la claqueta en diseño
+CLAP_C = (540, 1010)  # centro de la claqueta en diseño
+CLAP_SCALE = 1.28  # claqueta más grande
 PLECA_C = (540, 960)
 
 
@@ -542,7 +539,7 @@ def clapper_sequence(t, tc, ons, offs, intro=True):
     lightk = min(1.25, lightk) * (1 + surge * 0.4)
     # ángulo de la barra
     if intro:
-        open_t0, open_t1 = fr(3.92), fr(4.55)
+        open_t0, open_t1 = fr(1.05), fr(1.40)
         close_t0 = tc - 4 / FPS
     else:
         open_t0, open_t1 = T_END - 0.3, T_END + 0.05
@@ -559,9 +556,9 @@ def clapper_sequence(t, tc, ons, offs, intro=True):
     ang = ang_at(t)
     blur_steps = 5 if close_t0 <= t < tc + 0.5 / FPS and dt < 0 else 1
     floaty = 10 * math.sin(t * 1.3) * s
-    if dt < 0:
+    if dt < 0 or intro:
         rot_y = (-10 + 6 * ease_in_out(lin(t, 0, tc))) if intro else -8 + 8 * lin(t, T_END, tc)
-        rise = (1 - ease_out(lin(t, fr(3.4), fr(4.4)), 3)) * 70 * s if intro else (1 - ease_out(lin(t, T_END, T_END + 0.5))) * 120 * s
+        rise = (1 - ease_out(lin(t, T_ON - 0.1, T_ON + 0.7), 3)) * 90 * s if intro else (1 - ease_out(lin(t, T_END, T_END + 0.5))) * 120 * s
         lay, pad, oy = clapper_layer(ang, blur_steps, ang_at(t - 1 / FPS))
         lay = lay.copy()
         gy = np.linspace(1.0, 0.0, lay.shape[0], dtype=np.float32)[:, None, None]
@@ -569,7 +566,11 @@ def clapper_sequence(t, tc, ons, offs, intro=True):
         lay[..., :3] *= (0.62 + 0.55 * gy ** 1.5) * (1 - 0.12 * gx ** 2)
         cx, cy = CLAP_C[0] * s, CLAP_C[1] * s + floaty + rise
         anchor = (pad + CL_W * s / 2, oy + CL_BH * s / 2 - 70 * s)
-        img = place_layer(img, lay, cx, cy - 70 * s, scale=cam, rot_y=rot_y, rot_x=4, light=lightk, anchor=anchor)
+        img = place_layer(img, lay, cx, cy - 70 * s, scale=cam * CLAP_SCALE, rot_y=rot_y, rot_x=4, light=lightk,
+                          anchor=anchor)
+        if dt >= 0:  # el golpe: destello y corte de luz, y pasamos directo al material
+            img = light_cut(img, cx, cy - 300 * s, dt)
+            img += 0.6 * np.array([1.0, 0.9, 0.86], np.float32)
         return img
     # --- tras el golpe: la claqueta cae y la pleca SOMOS se libera y avanza al centro
     rot_end = -4.0 if intro else 0.0
@@ -605,35 +606,6 @@ def clapper_sequence(t, tc, ons, offs, intro=True):
     img = light_cut(img, cx, cy, dt)
     img += ((0.55 if intro else 0.35) * env_hit(t, tc, 0, 0.05)) * np.array([1.0, 0.9, 0.86], np.float32)
     return img
-
-
-def zoom_through(t, base_img):
-    """Entra a la escena atravesando la primera O de SOMOS."""
-    P = pleca_hi()
-    p = lin(t, T_ZOOM0, T_ZOOM1)
-    sc_std = 1.10 * (620 * S) / P["pw"]  # misma escala visual que la pleca estándar (cam≈1.1)
-    k = sc_std * (90.0 ** ease_in(p, 2.4))
-    hx, hy = P["hole"]
-    # el hueco se desplaza al centro del cuadro mientras entramos
-    cx0, cy0 = PLECA_C[0] * S, PLECA_C[1] * S
-    off_x = (hx - P["w"] / 2) * sc_std
-    off_y = (hy - P["h"] / 2) * sc_std
-    q = ease_in_out(p, 2)
-    tx = cx0 + off_x + (W / 2 - (cx0 + off_x)) * q
-    ty = cy0 + off_y + (H / 2 - (cy0 + off_y)) * q
-    M = np.array([[k, 0, tx - hx * k], [0, k, ty - hy * k]], np.float32)
-    rgb = cv2.warpAffine(P["rgb"], M, (W, H), flags=cv2.INTER_LINEAR)
-    a = cv2.warpAffine(P["a"], M, (W, H), flags=cv2.INTER_LINEAR)
-    hole = cv2.warpAffine(P["counter"], M, (W, H), flags=cv2.INTER_LINEAR)
-    bg = fx.zoom_blur(fx.affine(base_img, 1 + 0.6 * ease_in(p, 2), cx=tx, cy=ty, border=cv2.BORDER_REFLECT),
-                      0.25 * ease_in(p, 2), tx, ty)
-    out = fx.over(bg, rgb, a)
-    foot = footage_frame(0, t - T_M1)
-    reveal = smooth((k / sc_std - 1.5) / 5.0)
-    out = fx.over(out, foot, hole * reveal)
-    zb = 0.45 * math.sin(math.pi * p) ** 2
-    out = fx.zoom_blur(out, zb, W / 2, H / 2)
-    return out
 
 
 # ------------------------------------------------------------------ material
@@ -725,148 +697,34 @@ def light_leak(t, amount, phase=0.0):
     return col * amount
 
 
-def glitch(img_a, img_b, frame_idx, strength=1.0):
-    rng = np.random.RandomState(frame_idx * 7 + 3)
-    base = img_b if frame_idx % 2 == 0 else img_a
-    out = base.copy()
-    off = int((18 + 30 * rng.rand()) * S * strength)
-    out[..., 0] = np.roll(base[..., 0], off, axis=1)
-    out[..., 2] = np.roll(base[..., 2], -off, axis=1)
-    for _ in range(int(6 * strength)):
-        y0 = rng.randint(0, H - 40)
-        hh = int((20 + rng.rand() * 160) * S)
-        sx = int((rng.rand() - 0.5) * 220 * S * strength)
-        out[y0:y0 + hh] = np.roll(out[y0:y0 + hh], sx, axis=1)
-    if rng.rand() < 0.5:
-        y0 = rng.randint(0, H - 40)
-        out[y0:y0 + int(8 * S)] = PINK * 0.9
-    return out
-
-
-def cortinilla(t, tc, img_a, img_b):
-    """Cortinilla con barras rosa cívico y la pleca cruzando al centro."""
-    p = lin(t, tc - CORT, tc + CORT)
-    out = img_a if p < 0.5 else img_b
-    out = out.copy()
-    bars = 3
-    bh = H / bars
-    for k in range(bars):
-        d = k * 0.07
-        pin = fx.ease_out_expo(lin(p, 0.0 + d, 0.42 + d))
-        pout = fx.ease_in_expo(lin(p, 0.55 + d * 0.6, 0.92 + d * 0.6))
-        x0 = W * (1 - pin) - W * pout
-        if pin <= 0 or pout >= 1:
-            continue
-        y0, y1 = int(k * bh), int((k + 1) * bh)
-        xa, xb = int(max(0, x0)), int(min(W, x0 + W))
-        if xa < xb:
-            out[y0:y1, xa:xb] = PINK
-    pl = lin(p, 0.18, 0.86)
-    if 0 < pl < 1:
-        e = pl
-        xx = (1.0 - 2.0 * (0.5 + 0.5 * math.copysign(abs(2 * e - 1) ** 2.4, 2 * e - 1)))
-        speed = abs(2 * e - 1) ** 1.4
-        rgb, alpha = pleca_frame(W / 2 + xx * W * 0.9, H / 2, 1.0)
-        bl = int(speed * 160 * S)
-        if bl > 2:
-            rgb = fx.box_blur_h(rgb * alpha[..., None], bl)
-            alpha = fx.box_blur_h(alpha, bl)
-            rgb = rgb / np.maximum(alpha[..., None], 1e-4)
-        out = fx.over(out, rgb, alpha)
-    return out
-
-
 def montage(t, fi):
+    """Montaje con cortes limpios en los golpes de la canción (sin glitch ni desenfoques que deformen)."""
     i = slot_at(t)
     st, en, clip, src_in, speed, tin, mot = EDL[i]
     u = t - st
-    extra = 0.0
-    is_break = T_BREAK <= st < T_M2
-    if is_break:
-        extra = 0.55 + 0.9 * ease_in(lin(t, T_M2 - 0.45, T_M2), 2)
-    img = footage_frame(i, u, extra)
-    if is_break:
-        lum = fx.luminance(img)[..., None]
-        img = lum + (img - lum) * 0.5
-        img = np.clip((img - 0.035) * 1.12, 0, None)
-        img = img * (0.92 + 0.08 * math.sin(t * 31))
-        img *= ease_out(lin(t, T_BREAK, T_BREAK + 0.5), 2)
-    # transición de entrada del fragmento actual
-    prev = i - 1
+    img = footage_frame(i, u)
     if tin == "flash":
-        img = img + 0.75 * env_hit(t, st, 0, 0.065) * np.array([1.0, 0.94, 0.9], np.float32)
+        k = 0.85 if i == 0 else 0.55
+        img = img + k * env_hit(t, st, 0, 0.07) * np.array([1.0, 0.94, 0.9], np.float32)
     elif tin == "leak":
-        img = img + light_leak(t, (0.6 if is_break else 1.3) * env_hit(t, st, 0, 0.35), i)
-    elif tin == "whip" and u < 0.12:
-        p = u / 0.12
-        off = (1 - ease_out(p, 3)) * W * 0.6
-        img = fx.affine(img, 1.0, tx=off, border=cv2.BORDER_REFLECT)
-        img = fx.box_blur_h(img, (1 - p) * 220 * S)
-    elif tin == "zoom" and u < 0.16:
-        p = u / 0.16
-        img = fx.zoom_blur(fx.affine(img, 1 + 0.5 * (1 - ease_out(p, 3))), 0.35 * (1 - p))
-    elif tin == "glitch" and u < 0.10 and prev >= 0:
-        img_a = footage_frame(prev, t - EDL[prev][0])
-        img = glitch(img_a, img, fi, 1.0)
-    elif tin == "logo" and u < CORT and prev >= 0:
-        img_a = footage_frame(prev, t - EDL[prev][0])
-        img = cortinilla(t, st, img_a, img)
-    elif tin == "strobe" and u < 0.24:
-        k = int(u * FPS)
-        if k in (0, 1):
-            img = draw_pleca(np.zeros((H, W, 3), np.float32) + PINK, W / 2, H / 2, 1.25)
-        elif k == 3:
-            img = draw_pleca(np.zeros((H, W, 3), np.float32) + 0.01, W / 2, H / 2, 1.12)
-        elif k in (2, 4):
-            img = img + 0.6
-        elif k == 5:
-            img = img + PINK * 0.35
-    elif tin == "dip":
-        pass
-    # salida del fragmento: anticipa la transición del siguiente
-    nxt = i + 1
-    if nxt < len(EDL):
-        nst, ntin = EDL[nxt][0], EDL[nxt][5]
-        r = nst - t  # tiempo restante
-        if ntin == "whip" and r < 0.12:
-            p = 1 - r / 0.12
-            img = fx.affine(img, 1.0, tx=-ease_in(p, 3) * W * 0.6, border=cv2.BORDER_REFLECT)
-            img = fx.box_blur_h(img, p * 220 * S)
-        elif ntin == "zoom" and r < 0.14:
-            p = 1 - r / 0.14
-            img = fx.zoom_blur(fx.affine(img, 1 + 0.6 * ease_in(p, 2)), 0.35 * p)
-        elif ntin == "glitch" and r < 0.07:
-            img = glitch(img, footage_frame(nxt, t - nst), fi, 0.8)
-        elif ntin == "logo" and r < CORT:
-            img = cortinilla(t, nst, img, footage_frame(nxt, t - nst))
-        elif ntin == "flash" and r < 0.05:
-            img = img + 0.5 * (1 - r / 0.05)
-        elif ntin == "dip" and r < 0.35:
-            img = img * (1 - ease_in(1 - r / 0.35, 2))
-    if i == len(EDL) - 1:  # último fragmento: se apaga hacia el final
-        img = img * (1 - ease_in(lin(t, T_END - 0.25, T_END), 2))
+        img = img + light_leak(t, 0.9 * env_hit(t, st, 0, 0.30), i)
+    elif tin == "punch" and u < 0.22:  # acercamiento rápido que se asienta (solo escala)
+        img = fx.affine(img, 1 + 0.10 * (1 - ease_out(u / 0.22, 3)), border=cv2.BORDER_REFLECT)
+    if i == len(EDL) - 1:  # último fragmento: se apaga hacia la línea de luz
+        img = img * (1 - ease_in(lin(t, T_END - 0.20, T_END), 2))
     return img
-
-
 
 
 # ------------------------------------------------------------------ escena completa
 def scene(t, fi):
-    if t < T_CLAP1:
+    if t <= T_CLAP1 + 1e-6:
         return clapper_sequence(t, T_CLAP1, T_LIGHTS, None, intro=True)
-    if t < T_ZOOM0:
-        return clapper_sequence(t, T_CLAP1, T_LIGHTS, None, intro=True)
-    if t < T_ZOOM1:
-        base = clapper_sequence(t, T_CLAP1, T_LIGHTS, None, intro=True)
-        return zoom_through(t, base)
     if t < T_END:
         return montage(t, fi)
     return ending(t, fi)
 
 
 # ------------------------------------------------------------------ cierre: línea de luz → blanco → SOMOS → TV vieja que se apaga
-T_LOGO = fr(32.47)  # SOMOS en solitario
-T_TV = fr(34.55)
 LOGO_END_W = 700  # ancho del logo en el cierre (diseño)
 
 
@@ -949,29 +807,28 @@ def tv_off(img, u):
 
 def ending(t, fi):
     img = np.zeros((H, W, 3), np.float32)
-    if t < T_CLAP2:  # la línea de luz nace del negro
-        g = ease_out(lin(t, T_END, T_END + 0.6), 3)
-        p = lin(t, T_END, T_CLAP2)
-        inten = (0.25 + 1.0 * ease_in(p, 2)) * (1 + 0.07 * math.sin(t * 95))
-        return img + streak(W / 2, H / 2, (30 + 420 * g + 120 * p) * S, (1.6 + 1.2 * p) * S, inten)
-    if t < T_LOGO:  # cuadro aparte: MUY PRONTO, suspenso
+    if t < T_SIL:  # cuadro aparte: MUY PRONTO, suspenso
         dt = t - T_CLAP2
-        span = T_LOGO - T_CLAP2
+        span = T_SIL - T_CLAP2
+        if dt < 0:  # la línea crece (aún sin texto)
+            g = ease_out(lin(t, T_END, T_CLAP2), 3)
+            return img + streak(W / 2, H / 2, (60 + 480 * g) * S, 2.2 * S, 0.4 + 0.9 * g)
         trk = round(0.40 + 0.16 * lin(dt, 0, span), 3)
         txt = _text_big(trk)
         th = txt.shape[0]
-        opn = ease_out(lin(dt, 0.0, 0.28), 3) * (1 - ease_in(lin(dt, span - 0.22, span - 0.02), 3))
+        opn = ease_out(lin(dt, 0.0, 0.28), 3) * (1 - ease_in(lin(dt, span - 0.24, span), 3))
         hh = th * 0.62 * opn
         lay = txt.copy()
         yy = np.abs(np.arange(th, dtype=np.float32) - th / 2)[:, None]
         lay[..., 3] *= clamp01((hh - yy) / (3 * S))
-        flick = 1 + 0.05 * math.sin(t * 63) * (1 - lin(dt, 0, 0.6))
-        img = fx.paste(img, lay, W / 2 - lay.shape[1] / 2, H / 2 - th / 2, 0.95 * flick)
-        li = 1.6 * env_hit(t, T_CLAP2, 0, 0.12) + 0.18 + 1.4 * ease_in(lin(dt, span - 0.25, span), 2)
+        img = fx.paste(img, lay, W / 2 - lay.shape[1] / 2, H / 2 - th / 2, 0.95)
+        li = 1.6 * env_hit(t, T_CLAP2, 0, 0.12) + 0.18 + 1.2 * ease_in(lin(dt, span - 0.25, span), 2)
         half = (450 + 120 * (1 - opn)) * S
-        img = img + streak(W / 2, H / 2 - hh, half, 1.8 * S, li * 0.6 * (1 if opn > 0.02 else 0)) + \
-            streak(W / 2, H / 2 + hh, half, 1.8 * S, li * 0.6)
+        img = img + streak(W / 2, H / 2 - hh, half, 1.8 * S, li * 0.6) + streak(W / 2, H / 2 + hh, half, 1.8 * S, li * 0.6)
         return img
+    if t < T_LOGO:  # silencio: solo la línea, tensa, antes del golpe
+        p = lin(t, T_SIL, T_LOGO)
+        return img + streak(W / 2, H / 2, (520 + 200 * p) * S, (2.0 + 1.5 * p) * S, 1.1 + 0.6 * p)
     dt = t - T_LOGO
     # el obturador de luz se abre a blanco
     o = fx.ease_out_expo(lin(dt, 0, 0.32))
@@ -1026,21 +883,20 @@ def hit_env(t, decay=0.16):
 
 def post(img, t, fi):
     e = hit_env(t)
-    if e > 0.02:
-        amp = 16 * S * e
+    if e > 0.02 and not (T_CLAP1 < t < T_END):  # sacudida solo en la claqueta y en el logo, nunca en el material
+        amp = 12 * S * e
         sx = amp * fx.hash_noise(11, t, 9)
         sy = amp * fx.hash_noise(29, t, 11)
-        img = fx.affine(img, 1.0 + 0.012 * min(1, e), tx=sx, ty=sy, border=cv2.BORDER_REFLECT)
+        img = fx.affine(img, 1.0 + 0.01 * min(1, e), tx=sx, ty=sy, border=cv2.BORDER_REFLECT)
     white_end = t >= T_LOGO + 0.2
     if not white_end:
         img = fx.bloom(img, 0.74, 0.42)
-    img = fx.chroma(img, (1.2 + 9 * min(1.0, e)) * S * (0.4 if white_end else 1.0))
     if white_end:
         img = np.clip(img, 0, 1) * (1 - (1 - _vig_all()) * 0.18)
     else:
         img = img * _vig_all()
     lum = fx.luminance(np.clip(img, 0, 1))[..., None]
-    g = fx.grain(H, W, fi, 0.012 if white_end else 0.030)[..., None]
+    g = fx.grain(H, W, fi, 0.012 if white_end else 0.026)[..., None]
     img = img + g * (0.55 + 0.45 * (1 - lum))
     return np.clip(img, 0, 1)
 
