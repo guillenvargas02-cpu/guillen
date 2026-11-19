@@ -71,32 +71,24 @@ PRE, POST = 0.3, 0.3  # márgenes extraídos alrededor de cada fragmento
 #        H=170555 I=171755 J=IMG_8111
 # Cada momento del material se usa una sola vez, a velocidad real. Cortes en los golpes de la canción.
 # Transiciones limpias (sin deformar a nadie): cut, flash, punch (acercamiento rápido), leak (fuga de luz).
-_CUTS = [77.30, 78.37, 79.16, 80.43, 81.22, 82.52, 83.57, 84.61, 85.40, 86.70, 87.75, 88.79, 89.84, 90.88,
-         91.67, 92.72, 93.74, 94.53, 95.71, 96.08, 96.50, 96.87, 97.41, 97.87]
-_SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy))
+_CUTS = [77.30, 78.37, 79.81, 81.22, 82.52, 83.57, 85.40, 86.70, 88.54, 89.84, 91.67, 92.72, 94.02, 95.71, 96.87,
+         97.87]
+_SHOTS = [  # (clip, entrada, transición, movimiento(z0, z1, cx, cy, dx, dy)) — 15 encuadres distintos, sin repetir
     ("A", 0.20, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # paneo entre cámara y micrófonos
-    ("E", 2.60, "flash", (1.04, 1.10, 0.6, 0.35, 0, 0)),    # se revela la lámpara de globo
-    ("H", 0.50, "cut", (1.04, 1.10, 0.45, 0.5, 0, 0)),      # conductor tras la cámara
-    ("B", 11.0, "punch", (1.06, 1.14, 0.5, 0.42, 0, 0)),    # pantalla del switcher
+    ("E", 2.40, "cut", (1.04, 1.10, 0.6, 0.35, 0, 0)),      # se revela la lámpara de globo
+    ("H", 0.50, "punch", (1.04, 1.10, 0.45, 0.5, 0, 0)),    # conductor tras la cámara
+    ("B", 11.0, "cut", (1.06, 1.14, 0.5, 0.42, 0, 0)),      # pantalla del switcher
     ("D", 9.20, "leak", (1.04, 1.10, 0.5, 0.45, 0, 0)),     # equipo ajustando luces
-    ("A", 5.50, "cut", (1.10, 1.04, 0.55, 0.45, 0, 0)),     # conductor de perfil
-    ("G", 0.30, "flash", (1.04, 1.10, 0.5, 0.6, 0, 0)),     # visor de cámara en primer plano
-    ("F", 0.50, "punch", (1.04, 1.10, 0.5, 0.45, 0, 0)),    # set completo con softbox
-    ("C", 4.60, "flash", (1.06, 1.12, 0.55, 0.5, 0, 0)),    # el saludo
-    ("J", 0.30, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # conductor riendo
-    ("B", 14.2, "punch", (1.08, 1.16, 0.5, 0.42, 0, 0)),    # monitor + laptop
-    ("D", 0.50, "leak", (1.04, 1.10, 0.5, 0.45, 0, 0)),     # charla del equipo
-    ("C", 11.2, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # entrevista a dos
-    ("E", 7.20, "cut", (1.04, 1.10, 0.6, 0.4, 0, 0)),       # entra el productor
-    ("I", 1.50, "punch", (1.04, 1.12, 0.45, 0.5, 0, 0)),    # conductor tras cámara (otro ángulo)
-    ("G", 2.30, "flash", (1.04, 1.10, 0.5, 0.6, 0, 0)),     # llega el invitado
-    ("A", 9.30, "cut", (1.08, 1.14, 0.55, 0.45, 0, 0)),     # manos del conductor
-    ("J", 6.60, "leak", (1.06, 1.14, 0.55, 0.5, 0, 0)),     # invitado tras la cámara
-    ("F", 3.80, "flash", (1.06, 1.12, 0.65, 0.35, 0, 0)),   # lámparas
-    ("C", 14.5, "cut", (1.08, 1.12, 0.5, 0.5, 0, 0)),
-    ("B", 9.00, "punch", (1.10, 1.16, 0.55, 0.42, 0, 0)),
-    ("D", 13.5, "flash", (1.06, 1.12, 0.5, 0.45, 0, 0)),
-    ("C", 17.8, "cut", (1.08, 1.16, 0.5, 0.5, 0, 0)),
+    ("C", 4.80, "flash", (1.06, 1.12, 0.55, 0.5, 0, 0)),    # el saludo
+    ("A", 5.30, "cut", (1.10, 1.04, 0.55, 0.45, 0, 0)),     # conductor de perfil, de cerca
+    ("G", 0.20, "punch", (1.04, 1.10, 0.5, 0.6, 0, 0)),     # visor de cámara en primer plano
+    ("J", 0.30, "flash", (1.04, 1.10, 0.5, 0.45, 0, 0)),    # conductor riendo
+    ("D", 0.50, "cut", (1.04, 1.10, 0.5, 0.45, 0, 0)),      # charla del equipo, de pie
+    ("F", 6.30, "leak", (1.04, 1.10, 0.6, 0.4, 0, 0)),      # libreros y luces
+    ("C", 11.0, "flash", (1.06, 1.12, 0.5, 0.5, 0, 0)),     # entrevista a dos
+    ("J", 6.40, "cut", (1.06, 1.14, 0.55, 0.5, 0, 0)),      # invitado tras la cámara
+    ("C", 0.40, "punch", (1.04, 1.10, 0.5, 0.5, 0, 0)),     # set completo entre trípodes
+    ("B", 14.6, "flash", (1.08, 1.18, 0.5, 0.42, 0, 0)),    # el programa en pantalla
 ]
 EDL = [(T_CLAP1 if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else m2t(_CUTS[k + 1]),
         c, src, 1.0, tin, mot) for k, (c, src, tin, mot) in enumerate(_SHOTS)]
@@ -520,8 +512,8 @@ def shockwave(frame, cx, cy, dt, strength=1.0):
 
 
 # ------------------------------------------------------------------ secuencias claqueta → pleca
-CLAP_C = (540, 1010)  # centro de la claqueta en diseño
-CLAP_SCALE = 1.28  # claqueta más grande
+CLAP_C = (540, 1190)  # centro de la claqueta en diseño
+CLAP_SCALE = 1.22  # claqueta grande, completa en cuadro
 PLECA_C = (540, 960)
 
 
@@ -548,8 +540,8 @@ def clapper_sequence(t, tc, ons, offs, intro=True):
         if tt >= tc:
             return 0.0
         if tt >= close_t0:
-            return 36.0 * (1 - ease_in((tt - close_t0) / (tc - close_t0), 2.4))
-        a = 36.0 * ease_out((tt - open_t0) / (open_t1 - open_t0), 3) if tt >= open_t0 else 0.0
+            return 32.0 * (1 - ease_in((tt - close_t0) / (tc - close_t0), 2.4))
+        a = 32.0 * ease_out((tt - open_t0) / (open_t1 - open_t0), 3) if tt >= open_t0 else 0.0
         if tt > open_t1:
             a += 1.2 * math.sin((tt - open_t1) * 9) * math.exp(-(tt - open_t1) * 2)
         return a
@@ -569,7 +561,7 @@ def clapper_sequence(t, tc, ons, offs, intro=True):
         img = place_layer(img, lay, cx, cy - 70 * s, scale=cam * CLAP_SCALE, rot_y=rot_y, rot_x=4, light=lightk,
                           anchor=anchor)
         if dt >= 0:  # el golpe: destello y corte de luz, y pasamos directo al material
-            img = light_cut(img, cx, cy - 300 * s, dt)
+            img = light_cut(img, cx, cy - 330 * s, dt)
             img += 0.6 * np.array([1.0, 0.9, 0.86], np.float32)
         return img
     # --- tras el golpe: la claqueta cae y la pleca SOMOS se libera y avanza al centro

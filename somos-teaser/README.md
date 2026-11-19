@@ -7,7 +7,7 @@ Teaser vertical 4K (2160×3840, 30 fps, ~30 s) con estética oscura y misteriosa
 |---|---|---|
 | 0.0 – 3.57 | Plató a oscuras; todos los reflectores encienden juntos; claqueta grande (blanco/negro, solo SOMOS) se abre y espera en el silencio | clunk + zumbido de balastro |
 | 3.57 | **Hook**: la claqueta cierra en el drop y cortamos directo al material | claqueta + impacto |
-| 3.57 – 24.17 | Montaje de 23 tomas, cada momento usado una sola vez, cortes en los golpes (152 BPM), se acelera al final. Transiciones limpias: corte, flash, acercamiento, fuga de luz | acentos discretos |
+| 3.57 – 24.17 | Montaje de 15 encuadres distintos (1–1.8 s), cada momento usado una sola vez, cortes en los golpes (152 BPM). Transiciones limpias: corte, flash, acercamiento, fuga de luz | acentos discretos |
 | 24.17 – 27.37 | Línea de luz → cuadro aparte **MUY PRONTO** → silencio | grave en Re |
 | 27.37 – 29.47 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
 | 29.47 – 29.93 | Salida: se apaga como televisor viejo | whine + pop eléctrico |
