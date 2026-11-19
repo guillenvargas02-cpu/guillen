@@ -407,7 +407,7 @@
     hudNum.innerHTML = `<b>${String(i + 1).padStart(2, "0")}</b> / ${String(slides.length).padStart(2, "0")}`;
     hudBar.style.width = ((i + 1) / slides.length * 100) + "%";
     hud.classList.toggle("hidden", !!next.dataset.nohud);
-    history.replaceState(null, "", "#" + (i + 1));
+    try { history.replaceState(null, "", "#" + (i + 1)); } catch (e) {}
     if (next._enter) next._enter(step, prev);
   }
 
