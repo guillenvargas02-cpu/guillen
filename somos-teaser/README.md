@@ -7,7 +7,7 @@ Teaser vertical 4K (2160×3840, 30 fps, 27.6 s) con estética oscura y misterios
 |---|---|---|
 | 0.0 – 1.2 | Negro → punto de luz → se dispara en una línea que se tensa en el silencio | golpe grave, ping en Re–La, aire |
 | 1.2 | **Encendido**: en el drop la línea se abre a la imagen (el conductor escribe sus notas) | impacto + chispazo |
-| 1.2 – 21.8 | Montaje de 18 encuadres distintos, cortes en los golpes (152 BPM). Tres frases repartidas: **HISTORIAS** (2.3 s), **DETRÁS DEL NOMBRE** (10.7 s), **LA CONVERSACIÓN QUE EMPIEZA / DONDE OTRAS TERMINAN** (18.5 s). Las tomas de la pantalla van sin texto | acento grave en cada frase |
+| 1.2 – 21.8 | Montaje de 18 encuadres distintos, cortes en los golpes (152 BPM). Frases alternadas (una toma sí, otra no): **HISTORIAS**, **ANÉCDOTAS**, **RAÍCES**, **DETRÁS DEL NOMBRE**, **ENTRE RISAS Y RECUERDOS** y el lema **LA CONVERSACIÓN QUE EMPIEZA / DONDE OTRAS TERMINAN**. Las tomas de la pantalla van sin texto | acento grave en cada frase |
 | 21.8 – 25.0 | Línea de luz → cuadro aparte **MUY PRONTO**; el logo de **YouTube** se enciende arriba como una pantallita (punto → línea → se abre) y se apaga con el texto | ping suave |
 | 25.0 – 27.1 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
 | 27.1 – 27.6 | **Apagado**: la imagen se comprime en una línea y un punto | whine + pop eléctrico |

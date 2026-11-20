@@ -97,13 +97,16 @@ EDL = [(T_OPEN if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else 
 
 # ------------------------------------------------------------------ frases del teaser (contexto y drama)
 # (inicio, fin, líneas [(texto, peso, tamaño en diseño, interletrado em)], y del centro en diseño)
-TITLES = [  # solo las frases que más resaltan, repartidas (~cada 8 s); nunca sobre las tomas de la pantalla
+TITLES = [  # alternadas: una toma con frase, la siguiente sin; nunca sobre las tomas de la pantalla
     (fr(2.33), fr(3.62), [("HISTORIAS", 600, 104, 0.30)], 1250),
-    (fr(10.67), fr(11.62), [("DETRÁS DEL NOMBRE", 600, 64, 0.22)], 1290),
+    (fr(5.20), fr(6.36), [("ANÉCDOTAS", 600, 104, 0.30)], 1270),
+    (fr(7.53), fr(8.45), [("RAÍCES", 600, 112, 0.34)], 1250),
+    (fr(10.67), fr(11.58), [("DETRÁS DEL NOMBRE", 600, 64, 0.22)], 1290),
+    (fr(12.77), fr(13.70), [("ENTRE RISAS", 600, 72, 0.24), ("Y RECUERDOS", 600, 72, 0.24)], 1270),
     (fr(18.50), fr(20.72), [("LA CONVERSACIÓN QUE EMPIEZA", 500, 44, 0.20),
                             ("DONDE OTRAS TERMINAN", 600, 56, 0.18)], 1260),
 ]
-TITLE_LINE2_DELAY = {2: 1.13}  # la segunda línea del lema entra en el siguiente corte
+TITLE_LINE2_DELAY = {5: 1.13}  # la segunda línea del lema entra en el siguiente corte
 
 # ------------------------------------------------------------------ utilidades de recursos
 def font(weight, px):
