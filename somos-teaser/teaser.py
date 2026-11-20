@@ -95,6 +95,16 @@ EDL = [(T_OPEN if k == 0 else m2t(_CUTS[k]), T_END if k == len(_SHOTS) - 1 else 
         c, src, 1.0, tin, mot) for k, (c, src, tin, mot) in enumerate(_SHOTS)]
 
 
+# ------------------------------------------------------------------ frases del teaser (contexto y drama)
+# (inicio, fin, líneas [(texto, peso, tamaño en diseño, interletrado em)], y del centro en diseño)
+TITLES = [  # solo las frases que más resaltan, repartidas (~cada 8 s); nunca sobre las tomas de la pantalla
+    (fr(2.33), fr(3.62), [("HISTORIAS", 600, 104, 0.30)], 1250),
+    (fr(10.67), fr(11.62), [("DETRÁS DEL NOMBRE", 600, 64, 0.22)], 1290),
+    (fr(18.50), fr(20.72), [("LA CONVERSACIÓN QUE EMPIEZA", 500, 44, 0.20),
+                            ("DONDE OTRAS TERMINAN", 600, 56, 0.18)], 1260),
+]
+TITLE_LINE2_DELAY = {2: 1.13}  # la segunda línea del lema entra en el siguiente corte
+
 # ------------------------------------------------------------------ utilidades de recursos
 def font(weight, px):
     return ImageFont.truetype(str(FONT / f"HindSiliguri-{weight}.ttf"), int(round(px)))
@@ -215,6 +225,58 @@ def light_leak(t, amount, phase=0.0):
     return col * amount
 
 
+@lru_cache(maxsize=256)
+def _title_img(text, weight, size, trk):
+    return text_rgba(text, weight, size, trk)
+
+
+@lru_cache(None)
+def _band(y_px, h_px):
+    yy = (np.arange(H, dtype=np.float32) - y_px)[:, None]
+    return np.exp(-(yy / h_px) ** 2)[..., None]
+
+
+def draw_titles(img, t):
+    """Frases integradas: entran en el golpe (se enfocan y cierran el interletrado), una línea de luz
+    se dibuja debajo, y salen con un leve desenfoque. Sombra suave detrás para leerse sobre cualquier toma."""
+    for k, (t0, t1, lines, yd) in enumerate(TITLES):
+        if not (t0 <= t < t1 + 0.02):
+            continue
+        out_p = ease_in(lin(t, t1 - 0.18, t1), 2)
+        # alturas de las líneas
+        imgs = []
+        for j, (txt, wgt, size, trk) in enumerate(lines):
+            tj0 = t0 + (TITLE_LINE2_DELAY.get(k, 0.0) if j > 0 else 0.0)
+            pin = ease_out(lin(t, tj0, tj0 + 0.38), 3)
+            imgs.append((txt, wgt, size, trk, pin))
+        heights = [size * 1.25 * S for _, _, size, _, _ in imgs]
+        total_h = sum(heights)
+        ycur = yd * S - total_h / 2
+        band_a = max(p for *_, p in imgs) * (1 - out_p)
+        if band_a > 0:
+            img = img * (1 - 0.42 * band_a * _band(int(yd * S), int((total_h * 0.9 + 90 * S))))
+        for (txt, wgt, size, trk, pin), hgt in zip(imgs, heights):
+            if pin <= 0:
+                ycur += hgt
+                continue
+            a = pin * (1 - out_p)
+            trk_now = round(trk + 0.22 * (1 - pin) + 0.10 * out_p, 2)
+            lay = _title_img(txt, wgt, size, trk_now).copy()
+            bl = (1 - pin) * 7 * S + out_p * 5 * S
+            if bl > 0.4:
+                lay = np.dstack([fx.blur(lay[..., :3], bl), fx.blur(lay[..., 3], bl)])
+            lay[..., :3] *= 0.97
+            dy = (1 - pin) * 14 * S
+            img = fx.paste(img, lay, W / 2 - lay.shape[1] / 2, ycur + (hgt - lay.shape[0]) / 2 + dy, a)
+            ycur += hgt
+        # línea de luz bajo la frase (motivo de la TV)
+        lp_ = ease_out(lin(t, t0 + 0.05, t0 + 0.45), 3)
+        if lp_ > 0:
+            glow = (0.35 + 0.9 * math.exp(-(t - t0 - 0.05) / 0.25)) * (1 - out_p)
+            img = img + streak(W / 2, yd * S + total_h / 2 + 22 * S, (20 + 300 * lp_) * S, 1.4 * S, 0.55 * glow)
+    return img
+
+
 def montage(t, fi):
     """Montaje con cortes limpios en los golpes de la canción (sin glitch ni desenfoques que deformen)."""
     i = slot_at(t)
@@ -228,6 +290,7 @@ def montage(t, fi):
         img = img + light_leak(t, 0.9 * env_hit(t, st, 0, 0.30), i)
     elif tin == "punch" and u < 0.22:  # acercamiento rápido que se asienta (solo escala)
         img = fx.affine(img, 1 + 0.10 * (1 - ease_out(u / 0.22, 3)), border=cv2.BORDER_REFLECT)
+    img = draw_titles(img, t)
     if i == len(EDL) - 1:  # último fragmento: se apaga hacia la línea de luz
         img = img * (1 - ease_in(lin(t, T_END - 0.20, T_END), 2))
     return img
@@ -380,6 +443,7 @@ def ending(t, fi):
         li = 1.6 * env_hit(t, T_CLAP2, 0, 0.12) + 0.18 + 1.2 * ease_in(lin(dt, span - 0.25, span), 2)
         half = (450 + 120 * (1 - opn)) * S
         img = img + streak(W / 2, H / 2 - hh, half, 1.8 * S, li * 0.6) + streak(W / 2, H / 2 + hh, half, 1.8 * S, li * 0.6)
+        img = draw_youtube(img, t, ease_in(lin(dt, span - 0.24, span), 3))
         return img
     if t < T_LOGO:  # silencio: solo la línea, tensa, antes del golpe
         p = lin(t, T_SIL, T_LOGO)
@@ -413,6 +477,68 @@ def ending(t, fi):
     img = img + 0.5 * env_hit(t, T_LOGO, 0, 0.07)
     if t >= T_TV:
         img = tv_off(np.clip(img, 0, 1), t - T_TV)
+    return img
+
+
+T_YT = T_CLAP2 + 13 / 30  # el logo de YouTube se enciende medio compás después de MUY PRONTO
+YT_W = 170  # ancho del ícono (diseño)
+YT_Y = -165  # centro del ícono respecto al centro del cuadro (diseño)
+
+
+@lru_cache(None)
+def youtube_icon():
+    """Ícono oficial de YouTube (rectángulo redondeado rojo #FF0000 con el triángulo blanco), dibujado con su
+    geometría de 2000×1404, supermuestreado."""
+    w = int(round(YT_W * S))
+    h = int(round(w * 1404 / 2000))
+    ss = 4
+    Wb, Hb = w * ss, h * ss
+    yy, xx = np.mgrid[0:Hb, 0:Wb].astype(np.float32)
+    nx = (xx + 0.5) / Wb * 2 - 1
+    ny = (yy + 0.5) / Hb * 2 - 1
+    body = (np.abs(nx) ** 5.2 + np.abs(ny) ** 4.2) <= 1.0
+    tri = np.zeros((Hb, Wb), np.uint8)
+    pts = np.array([[0.400 * Wb, 0.2849 * Hb], [0.660 * Wb, 0.4986 * Hb], [0.400 * Wb, 0.7123 * Hb]], np.int32)
+    cv2.fillPoly(tri, [pts], 1)
+    a = cv2.resize(body.astype(np.float32), (w, h), interpolation=cv2.INTER_AREA)
+    t_ = cv2.resize(tri.astype(np.float32), (w, h), interpolation=cv2.INTER_AREA)
+    red = np.array([1.0, 0.0, 0.0], np.float32)
+    rgb = red * (1 - t_[..., None]) + np.ones(3, np.float32) * t_[..., None]
+    return np.dstack([rgb, a]).astype(np.float32)
+
+
+def draw_youtube(img, t, close):
+    """Mini encendido de TV (punto → línea → se abre) con el mismo lenguaje del intro; se apaga con MUY PRONTO."""
+    u = t - T_YT
+    if u < 0:
+        return img
+    cx, cy = W / 2, H / 2 + YT_Y * S
+    ic = youtube_icon()
+    iw, ih = ic.shape[1], ic.shape[0]
+    if u < 0.07:  # punto
+        q = ease_out(u / 0.07, 2)
+        g = np.zeros((H, W), np.float32)
+        cv2.circle(g, (int(cx), int(cy)), max(1, int(4 * S * q)), 1.0, -1, cv2.LINE_AA)
+        return img + (fx.blur(g, 2 * S) * 1.5 + fx.soft_blur(g, 16 * S) * 0.6)[..., None] * q
+    if u < 0.15:  # línea
+        q = ease_out((u - 0.07) / 0.08, 3)
+        return img + streak(cx, cy, (4 + iw / S * 0.55 * q) * S, 1.6 * S, 1.3)
+    o = ease_out(lin(u, 0.15, 0.27), 2.6) * (1 - close)  # se abre (y se cierra con el texto)
+    if o <= 0.002:
+        return img + streak(cx, cy, iw * 0.55, 1.6 * S, 1.2)
+    hh = max(2, int(ih * o))
+    ww = int(iw * (1 + 0.06 * (1 - o)))
+    lay = cv2.resize(ic, (ww, hh), interpolation=cv2.INTER_AREA)
+    lay[..., :3] *= 1 + 1.0 * (1 - o) + 0.25 * math.exp(-max(0.0, u - 0.27) / 0.12)
+    if o > 0.5:  # resplandor rojo muy suave, como una pantalla encendida en la oscuridad
+        gl = np.zeros((H, W), np.float32)
+        y0, x0 = int(cy - hh / 2), int(cx - ww / 2)
+        gl[y0:y0 + hh, x0:x0 + ww] = lay[..., 3]
+        gl = fx.soft_blur(gl, 40 * S)
+        img = img + gl[..., None] * np.array([0.35, 0.0, 0.02], np.float32) * o
+    img = fx.paste(img, lay, cx - ww / 2, cy - hh / 2, 1.0)
+    if o < 1:
+        img = img + streak(cx, cy, iw * 0.6, 2 * S, 0.9 * (1 - o))
     return img
 
 

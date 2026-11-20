@@ -1,16 +1,16 @@
 # Teaser SOMOS — programa de entrevistas
 
-Teaser vertical 4K (2160×3840, 30 fps, 28.8 s) con estética oscura y misteriosa. Abre y cierra como una TV vieja.
+Teaser vertical 4K (2160×3840, 30 fps, 27.6 s) con estética oscura y misteriosa. Abre y cierra como una TV vieja.
 
 ## Estructura (segundos)
 | Tiempo | Qué pasa | Audio |
 |---|---|---|
-| 0.0 – 2.4 | Negro → un punto de luz calienta → se estira en una línea que se tensa en el silencio | clic, "bwong" de desmagnetizado, whine |
-| 2.4 | **Encendido**: en el drop la línea se abre a la imagen (reverso exacto del apagado final) | impacto + chispazo |
-| 2.4 – 23.0 | Montaje de 18 encuadres distintos (0.8–1.5 s), cada momento usado una sola vez, cortes en los golpes (152 BPM). Transiciones limpias: corte, flash, acercamiento, fuga de luz | acentos discretos |
-| 23.0 – 26.2 | Línea de luz → cuadro aparte **MUY PRONTO** → silencio | grave en Re |
-| 26.2 – 28.3 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
-| 28.3 – 28.8 | **Apagado**: la imagen se comprime en una línea y un punto, como TV vieja | whine + pop eléctrico |
+| 0.0 – 1.2 | Negro → punto de luz → se dispara en una línea que se tensa en el silencio | golpe grave, ping en Re–La, aire |
+| 1.2 | **Encendido**: en el drop la línea se abre a la imagen (el conductor escribe sus notas) | impacto + chispazo |
+| 1.2 – 21.8 | Montaje de 18 encuadres distintos, cortes en los golpes (152 BPM). Tres frases repartidas: **HISTORIAS** (2.3 s), **DETRÁS DEL NOMBRE** (10.7 s), **LA CONVERSACIÓN QUE EMPIEZA / DONDE OTRAS TERMINAN** (18.5 s). Las tomas de la pantalla van sin texto | acento grave en cada frase |
+| 21.8 – 25.0 | Línea de luz → cuadro aparte **MUY PRONTO**; el logo de **YouTube** se enciende arriba como una pantallita (punto → línea → se abre) y se apaga con el texto | ping suave |
+| 25.0 – 27.1 | **SOMOS en solitario** sobre blanco (uso oficial), letras en cascada | acorde Re–La, ticks, destello |
+| 27.1 – 27.6 | **Apagado**: la imagen se comprime en una línea y un punto | whine + pop eléctrico |
 
 Marca (Manual de identidad 2026): rosa cívico #E4007C; logo vectorial extraído del manual;
 logo rosa sobre blanco (uso oficial); nunca blanco sobre rosa ni el logo rotado/recoloreado. Texto: Hind Siliguri

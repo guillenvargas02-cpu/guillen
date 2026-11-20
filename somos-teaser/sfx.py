@@ -142,6 +142,25 @@ def sparkle(d=0.7):
     return reverb(y, 1.2, 12000, 0.4)
 
 
+def text_hit(level=1.0):
+    """Acento para las frases: grave corto en Re + respiro de aire filtrado."""
+    d = 0.9
+    t = tt(d)
+    low = np.sin(2 * np.pi * 73.42 * t) * np.exp(-t / 0.22) * (1 - np.exp(-t / 0.004)) * 0.55
+    air = bp(noise(d), 1500, 7000) * np.exp(-t / 0.12) * 0.05
+    return reverb((low + air) * level, 1.8, 6000, 0.35)
+
+
+def icon_on_sound():
+    """Mini encendido del ícono de YouTube: ping cristalino corto y un roce de aire."""
+    d = 0.8
+    t = tt(d)
+    att = 1 - np.exp(-t / 0.002)
+    ping = (np.sin(2 * np.pi * 1174.66 * t) * 0.08 * np.exp(-t / 0.28) + np.sin(2 * np.pi * 1760 * t) * 0.05 * np.exp(-t / 0.2)) * att
+    air = bp(noise(d), 3000, 10000) * np.exp(-t / 0.05) * 0.04
+    return reverb(ping + air, 1.4, 9000, 0.35)
+
+
 def tv_on_sound(d):
     """Aparece el punto de luz: golpe grave suave, 'ping' cristalino en Re-La y aire que sube hasta la apertura."""
     t = tt(d)
@@ -225,6 +244,15 @@ def build():
             add(whoosh(0.22, 600, 4000, 0, 0, 0.7, 1.0), st - 0.15, 0.22)
         elif tin == "leak":
             add(whoosh(0.5, 300, 3000, -0.5, 0.5, 0.4, 1.0), st - 0.2, 0.22)
+
+    # --- frases: acento grave en Re y respiro de aire (discreto, debajo de la música)
+    for k, (t0, t1, lines, y) in enumerate(T.TITLES):
+        add(text_hit(), t0 - 0.01, 0.45)
+        if k in T.TITLE_LINE2_DELAY:
+            add(text_hit(0.7), t0 + T.TITLE_LINE2_DELAY[k] - 0.01, 0.4)
+
+    # --- logo de YouTube: mini encendido (ping suave)
+    add(icon_on_sound(), T.T_YT, 0.5)
 
     # --- cierre: corte a la línea de luz → MUY PRONTO → silencio → SOMOS en solitario → TV vieja
     add(boom(2.4, 58, 30, 0.8), T.T_END, 0.55)
