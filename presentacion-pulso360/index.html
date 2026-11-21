@@ -6,24 +6,39 @@
 <title>PULSO 360° · IA para campañas · Capacitación</title>
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/deck.css">
+<script>
+  /* Configuración editable ------------------------------------------------
+     Códigos QR de la demo: coloca las imágenes en assets/qr/ con estos nombres
+     (o escribe la liga en "url" para generar el código automáticamente). */
+  window.PULSO_CONFIG = {
+    qr: [
+      { image: "assets/qr/demo-1.png", url: "", label: "Agenda tu demo" },
+      { image: "assets/qr/demo-2.png", url: "", label: "Agenda tu demo" }
+    ]
+  };
+</script>
 </head>
 <body data-bg="video">
 
-<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-<canvas id="field"></canvas>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div></div>
+<canvas id="gl"></canvas>
 <div class="vignette"></div>
 <div class="grain"></div>
 
 <main id="stage">
+<div class="topbar hidden">
+  <div class="brandmini"><span class="mk"><i class="ico" data-i="zap"></i></span><b>PULSO 360°</b><span class="chap"></span></div>
+  <span class="num"></span>
+</div>
 
-<!-- ======================================================= 01 · INTRO VIDEO -->
-<section class="slide s-intro" data-bg="video" data-chapter="PULSO 360° Electoral" data-focus=".5,.24" data-nohud="1">
+<!-- 01 · APERTURA CON VIDEO ============================================== -->
+<section class="slide s-intro" data-bg="video" data-chapter="Apertura" data-notop="1" data-3d="shape:dust; opacity:.2">
   <video id="introVideo" muted playsinline preload="auto"></video>
   <i class="hook" data-step="1" data-cls="ended"></i>
   <div class="title-block">
-    <div class="eyebrow a" data-step="1" style="--d:1.3s">Capacitación · Inteligencia artificial aplicada</div>
-    <h1 class="h-xxl split" data-step="1" style="--d:1.45s">Campañas <span class="serif grad">inteligentes</span></h1>
-    <p class="lead a" data-step="1" style="--d:1.9s">Cómo usar la inteligencia artificial en campañas electorales con <b class="ink">PULSO 360°</b>: escuchar mejor, decidir con datos y comunicar con confianza.</p>
+    <span class="label a" data-step="1" style="--d:1.3s">Capacitación · IA aplicada a campañas</span>
+    <h1 class="h1 split" data-step="1" style="--d:1.45s">Campañas <span class="hl">inteligentes.</span></h1>
+    <p class="lead a" data-step="1" style="--d:1.9s">Inteligencia artificial al servicio de la estrategia electoral.</p>
   </div>
   <div class="meta">
     <span class="chip ghost a" data-step="1" style="--d:2.2s">Mesa «Pulso electoral campañas 360 (IA)»</span>
@@ -33,736 +48,512 @@
   <div class="start-hint" id="startHint">Clic o → para comenzar · F pantalla completa · H ayuda</div>
 </section>
 
-<!-- ======================================================= 02 · DECLARACIÓN -->
-<section class="slide s-statement" data-bg="deep" data-focus=".18,.55" data-chapter="Apertura">
-  <div class="eyebrow a">El cambio de paradigma</div>
-  <h2 class="h-l split then" style="--d:.15s">Antes, las campañas competían por la <span class="serif">atención.</span></h2>
-  <h2 class="h-l split" data-step="1">Hoy compiten por la <span class="serif grad">confianza.</span></h2>
-  <p class="lead a" data-step="1" style="--d:.7s; max-width:118rem; margin-top:2rem">La IA puede hacer una campaña más rápida, más económica y más precisa. La estrategia, la ética y la credibilidad son lo que la vuelve trascendente.</p>
-  <svg class="ecg a" data-anim="fade" data-beats="5" data-h="150" style="position:absolute;left:-2rem;right:-2rem;bottom:5rem;width:196rem;height:13rem;--d:.4s"></svg>
-</section>
-
-<!-- ======================================================= 03 · AGENDA -->
-<section class="slide s-agenda" data-bg="mint" data-focus=".5,.55" data-chapter="Agenda">
-  <div class="head">
-    <div style="display:flex;flex-direction:column;gap:2.4rem">
-      <div class="eyebrow a">Ruta de la capacitación</div>
-      <h2 class="h-m split" style="--d:.1s">Cinco capítulos, <span class="serif grad">un ciclo de 360°.</span></h2>
-    </div>
-    <div class="brand a" data-anim="right" style="--d:.3s"><div class="mark"><i class="ico" data-i="zap"></i></div><div class="wm"><b>PULSO</b><span>360° ELECTORAL</span></div></div>
-  </div>
-  <div class="agenda-row">
-    <svg class="ecg2 ecg a" data-anim="fade" data-beats="5" data-h="140" style="--d:.2s"></svg>
-    <div class="agenda-card glass a" style="--d:.25s"><span class="n">CAP · 01</span><span class="big grad">01</span><h4>El nuevo pulso electoral</h4><p>Cómo la IA transforma la manera de investigar, comunicar y decidir.</p></div>
-    <div class="agenda-card glass a" style="--d:.35s"><span class="n">CAP · 02</span><span class="big grad">02</span><h4>PULSO 360° en acción</h4><p>Las herramientas de la plataforma aplicadas a casos de campaña.</p></div>
-    <div class="agenda-card glass a" style="--d:.45s"><span class="n">CAP · 03</span><span class="big grad">03</span><h4>El nuevo electorado</h4><p>Un electorado diverso que exige estrategias multicanal.</p></div>
-    <div class="agenda-card glass a" style="--d:.55s"><span class="n">CAP · 04</span><span class="big grad">04</span><h4>IA con certeza jurídica</h4><p>Marco legal y decisiones de publicación.</p></div>
-    <div class="agenda-card glass a" style="--d:.65s"><span class="n">CAP · 05</span><span class="big grad">05</span><h4>El futuro de las campañas</h4><p>Cuatro pilares para construir confianza ciudadana.</p></div>
+<!-- 02 · CEREBRO IA ===================================================== -->
+<section class="slide s-left" data-bg="deep" data-3d="shape:brain; pos:.72,.5; scale:1.6; rot:.18,0; pulse:1; spin:.16; size:8; opacity:.5">
+  <div class="col">
+    <span class="label a">Inteligencia artificial</span>
+    <h2 class="h2 split" style="--d:.15s; font-size:10.4rem">La IA ya está<br><span class="hl">en la campaña.</span></h2>
+    <p class="lead a" style="--d:.7s">Analiza comportamientos, identifica patrones y anticipa tendencias a una escala sin precedentes.</p>
   </div>
 </section>
 
-<!-- ======================================================= CAP 01 -->
-<section class="slide s-chapter" data-bg="mint" data-focus=".74,.5" data-chapter="01 · El nuevo pulso electoral">
-  <div class="txt">
-    <div class="eyebrow a">Capítulo 01</div>
-    <div class="num outline a" data-anim="left" style="--d:.1s">01</div>
-    <h2 class="h-l split" style="--d:.3s">El nuevo <span class="serif grad">pulso</span> electoral</h2>
-    <p class="lead a" style="--d:.8s; max-width:84rem">La IA ya no solo comunica a grandes audiencias: analiza comportamientos, identifica patrones y anticipa tendencias.</p>
+<!-- 03 · PONENTES ======================================================= -->
+<section class="slide s-people" data-bg="blue" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">Ponentes</span>
+    <h2 class="h2 split" style="--d:.1s">Quiénes te <span class="hl">acompañan.</span></h2>
   </div>
-  <div class="dial a" data-anim="scale" data-deg="72" data-label="CAPÍTULO 1 / 5" style="--d:.15s"></div>
-</section>
-
-<!-- ======================================================= EVOLUCIÓN -->
-<section class="slide s-evo" data-bg="blue" data-focus=".85,.3">
-  <div class="head">
-    <div class="eyebrow a">De los spots al video generado con IA</div>
-    <h2 class="h-m split" style="--d:.1s">La comunicación política cambió <span class="serif grad">tres veces.</span></h2>
-  </div>
-  <div class="evo">
-    <div class="track"><i style="--p:1"></i></div>
-    <div class="era a" style="--d:.3s">
-      <div class="node">I</div>
-      <div class="card glass">
-        <span class="caps">Modelo vertical</span>
-        <h4>Medios tradicionales</h4>
-        <div class="chips"><span class="chip ghost">Mítines</span><span class="chip ghost">Prensa</span><span class="chip ghost">Televisión</span><span class="chip ghost">Radio</span><span class="chip ghost">Espectaculares</span></div>
-        <div class="who">El ciudadano era principalmente <b>receptor</b> de información.</div>
+  <div class="people">
+    <div class="person panel a" style="--d:.3s">
+      <div class="photo"><span class="ph">GC</span><img src="assets/ponentes/gloria-perez.jpg" alt="" onerror="this.remove()"><span class="tag chip ghost">Fotografía</span></div>
+      <div class="info">
+        <span class="chip" style="align-self:flex-start">Marketing político e IA</span>
+        <h3 class="h4">Gloria Citlali Pérez Cobos</h3>
+        <div class="bio"><i style="width:94%"></i><i style="width:88%"></i><i style="width:72%"></i></div>
+        <span class="note">Semblanza por integrar</span>
       </div>
     </div>
-    <div class="era a" style="--d:.9s">
-      <div class="node">II</div>
-      <div class="card glass">
-        <span class="caps">Ecosistema digital</span>
-        <h4>Redes sociales</h4>
-        <div class="chips"><span class="chip blue">Facebook</span><span class="chip blue">YouTube</span><span class="chip blue">Instagram</span><span class="chip blue">TikTok</span><span class="chip blue">X</span></div>
-        <div class="who">El ciudadano <b>conversa, cuestiona y difunde</b> sin depender de los medios convencionales.</div>
-      </div>
-    </div>
-    <div class="era now a" style="--d:1.5s">
-      <div class="node">III</div>
-      <div class="card glass edge hot">
-        <span class="caps" style="color:var(--mint)">Inteligencia estratégica</span>
-        <h4>IA + datos</h4>
-        <div class="chips"><span class="chip">Escucha social</span><span class="chip">Sentimiento</span><span class="chip">IA generativa</span><span class="chip">Monitoreo continuo</span></div>
-        <div class="who">La campaña <b>escucha, entiende y anticipa</b>, a una velocidad y escala sin precedentes.</div>
+    <div class="person panel a" style="--d:.45s">
+      <div class="photo"><span class="ph">JV</span><img src="assets/ponentes/jose-vallarta.jpg" alt="" onerror="this.remove()"><span class="tag chip ghost">Fotografía</span></div>
+      <div class="info">
+        <span class="chip blue" style="align-self:flex-start">Marco legal de la IA en campañas</span>
+        <h3 class="h4">Dr. José Enrique Vallarta Rodríguez</h3>
+        <div class="bio"><i style="width:92%"></i><i style="width:84%"></i><i style="width:66%"></i></div>
+        <span class="note">Semblanza por integrar</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ======================================================= AMPLÍA -->
-<section class="slide s-amplia" data-bg="violet" data-focus=".75,.5">
-  <div class="txt">
-    <div class="eyebrow a">Investigación política aumentada</div>
-    <h2 class="h-m split" style="--d:.1s">La IA no sustituye la investigación política. <span class="serif grad">La amplía.</span></h2>
-    <p class="lead a" style="--d:.7s">Las encuestas siguen siendo la base. La IA suma monitoreo digital prácticamente continuo para identificar temas, medir sentimientos y evaluar cómo se recibe cada mensaje.</p>
+<!-- 04 · AGENDA ========================================================= -->
+<section class="slide s-agenda" data-bg="mint" data-chapter="Agenda" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">Ruta de la sesión</span>
+    <h2 class="h2 split" style="--d:.1s">Cinco momentos, <span class="hl">una sola plataforma.</span></h2>
   </div>
-  <div class="compare">
-    <div class="row glass a" data-anim="right" style="--d:.4s">
-      <div class="lbl"><span class="caps">Antes</span><span class="chip ghost">Encuestas periódicas</span></div>
-      <svg viewBox="0 0 800 130">
-        <polyline class="draw" pathLength="1" points="0,92 200,62 400,84 600,40 800,58" fill="none" stroke="rgba(214,228,255,.45)" stroke-width="2.5" stroke-dasharray="1" style="--d:.8s"/>
-        <g fill="#eef4ff"><circle cx="0" cy="92" r="7"/><circle cx="200" cy="62" r="7"/><circle cx="400" cy="84" r="7"/><circle cx="600" cy="40" r="7"/><circle cx="800" cy="58" r="7"/></g>
-      </svg>
-      <span class="small">Una fotografía cada cierto tiempo.</span>
-    </div>
-    <div class="row glass edge a" data-anim="right" style="--d:.7s">
-      <div class="lbl"><span class="caps" style="color:var(--mint)">Hoy</span><span class="chip">Encuestas + monitoreo continuo</span></div>
-      <svg viewBox="0 0 800 130">
-        <defs><linearGradient id="waveFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2ef2b5" stop-opacity=".35"/><stop offset="1" stop-color="#2ef2b5" stop-opacity="0"/></linearGradient>
-        <linearGradient id="waveStroke" x1="0" x2="1"><stop offset="0" stop-color="#4d8bff"/><stop offset=".5" stop-color="#22d8e6"/><stop offset="1" stop-color="#2ef2b5"/></linearGradient></defs>
-        <path class="gen-area a" data-anim="fade" fill="url(#waveFill)" style="--d:1.6s"/>
-        <path class="gen-wave draw" pathLength="1" data-seed="2" fill="none" stroke="url(#waveStroke)" stroke-width="3" style="--d:1s;filter:drop-shadow(0 0 6px rgba(46,242,181,.7))"/>
-        <g fill="#eef4ff" stroke="#040a14" stroke-width="3"><circle cx="0" cy="92" r="7"/><circle cx="200" cy="62" r="7"/><circle cx="400" cy="84" r="7"/><circle cx="600" cy="40" r="7"/><circle cx="800" cy="58" r="7"/></g>
-      </svg>
-      <span class="small">La película completa, con las encuestas como anclas.</span>
-    </div>
+  <div class="agenda">
+    <div class="ag panel a" style="--d:.25s"><span class="n hl">01</span><h4>El cambio</h4><p>De la plaza pública al panel digital.</p></div>
+    <div class="ag panel a" style="--d:.35s"><span class="n hl">02</span><h4>PULSO 360°</h4><p>Las herramientas en acción.</p></div>
+    <div class="ag panel a" style="--d:.45s"><span class="n hl">03</span><h4>México conectado</h4><p>104.9 millones en línea.</p></div>
+    <div class="ag panel a" style="--d:.55s"><span class="n hl">04</span><h4>Confianza</h4><p>Datos objetivos y marco legal.</p></div>
+    <div class="ag panel glow demo a" style="--d:.65s"><span class="n hl">05</span><h4>Demo en vivo</h4><p>Agenda tu demostración.</p></div>
   </div>
 </section>
 
-<!-- ======================================================= BENTO 5 DIMENSIONES -->
-<section class="slide s-bento" data-bg="mint" data-focus=".2,.7">
-  <div class="head">
-    <div style="display:flex;flex-direction:column;gap:2.4rem">
-      <div class="eyebrow a">Lo que cambia con la IA</div>
-      <h2 class="h-m split" style="--d:.1s">Cinco dimensiones del <span class="serif grad">marketing político.</span></h2>
-    </div>
-    <span class="note-ill a" style="--d:.5s">Herramientas PULSO 360° asociadas</span>
+<!-- 05 · CAMBIO DE ENFOQUE (3 fases) ===================================== -->
+<section class="slide s-shift" data-bg="blue" data-chapter="01 · El cambio" data-3d="shape:dust; opacity:.08">
+  <i class="hook" data-step="1" data-cls="p1"></i>
+  <i class="hook" data-step="2" data-cls="p2"></i>
+  <div class="phases a"><span>Ayer</span><span>Después</span><span>Hoy</span></div>
+  <div class="titles">
+    <div class="cap0" style="transition:opacity .8s"><h2 class="h2" style="font-size:6.6rem">Ayer: <span class="hl">hablar a muchos.</span></h2><p class="lead" style="margin-top:1.6rem">Mítines, impresos, televisión, radio y espectaculares: el ciudadano solo recibía el mensaje.</p></div>
+    <div class="cap1" style="transition:opacity .8s"><h2 class="h2" style="font-size:6.6rem">Después: <span class="hl">conversar en muchas pantallas.</span></h2><p class="lead" style="margin-top:1.6rem">Las redes acercaron a candidatos y electores, pero la conversación quedó dispersa.</p></div>
+    <div class="cap2" style="transition:opacity .8s"><h2 class="h2" style="font-size:6.6rem">Hoy: <span class="hl">todo en un solo panel.</span></h2><p class="lead" style="margin-top:1.6rem">PULSO 360° reúne escucha, producción de contenido y monitoreo.</p></div>
   </div>
-  <div class="bento">
-    <div class="cell big glass edge hot a" data-anim="scale" style="--d:.25s">
-      <svg class="bgviz" viewBox="0 0 400 400"><g fill="none" stroke="#2ef2b5"><circle cx="200" cy="200" r="60" stroke-opacity=".5"/><circle cx="200" cy="200" r="110" stroke-opacity=".35"/><circle cx="200" cy="200" r="160" stroke-opacity=".22"/><circle cx="200" cy="200" r="199" stroke-opacity=".12"/></g><circle cx="200" cy="200" r="10" fill="#2ef2b5"/></svg>
-      <span class="k">A</span>
-      <div class="tile-ico"><i class="ico" data-i="search"></i></div>
-      <h4>Inteligencia de mercado electoral</h4>
-      <p>Analizar grandes volúmenes de información para identificar necesidades, preocupaciones y percepciones ciudadanas, y contrastarlas con encuestas, estudios territoriales y fuentes oficiales.</p>
-      <div class="tools"><span class="chip">Sentimiento</span><span class="chip">Encuestas</span><span class="chip">Análisis Electoral</span></div>
-    </div>
-    <div class="cell glass a" data-anim="scale" style="--d:.4s">
-      <span class="k">B</span>
-      <h4>Segmentación y personalización</h4>
-      <p>Adaptar formatos y versiones de un mensaje para cada audiencia y canal.</p>
-      <div class="tools"><span class="chip blue">Copiloto IA</span><span class="chip blue">Análisis Electoral</span></div>
-    </div>
-    <div class="cell glass a" data-anim="scale" style="--d:.5s">
-      <span class="k">C</span>
-      <h4>Producción de contenido</h4>
-      <p>Textos, imágenes, videos, discursos, infografías y subtítulos en menos tiempo.</p>
-      <div class="tools"><span class="chip violet">Visual AI</span><span class="chip violet">Debate Coach</span></div>
-    </div>
-    <div class="cell glass a" data-anim="scale" style="--d:.6s">
-      <span class="k">D</span>
-      <h4>Reputación e inteligencia digital</h4>
-      <p>Monitorear conversaciones, cambios de percepción y posibles crisis.</p>
-      <div class="tools"><span class="chip aqua">Vista Espejo</span><span class="chip aqua">Impresión Política</span><span class="chip aqua">Imagen Candidato</span></div>
-    </div>
-    <div class="cell glass a" data-anim="scale" style="--d:.7s">
-      <span class="k">E</span>
-      <h4>Optimización de recursos</h4>
-      <p>Medir rendimiento, comparar formatos y priorizar los canales de mayor alcance.</p>
-      <div class="tools"><span class="chip gold">Campo en Vivo</span><span class="chip gold">Red de Casillas</span><span class="chip gold">Comunidad</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ======================================================= CAP 02 -->
-<section class="slide s-chapter" data-bg="blue" data-focus=".74,.5" data-chapter="02 · PULSO 360° en acción">
-  <div class="txt">
-    <div class="eyebrow a">Capítulo 02</div>
-    <div class="num outline a" data-anim="left" style="--d:.1s">02</div>
-    <h2 class="h-l split" style="--d:.3s">PULSO 360°<br><span class="serif grad">en acción</span></h2>
-    <p class="lead a" style="--d:.8s; max-width:84rem">Herramientas para escuchar, entender, crear y movilizar con información.</p>
-  </div>
-  <div class="dial a" data-anim="scale" data-deg="144" data-label="CAPÍTULO 2 / 5" style="--d:.15s"></div>
-</section>
-
-<!-- ======================================================= ECOSISTEMA 360 -->
-<section class="slide s-eco" data-bg="mint" data-focus=".66,.5">
-  <div class="txt">
-    <div class="eyebrow a">El ecosistema</div>
-    <h2 class="h-m split" style="--d:.1s">Un ciclo completo de <span class="serif grad">360°.</span></h2>
-    <p class="lead a" style="--d:.6s">Cada herramienta alimenta a la siguiente: lo que la campaña escucha se convierte en estrategia, contenido y acción en territorio.</p>
-    <div class="legend4 a" style="--d:.9s">
-      <div style="--c:var(--mint)"><b>Escuchar</b><span>Conversación, encuestas y contrapartes</span></div>
-      <div style="--c:var(--aqua)"><b>Entender</b><span>Percepción, estrategia y decisiones</span></div>
-      <div style="--c:var(--violet)"><b>Crear</b><span>Contenido, discurso e imagen</span></div>
-      <div style="--c:var(--gold)"><b>Movilizar</b><span>Territorio, equipo y capacitación</span></div>
-    </div>
-  </div>
-  <div class="eco a" data-anim="scale" style="--d:.1s; width:84rem; height:84rem">
-    <svg class="rings" viewBox="0 0 920 920">
-      <defs>
-        <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      </defs>
-      <g style="transform-origin:460px 460px;animation:spin 120s linear infinite"><circle cx="460" cy="460" r="440" fill="none" stroke="rgba(214,228,255,.14)" stroke-width="1.5" stroke-dasharray="1 9"/></g>
-      <g style="transform-origin:460px 460px;animation:spinr 50s linear infinite"><circle cx="460" cy="460" r="160" fill="none" stroke="rgba(46,242,181,.28)" stroke-width="1.5" stroke-dasharray="3 12"/></g>
-      <circle cx="460" cy="460" r="330" fill="none" stroke="rgba(214,228,255,.06)" stroke-width="18"/>
-      <g filter="url(#glow)" fill="none" stroke-width="5" stroke-linecap="round">
-        <path class="draw" pathLength="1" style="--d:.5s" stroke="#2ef2b5" d="M 483 130.8 A 330 330 0 0 1 789.2 437"/>
-        <path class="draw" pathLength="1" style="--d:.9s" stroke="#22d8e6" d="M 789.2 483 A 330 330 0 0 1 483 789.2"/>
-        <path class="draw" pathLength="1" style="--d:1.3s" stroke="#8f7cff" d="M 437 789.2 A 330 330 0 0 1 130.8 483"/>
-        <path class="draw" pathLength="1" style="--d:1.7s" stroke="#f6be4f" d="M 130.8 437 A 330 330 0 0 1 437 130.8"/>
-      </g>
-    </svg>
-    <span class="quad a" style="left:80%;top:12%;color:var(--mint);--d:.9s">Escuchar</span>
-    <span class="quad a" style="left:80%;top:86%;color:var(--aqua);--d:1.3s">Entender</span>
-    <span class="quad a" style="left:4%;top:86%;color:var(--violet);--d:1.7s">Crear</span>
-    <span class="quad a" style="left:4%;top:12%;color:var(--gold);--d:2.1s">Movilizar</span>
-    <div class="core"><div class="brand"><div class="mark"><i class="ico" data-i="zap"></i></div></div><span class="lbl">PULSO 360°</span></div>
-    <!-- nodos (posición = 50% + 35.9% · ángulo) -->
-    <div class="node glass a" data-anim="scale" style="left:62.3%;top:16.3%;--d:.8s"><span class="tile-ico"><i class="ico" data-i="trending"></i></span>Sentimiento</div>
-    <div class="node glass a" data-anim="scale" style="left:76.7%;top:26%;--d:.95s"><span class="tile-ico"><i class="ico" data-i="pie"></i></span>Encuestas</div>
-    <div class="node glass a" data-anim="scale" style="left:84.8%;top:41.3%;--d:1.1s"><span class="tile-ico"><i class="ico" data-i="eye"></i></span>Vista Espejo</div>
-    <div class="node glass a" data-anim="scale" style="left:84.1%;top:61.1%;--d:1.2s"><span class="tile-ico blue"><i class="ico" data-i="star"></i></span>Impresión Política</div>
-    <div class="node glass a" data-anim="scale" style="left:74%;top:76.7%;--d:1.35s"><span class="tile-ico blue"><i class="ico" data-i="flask"></i></span>Análisis Electoral</div>
-    <div class="node glass a" data-anim="scale" style="left:58.7%;top:84.9%;--d:1.5s"><span class="tile-ico blue"><i class="ico" data-i="msg"></i></span>Copiloto IA</div>
-    <div class="node glass a" data-anim="scale" style="left:37.7%;top:83.7%;--d:1.6s"><span class="tile-ico violet"><i class="ico" data-i="imageplus"></i></span>Visual AI</div>
-    <div class="node glass a" data-anim="scale" style="left:22.5%;top:73.1%;--d:1.75s"><span class="tile-ico violet"><i class="ico" data-i="mic"></i></span>Debate Coach</div>
-    <div class="node glass a" data-anim="scale" style="left:14.7%;top:57.5%;--d:1.9s"><span class="tile-ico violet"><i class="ico" data-i="scan"></i></span>Imagen Candidato</div>
-    <div class="node glass a" data-anim="scale" style="left:16.3%;top:37.7%;--d:2s"><span class="tile-ico gold"><i class="ico" data-i="pin"></i></span>Campo en Vivo</div>
-    <div class="node glass a" data-anim="scale" style="left:26%;top:23.3%;--d:2.15s"><span class="tile-ico gold"><i class="ico" data-i="users"></i></span>Comunidad</div>
-    <div class="node glass a" data-anim="scale" style="left:41.3%;top:15.2%;--d:2.3s"><span class="tile-ico gold"><i class="ico" data-i="cap"></i></span>Capacitación</div>
-  </div>
-</section>
-
-<!-- ======================================================= HERRAMIENTA · SENTIMIENTO -->
-<section class="slide s-tool" data-bg="mint" data-focus=".7,.45">
-  <div class="txt">
-    <div class="eyebrow a">Herramienta · Escuchar</div>
-    <div class="titlerow a" style="--d:.1s"><div class="tile-ico"><i class="ico" data-i="trending"></i></div><h2 class="h-m">Sentimiento</h2></div>
-    <p class="lead a" style="--d:.25s">Procesamiento de lenguaje natural para entender qué preocupa a la ciudadanía y cómo se siente al respecto.</p>
-    <ul class="uses">
-      <li class="a" style="--d:.4s"><i class="ico" data-i="check"></i>Identifica temas de interés: seguridad, empleo, salud, movilidad, educación, economía y servicios públicos.</li>
-      <li class="a" style="--d:.5s"><i class="ico" data-i="check"></i>Mide casi en tiempo real cómo se recibe cada mensaje.</li>
-      <li class="a" style="--d:.6s"><i class="ico" data-i="check"></i>Detecta cambios de tendencia antes de que escalen.</li>
-    </ul>
-    <div class="key a" style="--d:.75s"><b>Buena práctica:</b> contrastar siempre con encuestas, estudios territoriales y fuentes oficiales.</div>
-  </div>
-  <div class="ui glass edge a" data-anim="right" style="--d:.2s">
-    <div class="bar"><div class="t"><span class="minimark"><i class="ico" data-i="zap"></i></span>Sentimiento <span class="sub">Conversación digital · últimas 72 h</span></div><span class="live">EN VIVO</span></div>
-    <div class="body">
-      <div class="kpis">
-        <div class="kpi"><div class="l">Menciones</div><div class="v"><span data-count="48.2" data-dec="1" style="--d:.6s">0</span><small>K</small></div></div>
-        <div class="kpi"><div class="l">Sentimiento neto</div><div class="v mint"><span data-count="12" data-sign="1" style="--d:.7s">0</span></div></div>
-        <div class="kpi"><div class="l">Temas activos</div><div class="v"><span data-count="7" style="--d:.8s">0</span></div></div>
-      </div>
-      <svg viewBox="0 0 800 130" style="width:100%;height:12rem;margin-bottom:2.4rem;overflow:visible">
-        <defs><linearGradient id="sFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2ef2b5" stop-opacity=".3"/><stop offset="1" stop-color="#2ef2b5" stop-opacity="0"/></linearGradient></defs>
-        <path class="gen-area a" data-anim="fade" fill="url(#sFill)" style="--d:1.4s"/>
-        <path class="gen-wave draw" pathLength="1" data-seed="5" fill="none" stroke="#2ef2b5" stroke-width="3" style="--d:.7s;filter:drop-shadow(0 0 6px rgba(46,242,181,.8))"/>
-      </svg>
-      <div class="topics">
-        <div class="topic"><span>Seguridad</span><span class="track2"><i style="--v:.34;--d:.8s"></i></span><span class="pct">34%</span></div>
-        <div class="topic"><span>Empleo</span><span class="track2"><i style="--v:.22;--d:.9s"></i></span><span class="pct">22%</span></div>
-        <div class="topic"><span>Salud</span><span class="track2"><i style="--v:.15;--d:1s"></i></span><span class="pct">15%</span></div>
-        <div class="topic"><span>Movilidad</span><span class="track2"><i style="--v:.11;--d:1.1s"></i></span><span class="pct">11%</span></div>
-        <div class="topic"><span>Educación</span><span class="track2"><i style="--v:.08;--d:1.2s"></i></span><span class="pct">8%</span></div>
-        <div class="topic"><span>Economía</span><span class="track2"><i style="--v:.06;--d:1.3s"></i></span><span class="pct">6%</span></div>
-        <div class="topic"><span>Servicios públicos</span><span class="track2"><i style="--v:.04;--d:1.4s"></i></span><span class="pct">4%</span></div>
-      </div>
-    </div>
-    <div class="foot"><span class="note-ill">Vista conceptual · datos ilustrativos</span><span class="chip ghost">Temas de conversación</span></div>
-  </div>
-</section>
-
-<!-- ======================================================= HERRAMIENTA · TERRITORIO -->
-<section class="slide s-tool" data-bg="blue" data-focus=".7,.5">
-  <div class="txt">
-    <div class="eyebrow a">Herramienta · Escuchar + Movilizar</div>
-    <div class="titlerow a" style="--d:.1s"><div class="tile-ico gold"><i class="ico" data-i="pin"></i></div><h2 class="h-m">Encuestas y Campo en Vivo</h2></div>
-    <p class="lead a" style="--d:.25s">Del recorrido territorial al dato: reportes de campo y encuestas georreferenciadas para saber qué preocupa en cada zona.</p>
-    <ul class="uses">
-      <li class="a" style="--d:.4s"><i class="ico" data-i="check"></i>Ubica problemas por colonia: alumbrado, inundaciones, transporte, seguridad, basura.</li>
-      <li class="a" style="--d:.5s"><i class="ico" data-i="check"></i>Coordina brigadas, colaboradores y red de casillas con información compartida.</li>
-    </ul>
-    <div class="flow a" style="--d:.7s"><span class="chip ghost">Problema</span><span class="arrow">→</span><span class="chip blue">Dato</span><span class="arrow">→</span><span class="chip">Propuesta pública verificable</span></div>
-  </div>
-  <div class="ui glass edge a" data-anim="right" style="--d:.2s">
-    <div class="bar"><div class="t"><span class="minimark"><i class="ico" data-i="zap"></i></span>Campo en Vivo <span class="sub">Mapa territorial · municipio de ejemplo</span></div><span class="live">EN VIVO</span></div>
-    <div class="body" style="padding-bottom:1rem">
-      <div class="map a" data-anim="fade" style="--d:.2s">
-        <svg data-hex='[[0.28,0.32,1],[0.66,0.26,0.8],[0.5,0.62,0.95],[0.8,0.66,0.7],[0.2,0.7,0.6]]'></svg>
-        <div class="pin a" data-anim="down" style="left:28%;top:32%;--c:var(--mint);--d:1.1s"><div class="lab"><i></i>Alumbrado público</div><div class="dot"></div></div>
-        <div class="pin a" data-anim="down" style="left:66%;top:26%;--c:var(--aqua);--d:1.3s"><div class="lab"><i></i>Inundaciones</div><div class="dot"></div></div>
-        <div class="pin a" data-anim="down" style="left:50%;top:62%;--c:var(--gold);--d:1.5s"><div class="lab"><i></i>Seguridad</div><div class="dot"></div></div>
-        <div class="pin a" data-anim="down" style="left:80%;top:66%;--c:var(--blue);--d:1.7s"><div class="lab"><i></i>Transporte</div><div class="dot"></div></div>
-        <div class="pin a" data-anim="down" style="left:20%;top:70%;--c:var(--violet);--d:1.9s"><div class="lab"><i></i>Recolección de basura</div><div class="dot"></div></div>
-      </div>
-    </div>
-    <div class="foot">
-      <div style="display:flex;gap:4rem">
-        <div class="kpi" style="border:0;background:none;padding:0"><div class="l">Reportes de campo</div><div class="v" style="font-size:3.4rem"><span data-count="1284" style="--d:.8s">0</span></div></div>
-        <div class="kpi" style="border:0;background:none;padding:0"><div class="l">Encuestas</div><div class="v" style="font-size:3.4rem"><span data-count="3910" style="--d:.9s">0</span></div></div>
-        <div class="kpi" style="border:0;background:none;padding:0"><div class="l">Zonas</div><div class="v" style="font-size:3.4rem"><span data-count="24" style="--d:1s">0</span></div></div>
-      </div>
-      <span class="note-ill">Vista conceptual · datos ilustrativos</span>
-    </div>
-  </div>
-</section>
-
-<!-- ======================================================= HERRAMIENTA · REPUTACIÓN -->
-<section class="slide s-tool" data-bg="violet" data-focus=".66,.5">
-  <div class="txt">
-    <div class="eyebrow a">Herramienta · Escuchar + Entender</div>
-    <div class="titlerow a" style="--d:.1s"><div class="tile-ico blue"><i class="ico" data-i="eye"></i></div><h2 class="h-m">Vista Espejo e Impresión Política</h2></div>
-    <p class="lead a" style="--d:.25s">La reputación cambia en horas por una declaración, un video viral o una controversia. Monitorear permite responder con criterio.</p>
-    <ul class="uses">
-      <li class="a" style="--d:.4s"><i class="ico" data-i="check"></i>Sigue la conversación sobre la candidatura y sus contrapartes.</li>
-      <li class="a" style="--d:.5s"><i class="ico" data-i="check"></i>Mide la percepción pública y alerta a tiempo sobre posibles crisis.</li>
-    </ul>
-    <div class="key a" style="--d:.7s"><b>No reaccionar a cada tendencia:</b> interpretar su alcance, relevancia y posibles consecuencias.</div>
-  </div>
-  <div class="ui glass edge a" data-anim="right" style="--d:.2s">
-    <div class="bar"><div class="t"><span class="minimark"><i class="ico" data-i="zap"></i></span>Radar de conversación <span class="sub">Clasificación de señales</span></div><span class="live">EN VIVO</span></div>
-    <div class="body">
-      <div class="radar-wrap">
-        <div class="radar a" data-anim="scale" style="--d:.4s">
-          <div class="ring" style="width:33%;height:33%"></div><div class="ring" style="width:66%;height:66%"></div>
-          <div class="cross" style="left:50%;top:0;bottom:0;width:.1rem"></div><div class="cross" style="top:50%;left:0;right:0;height:.1rem"></div>
-          <div class="sweep"></div>
-          <span class="blip" style="left:68%;top:30%;--c:var(--aqua);--t:-.4s"></span>
-          <span class="blip" style="left:76%;top:58%;--c:var(--blue);--t:-1.2s"></span>
-          <span class="blip" style="left:40%;top:76%;--c:var(--mint);--t:-2.2s"></span>
-          <span class="blip" style="left:24%;top:44%;--c:var(--gold);--t:-3s"></span>
-          <span class="blip" style="left:38%;top:22%;--c:var(--coral);--t:-3.8s"></span>
-          <span class="blip" style="left:58%;top:46%;--c:var(--mint);--t:-.9s"></span>
-        </div>
-        <div class="signals">
-          <div class="sig a" data-anim="right" style="--c:var(--aqua);--d:.6s"><i></i><b>Crítica legítima</b><span>Responder con datos</span></div>
-          <div class="sig a" data-anim="right" style="--c:var(--blue);--d:.75s"><i></i><b>Opinión personal</b><span>Escuchar</span></div>
-          <div class="sig a" data-anim="right" style="--c:var(--mint);--d:.9s"><i></i><b>Información verificable</b><span>Aprovechar</span></div>
-          <div class="sig a" data-anim="right" style="--c:var(--gold);--d:1.05s"><i></i><b>Rumor</b><span>Verificar primero</span></div>
-          <div class="sig a" data-anim="right" style="--c:var(--coral);--d:1.2s"><i></i><b>Campaña coordinada</b><span>Documentar</span></div>
+  <div class="stagebox a" data-anim="fade" style="--d:.2s">
+    <div class="trad panel" style="left:0;top:14rem;--i:0;--tx:93.5rem;--ty:10.5rem"><i class="ico" data-i="users"></i><b>Mítines</b></div>
+    <div class="trad panel" style="left:19rem;top:14rem;--i:1;--tx:74.5rem;--ty:10.5rem"><i class="ico" data-i="newspaper"></i><b>Impresos</b></div>
+    <div class="trad panel" style="left:38rem;top:14rem;--i:2;--tx:55.5rem;--ty:10.5rem"><i class="ico" data-i="tv"></i><b>Televisión</b></div>
+    <div class="trad panel" style="left:0;top:29rem;--i:3;--tx:93.5rem;--ty:-4.5rem"><i class="ico" data-i="radio"></i><b>Radio</b></div>
+    <div class="trad panel" style="left:19rem;top:29rem;--i:4;--tx:74.5rem;--ty:-4.5rem"><i class="ico" data-i="monitor"></i><b>Espectaculares</b></div>
+    <div class="trad panel" style="left:38rem;top:29rem;--i:5;--tx:55.5rem;--ty:-4.5rem"><i class="ico" data-i="route"></i><b>Recorridos</b></div>
+    <div class="beam" style="top:21.5rem"></div><div class="beam" style="top:28.5rem"></div><div class="beam" style="top:35.5rem"></div>
+    <div class="crowd" data-n="54"></div>
+    <div class="phone panel" style="left:46rem;top:8rem;--r:-5deg;--i:0;--tx:47.5rem;--ty:7rem;--g1:#1b3f9c;--g2:#4d8bff"><div class="pn">Facebook<em>•••</em></div><div class="media"></div><div class="ln"></div><div class="ln s"></div><div class="rx"><span><i class="ico" data-i="heart"></i>2.4K</span><span><i class="ico" data-i="msg"></i>318</span></div></div>
+    <div class="phone panel" style="left:70rem;top:2rem;--r:3deg;--i:1;--tx:23.5rem;--ty:13rem;--g1:#5b2a9c;--g2:#ff6f8e"><div class="pn">Instagram<em>•••</em></div><div class="media"></div><div class="ln"></div><div class="ln s"></div><div class="rx"><span><i class="ico" data-i="heart"></i>8.1K</span><span><i class="ico" data-i="msg"></i>402</span></div></div>
+    <div class="phone panel" style="left:94rem;top:10rem;--r:-2deg;--i:2;--tx:-.5rem;--ty:5rem;--g1:#0c6b73;--g2:#ff6f8e"><div class="pn">TikTok<em>•••</em></div><div class="media"></div><div class="ln"></div><div class="ln s"></div><div class="rx"><span><i class="ico" data-i="heart"></i>21K</span><span><i class="ico" data-i="share"></i>1.2K</span></div></div>
+    <div class="phone panel" style="left:118rem;top:3rem;--r:4deg;--i:3;--tx:-24.5rem;--ty:12rem;--g1:#7a1d2c;--g2:#f6be4f"><div class="pn">YouTube<em>•••</em></div><div class="media"></div><div class="ln"></div><div class="ln s"></div><div class="rx"><span><i class="ico" data-i="play"></i>56K</span><span><i class="ico" data-i="msg"></i>740</span></div></div>
+    <div class="phone panel" style="left:142rem;top:9rem;--r:-4deg;--i:4;--tx:-48.5rem;--ty:6rem;--g1:#1c2533;--g2:#8b98ad"><div class="pn">X<em>•••</em></div><div class="media"></div><div class="ln"></div><div class="ln s"></div><div class="rx"><span><i class="ico" data-i="share"></i>930</span><span><i class="ico" data-i="msg"></i>260</span></div></div>
+    <div class="bubble" style="left:58rem;top:44rem;--i:0">¿Y el transporte en mi colonia?</div>
+    <div class="bubble" style="left:96rem;top:46rem;--i:1">Me gusta la propuesta</div>
+    <div class="bubble" style="left:130rem;top:44rem;--i:2">¿Cuándo vienen a mi barrio?</div>
+    <div class="uni panel glow ui">
+      <div class="bar"><div class="t"><span class="mk"><i class="ico" data-i="zap"></i></span>PULSO 360° <span class="sub">Monitoreo unificado</span></div><span class="live">EN VIVO</span></div>
+      <div class="body">
+        <div class="srcs"><span class="chip ghost">TV</span><span class="chip ghost">Radio</span><span class="chip ghost">Prensa</span><span class="chip blue">Facebook</span><span class="chip blue">Instagram</span><span class="chip blue">TikTok</span><span class="chip blue">YouTube</span><span class="chip blue">X</span></div>
+        <div class="grid2">
+          <div class="chartbox"><span class="caps">Conversación total · 7 días</span>
+            <svg viewBox="0 0 800 220"><defs><linearGradient id="uf" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2ef2b5" stop-opacity=".32"/><stop offset="1" stop-color="#2ef2b5" stop-opacity="0"/></linearGradient></defs>
+              <path class="gen-area" fill="url(#uf)"/><path class="gen-wave" data-h="220" data-seed="3" fill="none" stroke="#2ef2b5" stroke-width="3" style="filter:drop-shadow(0 0 6px rgba(46,242,181,.8))"/></svg></div>
+          <div class="mods">
+            <div class="mod"><span class="ti sm"><i class="ico" data-i="trending"></i></span><div><b>Sentimiento</b><span>ESCUCHA</span></div></div>
+            <div class="mod"><span class="ti sm violet"><i class="ico" data-i="imageplus"></i></span><div><b>Visual AI</b><span>PRODUCCIÓN</span></div></div>
+            <div class="mod"><span class="ti sm blue"><i class="ico" data-i="eye"></i></span><div><b>Vista Espejo</b><span>MONITOREO</span></div></div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="foot"><span class="note-ill">Vista conceptual · datos ilustrativos</span><span class="chip ghost">Criterio humano en cada respuesta</span></div>
   </div>
 </section>
 
-<!-- ======================================================= HERRAMIENTA · VISUAL AI -->
-<section class="slide s-tool" data-bg="violet" data-focus=".68,.5">
-  <div class="txt">
-    <div class="eyebrow a">Herramienta · Crear</div>
-    <div class="titlerow a" style="--d:.1s"><div class="tile-ico violet"><i class="ico" data-i="imageplus"></i></div><h2 class="h-m">Visual AI</h2></div>
-    <p class="lead a" style="--d:.25s">IA generativa para producir piezas de calidad profesional en minutos, incluso con presupuestos limitados.</p>
-    <ul class="uses">
-      <li class="a" style="--d:.4s"><i class="ico" data-i="check"></i>Un mismo mensaje adaptado a cada canal y formato.</li>
-      <li class="a" style="--d:.5s"><i class="ico" data-i="check"></i>Versiones accesibles y en otros idiomas.</li>
-      <li class="a" style="--d:.6s"><i class="ico" data-i="check"></i>Menos tiempo de producción, más tiempo para la estrategia.</li>
-    </ul>
-    <div class="key a" style="--d:.75s"><b>La creatividad y el criterio</b> siguen en manos del equipo: sensibilidad social, credibilidad y conexión emocional.</div>
+<!-- 06 · CASOS MÉXICO EMPRESAS ========================================== -->
+<section class="slide s-cases" data-bg="deep" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">Casos documentados</span>
+    <h2 class="h2 split" style="--d:.1s">La IA ya da resultados <span class="hl">en México.</span></h2>
   </div>
-  <div class="fan" style="width:91rem">
-    <svg class="lines" viewBox="0 0 910 660" preserveAspectRatio="none">
-      <defs><linearGradient id="fanG" x1="0" x2="1"><stop offset="0" stop-color="#8f7cff"/><stop offset="1" stop-color="#2ef2b5"/></linearGradient></defs>
-      <g fill="none" stroke="url(#fanG)" stroke-width="2" stroke-opacity=".7">
-        <path class="draw" pathLength="1" style="--d:.7s"  d="M340 330 C 440 330, 430 55, 528 55"/>
-        <path class="draw" pathLength="1" style="--d:.8s"  d="M340 330 C 450 330, 460 165, 573 165"/>
-        <path class="draw" pathLength="1" style="--d:.9s"  d="M340 330 C 470 330, 480 275, 600 275"/>
-        <path class="draw" pathLength="1" style="--d:1s"   d="M340 330 C 470 330, 480 385, 600 385"/>
-        <path class="draw" pathLength="1" style="--d:1.1s" d="M340 330 C 450 330, 460 495, 573 495"/>
-        <path class="draw" pathLength="1" style="--d:1.2s" d="M340 330 C 440 330, 430 605, 528 605"/>
-      </g>
-    </svg>
-    <div class="src-card glass edge hot a" data-anim="scale" style="--d:.3s">
-      <span class="caps" style="color:var(--mint)">Mensaje base</span>
-      <div class="mq">“Más luminarias, calles más seguras.”</div>
-      <span class="chip violet" style="align-self:flex-start"><i class="ico" data-i="sparkles"></i>Generar versiones</span>
+  <div class="cases">
+    <div class="case panel a" style="--d:.3s"><div class="who"><b>Crediclub</b><span class="chip ghost">Auditoría</span></div>
+      <div class="big hl"><span data-count="150">0</span></div><p>reuniones analizadas en aproximadamente una hora.</p>
+      <div class="use"><em>En una campaña</em>Cada reunión termina en acuerdos y tareas con responsable.</div></div>
+    <div class="case panel a" style="--d:.45s"><div class="who"><b>BBVA México</b><span class="chip ghost">Legal</span></div>
+      <div class="big hl">+<span data-count="9000">0</span></div><p>consultas legales automatizadas al año.</p>
+      <div class="use"><em>En una campaña</em>El conocimiento del equipo, disponible cuando se necesita.</div></div>
+    <div class="case panel a" style="--d:.6s"><div class="who"><b>Coca-Cola FEMSA</b><span class="chip ghost">Dirección</span></div>
+      <div class="big hl">−<span data-count="25">0</span><small>%</small></div><p>de tiempo en briefings ejecutivos.</p>
+      <div class="use"><em>En una campaña</em>Una síntesis diaria de pendientes y decisiones.</div></div>
+  </div>
+  <p class="src a" style="--d:.9s">Casos publicados por Microsoft y OpenAI. No son resultados de PULSO 360°: muestran aplicaciones posibles.</p>
+</section>
+
+<!-- 07 · CASOS ELECTORALES ============================================== -->
+<section class="slide s-cases" data-bg="violet" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">En lo electoral</span>
+    <h2 class="h2 split" style="--d:.1s">En México, <span class="hl">ya está ocurriendo.</span></h2>
+  </div>
+  <div class="cases">
+    <div class="case panel a" style="--d:.3s"><div class="who"><b>INE · Inés</b><span class="chip ghost">Atención</span></div>
+      <div class="big hl"><span data-count="222953">0</span></div><p>conversaciones ciudadanas atendidas en 2023-2024.</p>
+      <div class="use"><em>Lección</em>Cada consulta merece respuesta y seguimiento.</div></div>
+    <div class="case panel a" style="--d:.45s"><div class="who"><b>Signa_Lab ITESO</b><span class="chip ghost">Debate 2024</span></div>
+      <div class="big hl"><span data-count="24000">0</span></div><p>preguntas ciudadanas procesadas con IA y revisión humana.</p>
+      <div class="use"><em>Lección</em>Miles de preguntas, ordenadas para decidir.</div></div>
+    <div class="case panel a" style="--d:.6s"><div class="who"><b>INE · DEPPP</b><span class="chip ghost">Propaganda</span></div>
+      <div class="big hl"><span data-count="17">0</span></div><p>materiales de propaganda con uso de IA registrados en 2024.</p>
+      <div class="use"><em>Lección</em>Producir, revisar y conservar cada versión.</div></div>
+  </div>
+  <p class="src a" style="--d:.9s">INE, Estrategia de Difusión 2023-2024 · Signa_Lab ITESO, abril 2024 · INE DEPPP, septiembre 2024</p>
+</section>
+
+<!-- 08 · HÉROE PULSO 360° =============================================== -->
+<section class="slide s-hero" data-bg="mint" data-chapter="02 · PULSO 360°" data-3d="shape:bolt; mesh:bolt; pos:.75,.5; scale:.82; spin:-.35; size:9; opacity:.55">
+  <span class="label a">La plataforma</span>
+  <h2 class="disp split" style="--d:.15s">PULSO<br><span class="hl">360°</span></h2>
+  <p class="h3 a" style="--d:.7s;max-width:80rem">Una plataforma. <span class="soft">Toda la campaña.</span></p>
+  <div class="tags a" style="--d:.9s"><span class="chip">Escucha</span><span class="chip blue">Produce</span><span class="chip gold">Moviliza</span></div>
+</section>
+
+<!-- 09 · MOTOR / CHIP =================================================== -->
+<section class="slide s-left" data-bg="deep" data-3d="shape:circuit; mesh:chip; pos:.77,.54; scale:.76; rot:-.95,0; spin:-.3; pulse:1; wave:1; size:8; opacity:.55">
+  <div class="col narrow">
+    <span class="label a">El motor</span>
+    <h2 class="h2 split" style="--d:.1s">Un motor de IA <span class="hl">para toda la campaña.</span></h2>
+    <ul class="points">
+      <li class="a" style="--d:.5s"><span class="ti"><i class="ico" data-i="radar"></i></span><div><b>Escucha</b><span>Redes, medios y encuestas.</span></div></li>
+      <li class="a" style="--d:.65s"><span class="ti violet"><i class="ico" data-i="sparkles"></i></span><div><b>Produce</b><span>Contenido, discurso e imagen.</span></div></li>
+      <li class="a" style="--d:.8s"><span class="ti gold"><i class="ico" data-i="pin"></i></span><div><b>Moviliza</b><span>Equipo, brigadas y casillas.</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 10 · ECOSISTEMA EN ORDEN ============================================ -->
+<section class="slide s-eco" data-bg="blue" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">El sistema completo</span>
+    <h2 class="h2 split" style="--d:.1s">Todo PULSO 360°, <span class="hl">en orden.</span></h2>
+  </div>
+  <div class="layers">
+    <div class="layer imp panel a" data-anim="tilt" style="--d:.2s"><div class="lh"><span class="badge">IMPULSA</span></div><span class="verb">Organiza</span>
+      <ul><li style="--d:.6s"><i class="ico" data-i="layout"></i>Dashboard</li><li style="--d:.7s"><i class="ico" data-i="tasks"></i>Tareas</li><li style="--d:.8s"><i class="ico" data-i="imageplus"></i>Visual AI</li><li style="--d:.9s"><i class="ico" data-i="cap"></i>Capacitación</li></ul></div>
+    <div class="layer pos panel a" data-anim="tilt" style="--d:.35s"><div class="lh"><span class="badge">POSICIONA</span></div><span class="verb">Escucha</span>
+      <ul><li style="--d:1s"><i class="ico" data-i="trending"></i>Sentimiento</li><li style="--d:1.1s"><i class="ico" data-i="eye"></i>Vista Espejo</li><li style="--d:1.2s"><i class="ico" data-i="star"></i>Impresión Política</li></ul></div>
+    <div class="layer dom panel a" data-anim="tilt" style="--d:.5s"><div class="lh"><span class="badge">DOMINA</span></div><span class="verb">Decide</span>
+      <ul><li style="--d:1.3s"><i class="ico" data-i="mic"></i>Debate Coach</li><li style="--d:1.4s"><i class="ico" data-i="msg"></i>Copiloto IA</li><li style="--d:1.5s"><i class="ico" data-i="flask"></i>Análisis Electoral</li><li style="--d:1.6s"><i class="ico" data-i="scan"></i>Imagen del Candidato</li><li style="--d:1.7s"><i class="ico" data-i="users"></i>Comunidad</li></ul></div>
+    <div class="layer campo panel a" data-anim="tilt" style="--d:.65s"><div class="lh"><span class="badge">CAMPO</span></div><span class="verb">Moviliza</span>
+      <ul><li style="--d:1.8s"><i class="ico" data-i="flag"></i>Brigadista</li><li style="--d:1.9s"><i class="ico" data-i="pin"></i>Campo en Vivo</li><li style="--d:2s"><i class="ico" data-i="vote"></i>Red de Casillas</li><li style="--d:2.1s"><i class="ico" data-i="pie"></i>Encuestas</li><li style="--d:2.2s"><i class="ico" data-i="userplus"></i>Colaboradores</li></ul></div>
+  </div>
+</section>
+
+<!-- 11 · MONITOREO UNIFICADO ============================================ -->
+<section class="slide s-tool" data-bg="mint" data-3d="shape:dust; opacity:.08">
+  <div class="txt">
+    <span class="label a">Posiciona · Escucha</span>
+    <h2 class="h2 split" style="--d:.1s;font-size:7rem">Todas las conversaciones. <span class="hl">Un solo panel.</span></h2>
+    <ul class="points">
+      <li class="a" style="--d:.5s"><span class="ti"><i class="ico" data-i="trending"></i></span><div><b>Sentimiento</b><span>Qué se dice y cómo se siente.</span></div></li>
+      <li class="a" style="--d:.65s"><span class="ti blue"><i class="ico" data-i="eye"></i></span><div><b>Vista Espejo</b><span>Qué hacen las contrapartes.</span></div></li>
+      <li class="a" style="--d:.8s"><span class="ti violet"><i class="ico" data-i="star"></i></span><div><b>Impresión Política</b><span>Cómo se percibe la candidatura.</span></div></li>
+    </ul>
+  </div>
+  <div class="ui panel glow a" data-anim="right" style="--d:.2s">
+    <div class="bar"><div class="t"><span class="mk"><i class="ico" data-i="zap"></i></span>Monitoreo <span class="sub">Medios y redes · últimas 72 h</span></div><span class="live">EN VIVO</span></div>
+    <div class="mon">
+      <div class="side">
+        <span class="grp">MEDIOS</span>
+        <div class="s" style="--d:.5s">Televisión<em data-count="312" style="--d:.6s">0</em></div>
+        <div class="s" style="--d:.58s">Radio<em data-count="188" style="--d:.7s">0</em></div>
+        <div class="s" style="--d:.66s">Prensa digital<em data-count="540" style="--d:.8s">0</em></div>
+        <span class="grp">REDES</span>
+        <div class="s" style="--d:.74s">Facebook<em data-count="12400" style="--d:.9s">0</em></div>
+        <div class="s" style="--d:.82s">Instagram<em data-count="8900" style="--d:1s">0</em></div>
+        <div class="s" style="--d:.9s">TikTok<em data-count="21300" style="--d:1.1s">0</em></div>
+        <div class="s" style="--d:.98s">YouTube<em data-count="3100" style="--d:1.2s">0</em></div>
+        <div class="s" style="--d:1.06s">X<em data-count="5600" style="--d:1.3s">0</em></div>
+      </div>
+      <div class="main">
+        <div class="kpis">
+          <div class="kpi"><div class="l">Menciones</div><div class="v"><span data-count="52.3" data-dec="1" style="--d:.7s">0</span>K</div></div>
+          <div class="kpi"><div class="l">Sentimiento</div><div class="v mint">+<span data-count="12" style="--d:.8s">0</span></div></div>
+          <div class="kpi"><div class="l">Fuentes</div><div class="v"><span data-count="8" style="--d:.9s">0</span></div></div>
+        </div>
+        <div class="chartbox"><span class="caps">Índice de sentimiento</span>
+          <svg viewBox="0 0 800 200"><defs><linearGradient id="mf" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2ef2b5" stop-opacity=".32"/><stop offset="1" stop-color="#2ef2b5" stop-opacity="0"/></linearGradient></defs>
+            <path class="gen-area a" data-anim="fade" fill="url(#mf)" style="--d:1.4s"/><path class="gen-wave draw" pathLength="1" data-h="200" data-seed="5" fill="none" stroke="#2ef2b5" stroke-width="3" style="--d:.7s;filter:drop-shadow(0 0 6px rgba(46,242,181,.8))"/></svg></div>
+        <div class="alert a" style="--d:1.6s"><i class="ico" data-i="alert"></i><span><b>Tendencia en ascenso:</b> movilidad · +38% en 2 horas</span></div>
+      </div>
     </div>
-    <div class="out glass a" data-anim="left" style="left:58%;top:5.5rem;--d:1.1s"><div class="thumb" style="--g1:#5b3fd1;--g2:#13e4ab"></div><div><b>Video vertical</b><span>9:16 · Reels · Shorts</span></div></div>
-    <div class="out glass a" data-anim="left" style="left:63%;top:16.5rem;--d:1.2s"><div class="thumb" style="--g1:#123f9c;--g2:#22d8e6;--sd:.3s"></div><div><b>Post cuadrado</b><span>1:1 · Feed</span></div></div>
-    <div class="out glass a" data-anim="left" style="left:66%;top:27.5rem;--d:1.3s"><div class="thumb" style="--g1:#0e7a64;--g2:#4d8bff;--sd:.6s"></div><div><b>Infografía</b><span>Datos clave</span></div></div>
-    <div class="out glass a" data-anim="left" style="left:66%;top:38.5rem;--d:1.4s"><div class="thumb" style="--g1:#3b2b9b;--g2:#ff6f8e;--sd:.9s"></div><div><b>Subtítulos</b><span>Accesibilidad</span></div></div>
-    <div class="out glass a" data-anim="left" style="left:63%;top:49.5rem;--d:1.5s"><div class="thumb" style="--g1:#6b4a12;--g2:#f6be4f;--sd:1.2s"></div><div><b>Discurso</b><span>Versión mitin · 3 min</span></div></div>
-    <div class="out glass a" data-anim="left" style="left:58%;top:60.5rem;--d:1.6s"><div class="thumb" style="--g1:#0c6b73;--g2:#8f7cff;--sd:1.5s"></div><div><b>Otro idioma</b><span>Traducción revisada</span></div></div>
+    <div class="foot"><span class="note">Vista conceptual · datos ilustrativos</span><span class="chip ghost">8 fuentes · 1 panel</span></div>
   </div>
 </section>
 
-<!-- ======================================================= HERRAMIENTA · DEBATE COACH -->
-<section class="slide s-tool" data-bg="mint" data-focus=".7,.4">
-  <div class="txt">
-    <div class="eyebrow a">Herramienta · Crear</div>
-    <div class="titlerow a" style="--d:.1s"><div class="tile-ico violet"><i class="ico" data-i="mic"></i></div><h2 class="h-m">Debate Coach</h2></div>
-    <p class="lead a" style="--d:.25s">Un simulador para ensayar debates, entrevistas y preguntas difíciles antes de enfrentarlas en público.</p>
-    <ul class="uses">
-      <li class="a" style="--d:.4s"><i class="ico" data-i="check"></i>Analiza el discurso: claridad, uso de datos, tono y tiempo.</li>
-      <li class="a" style="--d:.5s"><i class="ico" data-i="check"></i>Prepara respuestas informativas y verificables.</li>
-      <li class="a" style="--d:.6s"><i class="ico" data-i="check"></i>Retroalimentación inmediata para el vocero.</li>
-    </ul>
-    <div class="key a" style="--d:.75s"><b>La IA entrena, la autenticidad convence.</b> El objetivo es comunicar mejor, no sonar artificial.</div>
+<!-- 12 · VISUAL AI: ENTREVISTA → 8 ENTREGABLES ========================== -->
+<section class="slide s-fan" data-bg="violet" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem;margin-bottom:4rem">
+    <span class="label a">Impulsa · Visual AI</span>
+    <h2 class="h2 split" style="--d:.1s">Una entrevista. <span class="hl">Ocho entregables.</span></h2>
   </div>
-  <div class="ui glass edge a" data-anim="right" style="--d:.2s">
-    <div class="bar"><div class="t"><span class="minimark"><i class="ico" data-i="zap"></i></span>Debate Coach <span class="sub">Simulación · ronda 3 de 5</span></div><span class="live">GRABANDO</span></div>
+  <div class="stagef">
+    <div class="interview panel glow a" data-anim="scale" style="--d:.3s">
+      <div class="thumb"><i class="ico" data-i="play"></i><span class="tc">20:00</span></div>
+      <b class="h4">Entrevista de 20 minutos</b>
+      <span class="chip" style="align-self:flex-start;color:#c0b4ff;background:rgba(143,124,255,.1);border-color:rgba(143,124,255,.32)"><i class="ico" data-i="sparkles"></i>Visual AI</span>
+    </div>
+    <div class="flowin a" data-anim="fade" style="--d:.7s"></div>
+    <div class="outs">
+      <div class="out panel a" data-anim="left" style="--d:.8s"><span class="q">1</span><span class="ti sm violet"><i class="ico" data-i="play"></i></span><div><b>Video resumen</b><span>Síntesis de la conversación</span></div></div>
+      <div class="out panel a" data-anim="left" style="--d:.9s"><span class="q">3</span><span class="ti sm violet"><i class="ico" data-i="scissors"></i></span><div><b>Clips breves</b><span>Fragmentos para redes</span></div></div>
+      <div class="out panel a" data-anim="left" style="--d:1s"><span class="q">1</span><span class="ti sm"><i class="ico" data-i="gallery"></i></span><div><b>Carrusel</b><span>Una propuesta, explicada</span></div></div>
+      <div class="out panel a" data-anim="left" style="--d:1.1s"><span class="q">1</span><span class="ti sm"><i class="ico" data-i="mail"></i></span><div><b>Boletín</b><span>Información verificada</span></div></div>
+      <div class="out panel a" data-anim="left" style="--d:1.2s"><span class="q">1</span><span class="ti sm blue"><i class="ico" data-i="type"></i></span><div><b>Publicación de texto</b><span>Resumen general</span></div></div>
+      <div class="out panel a" data-anim="left" style="--d:1.3s"><span class="q">1</span><span class="ti sm blue"><i class="ico" data-i="clipboard"></i></span><div><b>Ficha de argumentos</b><span>Uso interno del equipo</span></div></div>
+    </div>
+  </div>
+  <p class="src a" style="--d:1.5s">Escenario ilustrativo · cada pieza requiere edición, autorización de imagen y revisión de hechos</p>
+</section>
+
+<!-- 13 · PRODUCTIVIDAD + GRÁFICO ======================================== -->
+<section class="slide s-prod" data-bg="mint" data-3d="shape:dust; opacity:.08">
+  <div class="txt">
+    <span class="label a">Productividad</span>
+    <h2 class="h2 split" style="--d:.1s;font-size:7.6rem">Más capacidad <span class="hl">para el equipo.</span></h2>
+    <div class="stats2">
+      <div class="stat panel a" style="--d:.4s"><span class="v hl">−<span data-count="40" style="--d:.6s">0</span>%</span><span class="k">de tiempo en tareas de escritura</span></div>
+      <div class="stat panel a" style="--d:.55s"><span class="v hl">+<span data-count="18" style="--d:.7s">0</span>%</span><span class="k">de calidad en el resultado</span></div>
+    </div>
+    <p class="small a" style="--d:.8s">Experimento con 453 profesionales · Noy y Zhang, <i>Science</i> (2023)</p>
+  </div>
+  <div class="graph panel a" data-anim="right" style="--d:.3s">
+    <div class="over"><span class="caps">Tiempo recuperado</span><span class="chip ghost">Escenario ilustrativo</span></div>
+    <div class="vid"><video data-loop src="assets/video/grafico.mp4" muted playsinline loop preload="auto"></video></div>
+    <div class="h55"><span class="v hl"><span data-count="55" style="--d:1s">0</span><small> h/mes</small></span><p>Un equipo de 5 personas que recupera 30 minutos diarios durante 22 días.</p></div>
+  </div>
+</section>
+
+<!-- 14 · DEBATE COACH =================================================== -->
+<section class="slide s-tool" data-bg="blue" data-3d="shape:dust; opacity:.08">
+  <div class="txt">
+    <span class="label a">Domina · Debate Coach</span>
+    <h2 class="h2 split" style="--d:.1s;font-size:7rem">Ensaya. Mide. <span class="hl">Mejora.</span></h2>
+    <ul class="points">
+      <li class="a" style="--d:.5s"><span class="ti violet"><i class="ico" data-i="mic"></i></span><div><b>Simula</b><span>Preguntas difíciles y entrevistas.</span></div></li>
+      <li class="a" style="--d:.65s"><span class="ti"><i class="ico" data-i="chart"></i></span><div><b>Evalúa</b><span>Claridad, datos, tono y tiempo.</span></div></li>
+      <li class="a" style="--d:.8s"><span class="ti blue"><i class="ico" data-i="trending"></i></span><div><b>Mejora</b><span>Retroalimentación inmediata.</span></div></li>
+    </ul>
+  </div>
+  <div class="ui panel glow a" data-anim="right" style="--d:.2s">
+    <div class="bar"><div class="t"><span class="mk"><i class="ico" data-i="zap"></i></span>Debate Coach <span class="sub">Simulación · ronda 3 de 5</span></div><span class="live">GRABANDO</span></div>
     <div class="body">
       <span class="caps">Pregunta del moderador</span>
-      <div class="h-xs" style="margin:1.2rem 0 2.6rem">“¿Cómo va a financiar su propuesta de movilidad?”</div>
-      <div class="wave" id="wave"></div>
-      <p class="transcript">“…con una reasignación del <em>8% del presupuesto de obra</em> y un esquema de <em>seguimiento público trimestral</em>…”</p>
-      <div class="scores">
-        <div class="score a" data-anim="scale" style="--d:.7s"><div class="ringwrap"><div class="ring" style="--v:310deg;--d:.9s"></div><b><span data-count="86" style="--d:.9s">0</span></b></div><span>Claridad</span></div>
-        <div class="score a" data-anim="scale" style="--d:.8s"><div class="ringwrap"><div class="ring" style="--v:259deg;--d:1s"></div><b><span data-count="72" style="--d:1s">0</span></b></div><span>Uso de datos</span></div>
-        <div class="score a" data-anim="scale" style="--d:.9s"><div class="ringwrap"><div class="ring" style="--v:292deg;--d:1.1s"></div><b><span data-count="81" style="--d:1.1s">0</span></b></div><span>Empatía</span></div>
-        <div class="score a" data-anim="scale" style="--d:1s"><div class="ringwrap"><div class="ring" style="--v:338deg;--d:1.2s"></div><b><span data-count="94" style="--d:1.2s">0</span></b></div><span>Tiempo</span></div>
+      <p class="quote">“¿Cómo va a financiar su propuesta de movilidad?”</p>
+      <div class="wave"></div>
+      <div class="meters">
+        <div class="meter"><span>Claridad</span><span class="segs" data-v="86" style="--d:.6s"></span><b>86</b></div>
+        <div class="meter"><span>Uso de datos</span><span class="segs" data-v="72" style="--d:.8s"></span><b>72</b></div>
+        <div class="meter"><span>Empatía</span><span class="segs" data-v="81" style="--d:1s"></span><b>81</b></div>
+        <div class="meter"><span>Tiempo</span><span class="segs" data-v="94" style="--d:1.2s"></span><b>94</b></div>
       </div>
     </div>
-    <div class="foot"><span class="note-ill">Vista conceptual · datos ilustrativos</span><span class="chip ghost">Ensayar · medir · mejorar</span></div>
+    <div class="foot"><span class="note">Vista conceptual · datos ilustrativos</span><span class="chip ghost">Ensayar · medir · mejorar</span></div>
   </div>
 </section>
 
-<!-- ======================================================= HERRAMIENTA · COPILOTO -->
-<section class="slide s-tool" data-bg="blue" data-focus=".7,.5">
+<!-- 15 · COPILOTO ======================================================= -->
+<section class="slide s-tool" data-bg="violet" data-3d="shape:dust; opacity:.08">
   <div class="txt">
-    <div class="eyebrow a">Herramienta · Entender</div>
-    <div class="titlerow a" style="--d:.1s"><div class="tile-ico blue"><i class="ico" data-i="msg"></i></div><h2 class="h-m">Copiloto IA y Análisis Electoral</h2></div>
-    <p class="lead a" style="--d:.25s">Un asistente estratégico que cruza la información de la campaña para proponer rutas de acción.</p>
-    <ul class="uses">
-      <li class="a" style="--d:.4s"><i class="ico" data-i="check"></i>Resume hallazgos de escucha, encuestas y campo.</li>
-      <li class="a" style="--d:.5s"><i class="ico" data-i="check"></i>Sugiere formatos, canales y momentos para cada mensaje.</li>
-      <li class="a" style="--d:.6s"><i class="ico" data-i="check"></i>Ayuda a priorizar recursos y agenda.</li>
+    <span class="label a">Domina · Copiloto IA</span>
+    <h2 class="h2 split" style="--d:.1s;font-size:7rem">La IA sugiere. <span class="hl">El equipo decide.</span></h2>
+    <ul class="points">
+      <li class="a" style="--d:.5s"><span class="ti blue"><i class="ico" data-i="layers"></i></span><div><b>Resume</b><span>Escucha, encuestas y campo.</span></div></li>
+      <li class="a" style="--d:.65s"><span class="ti"><i class="ico" data-i="sparkles"></i></span><div><b>Sugiere</b><span>Formatos, canales y momentos.</span></div></li>
+      <li class="a" style="--d:.8s"><span class="ti gold"><i class="ico" data-i="target"></i></span><div><b>Prioriza</b><span>Recursos y agenda.</span></div></li>
     </ul>
-    <div class="key a" style="--d:.75s"><b>La IA sugiere, el equipo decide.</b> El criterio político y el conocimiento del contexto mexicano siguen siendo indispensables.</div>
   </div>
-  <div class="ui glass edge a" data-anim="right" style="--d:.2s">
-    <div class="bar"><div class="t"><span class="minimark"><i class="ico" data-i="zap"></i></span>Copiloto IA <span class="sub">Asistente estratégico</span></div><span class="chip ghost" style="font-size:1.2rem">Fuentes: escucha · encuestas · campo</span></div>
+  <div class="ui panel glow a" data-anim="right" style="--d:.2s">
+    <div class="bar"><div class="t"><span class="mk"><i class="ico" data-i="zap"></i></span>Copiloto IA <span class="sub">Asistente estratégico</span></div><span class="chip ghost" style="font-size:1.2rem">Escucha · Encuestas · Campo</span></div>
     <div class="body chat" id="chat">
       <i class="hook" data-step="1" data-target="#chat" data-cls="answered"></i>
       <div class="msg user a" data-anim="right" style="--d:.6s">¿Qué preocupa más a los jóvenes de la zona oriente y cómo explico nuestra propuesta de empleo?</div>
       <div class="typing a" data-anim="fade" style="--d:1.2s"><i></i><i></i><i></i></div>
       <div class="msg ai a typer" data-step="1">
-        <div class="who"><span class="minimark" style="width:2.6rem;height:2.6rem;border-radius:.8rem;display:grid;place-items:center;color:var(--mint2);border:.12rem solid rgba(19,228,171,.4);font-size:1.3rem"><i class="ico" data-i="zap"></i></span>COPILOTO</div>
+        <div class="who">COPILOTO</div>
         <ol>
-          <li><b>Temas principales:</b> empleo formal, transporte nocturno y seguridad en trayectos.</li>
-          <li><b>Formato sugerido:</b> video vertical de 45 segundos con un caso real y una infografía con metas medibles.</li>
+          <li><b>Temas:</b> empleo formal, transporte nocturno y seguridad.</li>
+          <li><b>Formato:</b> video vertical de 45 segundos y una infografía con metas medibles.</li>
           <li><b>Antes de publicar:</b> validar con la encuesta de campo de esta semana.</li>
         </ol>
       </div>
     </div>
-    <div class="foot"><span class="note-ill">Vista conceptual · conversación de ejemplo</span><span class="chip">La IA sugiere · el equipo decide</span></div>
+    <div class="foot"><span class="note">Vista conceptual · conversación de ejemplo</span><span class="chip">La IA sugiere · el equipo decide</span></div>
   </div>
 </section>
 
-<!-- ======================================================= SEGMENTACIÓN -->
-<section class="slide s-seg" data-bg="violet" data-focus=".5,.6">
-  <div class="head">
-    <div class="eyebrow a">Segmentación y personalización</div>
-    <h2 class="h-m split" style="--d:.1s">Una propuesta, <span class="serif grad">muchas conversaciones.</span></h2>
-  </div>
-  <div class="seg">
-    <svg viewBox="0 0 1640 520" preserveAspectRatio="none">
-      <defs><linearGradient id="segG" x1="0" x2="1"><stop offset="0" stop-color="#4d8bff"/><stop offset=".5" stop-color="#2ef2b5"/><stop offset="1" stop-color="#8f7cff"/></linearGradient></defs>
-      <g fill="none" stroke="url(#segG)" stroke-width="2.5">
-        <path class="draw" pathLength="1" style="--d:.9s" d="M570 260 L 470 260"/>
-        <path class="draw" pathLength="1" style="--d:.9s" d="M1070 260 L 1170 260"/>
-      </g>
-    </svg>
-    <div class="persona glass a" data-anim="left" style="--d:1s; margin-right:6rem">
-      <div class="who"><div class="av tile-ico blue"><i class="ico" data-i="cap"></i></div><div><b class="h-xs">Joven universitario</b><div class="small">Prioriza oportunidades laborales</div></div></div>
-      <div class="pq">“Rutas seguras para llegar a tu primer empleo.”</div>
-      <div class="formats"><span class="chip blue">Video vertical</span><span class="chip blue">Creadores</span><span class="chip blue">Redes</span></div>
-    </div>
-    <div class="prop glass edge hot a" data-anim="scale" style="--d:.4s">
-      <span class="caps" style="color:var(--mint)">Propuesta</span>
-      <div class="h-s">Movilidad segura</div>
-      <span class="small">Un solo compromiso, verificable.</span>
-    </div>
-    <div class="persona glass a" data-anim="right" style="--d:1.1s; margin-left:6rem">
-      <div class="who"><div class="av tile-ico violet"><i class="ico" data-i="heart"></i></div><div><b class="h-xs">Persona adulta mayor</b><div class="small">Prioriza salud, movilidad y seguridad</div></div></div>
-      <div class="pq">“Traslados seguros y accesibles a tu clínica.”</div>
-      <div class="formats"><span class="chip violet">Radio</span><span class="chip violet">TV local</span><span class="chip violet">Cara a cara</span></div>
-    </div>
-  </div>
-  <div class="ethic a" data-step="1"><i class="ico" data-i="shield"></i><span>Segmentar para <b>hacer más comprensibles</b> las propuestas, nunca para ocultar información ni enviar mensajes contradictorios.</span></div>
-</section>
-
-<!-- ======================================================= MÉTRICAS -->
-<section class="slide s-metrics" data-bg="gold" data-focus=".5,.55">
-  <div class="head">
-    <div style="display:flex;flex-direction:column;gap:2.4rem">
-      <div class="eyebrow a">Optimización de recursos</div>
-      <h2 class="h-m split" style="--d:.1s">Las métricas orientan. <span class="serif grad-warm">No votan.</span></h2>
-    </div>
-  </div>
-  <div class="mcol">
-    <span class="caps a" style="--d:.3s">Lo que mide la plataforma</span>
-    <div class="metric glass a" data-anim="left" data-dim-at="1" style="--d:.4s"><span>Visualizaciones</span><b><span data-count="1.2" data-dec="1" style="--d:.5s">0</span>M</b></div>
-    <div class="metric glass a" data-anim="left" data-dim-at="1" style="--d:.5s"><span>Interacciones</span><b><span data-count="86" style="--d:.6s">0</span>K</b></div>
-    <div class="metric glass a" data-anim="left" data-dim-at="1" style="--d:.6s"><span>Tasa de participación</span><b><span data-count="4.3" data-dec="1" style="--d:.7s">0</span>%</b></div>
-    <div class="metric glass a" data-anim="left" data-dim-at="1" style="--d:.7s"><span>Tráfico digital</span><b><span data-count="52" style="--d:.8s">0</span>K</b></div>
-  </div>
-  <div class="neq grad-warm a" data-step="1" data-anim="scale">≠</div>
-  <div class="mcol">
-    <span class="caps a" data-step="1" style="--d:.2s;color:var(--mint)">Lo que define una elección</span>
-    <div class="truth glass edge a" data-step="1" data-anim="right" style="--d:.3s"><div class="tile-ico sm"><i class="ico" data-i="shield"></i></div><b>Confianza</b></div>
-    <div class="truth glass edge a" data-step="1" data-anim="right" style="--d:.4s"><div class="tile-ico sm"><i class="ico" data-i="star"></i></div><b>Credibilidad</b></div>
-    <div class="truth glass edge a" data-step="1" data-anim="right" style="--d:.5s"><div class="tile-ico sm"><i class="ico" data-i="users"></i></div><b>Participación</b></div>
-    <div class="truth glass edge a" data-step="1" data-anim="right" style="--d:.6s"><div class="tile-ico sm"><i class="ico" data-i="activity"></i></div><b>Capacidad de respuesta</b></div>
-  </div>
-  <p class="src a" data-step="1" style="--d:.9s;font-size:1.6rem">Un video viral no es intención de voto · Muchos seguidores no garantizan respaldo ciudadano · Datos ilustrativos</p>
-</section>
-
-<!-- ======================================================= CAP 03 -->
-<section class="slide s-chapter" data-bg="violet" data-focus=".74,.5" data-chapter="03 · El nuevo electorado">
+<!-- 16 · CAMPO ========================================================== -->
+<section class="slide s-tool" data-bg="blue" data-3d="shape:dust; opacity:.08">
   <div class="txt">
-    <div class="eyebrow a">Capítulo 03</div>
-    <div class="num outline a" data-anim="left" style="--d:.1s">03</div>
-    <h2 class="h-l split" style="--d:.3s">El nuevo <span class="serif grad">electorado</span></h2>
-    <p class="lead a" style="--d:.8s; max-width:84rem">Comportamiento, información y percepción política en un México diverso.</p>
+    <span class="label a">Campo · Moviliza</span>
+    <h2 class="h2 split" style="--d:.1s;font-size:7rem">Del territorio al dato, <span class="hl">en tiempo real.</span></h2>
+    <ul class="points">
+      <li class="a" style="--d:.5s"><span class="ti gold"><i class="ico" data-i="flag"></i></span><div><b>Brigadista</b><span>Reportes desde cada colonia.</span></div></li>
+      <li class="a" style="--d:.65s"><span class="ti"><i class="ico" data-i="pin"></i></span><div><b>Campo en Vivo</b><span>Problemas ubicados por zona.</span></div></li>
+      <li class="a" style="--d:.8s"><span class="ti blue"><i class="ico" data-i="vote"></i></span><div><b>Red de Casillas</b><span>Coordinación el día de la elección.</span></div></li>
+    </ul>
   </div>
-  <div class="dial a" data-anim="scale" data-deg="216" data-label="CAPÍTULO 3 / 5" style="--d:.15s"></div>
-</section>
-
-<!-- ======================================================= ELECTORADO -->
-<section class="slide s-elect" data-bg="deep" data-focus=".72,.5">
-  <div class="txt">
-    <div class="eyebrow a">Comportamiento e información</div>
-    <h2 class="h-m split" style="--d:.1s">El electorado <span class="serif grad">no es</span> un grupo homogéneo.</h2>
-    <div class="formats a" style="display:flex;flex-wrap:wrap;gap:1rem;--d:.5s"><span class="chip blue">Generacionales</span><span class="chip violet">Económicas</span><span class="chip aqua">Educativas</span><span class="chip gold">Culturales</span><span class="chip">Territoriales</span></div>
-    <p class="lead a" style="--d:.7s">Unos se informan con video breve y creadores de contenido; otros con televisión, radio, prensa y conversación cara a cara. La estrategia tiene que ser multicanal.</p>
-    <div class="key a" data-step="2" style="padding:2.4rem 2.8rem;border-radius:2rem;border:.1rem solid rgba(46,242,181,.25);background:linear-gradient(90deg,rgba(46,242,181,.09),transparent);font-size:2.3rem;line-height:1.4">El comportamiento digital <b class="mint">no es</b> la realidad social. La tecnología complementa el trabajo de campo; no lo sustituye.</div>
-  </div>
-  <div class="glass edge a" data-anim="scale" style="--d:.3s;padding:1rem 1rem 3rem">
-    <i class="hook" data-step="1" data-target=".dots" data-cls="tint"></i>
-    <i class="hook" data-step="2" data-target=".dots" data-cls="lit"></i>
-    <div class="dots" data-n="600"></div>
-    <div style="display:flex;justify-content:space-between;padding:0 4rem">
-      <span class="caps a" data-anim="fade" data-step="1" data-dim-at="2">Diversidad del electorado</span>
-      <span class="caps a" data-anim="fade" data-step="2" style="color:var(--mint)">Activos en redes ≠ toda la población</span>
+  <div class="ui panel glow a" data-anim="right" style="--d:.2s">
+    <div class="bar"><div class="t"><span class="mk"><i class="ico" data-i="zap"></i></span>Campo en Vivo <span class="sub">Mapa territorial · municipio de ejemplo</span></div><span class="live">EN VIVO</span></div>
+    <div class="body" style="padding-bottom:1rem">
+      <div class="map">
+        <svg data-hex='[[0.28,0.32,1],[0.66,0.26,0.8],[0.5,0.62,0.95],[0.8,0.66,0.7],[0.2,0.7,0.6]]'></svg>
+        <div class="pin a" style="left:28%;top:32%;--c:var(--mint);--d:1.1s"><div class="lab"><i></i>Alumbrado público</div><div class="stem"></div></div>
+        <div class="pin a" style="left:66%;top:26%;--c:var(--aqua);--d:1.3s"><div class="lab"><i></i>Inundaciones</div><div class="stem"></div></div>
+        <div class="pin a" style="left:50%;top:62%;--c:var(--gold);--d:1.5s"><div class="lab"><i></i>Seguridad</div><div class="stem"></div></div>
+        <div class="pin a" style="left:80%;top:66%;--c:var(--blue);--d:1.7s"><div class="lab"><i></i>Transporte</div><div class="stem"></div></div>
+        <div class="pin a" style="left:20%;top:70%;--c:var(--violet);--d:1.9s"><div class="lab"><i></i>Recolección de basura</div><div class="stem"></div></div>
+      </div>
+    </div>
+    <div class="foot">
+      <div style="display:flex;gap:4rem">
+        <div class="kpi" style="border:0;background:none;padding:0"><div class="l">Reportes</div><div class="v" style="font-size:3.2rem"><span data-count="1284" style="--d:.8s">0</span></div></div>
+        <div class="kpi" style="border:0;background:none;padding:0"><div class="l">Encuestas</div><div class="v" style="font-size:3.2rem"><span data-count="3910" style="--d:.9s">0</span></div></div>
+        <div class="kpi" style="border:0;background:none;padding:0"><div class="l">Zonas</div><div class="v" style="font-size:3.2rem"><span data-count="24" style="--d:1s">0</span></div></div>
+      </div>
+      <span class="note">Vista conceptual · datos ilustrativos</span>
     </div>
   </div>
 </section>
 
-<!-- ======================================================= CAP 04 -->
-<section class="slide s-chapter" data-bg="gold" data-focus=".74,.5" data-chapter="04 · IA con certeza jurídica">
+<!-- 17 · MÉXICO 3D ====================================================== -->
+<section class="slide s-mx" data-bg="deep" data-chapter="03 · México conectado" data-3d="shape:mexico; mesh:mexico; pos:.715,.55; scale:.84; rot:-.95,0; spin:-.12; size:8; opacity:.7; sweep:1">
+  <div class="col">
+    <span class="label a">México conectado</span>
+    <div class="mxbig hl a" style="--d:.15s"><span data-count="104.9" data-dec="1" data-dur="2200" style="--d:.3s">0</span><small> millones</small></div>
+    <p class="h3 a" style="--d:.4s">de personas usaron internet en 2025.</p>
+    <div class="mxrow">
+      <div class="panel a" style="--d:.6s"><div class="v"><span data-count="86.1" data-dec="1" style="--d:.8s">0</span>%</div><div class="k">de la población de 6 años y más.</div></div>
+      <div class="panel a" style="--d:.75s"><div class="v"><span data-count="97.3" data-dec="1" style="--d:.9s">0</span>%</div><div class="k">se conectó con un teléfono inteligente.</div></div>
+    </div>
+    <p class="lead a" style="--d:1s">Información que una campaña necesita comprender.</p>
+  </div>
+  <p class="src a" style="--d:1.2s">INEGI, ENDUTIH 2025 · publicada el 16 de junio de 2026 · Dato nacional: no equivale al padrón electoral ni al alcance de una plataforma</p>
+</section>
+
+<!-- 18 · DESINFORMACIÓN ================================================= -->
+<section class="slide s-truth" data-bg="blue" data-chapter="04 · Confianza" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">Desinformación</span>
+    <h2 class="h2 split" style="--d:.1s">Datos objetivos <span class="hl">contra la desinformación.</span></h2>
+  </div>
+  <div class="truthflow">
+    <div class="tcol">
+      <div class="row panel a" data-anim="left" style="--d:.3s"><span class="ti sm blue"><i class="ico" data-i="tv"></i></span><div><b>Medios</b><span>TV, radio y prensa</span></div></div>
+      <div class="row panel a" data-anim="left" style="--d:.4s"><span class="ti sm blue"><i class="ico" data-i="share"></i></span><div><b>Redes sociales</b><span>Todas las plataformas</span></div></div>
+      <div class="row panel a" data-anim="left" style="--d:.5s"><span class="ti sm blue"><i class="ico" data-i="db"></i></span><div><b>Datos públicos</b><span>Fuentes oficiales</span></div></div>
+    </div>
+    <div class="chev a" data-anim="fade" style="--d:.7s"><i></i><i></i><i></i></div>
+    <div class="core panel glow a" data-anim="scale" style="--d:.8s">
+      <div class="brand"><div class="mark"><i class="ico" data-i="zap"></i></div></div>
+      <h3 class="h3">Panel PULSO 360°</h3>
+      <p class="body">Analiza la presencia en medios y redes de forma objetiva.</p>
+      <div class="pills"><span class="chip">Sin sesgos</span><span class="chip">Todas las fuentes</span><span class="chip">Todos los enfoques</span></div>
+    </div>
+    <div class="chev a" data-anim="fade" style="--d:1s"><i></i><i></i><i></i></div>
+    <div class="tcol">
+      <div class="row panel a" data-anim="right" style="--d:1.1s"><div><b>Verificable</b></div><span class="tag chip">Difundir</span></div>
+      <div class="row panel a" data-anim="right" style="--d:1.2s"><div><b>Rumor</b></div><span class="tag chip gold">Verificar</span></div>
+      <div class="row panel a" data-anim="right" style="--d:1.3s"><div><b>Coordinado</b></div><span class="tag chip coral">Documentar</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 · MARCO LEGAL ==================================================== -->
+<section class="slide s-legal" data-bg="deep" data-3d="shape:dust; opacity:.08">
+  <div style="display:flex;flex-direction:column;gap:2.4rem">
+    <span class="label a">Marco legal</span>
+    <h2 class="h2 split" style="--d:.1s">PULSO 360° opera <span class="hl">dentro del marco legal.</span></h2>
+  </div>
+  <div class="comply">
+    <div class="cp panel a" style="--d:.3s"><span class="ti"><i class="ico" data-i="megaphone"></i></span><span class="ref">LGIPE · art. 242</span><h4>Propaganda electoral</h4><div class="feat"><i class="ico" data-i="check"></i>Cada pieza conserva fecha, medio y versión final.</div></div>
+    <div class="cp panel a" style="--d:.42s"><span class="ti blue"><i class="ico" data-i="receipt"></i></span><span class="ref">Reglamento de Fiscalización · INE</span><h4>Gasto de campaña</h4><div class="feat"><i class="ico" data-i="check"></i>Soporte de producción y pauta, listo para comprobar.</div></div>
+    <div class="cp panel a" style="--d:.54s"><span class="ti violet"><i class="ico" data-i="lock"></i></span><span class="ref">Ley General de Datos Personales</span><h4>Datos personales</h4><div class="feat"><i class="ico" data-i="check"></i>Bases con origen y consentimiento documentados.</div></div>
+    <div class="cp panel a" style="--d:.66s"><span class="ti gold"><i class="ico" data-i="shield"></i></span><span class="ref">INE/CG527/2026 · SUP-RAP-214/2026</span><h4>Niñas, niños y adolescentes</h4><div class="feat"><i class="ico" data-i="check"></i>Autorizaciones validadas antes de publicar.</div></div>
+  </div>
+  <p class="src a" style="--d:.9s">Constitución, arts. 41 y 134 · LGIPE, arts. 242, 247, 251 y 471.2 · Corte de revisión jurídica: 12 de noviembre de 2026 · Análisis: Dr. José Enrique Vallarta Rodríguez</p>
+</section>
+
+<!-- 20 · TRES VERIFICACIONES ============================================ -->
+<section class="slide s-check" data-bg="mint" data-3d="shape:dust; opacity:.08">
   <div class="txt">
-    <div class="eyebrow a">Capítulo 04</div>
-    <div class="num outline a" data-anim="left" style="--d:.1s">04</div>
-    <h2 class="h-l split" style="--d:.3s">IA con <span class="serif grad">certeza jurídica</span></h2>
-    <p class="lead a" style="--d:.8s; max-width:84rem">Marco legal y decisiones de publicación para equipos de campaña.</p>
-    <p class="small a" style="--d:1s">Con base en el análisis del Dr. José Enrique Vallarta Rodríguez · Corte de revisión jurídica: 12 de noviembre de 2026</p>
-  </div>
-  <div class="dial a" data-anim="scale" data-deg="288" data-label="CAPÍTULO 4 / 5" style="--d:.15s"></div>
-</section>
-
-<!-- ======================================================= LEGAL 1 -->
-<section class="slide s-legal" data-bg="blue" data-focus=".85,.25">
-  <div class="head">
-    <div class="eyebrow a">El concepto legal</div>
-    <h2 class="h-m split" style="--d:.1s">De los spots al <span class="serif grad">video generado con IA.</span></h2>
-  </div>
-  <div class="rows">
-    <div class="lrow glass a" data-anim="left" style="--d:.3s"><div class="tile-ico sm blue"><i class="ico" data-i="radio"></i></div><h5>El antecedente</h5><p>Los mensajes de campaña pasaron de los medios tradicionales a convivir con las redes sociales.</p></div>
-    <div class="lrow glass a" data-anim="left" style="--d:.45s"><div class="tile-ico sm violet"><i class="ico" data-i="play"></i></div><h5>El ejemplo</h5><p>Un partido publica en redes un video con <b>voz generada por IA</b> para presentar a su candidata durante la campaña.</p></div>
-    <div class="lrow glass edge hot a" data-anim="left" style="--d:.6s"><div class="tile-ico sm"><i class="ico" data-i="scale"></i></div><h5>El concepto legal</h5><p>La LGIPE llama <b>propaganda electoral</b> a los mensajes que partidos, candidaturas registradas y simpatizantes producen y difunden durante la campaña para presentar candidaturas registradas.</p></div>
-  </div>
-  <p class="src a" style="--d:.9s">LGIPE, art. 242, numeral 3 · Corte de revisión jurídica: 12 de noviembre de 2026</p>
-</section>
-
-<!-- ======================================================= LEGAL 2 -->
-<section class="slide s-legal" data-bg="gold" data-focus=".15,.3">
-  <div class="head">
-    <div class="eyebrow a">Antes de difundir</div>
-    <h2 class="h-m split" style="--d:.1s">¿Qué reglas se aplican al <span class="serif grad">difundir propaganda?</span></h2>
-  </div>
-  <div class="cards3">
-    <div class="glass a" data-anim="scale" style="--d:.3s"><div class="tile-ico"><i class="ico" data-i="clock"></i></div><h5>Momento y medio</h5><p>Revisar si el video puede publicarse en esa fecha y por ese medio.</p></div>
-    <div class="glass a" data-anim="scale" style="--d:.45s"><div class="tile-ico blue"><i class="ico" data-i="landmark"></i></div><h5>Recursos públicos</h5><p>Revisar la imparcialidad en su uso y los límites de la propaganda gubernamental.</p></div>
-    <div class="glass a" data-anim="scale" style="--d:.6s"><div class="tile-ico violet"><i class="ico" data-i="receipt"></i></div><h5>Producción y pauta</h5><p>Si la campaña paga por producir o difundir el video, revisar cómo registrar y comprobar el gasto.</p></div>
-  </div>
-  <div class="callout a" style="--d:.9s"><i class="ico" data-i="file" style="font-size:3rem;color:var(--gold)"></i><span><b>En discusión:</b> el etiquetado general de propaganda electoral hecha con IA se ha planteado como reforma a la LGIPE.</span></div>
-  <p class="src a" style="--d:1s">Constitución, arts. 41 y 134 · LGIPE, arts. 242, 247 y 251 · Reglamento de Fiscalización del INE</p>
-</section>
-
-<!-- ======================================================= LEGAL 3 -->
-<section class="slide s-legal" data-bg="violet" data-focus=".85,.7">
-  <div class="head">
-    <div class="eyebrow a">Contenido y datos</div>
-    <h2 class="h-m split" style="--d:.1s">¿Qué dice el video y <span class="serif grad">qué datos usa</span> la campaña?</h2>
-  </div>
-  <div class="rows">
-    <div class="lrow glass a" data-anim="left" style="--d:.3s"><div class="tile-ico sm coral"><i class="ico" data-i="alert"></i></div><h5>Contenido sintético</h5><p>Atribuir falsamente un delito a otra candidatura puede ser <b>calumnia</b> si tiene impacto electoral.</p></div>
-    <div class="lrow glass a" data-anim="left" style="--d:.45s"><div class="tile-ico sm blue"><i class="ico" data-i="db"></i></div><h5>Datos de audiencia</h5><p>Si la lista vincula nombres con opiniones políticas, contiene <b>datos personales sensibles</b>.</p></div>
-    <div class="lrow glass a" data-anim="left" style="--d:.6s"><div class="tile-ico sm"><i class="ico" data-i="lock"></i></div><h5>Uso de la base</h5><p>Antes de usar la lista, revisar para qué se obtuvo, qué permite la ley y si se requiere <b>consentimiento</b>.</p></div>
-  </div>
-  <p class="src a" style="--d:.9s">LGIPE, arts. 247 y 471.2 · Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados</p>
-</section>
-
-<!-- ======================================================= LEGAL 4 · MENORES -->
-<section class="slide s-legal" data-bg="mint" data-focus=".5,.8">
-  <div class="head">
-    <div class="eyebrow a">Niñas, niños y adolescentes</div>
-    <h2 class="h-m split" style="--d:.1s">¿Qué cambia si el video <span class="serif grad">muestra a menores?</span></h2>
-  </div>
-  <div class="cards3">
-    <div class="glass a" data-anim="scale" style="--d:.3s"><span class="caps" style="color:var(--mint)">01 · INE</span><h5>Qué regula el INE</h5><p>El uso de IA y edición digital en propaganda que involucra a niñas, niños y adolescentes.</p></div>
-    <div class="glass a" data-anim="scale" style="--d:.45s"><span class="caps" style="color:var(--mint)">02 · TEPJF</span><h5>Qué resolvió el Tribunal</h5><p>Ordenó quitar la prohibición absoluta de simular su asistencia y aclarar cómo retirar el consentimiento.</p></div>
-    <div class="glass edge hot a" data-anim="scale" style="--d:.6s"><span class="caps" style="color:var(--mint)">03 · Equipo</span><h5>Qué revisar</h5><p>Si hay menores identificables, consultar el texto aplicable y documentar origen y autorizaciones.</p></div>
-  </div>
-  <p class="src a" style="--d:.9s">INE/CG527/2026 · Sala Superior del TEPJF, SUP-RAP-214/2026 · Corte de revisión: 12 de noviembre de 2026</p>
-</section>
-
-<!-- ======================================================= 3 PREGUNTAS -->
-<section class="slide s-check" data-bg="mint" data-focus=".2,.5">
-  <div class="txt">
-    <div class="eyebrow a">Protocolo de revisión interna</div>
-    <h2 class="h-l split" style="--d:.1s">3 preguntas antes de <span class="serif grad">publicar.</span></h2>
-    <p class="lead a" style="--d:.6s">Una rutina simple para que cada pieza hecha con IA salga con respaldo.</p>
-    <p class="small a" style="--d:.8s">Propuesta de revisión interna para equipos de campaña</p>
+    <span class="label a">Flujo de aprobación</span>
+    <h2 class="h2 split" style="--d:.1s">Antes de publicar, <span class="hl">tres verificaciones.</span></h2>
+    <p class="lead a" style="--d:.6s">Integradas en el flujo de PULSO 360°: cada pieza sale con respaldo.</p>
   </div>
   <div class="qlist">
-    <div class="q glass a" data-step="1" data-anim="right" style="--cd:.5s"><div class="box"><svg viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></div><div><span class="n">PREGUNTA 01</span><h5>¿Qué afirma el video?</h5><p>Verificar los hechos y revisar el uso de voces e imágenes.</p></div></div>
-    <div class="q glass a" data-step="2" data-anim="right" style="--cd:.5s"><div class="box"><svg viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></div><div><span class="n">PREGUNTA 02</span><h5>¿Con qué datos se hizo?</h5><p>Anotar de dónde salieron los datos y qué permite usarlos.</p></div></div>
-    <div class="q glass a" data-step="3" data-anim="right" style="--cd:.5s"><div class="box"><svg viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></div><div><span class="n">PREGUNTA 03</span><h5>¿Quién la autorizó?</h5><p>Conservar la versión final, las autorizaciones y el soporte del gasto.</p></div></div>
+    <div class="qq panel a" data-step="1" data-anim="right"><div class="box"><svg viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></div><div><span class="n">01 · HECHOS</span><h5>¿Qué afirma?</h5><p>Hechos verificados; voces e imágenes revisadas.</p></div></div>
+    <div class="qq panel a" data-step="2" data-anim="right"><div class="box"><svg viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></div><div><span class="n">02 · DATOS</span><h5>¿Con qué datos?</h5><p>Origen anotado y uso permitido.</p></div></div>
+    <div class="qq panel a" data-step="3" data-anim="right"><div class="box"><svg viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></div><div><span class="n">03 · AUTORIZACIÓN</span><h5>¿Quién la autorizó?</h5><p>Versión final, autorizaciones y gasto, conservados.</p></div></div>
   </div>
 </section>
 
-<!-- ======================================================= LÍNEA DE TIEMPO -->
-<section class="slide s-legal s-timeline" data-bg="blue" data-focus=".5,.3">
-  <div class="head">
-    <div class="eyebrow a">La agenda institucional</div>
-    <h2 class="h-m split" style="--d:.1s">El desafío ya no es futuro. <span class="serif grad">Es presente.</span></h2>
-  </div>
-  <div class="tl">
-    <div class="line"><i></i></div>
-    <div class="ev a" style="--d:.4s"><div class="date"><i></i><b>19 AGO 2026</b></div><div class="glass"><h5>Recomendaciones del INE</h5><p>Criterios de veracidad, transparencia y responsabilidad para contenidos generados con IA.</p><span class="ref">INE · desinformación electoral</span></div></div>
-    <div class="ev a" style="--d:.8s"><div class="date"><i></i><b>03 SEP 2026</b></div><div class="glass"><h5>Lineamientos de niñez y adolescencia</h5><p>Disposiciones sobre tecnologías digitales, contenidos sintéticos y transparencia en el uso de IA.</p><span class="ref">INE/CG527/2026</span></div></div>
-    <div class="ev a" style="--d:1.2s"><div class="date"><i></i><b>SALA SUPERIOR</b></div><div class="glass"><h5>Resolución del Tribunal</h5><p>Ajustes sobre simulación de la asistencia de menores y retiro del consentimiento.</p><span class="ref">TEPJF · SUP-RAP-214/2026</span></div></div>
-    <div class="ev a" style="--d:1.6s"><div class="date"><i></i><b>2026 – 2027</b></div><div class="glass edge hot"><h5>Proceso electoral</h5><p>El INE incorporó el análisis de la IA y la desinformación en sus discusiones sobre el proceso.</p><span class="ref">INE</span></div></div>
-  </div>
-  <div class="levels a" style="--d:2s"><span>No tienen el mismo alcance jurídico:</span><span class="chip gold">Iniciativas en discusión</span><span class="chip blue">Recomendaciones institucionales</span><span class="chip">Disposiciones aprobadas</span></div>
-</section>
-
-<!-- ======================================================= LEGAL · CONCLUSIÓN -->
-<section class="slide s-legal" data-bg="deep" data-focus=".5,.5">
-  <div class="head">
-    <div class="eyebrow a">Propuesta de reforma a la legislación electoral</div>
-    <h2 class="h-m split" style="--d:.1s">Reglas claras para competir <span class="serif grad">con confianza.</span></h2>
-    <p class="lead a" style="--d:.5s">México necesita reglas electorales más claras para el uso de IA en campañas.</p>
-  </div>
-  <div class="cards3">
-    <div class="glass a" data-anim="scale" style="--d:.6s;min-height:32rem"><span class="caps" style="color:var(--mint)">01</span><div class="tile-ico"><i class="ico" data-i="scan"></i></div><h5 style="font-size:3rem">Identificar el contenido sintético</h5><p>cuando pueda confundirse con un registro auténtico.</p></div>
-    <div class="glass a" data-anim="scale" style="--d:.75s;min-height:32rem"><span class="caps" style="color:var(--mint)">02</span><div class="tile-ico blue"><i class="ico" data-i="mic"></i></div><h5 style="font-size:3rem">Fijar límites a la simulación engañosa</h5><p>de voces e imágenes.</p></div>
-    <div class="glass a" data-anim="scale" style="--d:.9s;min-height:32rem"><span class="caps" style="color:var(--mint)">03</span><div class="tile-ico violet"><i class="ico" data-i="gavel"></i></div><h5 style="font-size:3rem">Precisar quién responde</h5><p>por la difusión y cómo se atienden las quejas.</p></div>
-  </div>
-</section>
-
-<!-- ======================================================= CAP 05 -->
-<section class="slide s-chapter" data-bg="mint" data-focus=".74,.5" data-chapter="05 · El futuro de las campañas">
-  <div class="txt">
-    <div class="eyebrow a">Capítulo 05</div>
-    <div class="num outline a" data-anim="left" style="--d:.1s">05</div>
-    <h2 class="h-l split" style="--d:.3s">El futuro de las <span class="serif grad">campañas</span></h2>
-    <p class="lead a" style="--d:.8s; max-width:84rem">De vender candidatos a construir confianza ciudadana.</p>
-  </div>
-  <div class="dial a" data-anim="scale" data-deg="360" data-label="CICLO COMPLETO" style="--d:.15s"></div>
-</section>
-
-<!-- ======================================================= PILARES -->
-<section class="slide s-pillars" data-bg="blue" data-focus=".5,.9">
-  <div class="head">
-    <div class="eyebrow a">El marketing político del futuro</div>
-    <h2 class="h-m split" style="--d:.1s">Cuatro pilares para <span class="serif grad">construir confianza.</span></h2>
-  </div>
-  <div class="pillars">
-    <div class="pillar glass a" data-anim="maskup" style="--h:78%;--d:.3s"><span class="n">01</span><h5>Inteligencia estratégica</h5><p>Decisiones sustentadas en investigación, información verificable y conocimiento del entorno social.</p><div class="tile-ico"><i class="ico" data-i="target"></i></div></div>
-    <div class="pillar glass a" data-anim="maskup" style="--h:85%;--d:.45s"><span class="n">02</span><h5>Autenticidad y reputación</h5><p>Cuando es posible fabricar imágenes y discursos, la congruencia vale más que nunca.</p><div class="tile-ico blue"><i class="ico" data-i="shield"></i></div></div>
-    <div class="pillar glass a" data-anim="maskup" style="--h:92%;--d:.6s"><span class="n">03</span><h5>Comunicación ciudadana</h5><p>De la comunicación unidireccional al diálogo y la participación.</p><div class="tile-ico violet"><i class="ico" data-i="msg"></i></div></div>
-    <div class="pillar glass edge hot a" data-anim="maskup" style="--h:100%;--d:.75s"><span class="n">04</span><h5>Ética y responsabilidad tecnológica</h5><p>Protocolos para usar IA, proteger datos, identificar contenido sintético y verificar antes de publicar.</p><div class="tile-ico gold"><i class="ico" data-i="scale"></i></div></div>
-  </div>
-</section>
-
-<!-- ======================================================= PREGUNTA -->
-<section class="slide s-question" data-bg="violet" data-focus=".5,.4">
+<!-- 21 · PREGUNTA ======================================================= -->
+<section class="slide s-question" data-bg="violet" data-3d="shape:dust; opacity:.08">
   <i class="hook" data-step="1" data-cls="reveal"></i>
   <div class="head">
-    <div class="eyebrow a">Para reflexionar</div>
-    <h2 class="h-m split" style="--d:.1s">¿Quién tiene hoy más posibilidades de <span class="serif grad">ganar una campaña?</span></h2>
+    <span class="label a">Para reflexionar</span>
+    <h2 class="h2 split" style="--d:.1s;font-size:7.4rem">¿Quién tiene hoy más posibilidades de <span class="hl">ganar una campaña?</span></h2>
   </div>
   <div class="opts">
-    <div class="opt glass a" data-anim="scale" style="--d:.4s"><div class="tile-ico gold"><i class="ico" data-i="monitor"></i></div><h5>El que tiene más espectaculares</h5></div>
-    <div class="opt glass a" data-anim="scale" style="--d:.55s"><div class="tile-ico blue"><i class="ico" data-i="users"></i></div><h5>El que tiene más seguidores en redes</h5></div>
-    <div class="opt glass a" data-anim="scale" style="--d:.7s"><div class="tile-ico"><i class="ico" data-i="db"></i></div><h5>El que tiene la mejor información para decidir</h5></div>
+    <div class="opt panel a" data-anim="scale" style="--d:.4s"><span class="ti gold"><i class="ico" data-i="monitor"></i></span><h5>El que tiene más espectaculares</h5></div>
+    <div class="opt panel a" data-anim="scale" style="--d:.55s"><span class="ti blue"><i class="ico" data-i="users"></i></span><h5>El que tiene más seguidores</h5></div>
+    <div class="opt panel a" data-anim="scale" style="--d:.7s"><span class="ti"><i class="ico" data-i="db"></i></span><h5>El que tiene la mejor información</h5></div>
   </div>
   <div class="answer">
-    <h3 class="h-l split" data-step="1" style="--d:.3s">Ninguno, <span class="serif grad">necesariamente.</span></h3>
-    <p class="lead a" data-step="1" style="--d:.9s">Gana quien entiende mejor a la sociedad, administra mejor sus recursos y decide con información a mayor velocidad. Ese es el nuevo <b class="ink">pulso electoral 360°</b>.</p>
+    <h3 class="h2 split" data-step="1" style="--d:.3s">Ninguno, <span class="hl">necesariamente.</span></h3>
+    <p class="lead a" data-step="1" style="--d:.9s">Gana quien entiende mejor a la sociedad, administra mejor sus recursos y decide con información, a mayor velocidad.</p>
   </div>
 </section>
 
-<!-- ======================================================= CIERRE -->
-<section class="slide s-close" data-bg="deep" data-focus=".2,.5">
-  <div class="eyebrow a">Conclusión</div>
-  <h2 class="h-l split" data-dim-at="1" style="--d:.15s">La tecnología puede construir el mensaje.</h2>
-  <h2 class="h-l split" data-step="1">La <span class="serif grad">confianza ciudadana</span> sigue siendo el verdadero capital de la democracia.</h2>
-  <svg class="ecg a" data-anim="fade" data-step="1" data-beats="3" data-h="150" style="position:absolute;left:-2rem;right:-2rem;bottom:6rem;width:196rem;height:13rem;--d:.6s"></svg>
+<!-- 22 · CONCLUSIÓN ===================================================== -->
+<section class="slide s-close" data-bg="deep" data-3d="shape:stream; pos:.5,.88; scale:1; flow:1; size:8; opacity:.4">
+  <span class="label a">Conclusión</span>
+  <h2 class="h2 split soft" data-dim-at="1" style="--d:.15s">La tecnología puede construir el mensaje.</h2>
+  <h2 class="h2 split" data-step="1">La <span class="hl">confianza ciudadana</span> sigue siendo el verdadero capital de la democracia.</h2>
 </section>
 
-<!-- ======================================================= GRACIAS -->
-<section class="slide s-thanks" data-bg="mint" data-focus=".5,.42" data-chapter="Gracias">
-  <div class="halo"></div>
+<!-- 23 · DEMO EN VIVO =================================================== -->
+<section class="slide s-demo" data-bg="mint" data-chapter="05 · Demo en vivo" data-3d="shape:dust; opacity:.08">
+  <div class="txt">
+    <span class="label a">Demo en vivo</span>
+    <h2 class="h2 split" style="--d:.1s">Mira PULSO 360° <span class="hl">funcionando.</span></h2>
+    <p class="lead a" style="--d:.5s">Agenda una demostración en vivo para tu equipo de campaña.</p>
+    <div class="livebtn a" data-anim="scale" style="--d:.7s"><span class="dot"></span>EN VIVO</div>
+  </div>
+  <div class="qrs">
+    <div class="qrcard panel glow a" data-anim="scale" style="--d:.5s"><div class="qr pending" data-qr="0"><span>Código QR<br>por integrar</span></div><b data-qr-label>Agenda tu demo</b><span class="note">Escanea con tu teléfono</span></div>
+    <div class="qrcard panel glow a" data-anim="scale" style="--d:.65s"><div class="qr pending" data-qr="1"><span>Código QR<br>por integrar</span></div><b data-qr-label>Agenda tu demo</b><span class="note">Escanea con tu teléfono</span></div>
+  </div>
+</section>
+
+<!-- 24 · GRACIAS ======================================================== -->
+<section class="slide s-thanks" data-bg="mint" data-chapter="Cierre" data-3d="shape:sphere; pos:.5,.45; scale:1.6; spin:.08; size:7; opacity:.18">
   <div class="brand a" data-anim="scale"><div class="mark"><i class="ico" data-i="zap"></i></div><div class="wm"><b>PULSO</b><span>360° ELECTORAL</span></div></div>
-  <h2 class="h-xl split" style="--d:.3s">Gracias.</h2>
+  <h2 class="h1 split" style="--d:.3s">Gracias.</h2>
   <p class="lead a" style="--d:.7s">Sesión de preguntas</p>
-  <div class="people a" style="--d:1s">
-    <div><b>Gloria Citlali Pérez Cobos</b><span>Marketing político en la era de la IA</span></div>
+  <div class="ppl a" style="--d:1s">
+    <div><b>Gloria Citlali Pérez Cobos</b><span>Marketing político e IA</span></div>
     <div><b>Dr. José Enrique Vallarta Rodríguez</b><span>Marco legal de la IA en campañas</span></div>
   </div>
 </section>
 
-<!-- ======================================================= FUENTES -->
-<section class="slide s-refs" data-bg="deep" data-focus=".5,.5" data-chapter="Fuentes">
+<!-- 25 · FUENTES ======================================================== -->
+<section class="slide s-refs" data-bg="deep" data-chapter="Fuentes" data-3d="shape:dust; opacity:.08">
   <div class="a">
-    <h4>Marketing político y comunicación estratégica</h4>
+    <h4>Cifras y casos</h4>
     <ul>
-      <li>Valdez Zepeda, A. (2022). Gestión de campañas políticas. <i>Revista Gestión y Estrategia</i>, (19), 27–37.</li>
-      <li>Castells, M. (2009). <i>Comunicación y poder</i>. Alianza Editorial.</li>
-      <li>Perugachi Kindler, A. E. (2025). E-campañas: uso de big data e inteligencia artificial en campañas políticas híbridas. <i>Uru: Revista de Comunicación y Cultura</i>, (11), 63–85.</li>
-      <li>Hackenburg, K., &amp; Margetts, H. (2024). Evaluating the persuasive influence of political microtargeting with large language models. <i>PNAS</i>, 121(24).</li>
+      <li>INEGI. <i>ENDUTIH 2025</i>, reporte 19/26. 16 de junio de 2026.</li>
+      <li>Noy, S. y Zhang, W. (2023). Experimental evidence on the productivity effects of generative AI. <i>Science</i>, 381, 187-192.</li>
+      <li>OpenAI. <i>The State of Enterprise AI 2025</i> (caso BBVA México).</li>
+      <li>Microsoft Customer Stories: Crediclub; Coca-Cola FEMSA (20 de abril de 2026).</li>
+      <li>INE. Estrategia de Difusión 2023-2024, chatbot Inés · INE DEPPP, informe del proceso electoral 2023-2024.</li>
+      <li>Signa_Lab ITESO. Selección de preguntas, primer debate presidencial 2024.</li>
     </ul>
   </div>
   <div class="a" style="--d:.2s">
-    <h4>Marco normativo</h4>
+    <h4>Marco normativo y bibliografía</h4>
     <ul>
-      <li>Constitución Política de los Estados Unidos Mexicanos, arts. 41 y 134.</li>
-      <li>LGIPE, arts. 242, 247, 251 y 471.2 · Reglamento de Fiscalización del INE.</li>
+      <li>Constitución, arts. 41 y 134 · LGIPE, arts. 242, 247, 251 y 471.2 · Reglamento de Fiscalización del INE.</li>
       <li>Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados.</li>
-      <li>INE/CG527/2026 · TEPJF, Sala Superior, SUP-RAP-214/2026.</li>
-      <li><i>Corte de revisión jurídica: 12 de noviembre de 2026.</i></li>
+      <li>INE/CG527/2026 · TEPJF, SUP-RAP-214/2026 · Corte de revisión: 12 de noviembre de 2026.</li>
+      <li>Valdez Zepeda (2022) · Castells (2009) · Perugachi Kindler (2025) · Hackenburg y Margetts (2024), <i>PNAS</i>.</li>
     </ul>
   </div>
 </section>
 
 </main>
 
-<!-- HUD -->
-<div class="hud">
-  <div class="left"><span class="minimark"><i class="ico" data-i="zap"></i></span><span class="chap"></span></div>
-  <div class="right"><span class="num"></span></div>
-  <div class="bar"><i></i></div>
-</div>
-<div class="jump glass"></div>
+<div class="progress"><i></i></div>
+<div class="jump panel"></div>
 <div class="help">
-  <div class="card glass edge">
+  <div class="panel">
     <h3>Controles</h3>
     <dl>
       <dt>→ · Espacio · Clic</dt><dd>Avanzar</dd>
@@ -775,6 +566,7 @@
   </div>
 </div>
 
+<script src="js/engine.js"></script>
 <script src="js/deck.js"></script>
 </body>
 </html>

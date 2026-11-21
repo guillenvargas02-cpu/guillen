@@ -1,33 +1,41 @@
-PULSO 360° · Capacitación: IA aplicada a campañas electorales
-================================================================
-Propuesta provisional · presentación animada en HTML (funciona sin internet)
+PULSO 360° · Capacitación: IA aplicada a campañas electorales · v2
+====================================================================
+Presentación animada con 3D en tiempo real (funciona sin internet)
 
 CÓMO PRESENTAR
 1. Copia la carpeta completa "presentacion-pulso360" a la computadora.
-2. Abre "index.html" con Google Chrome o Microsoft Edge (también funciona en Safari y Firefox).
+2. Abre "index.html" con Google Chrome o Microsoft Edge (recomendados para el 3D).
 3. Presiona F para pantalla completa.
 
 CONTROLES
-  →  /  Espacio  /  Clic ........ avanzar (cada diapositiva tiene animaciones por pasos)
+  →  /  Espacio  /  Clic ........ avanzar (hay animaciones por pasos)
   ←  /  Clic derecho ............ regresar
   F ............................. pantalla completa
   12 + Enter .................... ir a la diapositiva 12
-  Inicio / Fin .................. primera / última
   H ............................. ayuda
 
-CALIDAD
-- Diseñada sobre un escenario de 16:9 que se adapta a cualquier resolución (HD, 2K, 4K)
-  sin perder nitidez: todo el texto y los gráficos son vectoriales.
-- El video de apertura se elige solo: 4K en pantallas grandes y 1080p en las demás.
-- Las fuentes van incluidas dentro de la presentación; no requiere conexión.
+MATERIALES PENDIENTES (se integran solos al copiarlos con estos nombres)
+  assets/qr/demo-1.png ............ código QR 1 para agendar demo
+  assets/qr/demo-2.png ............ código QR 2 para agendar demo
+     (o escribe la liga en index.html → PULSO_CONFIG → "url" y el QR se genera solo)
+  assets/ponentes/gloria-perez.jpg ...... fotografía (vertical)
+  assets/ponentes/jose-vallarta.jpg ..... fotografía (vertical)
 
-ESTRUCTURA DE ARCHIVOS
-  index.html ........... contenido de las diapositivas
+CALIDAD
+- Escenario 16:9 que se adapta a HD, 2K y 4K; texto y gráficos vectoriales.
+- 3D en tiempo real (WebGL): cerebro de IA en código binario, rayo PULSO, chip de IA,
+  mapa de México en relieve y flujo de datos. Requiere una computadora con aceleración
+  gráfica (cualquier equipo de los últimos años).
+- Fuentes incrustadas: Geist, Geist Mono y Archivo (licencia SIL OFL).
+
+ESTRUCTURA
+  index.html ........... contenido de las 25 diapositivas
   css/deck.css ......... diseño y animaciones
-  css/fonts.css ........ fuentes incrustadas (Inter Tight, Instrument Serif, JetBrains Mono · licencia OFL)
-  js/deck.js ........... navegación, fondo de pulsos y efectos
-  assets/video/ ........ video PULSO 360° (H.264 4K y 1080p)
+  js/deck.js ........... navegación y efectos
+  js/engine.js ......... motor 3D compilado (código fuente en src/)
+  src/ ................. código fuente del motor 3D (npm install && npm run build)
+  assets/video/ ........ video PULSO 360° (4K y 1080p) y gráfico de crecimiento
 
 NOTA
-Las pantallas de herramientas son vistas conceptuales con datos ilustrativos.
-Se sustituirán por los materiales oficiales de PULSO cuando estén disponibles.
+Las vistas de herramientas son conceptuales y usan datos ilustrativos.
+Los casos de empresas son antecedentes publicados por sus proveedores; no son resultados de PULSO 360°.

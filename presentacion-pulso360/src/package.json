@@ -1,0 +1,17 @@
+{
+  "name": "pulso360-deck-engine",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Motor 3D (Three.js) de la presentación PULSO 360°. Se compila a ../js/engine.js para funcionar sin servidor.",
+  "scripts": {
+    "build": "esbuild engine.js --bundle --minify --format=iife --target=es2019 --outfile=../js/engine.js"
+  },
+  "dependencies": {
+    "three": "0.170.0",
+    "qrcode-generator": "1.4.4"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "mapshaper": "0.6.102"
+  }
+}
