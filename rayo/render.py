@@ -253,6 +253,7 @@ def main():
     ap.add_argument('--loops', type=int, default=1)
     ap.add_argument('--out', default='renders/rayo.mp4')
     ap.add_argument('--crf', type=float, default=16)
+    ap.add_argument('--preset', default='veryslow')
     ap.add_argument('--still', type=float, nargs='*', help='solo exportar PNGs en estos segundos')
     a = ap.parse_args()
 
@@ -268,7 +269,7 @@ def main():
     os.makedirs(os.path.dirname(a.out) or '.', exist_ok=True)
     cmd = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
            '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{a.size}x{a.size}', '-r', str(a.fps), '-i', '-',
-           '-c:v', 'libx264', '-preset', 'veryslow', '-crf', str(a.crf), '-tune', 'film',
+           '-c:v', 'libx264', '-preset', a.preset, '-crf', str(a.crf), '-tune', 'film',
            '-profile:v', 'high', '-pix_fmt', 'yuv420p',
            '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
            '-vf', 'scale=out_color_matrix=bt709:out_range=tv',
