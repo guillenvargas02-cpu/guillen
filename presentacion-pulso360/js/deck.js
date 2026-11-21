@@ -232,6 +232,9 @@
     bar.style.width = ((i + 1) / slides.length * 100) + "%";
     top.classList.toggle("hidden", !!next.dataset.notop);
     try { history.replaceState(null, "", "#" + (i + 1)); } catch (e) {}
+    if (prev && prev !== next) seqStop(prev);
+    seqStart(next);
+    if (next.querySelector(".hexgrid")) hexRun(next); else clearInterval(hexTimer);
     if (next._enter) next._enter(step, prev);
   }
   function nextStep() {
@@ -243,6 +246,43 @@
     const s = slides[cur];
     if (step > 0) { step--; apply(s, step); if (engine && s.dataset["3dStep"] && step === 0) engine.set(s._3d); }
     else if (cur > 0) go(cur - 1, "max");
+  }
+
+
+  /* ------------------------------------------------------------ reproductor secuencial (Visual AI) */
+  document.querySelectorAll("video.vseq").forEach(v => {
+    v._list = v.dataset.list.split(","); v._i = 0;
+    const tabs = v.closest(".browser") ? [...v.closest(".browser").querySelectorAll(".vtabs span")] : [];
+    v._show = i => { v._i = i; tabs.forEach((t, k) => t.classList.toggle("on", k === i)); v.src = v._list[i]; v.currentTime = 0; const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    v.addEventListener("ended", () => { if (v._on) setTimeout(() => v._on && v._show((v._i + 1) % v._list.length), 900); });
+  });
+  const seqStart = s => s.querySelectorAll("video.vseq").forEach(v => { v._on = true; v._show(0); });
+  const seqStop = s => s.querySelectorAll("video.vseq").forEach(v => { v._on = false; v.pause(); });
+
+  /* ------------------------------------------------------------ código hexadecimal y palabra PROMPT */
+  const HEX = "0123456789ABCDEF";
+  document.querySelectorAll(".hexgrid").forEach(g => {
+    let html = "";
+    for (let r = 0; r < 20; r++) { let row = ""; for (let c = 0; c < 66; c++) row += HEX[Math.floor(Math.random() * 16)]; html += `<div>${row}</div>`; }
+    g.innerHTML = html;
+  });
+  let hexTimer = null;
+  function hexRun(s) {
+    clearInterval(hexTimer);
+    const rows = [...s.querySelectorAll(".hexgrid div")]; if (!rows.length) return;
+    hexTimer = setInterval(() => {
+      for (let k = 0; k < 14; k++) { const r = rows[Math.floor(Math.random() * rows.length)], t = r.textContent, i = Math.floor(Math.random() * t.length);
+        r.textContent = t.slice(0, i) + HEX[Math.floor(Math.random() * 16)] + t.slice(i + 1); }
+    }, 70);
+  }
+  function scramble(el) {
+    const target = el.dataset.scramble; let f = 0; clearInterval(el._t);
+    el._t = setInterval(() => {
+      f++; let out = "";
+      for (let i = 0; i < target.length; i++) out += f > 10 + i * 5 ? target[i] : HEX[Math.floor(Math.random() * 16)];
+      el.textContent = out; if (f > 10 + target.length * 5) clearInterval(el._t);
+    }, 45);
+    clearTimeout(el._fb); el._fb = setTimeout(() => { clearInterval(el._t); el.textContent = target; }, 2600);
   }
 
   /* ------------------------------------------------------------ apertura con video */

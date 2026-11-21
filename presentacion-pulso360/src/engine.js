@@ -343,7 +343,7 @@ function createEngine(canvas) {
     for (let i = 0; i < BOLT.length; i += 2) (i ? sh.lineTo : sh.moveTo).call(sh, BOLT[i] * .82, BOLT[i + 1] * .82);
     const g = new THREE.ExtrudeGeometry(sh, { depth: .28, bevelEnabled: true, bevelThickness: .07, bevelSize: .05, bevelSegments: 4 });
     g.center();
-    const m = new THREE.MeshStandardMaterial({ color: 0x0d5a48, emissive: 0x2ef2b5, emissiveIntensity: 1.35, metalness: .2, roughness: .25 });
+    const m = new THREE.MeshStandardMaterial({ color: 0x0d5a48, emissive: 0x2ef2b5, emissiveIntensity: 1.05, metalness: .2, roughness: .25 });
     boltGroup.add(new THREE.Mesh(g, m));
     const outer = roundedRectPath(3.7, 3.7, .95), inner = roundedRectPath(3.42, 3.42, .82);
     const fs = new THREE.Shape(); for (let i = 0; i < outer.length; i += 2) (i ? fs.lineTo : fs.moveTo).call(fs, outer[i], outer[i + 1]);
@@ -372,7 +372,7 @@ function createEngine(canvas) {
     const sh = new THREE.Shape();
     for (let i = 0; i < BOLT.length; i += 2) (i ? sh.lineTo : sh.moveTo).call(sh, BOLT[i] * .36, BOLT[i + 1] * .36);
     const eg = new THREE.ExtrudeGeometry(sh, { depth: .05, bevelEnabled: true, bevelThickness: .02, bevelSize: .015, bevelSegments: 2 }); eg.center();
-    const emb = new THREE.Mesh(eg, new THREE.MeshStandardMaterial({ color: 0x0d5a48, emissive: 0x2ef2b5, emissiveIntensity: 1.6 }));
+    const emb = new THREE.Mesh(eg, new THREE.MeshStandardMaterial({ color: 0x0d5a48, emissive: 0x2ef2b5, emissiveIntensity: .95 }));
     emb.position.z = .29; chipGroup.add(emb);
     // pines
     const pinGeo = new THREE.BoxGeometry(.07, .22, .04), pinMat = new THREE.MeshStandardMaterial({ color: 0x9fe9d4, metalness: 1, roughness: .25, emissive: 0x0c3d33, emissiveIntensity: .4 });
@@ -451,7 +451,7 @@ function createEngine(canvas) {
   /* ---------- posprocesado */
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), .62, .42, .2);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), .45, .38, .26);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 

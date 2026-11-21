@@ -597,3 +597,89 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .hero-vid video { width: 100%; height: 100%; object-fit: cover; display: block;
   filter: contrast(1.32) brightness(1.06) saturate(1.1);
   -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); }
+
+/* =========================================================================
+   v4 · cerebro de líneas, Panel Visual AI, ingeniería de prompts
+   ========================================================================= */
+.brainwrap { position: absolute; right: 9rem; top: 50%; width: 90rem; margin-top: -40rem; pointer-events: none; }
+.brain2d { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 0 .45rem rgba(46,242,181,.32)); }
+.brain2d .bl path { fill: none; stroke: #45e2ae; stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.6s cubic-bezier(.45,.05,.25,1) calc(.2s + var(--o) * 1.5s); }
+.brain2d .bl path.bo { stroke-width: 5.5; }
+.brain2d .bl path.ci { stroke-width: 2.6; stroke: #7fe9cc; }
+.brainwrap.in .bl path { stroke-dashoffset: 0; }
+.brain2d .pulses path { fill: none; stroke: #d9fff2; stroke-width: 4.5; stroke-linecap: round; stroke-dasharray: .035 1; stroke-dashoffset: 1.035;
+  opacity: 0; animation: pulseRun var(--pd) linear infinite; animation-delay: var(--pt); transition: opacity 1s var(--ease); }
+.brainwrap.in .pulses path { opacity: .8; transition-delay: 3s; }
+@keyframes pulseRun { to { stroke-dashoffset: 0; } }
+.brain2d .nodes circle { fill: #c8ffee; opacity: 0; }
+.brainwrap.in .nodes circle { animation: twk 2.8s ease-in-out infinite; animation-delay: var(--t); }
+@keyframes twk { 0%, 100% { opacity: .2; } 50% { opacity: .95; } }
+.chip2d rect { fill: rgba(6, 24, 30, .95); stroke: #45e2ae; stroke-width: 3; }
+.chip2d text { font-family: var(--mono); font-weight: 700; font-size: 30px; fill: #6ff0c2; text-anchor: middle; letter-spacing: .08em; }
+.chip2d { opacity: 0; transition: opacity 1s var(--ease) 2.4s; }
+.brainwrap.in .chip2d { opacity: 1; }
+
+/* Panel Visual AI */
+.s-vai { display: grid; grid-template-columns: 62rem 1fr; gap: 6rem; align-items: center; }
+.s-vai .txt { display: flex; flex-direction: column; gap: 3rem; }
+.vai-head { width: 54rem; aspect-ratio: 3 / 1; margin: -1rem 0 -1.4rem -1.6rem; }
+.vai-head video { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; display: block; }
+.browser { overflow: hidden; border-radius: 2.4rem; }
+.browser .bbar { display: flex; align-items: center; gap: 2rem; padding: 1.6rem 2.2rem; border-bottom: .1rem solid var(--line); }
+.browser .dots { display: flex; gap: .8rem; }
+.browser .dots i { width: 1.2rem; height: 1.2rem; border-radius: 50%; background: rgba(222,232,255,.18); }
+.browser .burl { flex: 1; display: flex; align-items: center; gap: 1rem; font-family: var(--mono); font-size: 1.35rem; color: var(--mute);
+  padding: .8rem 1.4rem; border-radius: 1rem; background: rgba(255,255,255,.04); }
+.browser .burl .ico { color: var(--mint); font-size: 1.5rem; }
+.vplayer { position: relative; aspect-ratio: 1600 / 940; background: #060b16; }
+.vplayer video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.vtabs { display: flex; gap: 1rem; padding: 1.6rem 2.2rem; border-top: .1rem solid var(--line); }
+.vtabs span { font-family: var(--mono); font-size: 1.35rem; letter-spacing: .1em; padding: .8rem 1.4rem; border-radius: 1rem; color: var(--dim); border: .1rem solid var(--line); transition: all .5s var(--ease); }
+.vtabs span.on { color: var(--bg); background: var(--mint); border-color: var(--mint); box-shadow: 0 0 2.4rem rgba(46,242,181,.45); }
+
+/* PROMPT */
+.s-prompt { padding: 0; overflow: hidden; }
+.hexgrid { position: absolute; inset: 12rem 4rem 7rem; display: flex; flex-direction: column; justify-content: center; font-family: var(--mono); font-size: 2.9rem; font-weight: 500;
+  line-height: 1.42; letter-spacing: .14em; color: rgba(46,242,181,.24); overflow: hidden; white-space: nowrap; text-align: center;
+  -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 40%, transparent 100%); mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 40%, transparent 100%); }
+.pwin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2.6rem; text-align: center;
+  padding: 5rem 9rem; border-radius: 3rem; background: radial-gradient(ellipse at center, rgba(3,7,15,.96) 55%, rgba(3,7,15,.75) 100%); }
+.pword { font-family: var(--disp); font-stretch: 112%; font-weight: 800; font-size: 18rem; line-height: .9; letter-spacing: .02em; color: #f2e6c6; white-space: nowrap; display: flex; overflow: hidden; padding: .06em .04em; }
+.pword .lt { display: inline-block; opacity: 0; transform: translateY(70%); }
+.s-prompt.active .pword .lt { animation: ltIn 1s var(--ease) both; animation-delay: calc(.5s + var(--i) * .09s); }
+@keyframes ltIn { from { opacity: 0; transform: translateY(70%); } to { opacity: 1; transform: none; } }
+.s-prompt .lead { max-width: 100rem; }
+
+/* anatomía */
+.s-anat { display: flex; flex-direction: column; justify-content: center; gap: 5rem; }
+.s-anat .head { display: flex; flex-direction: column; gap: 2.4rem; }
+.anat { display: grid; grid-template-columns: 1.15fr 1fr; gap: 4rem; align-items: center; }
+.pcard2 { padding: 3.6rem 4rem; display: flex; flex-direction: column; gap: 2.4rem; }
+.pch { display: flex; justify-content: space-between; align-items: center; }
+.ptext { font-family: var(--mono); font-size: 2.15rem; line-height: 1.75; color: var(--dim); }
+.ptext .sg { border-radius: .6rem; padding: .2rem .3rem; transition: color .8s var(--ease), background .8s var(--ease), box-shadow .8s var(--ease); }
+.s-anat.active .s1 { color: var(--ink); background: rgba(46,242,181,.16); box-shadow: inset 0 -.25rem 0 var(--mint); transition-delay: .7s; }
+.s-anat.active .s2 { color: var(--ink); background: rgba(34,216,230,.14); box-shadow: inset 0 -.25rem 0 var(--aqua); transition-delay: 1.4s; }
+.s-anat.active .s3 { color: var(--ink); background: rgba(143,124,255,.16); box-shadow: inset 0 -.25rem 0 var(--violet); transition-delay: 2.1s; }
+.s-anat.active .s4 { color: var(--ink); background: rgba(246,190,79,.14); box-shadow: inset 0 -.25rem 0 var(--gold); transition-delay: 2.8s; }
+.s-anat.active .s5 { color: var(--ink); background: rgba(255,111,142,.14); box-shadow: inset 0 -.25rem 0 var(--coral); transition-delay: 3.5s; }
+.ings { list-style: none; display: flex; flex-direction: column; gap: 1.6rem; }
+.ing { display: grid; grid-template-columns: 7rem 1fr; gap: 2rem; align-items: center; padding: 2rem 2.4rem; border-radius: 2rem; background: rgba(255,255,255,.03); border: .1rem solid var(--line); border-left: .4rem solid var(--c); }
+.ing .n { font-family: var(--disp); font-stretch: 125%; font-weight: 800; font-size: 4rem; color: var(--c); line-height: 1; }
+.ing b { display: block; font-size: 2.6rem; font-weight: 650; letter-spacing: -.02em; }
+.ing span:not(.n) { display: block; font-size: 1.95rem; color: var(--mute); margin-top: .4rem; }
+
+/* ejemplos */
+.s-ex { display: flex; flex-direction: column; justify-content: center; gap: 4.4rem; }
+.s-ex .head { display: flex; flex-direction: column; gap: 2.4rem; }
+.exs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; }
+.ex { overflow: hidden; display: flex; flex-direction: column; }
+.ex .eimg { aspect-ratio: 1; background: #050a14; display: grid; place-items: center; overflow: hidden; }
+.ex .eimg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ex .eimg.light { background: #fff; }
+.ex .eimg.light img { object-fit: contain; }
+.ex .eb { padding: 2.4rem 2.6rem 2.8rem; display: flex; flex-direction: column; gap: 1.2rem; }
+.ex .eb .chip { align-self: flex-start; font-size: 1.25rem; }
+.ex h4 { font-size: 2.6rem; font-weight: 660; letter-spacing: -.02em; }
+.ex p { font-size: 1.9rem; color: var(--mute); line-height: 1.4; font-style: italic; }
