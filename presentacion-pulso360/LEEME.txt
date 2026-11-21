@@ -14,10 +14,9 @@ CONTROLES
   12 + Enter .................... ir a la diapositiva 12
   H ............................. ayuda
 
+CÓDIGOS QR: assets/qr/demo-1.jpg y demo-2.jpg (WhatsApp para agendar la demo)
+
 MATERIALES PENDIENTES (se integran solos al copiarlos con estos nombres)
-  assets/qr/demo-1.png ............ código QR 1 para agendar demo
-  assets/qr/demo-2.png ............ código QR 2 para agendar demo
-     (o escribe la liga en index.html → PULSO_CONFIG → "url" y el QR se genera solo)
   assets/ponentes/gloria-perez.jpg ...... fotografía (vertical)
   assets/ponentes/jose-vallarta.jpg ..... fotografía (vertical)
   assets/ponentes/eduardo-contro.jpg .... fotografía (vertical)

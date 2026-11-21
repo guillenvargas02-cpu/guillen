@@ -591,3 +591,5 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .rules .caps { margin-right: 1rem; color: var(--mint); }
 .s-thanks .ppl { gap: 5rem; }
 .s-thanks .ppl b { font-size: 2.3rem; }
+.qrcard .qrl { display: flex; align-items: center; gap: 1.2rem; font-family: var(--mono); font-size: 2.4rem; font-weight: 600; letter-spacing: .02em; }
+.qrcard .qrl .logo { font-size: 3.2rem; }
