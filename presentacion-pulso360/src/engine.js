@@ -11,6 +11,7 @@ import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import qrcode from "qrcode-generator";
 import MX from "./mexico.js";
+import * as BR from "./brain.js";
 
 const MINT = new THREE.Color("#2ef2b5"), AQUA = new THREE.Color("#22d8e6"), BLUE = new THREE.Color("#4d8bff");
 
@@ -55,29 +56,23 @@ const SHAPES = {
     return a;
   },
   brain(n) {
-    const a = [];
-    const fold = (x, y, z) => Math.sin(5.3 * x + 1.7) * Math.sin(6.1 * y + .4) * Math.sin(4.9 * z + 2.2) + .6 * Math.sin(9.7 * x + 7.1 * z) * Math.sin(8.3 * y + 1.1);
-    for (let i = 0; i < n; i++) {
-      const r = rnd();
-      if (r < .80) { // hemisferios
-        let x = gauss(), y = gauss(), z = gauss(); const L = Math.hypot(x, y, z); x /= L; y /= L; z /= L;
-        const side = x >= 0 ? 1 : -1;
-        let px = x * .92, py = y * .82, pz = z * 1.28;
-        const f = 1 + .075 * fold(px, py, pz);
-        const inner = rnd() < .14 ? .55 + rnd() * .4 : 1; // algo de volumen
-        px *= f * inner; py *= f * inner; pz *= f * inner;
-        px += side * .07;
-        if (py < -.42) py = -.42 + (py + .42) * .35;           // base aplanada
-        if (pz > .7 && py < -.1) py += (pz - .7) * .25;          // lóbulo frontal
-        a.push(px, py + .12, pz);
-      } else if (r < .95) { // cerebelo
-        let x = gauss(), y = gauss(), z = gauss(); const L = Math.hypot(x, y, z); x /= L; y /= L; z /= L;
-        const f = 1 + .05 * Math.sin(34 * y);
-        a.push(x * .7 * f, -.55 + y * .3 * f, -.82 + z * .42 * f);
-      } else { // tallo
-        const t = rnd(), ang = rnd() * Math.PI * 2, rad = .14 + rnd() * .03;
-        a.push(Math.cos(ang) * rad, -.55 - t * .6, -.38 - t * .12 + Math.sin(ang) * rad);
+    const S = BRAIN_S, a = [], C = brainCurves();
+    const pick = (lines, k, jit) => {
+      const segs = []; let tot = 0;
+      lines.forEach(l => { for (let i = 0; i < l.length - 1; i++) { const L = l[i].distanceTo(l[i + 1]); segs.push([l[i], l[i + 1], L]); tot += L; } });
+      for (let q = 0; q < k; q++) {
+        let r = rnd() * tot, sg = segs[0]; for (const g of segs) { r -= g[2]; if (r <= 0) { sg = g; break; } }
+        const t = rnd(), P = sg[0].clone().lerp(sg[1], t);
+        a.push((P.x + gauss() * jit) * S, (P.y + gauss() * jit) * S, (P.z + gauss() * jit * .5) * S);
       }
+    };
+    pick([C.outline], Math.floor(n * .26), .006);
+    pick(C.sulci, Math.floor(n * .34), .007);
+    pick(C.cereb, Math.floor(n * .12), .006);
+    pick([C.stem], Math.floor(n * .04), .012);
+    while (a.length / 3 < n) {
+      const x = (rnd() - .5) * 2, y = -.5 + rnd() * 1.32;
+      if (BR.inside(x, y)) { const d = BR.depth(x, y); a.push(x * S, y * S, (rnd() * 2 - 1) * d * S); }
     }
     return a;
   },
@@ -152,7 +147,20 @@ const SHAPES = {
     return a;
   }
 };
-const MAP_S = 3.1, MAP_Z = .07;
+const MAP_S = 3.1, MAP_Z = .07, BRAIN_S = 1.7;
+let _bc = null;
+function brainCurves() {
+  if (_bc) return _bc;
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const outline = new THREE.CatmullRomCurve3(BR.OUTLINE.map(([x, y]) => V(x, y, 0)), true, "centripetal").getPoints(240);
+  const sulci = BR.SULCI.map(l => new THREE.CatmullRomCurve3(l.map(([x, y]) => V(x, y, BR.depth(x, y))), false, "centripetal").getPoints(60));
+  const { cx, cy, rx, ry } = BR.CEREBELLUM, cereb = [];
+  const ell = []; for (let i = 0; i <= 80; i++) { const t = i / 80 * Math.PI * 2; ell.push(V(cx + Math.cos(t) * rx, cy + Math.sin(t) * ry, 0)); } cereb.push(ell);
+  for (let k = -2; k <= 2; k++) { const yy = cy + k * ry * .36, w = Math.sqrt(Math.max(0, 1 - Math.pow(k * .36, 2))) * rx * .92, f = [];
+    for (let i = 0; i <= 30; i++) { const xx = cx - w + i / 30 * 2 * w; f.push(V(xx, yy + Math.sin(i * .9) * .008, .06 * Math.sqrt(Math.max(0, 1 - Math.pow((xx - cx) / rx, 2))))); } cereb.push(f); }
+  const stem = new THREE.CatmullRomCurve3(BR.STEM.map(([x, y]) => V(x, y, 0))).getPoints(30);
+  return (_bc = { outline, sulci, cereb, stem });
+}
 
 /* ------------------------------------------------------------------ motor */
 function createEngine(canvas) {
@@ -178,15 +186,17 @@ function createEngine(canvas) {
   /* ---------- enjambre binario */
   const QUALITY = Math.min(1, (navigator.hardwareConcurrency || 4) / 8) > .5 ? 1 : .7;
   const N = Math.round(16000 * QUALITY);
-  const atlas = (() => {
-    const c = document.createElement("canvas"); c.width = 384; c.height = 128;
-    const g = c.getContext("2d");
+  const atlasCanvas = document.createElement("canvas"); atlasCanvas.width = 384; atlasCanvas.height = 128;
+  const atlas = new THREE.CanvasTexture(atlasCanvas); atlas.anisotropy = 4;
+  function redrawAtlas() {
+    const g = atlasCanvas.getContext("2d"); g.clearRect(0, 0, 384, 128);
     g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "middle";
     g.font = "600 104px 'Geist Mono', 'JetBrains Mono', monospace";
     g.fillText("0", 64, 68); g.fillText("1", 192, 68);
     g.beginPath(); g.arc(320, 64, 22, 0, Math.PI * 2); g.fill();
-    const t = new THREE.CanvasTexture(c); t.anisotropy = 4; t.needsUpdate = true; return t;
-  })();
+    atlas.needsUpdate = true;
+  }
+  redrawAtlas();
   const geo = new THREE.BufferGeometry();
   const aFrom = new Float32Array(N * 3), aTo = new Float32Array(N * 3), aRand = new Float32Array(N * 4), aGlyph = new Float32Array(N);
   for (let i = 0; i < N; i++) {
@@ -201,7 +211,7 @@ function createEngine(canvas) {
   geo.setAttribute("aGlyph", new THREE.BufferAttribute(aGlyph, 1));
   const U = {
     uT: { value: 1 }, uTime: { value: 0 }, uSize: { value: 30 }, uPix: { value: 1 }, uAtlas: { value: atlas },
-    uOpacity: { value: .35 }, uFlow: { value: 0 }, uPulse: { value: 0 }, uWave: { value: 0 }, uMorphX: { value: 0 },
+    uOpacity: { value: .35 }, uDots: { value: 0 }, uFlow: { value: 0 }, uPulse: { value: 0 }, uWave: { value: 0 }, uMorphX: { value: 0 },
     uC1: { value: MINT.clone() }, uC2: { value: AQUA.clone() }, uC3: { value: BLUE.clone() }
   };
   const mat = new THREE.ShaderMaterial({
@@ -238,10 +248,11 @@ function createEngine(canvas) {
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: /* glsl */`
-      uniform sampler2D uAtlas; uniform float uOpacity; uniform vec3 uC1, uC2, uC3;
+      uniform sampler2D uAtlas; uniform float uOpacity, uDots; uniform vec3 uC1, uC2, uC3;
       varying float vGlyph, vBright, vMix, vFade;
       void main(){
-        vec2 uv = vec2((gl_PointCoord.x + vGlyph) / 3., 1. - gl_PointCoord.y);
+        float gg = uDots > .5 ? 2. : vGlyph;
+        vec2 uv = vec2((gl_PointCoord.x + gg) / 3., 1. - gl_PointCoord.y);
         float a = texture2D(uAtlas, uv).a;
         if (a < .02) discard;
         vec3 c = mix(uC1, uC2, smoothstep(.35, .8, vMix));
@@ -253,6 +264,77 @@ function createEngine(canvas) {
   const points = new THREE.Points(geo, mat);
   points.frustumCulled = false;
   spinner.add(points);
+
+  const traceMats = [];
+  /* ---------- cerebro holográfico con chip IA y piso binario */
+  const brainGroup = new THREE.Group(); spinner.add(brainGroup);
+  const floorMat = { m: null };
+  const brainChipTex = { t: null, draw: null };
+  {
+    const S = BRAIN_S, C = brainCurves();
+    const add = (pts, color, op) => { const g = new THREE.BufferGeometry().setFromPoints(pts.map(p => p.clone().multiplyScalar(S)));
+      const m = new THREE.LineBasicMaterial({ color, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false }); m.userData.base = op;
+      brainGroup.add(new THREE.Line(g, m)); };
+    add(C.outline, 0x7ff8ff, .9);
+    C.sulci.forEach(l => add(l, 0x37e8ff, .5));
+    C.cereb.forEach(l => add(l, 0x37e8ff, .45));
+    add(C.stem, 0x7ff8ff, .7);
+    // red de conexiones (plexo)
+    const nodes = [];
+    while (nodes.length < 240) { const x = (rnd() - .5) * 2, y = -.5 + rnd() * 1.32; if (BR.inside(x, y)) { const d = BR.depth(x, y); nodes.push(new THREE.Vector3(x, y, (rnd() * 2 - 1) * d * .9)); } }
+    const seg = [];
+    nodes.forEach((p, i) => { const near = nodes.map((q, j) => [p.distanceTo(q), j]).filter(v => v[1] !== i && v[0] < .3).sort((u, v) => u[0] - v[0]).slice(0, 3);
+      near.forEach(([, j]) => { if (j > i) seg.push(p.x * S, p.y * S, p.z * S, nodes[j].x * S, nodes[j].y * S, nodes[j].z * S); }); });
+    const pm = new THREE.LineBasicMaterial({ color: 0x4d8bff, transparent: true, opacity: .22, blending: THREE.AdditiveBlending, depthWrite: false }); pm.userData.base = .22;
+    brainGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute(seg, 3)), pm));
+    // chip IA
+    const chip = new THREE.Group(); chip.position.set(-.04 * S, .2 * S, (BR.depth(-.04, .2) + .08) * S); brainGroup.add(chip);
+    const base = new THREE.Mesh(new RoundedBoxGeometry(.62, .62, .08, 3, .05), new THREE.MeshStandardMaterial({ color: 0x07203a, metalness: .6, roughness: .3, emissive: 0x0b3b5a, emissiveIntensity: .6, transparent: true }));
+    base.material.userData.base = 1; chip.add(base);
+    const cv = document.createElement("canvas"); cv.width = cv.height = 512; const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    const draw = () => { const g = cv.getContext("2d"); g.clearRect(0, 0, 512, 512);
+      const grd = g.createLinearGradient(0, 0, 512, 512); grd.addColorStop(0, "#0c4a6e"); grd.addColorStop(1, "#063247");
+      g.fillStyle = grd; g.beginPath(); g.roundRect(28, 28, 456, 456, 64); g.fill();
+      g.shadowColor = "#5ff6ff"; g.shadowBlur = 40; g.strokeStyle = "#9ffcff"; g.lineWidth = 14; g.stroke();
+      g.shadowBlur = 50; g.fillStyle = "#ffffff"; g.textAlign = "center"; g.textBaseline = "middle";
+      try { g.fontStretch = "expanded"; } catch (e) {}
+      g.font = "800 230px Archivo, 'Geist', sans-serif"; g.fillText("IA", 256, 270); g.shadowBlur = 0; tex.needsUpdate = true; };
+    draw(); brainChipTex.draw = draw;
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(.6, .6), new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false, depthWrite: false }));
+    face.material.userData.base = 1; face.position.z = .046; chip.add(face);
+    // pines y pistas desde el chip
+    const paths = [];
+    for (let s2 = 0; s2 < 4; s2++) for (let i = 0; i < 4; i++) {
+      const off = (i - 1.5) * .12, rot = s2 * Math.PI / 2, c = Math.cos(rot), sn = Math.sin(rot);
+      let x = .32, y = off; const pts = [[x, y]]; x += .12 + ((i + s2) % 3) * .08; pts.push([x, y]); y += (((i + s2 * 2) % 3) - 1) * .14; pts.push([x, y]); x += .18 + ((i * 3 + s2) % 4) * .07; pts.push([x, y]);
+      paths.push(pts.map(([px, py]) => [px * c - py * sn, px * sn + py * c]));
+    }
+    const pos = [], dist = [];
+    paths.forEach((pts, pi) => { let d = 0; for (let k = 0; k < pts.length - 1; k++) { const [x0, y0] = pts[k], [x1, y1] = pts[k + 1], L = Math.hypot(x1 - x0, y1 - y0);
+      const nx = -(y1 - y0) / L * .012, ny = (x1 - x0) / L * .012;
+      [[x0 + nx, y0 + ny, d], [x0 - nx, y0 - ny, d], [x1 + nx, y1 + ny, d + L], [x1 + nx, y1 + ny, d + L], [x0 - nx, y0 - ny, d], [x1 - nx, y1 - ny, d + L]]
+        .forEach(([px, py, dd]) => { pos.push(px, py, 0); dist.push(dd + pi * .23); }); d += L; } });
+    const tg = new THREE.BufferGeometry(); tg.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); tg.setAttribute("aD", new THREE.Float32BufferAttribute(dist, 1));
+    const tm = new THREE.ShaderMaterial({ uniforms: { uTime: U.uTime, uOp: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+      vertexShader: "attribute float aD; varying float vD; void main(){ vD = aD; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }",
+      fragmentShader: "uniform float uTime, uOp; varying float vD; void main(){ float p = fract(vD * 1.6 - uTime * .5); float head = pow(p, 10.) * 2.2; vec3 c = mix(vec3(.2,.7,1.), vec3(.6,1.,1.), head); gl_FragColor = vec4(c * (.5 + head), (.45 + head) * uOp); }" });
+    traceMats.push(tm); brainGroup.userData.traceMat = tm;
+    const tr = new THREE.Mesh(tg, tm); tr.position.z = -.01; chip.add(tr);
+    // piso de código binario en perspectiva
+    const fb = [], fr = [];
+    for (let cx = -2.7; cx <= 2.71; cx += .15) for (let k = 0; k < 26; k++) { fb.push(cx, -1.62, -6 + k * .27 + rnd() * .1); fr.push(rnd() < .5 ? 0 : 1, rnd()); }
+    const fg = new THREE.BufferGeometry(); fg.setAttribute("position", new THREE.Float32BufferAttribute(fb, 3)); fg.setAttribute("aR", new THREE.Float32BufferAttribute(fr, 2));
+    const fm = new THREE.ShaderMaterial({ uniforms: { uTime: U.uTime, uOp: { value: 0 }, uPix: U.uPix, uAtlas: U.uAtlas }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `attribute vec2 aR; uniform float uTime, uOp, uPix; varying float vA, vG;
+        void main(){ vec3 p = position; float L = 7.2; p.z = mod(position.z + 6. + uTime * (.45 + aR.y * .35), L) - 6.;
+          float far = smoothstep(-6., -3.6, p.z), near = 1. - smoothstep(.3, 1.2, p.z), edge = 1. - smoothstep(1.6, 2.7, abs(p.x));
+          vA = far * near * edge * uOp * (.55 + .45 * sin(uTime * 3. + aR.y * 50.)); vG = aR.x;
+          vec4 mv = modelViewMatrix * vec4(p, 1.); gl_PointSize = 13. * uPix / -mv.z; gl_Position = projectionMatrix * mv; }`,
+      fragmentShader: `uniform sampler2D uAtlas; varying float vA, vG; void main(){ vec2 uv = vec2((gl_PointCoord.x + vG) / 3., 1. - gl_PointCoord.y); float a = texture2D(uAtlas, uv).a; if (a < .05) discard; gl_FragColor = vec4(vec3(.35,.85,1.) * .95, a * vA * .8); }` });
+    floorMat.m = fm;
+    const floor = new THREE.Points(fg, fm); floor.frustumCulled = false; rig.add(floor);
+  }
+  const fadeGroup = (g, p) => g.traverse(o => { const m = o.material; if (!m || m.isShaderMaterial) return; if (m.userData.base === undefined) m.userData.base = m.opacity; m.transparent = true; m.opacity = m.userData.base * p; });
 
   /* ---------- rayo PULSO 3D */
   const boltGroup = new THREE.Group(); spinner.add(boltGroup);
@@ -276,7 +358,6 @@ function createEngine(canvas) {
 
   /* ---------- chip de IA */
   const chipGroup = new THREE.Group(); spinner.add(chipGroup);
-  const traceMats = [];
   {
     const sub = new THREE.Mesh(new RoundedBoxGeometry(3.1, 3.1, .22, 4, .08), new THREE.MeshStandardMaterial({ color: 0x0a1526, metalness: .75, roughness: .32 }));
     chipGroup.add(sub);
@@ -375,9 +456,9 @@ function createEngine(canvas) {
   composer.addPass(new OutputPass());
 
   /* ---------- estado y transiciones */
-  const S = { shape: "dust", pos: [.5, .5], scale: 1, opacity: .35, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: 30, wave: 0, sweep: 0 };
+  const S = { dots: 0, shape: "dust", pos: [.5, .5], scale: 1, opacity: .35, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: 30, wave: 0, sweep: 0 };
   const T = { ...S };
-  const presence = { bolt: 0, chip: 0, mexico: 0 };
+  const presence = { bolt: 0, chip: 0, mexico: 0, brain: 0 };
   let morphStart = -10, morphDur = 2.2, spinAngle = 0, meshT = {};
   const cur = new Float32Array(N * 3);
 
@@ -400,7 +481,7 @@ function createEngine(canvas) {
   }
 
   function set(cfg) {
-    const c = Object.assign({ shape: "dust", pos: [.5, .5], scale: 1, opacity: null, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: null, wave: 0, sweep: 0 }, cfg || {});
+    const c = Object.assign({ dots: 0, shape: "dust", pos: [.5, .5], scale: 1, opacity: null, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: null, wave: 0, sweep: 0 }, cfg || {});
     if (c.opacity === null) c.opacity = c.shape === "dust" ? .3 : .95;
     if (c.size === null) c.size = c.shape === "dust" ? 15 : c.shape === "mexico" ? 16 : 30;
     if (c.shape !== T.shape) {
@@ -474,8 +555,8 @@ function createEngine(canvas) {
     chipGroup.visible = presence.chip > .01;
     chipGroup.scale.setScalar(.7 + presence.chip * .3);
     chipGroup.position.z = (1 - presence.chip) * -3;
-    traceMats.forEach(m => (m.uniforms.uOp.value = presence.chip));
-    chipGroup.traverse(o => { if (o.isMesh && o.material.isMeshStandardMaterial) { o.material.transparent = true; o.material.opacity = presence.chip; } });
+    traceMats.forEach(m => { if (m !== brainGroup.userData.traceMat) m.uniforms.uOp.value = presence.chip; });
+    fadeGroup(chipGroup, presence.chip);
     // mapa
     mapGroup.visible = presence.mexico > .01;
     const since = time - (meshT.mexico || 0);
@@ -490,6 +571,12 @@ function createEngine(canvas) {
       b.userData.mat.uniforms.uOp.value = lerp(b.userData.mat.uniforms.uOp.value, tt, .2);
       b.scale.z = .05 + tt * .95;
     });
+    // cerebro
+    U.uDots.value = T.dots;
+    brainGroup.visible = presence.brain > .01;
+    fadeGroup(brainGroup, presence.brain);
+    brainGroup.userData.traceMat.uniforms.uOp.value = presence.brain;
+    floorMat.m.uniforms.uOp.value = presence.brain;
     composer.render();
   }
   const prevMesh = { v: null };
@@ -498,6 +585,7 @@ function createEngine(canvas) {
     origSet(cfg);
     if (T.mesh !== prevMesh.v) { if (T.mesh) meshT[T.mesh] = clock.elapsedTime; prevMesh.v = T.mesh; }
   }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { brainChipTex.draw(); redrawAtlas(); });
   loop();
   return { set: setWithMesh, renderer };
 }

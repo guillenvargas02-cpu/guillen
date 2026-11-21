@@ -1,4 +1,4 @@
-PULSO 360° · Capacitación: IA aplicada a campañas electorales · v2
+PULSO 360° · Capacitación: IA aplicada a campañas electorales · v3
 ====================================================================
 Presentación animada con 3D en tiempo real (funciona sin internet)
 
@@ -20,16 +20,19 @@ MATERIALES PENDIENTES (se integran solos al copiarlos con estos nombres)
      (o escribe la liga en index.html → PULSO_CONFIG → "url" y el QR se genera solo)
   assets/ponentes/gloria-perez.jpg ...... fotografía (vertical)
   assets/ponentes/jose-vallarta.jpg ..... fotografía (vertical)
+  assets/ponentes/eduardo-contro.jpg .... fotografía (vertical)
+  assets/ponentes/juan-vasquez.jpg ...... fotografía (vertical)
 
 CALIDAD
 - Escenario 16:9 que se adapta a HD, 2K y 4K; texto y gráficos vectoriales.
 - 3D en tiempo real (WebGL): cerebro de IA en código binario, rayo PULSO, chip de IA,
   mapa de México en relieve y flujo de datos. Requiere una computadora con aceleración
   gráfica (cualquier equipo de los últimos años).
+- Logotipos de redes: Simple Icons (CC0), dibujados en vector con los colores de cada marca.
 - Fuentes incrustadas: Geist, Geist Mono y Archivo (licencia SIL OFL).
 
 ESTRUCTURA
-  index.html ........... contenido de las 25 diapositivas
+  index.html ........... contenido de las 31 diapositivas
   css/deck.css ......... diseño y animaciones
   js/deck.js ........... navegación y efectos
   js/engine.js ......... motor 3D compilado (código fuente en src/)
