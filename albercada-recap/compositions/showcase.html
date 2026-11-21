@@ -75,27 +75,27 @@
       const T0 = 16.9;
       const B = 2.22233 / 4;
       const NOTA = 17.12; // "un par de notas"
-      const FOTOS = 35 * B; // 19.445 "un par de fotos"
+      const FOTOS = 8 * 2.22233; // 17.779 "un par de fotos"
+      const BREAK = 9 * 2.22233; // 20.001 regresa la persona
       const at = (t) => t - T0;
       const tl = gsap.timeline({ paused: true });
 
-      // Sale la nota (entra en 3D) y el rosa se abre detrás
+      // Sale la nota (entra en 3D) y el rosa se abre detrás; se queda debajo de las fotos
       tl.fromTo(
         "#sc-card",
         { opacity: 0, y: 1150, rotationX: 34, rotation: -8, scale: 0.86 },
-        { opacity: 1, y: 0, rotationX: 0, rotation: -2, scale: 1, duration: 0.55, ease: "power3.out" },
+        { opacity: 1, y: 0, rotationX: 0, rotation: -2, scale: 1, duration: 0.45, ease: "power3.out" },
         at(NOTA)
       );
-      tl.to("#sc-bg", { clipPath: "circle(120% at 50% 50%)", duration: 0.36, ease: "power2.out" }, at(NOTA));
-      tl.to("#sc-card", { rotation: 0, y: -12, duration: FOTOS - NOTA - 0.55, ease: "sine.inOut" }, at(NOTA + 0.55));
-      tl.to("#sc-card", { x: -1400, rotationY: -50, rotation: -8, duration: 0.3, ease: "power3.in" }, at(FOTOS - 0.2));
+      tl.to("#sc-bg", { clipPath: "circle(120% at 50% 50%)", duration: 0.32, ease: "power2.out" }, at(NOTA));
+      tl.to("#sc-card", { rotation: 0, scale: 0.96, duration: BREAK - NOTA - 0.45, ease: "sine.out" }, at(NOTA + 0.45));
 
-      // Salen las fotos: 4 fotos grandes, una cada 2 beats, y la protagonista a pantalla completa
+      // Salen las fotos: 4, una por beat, encima de la nota
       const P = [
-        ["letrero", 520, 900, 700, 0.5625, -4],
-        ["grupo-horizontal", 540, 1010, 960, 1.778, 3],
-        ["mesa-larga", 565, 930, 700, 0.5625, 5],
-        ["terraza-panoramica", 540, 880, 960, 1.778, -3],
+        ["letrero", 300, 860, 520, 0.5625, -6],
+        ["grupo-horizontal", 560, 1200, 880, 1.778, 3],
+        ["mesa-larga", 790, 880, 520, 0.5625, 6],
+        ["grupo-sonrisas", 540, 980, 600, 0.5625, -2],
       ];
       const box = document.getElementById("sc-photos");
       P.forEach(([name, cx, cy, w, ar, rot], k) => {
@@ -109,38 +109,20 @@
         el.style.zIndex = 2 + k;
         el.innerHTML = `<img src="assets/photos/${name}.jpg" alt="" />`;
         box.appendChild(el);
-        const t = at(FOTOS + 2 * k * B);
+        const t = at(FOTOS + k * B);
         const dir = k % 2 ? 1 : -1;
         tl.fromTo(
           el,
-          { opacity: 0, x: dir * 520, y: 60, scale: 1.12, rotation: rot + dir * 14 },
-          { opacity: 1, x: 0, y: 0, scale: 1, rotation: rot, duration: 0.34, ease: "power3.out" },
+          { opacity: 0, x: dir * 420, y: 50, scale: 1.15, rotation: rot + dir * 14 },
+          { opacity: 1, x: 0, y: 0, scale: 1, rotation: rot, duration: 0.28, ease: "power3.out" },
           t
         );
-        tl.fromTo(el.querySelector("img"), { scale: 1.12 }, { scale: 1.0, duration: 2 * B + 0.4, ease: "sine.out" }, t);
-        tl.fromTo("#sc-flash", { opacity: 0.2 }, { opacity: 0, duration: 0.16, ease: "power1.out", immediateRender: false }, t + 0.05);
+        tl.fromTo(el.querySelector("img"), { scale: 1.1 }, { scale: 1.0, duration: 1.2, ease: "sine.out" }, t);
+        tl.fromTo("#sc-flash", { opacity: 0.18 }, { opacity: 0, duration: 0.14, ease: "power1.out", immediateRender: false }, t + 0.04);
       });
 
-      const fin = document.createElement("div");
-      fin.className = "ph";
-      fin.style.left = "0px";
-      fin.style.top = "0px";
-      fin.style.width = "1080px";
-      fin.style.height = "1920px";
-      fin.style.zIndex = 30;
-      fin.innerHTML = '<img src="assets/photos/grupo-sonrisas.jpg" alt="" />';
-      box.appendChild(fin);
-      const tf = at(FOTOS + 7 * B);
-      tl.set(fin, { opacity: 1 }, tf);
-      tl.fromTo(
-        fin,
-        { scale: 0.5, rotation: -4, borderWidth: 28 },
-        { scale: 1, rotation: 0, borderWidth: 0, duration: 0.42, ease: "power3.inOut", immediateRender: false },
-        tf
-      );
-      tl.set(fin, { borderRadius: 0 }, tf + 0.42);
-      tl.to(fin.querySelector("img"), { scale: 1.06, duration: 1.2, ease: "none" }, tf);
-      tl.to("#sc-all", { y: -1920, duration: 0.27, ease: "power3.in" }, at(11 * 2.22233 - 0.27));
+      // La capa sube y regresa la persona (mitad de la frase, la boca va con su voz)
+      tl.to("#sc-all", { y: -1920, duration: 0.27, ease: "power3.in" }, at(BREAK - 0.27));
       window.__timelines["showcase"] = tl;
     })();
   </script>

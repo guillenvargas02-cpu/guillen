@@ -72,15 +72,15 @@
   </div>
   <script>
     (function () {
-      const T0 = 30.8;
-      const MEX = 13 * 2.22233 - 0.1 + (2.8 - 0.62); // 30.970 "…somos México"
+      const T0 = 24.8;
+      const MEX = 10 * 2.22233 - 0.1 + (3.52 - 0.62); // 25.023 termina "…somos México"
       const at = (t) => t - T0;
       const tl = gsap.timeline({ paused: true });
 
-      // Cortinilla: entra en "somos", cubre en "México"
-      tl.to("#fn-bar1", { x: 0, duration: 0.36, ease: "power3.in" }, at(MEX - 0.05));
-      tl.to("#fn-bar2", { x: 0, duration: 0.36, ease: "power3.in" }, at(MEX + 0.02));
-      tl.set("#fn-white", { opacity: 1 }, at(MEX + 0.38));
+      // Cortinilla: entra cuando termina de decir "somos México"
+      tl.to("#fn-bar1", { x: 0, duration: 0.36, ease: "power3.in" }, at(MEX));
+      tl.to("#fn-bar2", { x: 0, duration: 0.36, ease: "power3.in" }, at(MEX + 0.07));
+      tl.set("#fn-white", { opacity: 1 }, at(MEX + 0.43));
 
       // El logo se arma: cada letra sube desde abajo con un pequeño rebote, en cascada
       const L = document.querySelectorAll(".fn-l");
@@ -91,13 +91,13 @@
           el,
           { y: 190, rotation: k % 2 ? -10 : 10, scaleY: 1.25 },
           { y: 0, rotation: 0, scaleY: 1, duration: 0.42, ease: "back.out(2.1)" },
-          at(MEX + 0.36 + k * 0.075)
+          at(MEX + 0.41 + k * 0.075)
         );
       });
       // golpe final: el logo completo da un pequeño "punch" y luego respira hasta el último cuadro
-      tl.fromTo("#fn-logo", { scale: 1 }, { scale: 1.07, duration: 0.12, ease: "power2.out", immediateRender: false }, at(MEX + 0.78));
-      tl.to("#fn-logo", { scale: 1, duration: 0.35, ease: "back.out(2)" }, at(MEX + 0.9));
-      tl.to("#fn-logo", { scale: 1.04, duration: 3.3, ease: "sine.out" }, at(MEX + 1.25));
+      tl.fromTo("#fn-logo", { scale: 1 }, { scale: 1.07, duration: 0.12, ease: "power2.out", immediateRender: false }, at(MEX + 0.83));
+      tl.to("#fn-logo", { scale: 1, duration: 0.35, ease: "back.out(2)" }, at(MEX + 0.95));
+      tl.to("#fn-logo", { scale: 1.04, duration: 3.0, ease: "sine.out" }, at(MEX + 1.3));
       window.__timelines["finale"] = tl;
     })();
   </script>

@@ -1,15 +1,15 @@
-# Albercada SOMOS — recap (vertical 4K, 35.6 s)
+# Albercada SOMOS — recap (vertical 4K, 29.4 s)
 
 | Tiempo | Qué pasa |
 |---|---|
 | 0.00–4.44 | Cortinilla: pleca SOMOS sobre rosa → crece a blanco → tres tomas del evento con "ALBERCADA · 1ª edición" → franjas diagonales |
 | 4.44 | Drop 1 de la canción: entra la voz ("Oigan, les quiero platicar…") con subtítulos (palabras clave en pleca) |
 | 8.0–15.5 | La invitación entra en "albercada"; dos tomas de apoyo del evento |
-| 17.15 | "un par de notas": sale la nota (sin zoom ni textos extra) |
-| 19.45 | "un par de fotos": salen 4 fotos (una cada 2 beats, con su efecto) y la foto protagonista a pantalla completa |
-| 24.45–28.9 | Pausa de la canción: "para que la próxima edición… puedan acompañarnos" |
-| 28.89 | Drop 2: cierre con el video 2 corrido ("Somos amigos, somos el futuro, y somos México") |
-| 30.97 | "…somos México": cortinilla blanca y el logo SOMOS se arma letra por letra |
+| 17.15 | "un par de notas": sale la nota (sin zoom ni textos extra); la voz no se detiene |
+| 17.78 | "un par de fotos": salen 4 fotos encima de la nota, una por beat, cada una con su efecto |
+| 20.0 | Regresa la persona a mitad de frase ("…muy próximamente, puedan acompañarnos"); compás de pausa de la canción |
+| 22.22 | Drop 2 justo en "Somos amigos, somos el futuro, y somos México" (video 2 corrido) |
+| 25.02 | Termina de decir "somos México": cortinilla blanca y el logo SOMOS se arma letra por letra |
 
 La persona siempre va en sincronía con su voz: cada toma suya se amarra al mismo tramo de audio y
 todos los cortes caen en cuadros exactos (30 fps).

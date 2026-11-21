@@ -47,35 +47,35 @@ def mbar(n):
 
 
 T_INTRO = 2 * BAR            # 4.445  drop 1: entra la voz
-T_BREAK = 11 * BAR           # 24.446 pausa de la canción: "para que la próxima edición…"
-T_DROP2 = 13 * BAR           # 28.890 drop 2: "Somos amigos…" (cierre, video 2)
-TOTAL = 35.6
-
-# (salida inicio, salida fin, canción inicio) — empalmes siempre en downbeat
-MUSIC = [
-    (0.0, T_INTRO, mbar(10)),        # breakdown sin bajo: cortinilla de entrada
-    (T_INTRO, T_BREAK, mbar(12)),    # DROP 1
-    (T_BREAK, T_DROP2, mbar(46)),    # pausa antes del drop
-    (T_DROP2, TOTAL, mbar(48)),      # DROP 2 → cierre y logo
-]
+T_BREAK = 9 * BAR            # 20.001 pausa de la canción: "…muy próximamente, puedan acompañarnos"
+T_DROP2 = 10 * BAR           # 22.223 drop 2: "Somos amigos…" (cierre, video 2)
 
 # ------------------------------------------------------------------ voz
 SPK = {"a": "video/speaker-1150.mp4", "b": "video/speaker-1151.mp4"}
-T_FOTOS = 35 * BEAT              # 19.445 "fotos" cae en el beat: entran las fotos
 T_CLOSE = T_DROP2 - 0.10         # el "Somos" del video 2 (0.72 s) cae en el drop
+T_NOTA = 15.495 + (16.38 - 14.72)    # 17.155 "un par de notas" → sale la nota
+T_FOTOS = 8 * BAR                    # 17.779 "un par de fotos" (en el downbeat) → salen las fotos
 
-# (clip, src_in, src_out, salida_inicio)
+# (clip, src_in, src_out, salida_inicio) — la voz va corrida, sin pausas agregadas
 VOICE = [
     ("a", 1.50, 4.72, T_INTRO),             # 0 Oigan, les quiero platicar … recientemente,
     ("a", 5.05, 6.65, 7.685),               # 1 fue de una albercada que tuvimos con jóvenes,
     ("a", 7.08, 9.70, 9.305),               # 2 justo para conocernos … el proyecto de SOMOS,
     ("a", 10.00, 13.53, 11.945),            # 3 entonces estuvimos muy contentos … y de terraza,
-    ("a", 14.72, 16.57, 15.495),            # 4 les queremos compartir un par de notas,  → sale la nota
-    ("a", 16.57, 17.36, T_FOTOS - 0.41),    # 5 un par de fotos,                        → salen las fotos
-    ("a", 17.60, 20.98, T_BREAK + 0.132),   # 6 para que la próxima edición … puedan acompañarnos.
-    ("b", 0.62, 3.62, T_CLOSE),             # 7 Somos amigos, somos el futuro, y somos México.
+    ("a", 14.72, 17.36, 15.495),            # 4 les queremos compartir un par de notas, un par de fotos,
+    ("a", 17.60, 20.98, T_CLOSE - 0.14 - 3.38),  # 5 para que la próxima edición … puedan acompañarnos.
+    ("b", 0.62, 3.62, T_CLOSE),             # 6 Somos amigos, somos el futuro, y somos México.
 ]
-T_MEXICO = T_CLOSE + (2.80 - 0.62)   # "…somos México": entra la cortinilla blanca con el logo
+T_WIPE = T_CLOSE + (3.52 - 0.62)     # termina de decir "…somos México": entra la cortinilla blanca
+TOTAL = round(T_WIPE + 4.4, 2)
+
+# (salida inicio, salida fin, canción inicio) — empalmes siempre en downbeat
+MUSIC = [
+    (0.0, T_INTRO, mbar(10)),        # breakdown sin bajo: cortinilla de entrada
+    (T_INTRO, T_BREAK, mbar(12)),    # DROP 1
+    (T_BREAK, T_DROP2, mbar(47)),    # el compás de silencio antes del drop
+    (T_DROP2, TOTAL, mbar(48)),      # DROP 2 → cierre y logo
+]
 
 # ------------------------------------------------------------------ video base
 EV = "clips/ev-{}.mp4"
@@ -95,16 +95,15 @@ SHOTS = [
     (9.85, 11.945, ("v", 2), 1.02, 1.08, 0.30),
     (11.945, 13.35, ("v", 3), 1.22, 1.26, 0.27),
     (13.35, 15.495, ("ev", "150428", 0.2), 1.00, 1.06, 0.5),
-    (15.495, 17.37, ("v", 4), 1.04, 1.10, 0.30),
-    # La nota y las fotos (la capa gráfica tapa todo)
-    (17.37, T_BREAK, "pink", 1, 1, 0.5),
-    (T_BREAK, T_DROP2 - 0.36, ("v", 6), 1.00, 1.12, 0.30),
-    # Cierre: video 2 corrido, punch-ins en el drop y en "y somos México"
-    (T_DROP2 - 0.36, T_DROP2, ("v", 7), 1.00, 1.03, 0.30),
-    (T_DROP2, T_CLOSE + 1.71 - 0.62, ("v", 7), 1.24, 1.28, 0.27),
-    (T_CLOSE + 1.71 - 0.62, T_CLOSE + 2.71 - 0.62, ("v", 7), 1.03, 1.07, 0.30),
-    (T_CLOSE + 2.71 - 0.62, T_MEXICO + 0.8, ("v", 7), 1.26, 1.32, 0.27),
-    (T_MEXICO + 0.8, TOTAL, "white", 1, 1, 0.5),
+    (15.495, T_NOTA + 0.25, ("v", 4), 1.04, 1.09, 0.30),
+    # La nota y las fotos (la capa gráfica tapa todo; la voz sigue)
+    (T_NOTA + 0.25, T_BREAK, "pink", 1, 1, 0.5),
+    (T_BREAK, T_DROP2 - 0.03, ("v", 5), 1.06, 1.14, 0.29),
+    # Cierre: video 2 corrido, el corte cae en el drop; punch-ins en las frases
+    (T_DROP2 - 0.03, T_CLOSE + 1.71 - 0.62, ("v", 6), 1.24, 1.28, 0.27),
+    (T_CLOSE + 1.71 - 0.62, T_CLOSE + 2.71 - 0.62, ("v", 6), 1.03, 1.07, 0.30),
+    (T_CLOSE + 2.71 - 0.62, T_WIPE + 0.45, ("v", 6), 1.26, 1.32, 0.27),
+    (T_WIPE + 0.45, TOTAL, "white", 1, 1, 0.5),
 ]
 
 
@@ -330,23 +329,21 @@ SFX = [
     # Parte hablada
     (8.00, "splash", -16), (8.02, "pop", -13), (9.35, "whoosh", -15),   # invitación
     (8.40, "whip", -20), (13.35, "whip", -20),
-    # Sale la nota
-    (17.10, "whoosh", -11), (17.30, "paper", -14),
-    (T_FOTOS - 0.12, "whip", -14),
+    # Sale la nota (en "notas") y salen las fotos (en "fotos"), sin pausar la voz
+    (T_NOTA - 0.04, "whoosh", -12), (T_NOTA + 0.12, "paper", -15),
 ]
-for k in range(4):                        # salen las fotos: 4 fotos, una cada 2 beats, con su efecto de entrada
-    SFX += [(T_FOTOS + 2 * k * B - 0.09, "whip", -15), (T_FOTOS + 2 * k * B, "shutter", -8)]
+for k in range(4):                        # 4 fotos, una por beat, cada una con su efecto de entrada
+    SFX += [(T_FOTOS + k * B - 0.08, "whip", -16), (T_FOTOS + k * B, "shutter", -9)]
 SFX += [
-    (T_FOTOS + 7 * B - 0.09, "whip", -14), (T_FOTOS + 7 * B, "shutter", -8),   # foto protagonista
-    (T_BREAK - 0.27, "whoosh", -12),
+    (T_BREAK - 0.27, "whoosh", -13),
     # Pausa → drop 2 (cierre)
-    (T_DROP2 - 1.65, "riser", -15), (T_DROP2, "boom", -12),
-    # "y somos México": cortinilla blanca y el logo se arma letra por letra
-    (T_MEXICO - 0.05, "whoosh", -9),
+    (T_BREAK + 0.6, "riser", -16), (T_DROP2, "boom", -12),
+    # termina "somos México": cortinilla blanca y el logo se arma letra por letra
+    (T_WIPE - 0.02, "whoosh", -9),
 ]
 for k in range(5):
-    SFX += [(T_MEXICO + 0.40 + k * 0.075, "pop", -15)]
-SFX += [(T_MEXICO + 0.78, "boom", -10), (T_MEXICO + 0.80, "ding", -19)]
+    SFX += [(T_WIPE + 0.45 + k * 0.075, "pop", -15)]
+SFX += [(T_WIPE + 0.83, "boom", -10), (T_WIPE + 0.85, "ding", -19)]
 
 
 def build_audio():
@@ -385,7 +382,7 @@ def build_audio():
         music[i0:i0 + len(seg)] += seg
     # Final: con el logo en blanco la canción se desvanece suave hasta el último cuadro
     t = np.arange(n_total) / SR
-    fo = np.clip(1 - (t - (T_MEXICO + 1.6)) / (TOTAL - T_MEXICO - 1.7), 0, 1) ** 1.6
+    fo = np.clip(1 - (t - (T_WIPE + 1.4)) / (TOTAL - T_WIPE - 1.5), 0, 1) ** 1.6
     music *= fo[:, None]
 
     # Ducking bajo la voz (envolvente suave; dentro de cada tramo hablado se queda abajo)
@@ -396,8 +393,9 @@ def build_audio():
     sm = int(0.2 * SR)
     speaking = np.convolve(speaking, np.ones(sm) / sm, mode="same")
     gain = np.ones(n_total, np.float32)
-    talk = [(T_INTRO + 0.05, 17.40, -13), (T_FOTOS - 0.45, T_FOTOS + 0.45, -11), (T_BREAK + 0.08, T_DROP2 - 0.85, -13),
-            (T_CLOSE, T_MEXICO + 0.7, -9)]  # en el cierre la música baja menos: es el clímax
+    v5 = VOICE[5]
+    talk = [(T_INTRO + 0.05, v5[3] + v5[2] - v5[1] + 0.05, -13),
+            (T_CLOSE, T_WIPE + 0.1, -9)]  # en el cierre la música baja menos: es el clímax
     for a, b, db in talk:
         gain[(t > a) & (t < b)] = 10 ** (db / 20)
     gain = np.minimum(gain, 1 - (1 - 10 ** (-9 / 20)) * speaking)
@@ -425,10 +423,9 @@ CAPS = [
     ("fue de una *albercada*", 1), ("que tuvimos con *jóvenes*,", 1),
     ("justo para *conocernos*,", 2), ("para dar a conocer", 2), ("el proyecto de *SOMOS*,", 2),
     ("entonces estuvimos", 3), ("muy *contentos*,", 3), ("fue nuestra *primera* *edición*", 3), ("de *albercada*", 3), ("y de *terraza*,", 3),
-    ("les queremos compartir", 4), ("un par de *notas*,", 4),
-    ("un par de *fotos*,", 5),
-    ("para que la *próxima* *edición*,", 6), ("que se viene", 6), ("muy *próximamente*,", 6), ("puedan *acompañarnos*.", 6),
-    ("Somos *amigos*,", 7), ("somos el *futuro*,", 7), ("y somos *México*.", 7),
+    ("les queremos compartir", 4), ("un par de *notas*,", 4), ("un par de *fotos*,", 4),
+    ("para que la *próxima* *edición*,", 5), ("que se viene", 5), ("muy *próximamente*,", 5), ("puedan *acompañarnos*.", 5),
+    ("Somos *amigos*,", 6), ("somos el *futuro*,", 6), ("y somos *México*.", 6),
 ]
 
 
@@ -451,7 +448,7 @@ def build_captions():
     for g, src in zip(out[-3:], (0.72, 1.74, 2.74)):
         g[1] = round(T_CLOSE + src - 0.62 - 0.04, 3)
     out[-3][2], out[-2][2] = out[-2][1] - 0.02, out[-1][1] - 0.02
-    out[-1][2] = round(T_MEXICO + 0.32, 3)  # la cortinilla blanca lo cubre
+    out[-1][2] = round(T_WIPE + 0.25, 3)  # se queda hasta que la cortinilla lo cubre
     for i in range(len(out) - 1):
         if CAPS[i][1] == CAPS[i + 1][1]:
             out[i][2] = round(out[i + 1][1] - 0.02, 3)
@@ -494,7 +491,7 @@ def print_timeline():
     for clip, a, b, t0 in VOICE:
         print(f"voz {clip} {a:.2f}-{b:.2f} → {t0:.3f}-{t0 + b - a:.3f}")
     print(json.dumps(dict(T_INTRO=T_INTRO, T_FOTOS=T_FOTOS, T_BREAK=T_BREAK, T_DROP2=T_DROP2, T_CLOSE=T_CLOSE,
-                          T_MEXICO=T_MEXICO, TOTAL=TOTAL, BEAT=BEAT), indent=1))
+                          T_NOTA=T_NOTA, T_WIPE=T_WIPE, TOTAL=TOTAL, BEAT=BEAT), indent=1))
 
 
 if __name__ == "__main__":
