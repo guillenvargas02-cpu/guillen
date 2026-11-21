@@ -270,7 +270,7 @@ def main():
     cmd = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
            '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{a.size}x{a.size}', '-r', str(a.fps), '-i', '-',
            '-c:v', 'libx264', '-preset', a.preset, '-crf', str(a.crf), '-tune', 'film',
-           '-profile:v', 'high', '-pix_fmt', 'yuv420p',
+           *([] if a.crf == 0 else ['-profile:v', 'high']), '-pix_fmt', 'yuv420p',
            '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
            '-vf', 'scale=out_color_matrix=bt709:out_range=tv',
            '-movflags', '+faststart', a.out]
