@@ -141,7 +141,7 @@
 
   document.querySelectorAll(".segs[data-v]").forEach(s => { const v = Math.round(+s.dataset.v / 5); for (let k = 0; k < 20; k++) { const i = document.createElement("i"); i.style.setProperty("--k", k); if (k < v) i.className = "on"; s.appendChild(i); } });
 
-  document.querySelectorAll(".crowd[data-n]").forEach(c => { for (let k = 0; k < +c.dataset.n; k++) c.insertAdjacentHTML("beforeend", `<i class="ico" style="--c:${k % 9};--r:${Math.floor(k / 9)}"><svg viewBox="0 0 24 24">${I.user}</svg></i>`); });
+  document.querySelectorAll(".crowd[data-n]").forEach(c => { const nc = +(c.dataset.cols || 9); for (let k = 0; k < +c.dataset.n; k++) c.insertAdjacentHTML("beforeend", `<i class="ico" style="--c:${k % nc};--r:${Math.floor(k / nc)}"><svg viewBox="0 0 24 24">${I.user}</svg></i>`); });
 
   /* ------------------------------------------------------------ códigos QR */
   const CFG = window.PULSO_CONFIG || {};

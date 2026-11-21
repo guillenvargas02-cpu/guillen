@@ -686,3 +686,31 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .brainvid { position: absolute; right: 10rem; top: 50%; width: 92rem; height: 82.8rem; margin-top: -41.4rem; pointer-events: none; }
 .brainvid video { width: 100%; height: 100%; object-fit: cover; display: block; filter: contrast(1.25) saturate(1.05);
   -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); }
+
+/* v5 · cambio de enfoque: composición alineada en retícula */
+.s-shift .stagebox { position: relative; height: 58rem; margin-top: 4rem; }
+.s-shift .grp-l { position: absolute; top: 3rem; font-family: var(--mono); font-size: 1.3rem; letter-spacing: .26em; text-transform: uppercase; color: var(--dim); transition: opacity .8s var(--ease); }
+.s-shift .trad { width: 24rem; height: 12rem; padding: 2rem 2.2rem; border-radius: 1.8rem; }
+.s-shift .trad b { font-size: 2.1rem; }
+.s-shift .beam { left: 56rem; width: 40rem; }
+.s-shift .crowd { left: 101rem; top: 13rem; grid-template-columns: repeat(10, 5.2rem); column-gap: 1.2rem; row-gap: 1.6rem; }
+.s-shift .crowd i { font-size: 3.6rem; justify-self: center; }
+.s-shift .phone { width: 19rem; height: 34rem; }
+.s-shift.p1 .trad { transform: scale(.9); opacity: .16; filter: saturate(.2); }
+.s-shift.p1 .grp-l, .s-shift.p2 .grp-l { opacity: 0; }
+.s-shift .uni { left: 30rem; top: 0; width: 104rem; height: auto; padding: 0; overflow: hidden; border-radius: 2rem; opacity: 0; transform: translateY(3rem) scale(.94); }
+.s-shift.p2 .uni { opacity: 1; transform: none; }
+.s-shift .uni .ubar { display: flex; align-items: center; gap: 1.6rem; padding: 1.1rem 1.8rem; border-bottom: .1rem solid var(--line); }
+.s-shift .uni .ubar .dots { display: flex; gap: .7rem; }
+.s-shift .uni .ubar .dots i { width: 1.1rem; height: 1.1rem; border-radius: 50%; background: rgba(222,232,255,.18); }
+.s-shift .uni .ubar .burl { flex: 1; display: flex; align-items: center; gap: 1rem; font-family: var(--mono); font-size: 1.3rem; color: var(--mute); padding: .6rem 1.2rem; border-radius: .9rem; background: rgba(255,255,255,.04); }
+.s-shift .uni .ubar .burl .ico { color: var(--mint); font-size: 1.4rem; }
+.s-shift .uni img { display: block; width: 100%; height: auto; }
+
+/* logotipo PULSO 360° con la tipografía de la plataforma */
+.logotype { display: flex; flex-direction: column; gap: 2.2rem; margin: .6rem 0 1rem; }
+.logotype .lt1 { font-family: "Inter", var(--sans); font-weight: 700; font-size: 19rem; line-height: .82; letter-spacing: -.01em; color: #fff; }
+.logotype .lt2 { font-family: var(--mono); font-weight: 500; font-size: 5.4rem; letter-spacing: .34em; color: #0fae95; line-height: 1; margin-left: .4rem; }
+.brand .wm b, .topbar .brandmini b { font-family: "Inter", var(--sans); font-stretch: 100%; font-weight: 700; }
+.brand .wm span { color: #0fae95; }
+.s-shift.p2 .trad, .s-shift.p2 .phone { transform: translate(var(--tx), var(--ty)) scale(.15); opacity: 0; filter: none; }
