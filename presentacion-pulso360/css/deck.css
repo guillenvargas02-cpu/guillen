@@ -683,3 +683,6 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .ex .eb .chip { align-self: flex-start; font-size: 1.25rem; }
 .ex h4 { font-size: 2.6rem; font-weight: 660; letter-spacing: -.02em; }
 .ex p { font-size: 1.9rem; color: var(--mute); line-height: 1.4; font-style: italic; }
+.brainvid { position: absolute; right: 10rem; top: 50%; width: 92rem; height: 82.8rem; margin-top: -41.4rem; pointer-events: none; }
+.brainvid video { width: 100%; height: 100%; object-fit: cover; display: block; filter: contrast(1.25) saturate(1.05);
+  -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); }
