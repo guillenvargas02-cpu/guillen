@@ -76,7 +76,7 @@
       const B = 2.22233 / 4;
       const NOTA = 17.12; // "un par de notas"
       const FOTOS = 8 * 2.22233; // 17.779 "un par de fotos"
-      const BREAK = 9 * 2.22233; // 20.001 regresa la persona
+      const BREAK = 11 * 2.22233; // 24.446 regresa la persona
       const at = (t) => t - T0;
       const tl = gsap.timeline({ paused: true });
 
@@ -90,12 +90,14 @@
       tl.to("#sc-bg", { clipPath: "circle(120% at 50% 50%)", duration: 0.32, ease: "power2.out" }, at(NOTA));
       tl.to("#sc-card", { rotation: 0, scale: 0.96, duration: BREAK - NOTA - 0.45, ease: "sine.out" }, at(NOTA + 0.45));
 
-      // Salen las fotos: 4, una por beat, encima de la nota
+      // Salen las fotos: 6, una cada 2 beats, encima de la nota (tiempo para apreciarlas)
       const P = [
-        ["letrero", 300, 860, 520, 0.5625, -6],
-        ["grupo-horizontal", 560, 1200, 880, 1.778, 3],
-        ["mesa-larga", 790, 880, 520, 0.5625, 6],
-        ["grupo-sonrisas", 540, 980, 600, 0.5625, -2],
+        ["letrero", 330, 880, 560, 0.5625, -6],
+        ["grupo-horizontal", 540, 1180, 920, 1.778, 3],
+        ["mesa-larga", 760, 900, 560, 0.5625, 6],
+        ["terraza-panoramica", 540, 760, 920, 1.778, -3],
+        ["anfitriones", 340, 1000, 560, 0.5625, -4],
+        ["grupo-sonrisas", 600, 960, 640, 0.5625, 3],
       ];
       const box = document.getElementById("sc-photos");
       P.forEach(([name, cx, cy, w, ar, rot], k) => {
@@ -109,15 +111,15 @@
         el.style.zIndex = 2 + k;
         el.innerHTML = `<img src="assets/photos/${name}.jpg" alt="" />`;
         box.appendChild(el);
-        const t = at(FOTOS + k * B);
+        const t = at(FOTOS + 2 * k * B);
         const dir = k % 2 ? 1 : -1;
         tl.fromTo(
           el,
-          { opacity: 0, x: dir * 420, y: 50, scale: 1.15, rotation: rot + dir * 14 },
-          { opacity: 1, x: 0, y: 0, scale: 1, rotation: rot, duration: 0.28, ease: "power3.out" },
+          { opacity: 0, x: dir * 460, y: 50, scale: 1.15, rotation: rot + dir * 14 },
+          { opacity: 1, x: 0, y: 0, scale: 1, rotation: rot, duration: 0.32, ease: "power3.out" },
           t
         );
-        tl.fromTo(el.querySelector("img"), { scale: 1.1 }, { scale: 1.0, duration: 1.2, ease: "sine.out" }, t);
+        tl.fromTo(el.querySelector("img"), { scale: 1.12 }, { scale: 1.0, duration: 2.4, ease: "sine.out" }, t);
         tl.fromTo("#sc-flash", { opacity: 0.18 }, { opacity: 0, duration: 0.14, ease: "power1.out", immediateRender: false }, t + 0.04);
       });
 

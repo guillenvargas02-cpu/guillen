@@ -1,4 +1,4 @@
-# Albercada SOMOS — recap (vertical 4K, 29.4 s)
+# Albercada SOMOS — recap (vertical 4K, 33.9 s)
 
 | Tiempo | Qué pasa |
 |---|---|
@@ -6,13 +6,14 @@
 | 4.44 | Drop 1 de la canción: entra la voz ("Oigan, les quiero platicar…") con subtítulos (palabras clave en pleca) |
 | 8.0–15.5 | La invitación entra en "albercada"; dos tomas de apoyo del evento |
 | 17.15 | "un par de notas": sale la nota (sin zoom ni textos extra); la voz no se detiene |
-| 17.78 | "un par de fotos": salen 4 fotos encima de la nota, una por beat, cada una con su efecto |
-| 20.0 | Regresa la persona a mitad de frase ("…muy próximamente, puedan acompañarnos"); compás de pausa de la canción |
-| 22.22 | Drop 2 justo en "Somos amigos, somos el futuro, y somos México" (video 2 corrido) |
-| 25.02 | Termina de decir "somos México": cortinilla blanca y el logo SOMOS se arma letra por letra |
+| 17.78 | "un par de fotos": salen 6 fotos encima de la nota, una cada 2 beats, cada una con su efecto |
+| 23.05 | Sobre las últimas fotos sigue la voz: "para que la próxima edición…" |
+| 24.45 | Regresa la persona a mitad de frase ("…muy próximamente, puedan acompañarnos"); compás de pausa de la canción |
+| 26.67 | Drop 2 justo en "Somos amigos, somos el futuro, y somos México" (video 2 corrido) |
+| 29.47 | Termina de decir "somos México": cortinilla blanca y el logo SOMOS se arma letra por letra |
 
 La persona siempre va en sincronía con su voz: cada toma suya se amarra al mismo tramo de audio y
-todos los cortes caen en cuadros exactos (30 fps).
+todos los cortes caen en cuadros exactos (30 fps). `verificar_sincronia.py` lo comprueba (debe dar +0 cuadros en cada toma).
 
 Música: propuesta 3 (108 BPM), empalmada en compás. Color: HDR del iPhone convertido a SDR con un ajuste natural.
 Logo y lema vectoriales tomados del manual de identidad (rosa cívico #E4007C).

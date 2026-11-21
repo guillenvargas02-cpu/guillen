@@ -47,8 +47,8 @@ def mbar(n):
 
 
 T_INTRO = 2 * BAR            # 4.445  drop 1: entra la voz
-T_BREAK = 9 * BAR            # 20.001 pausa de la canción: "…muy próximamente, puedan acompañarnos"
-T_DROP2 = 10 * BAR           # 22.223 drop 2: "Somos amigos…" (cierre, video 2)
+T_BREAK = 11 * BAR           # 24.446 pausa de la canción: "…muy próximamente, puedan acompañarnos"
+T_DROP2 = 12 * BAR           # 26.668 drop 2: "Somos amigos…" (cierre, video 2)
 
 # ------------------------------------------------------------------ voz
 SPK = {"a": "video/speaker-1150.mp4", "b": "video/speaker-1151.mp4"}
@@ -332,8 +332,8 @@ SFX = [
     # Sale la nota (en "notas") y salen las fotos (en "fotos"), sin pausar la voz
     (T_NOTA - 0.04, "whoosh", -12), (T_NOTA + 0.12, "paper", -15),
 ]
-for k in range(4):                        # 4 fotos, una por beat, cada una con su efecto de entrada
-    SFX += [(T_FOTOS + k * B - 0.08, "whip", -16), (T_FOTOS + k * B, "shutter", -9)]
+for k in range(6):                        # 6 fotos, una cada 2 beats, cada una con su efecto de entrada
+    SFX += [(T_FOTOS + 2 * k * B - 0.08, "whip", -15), (T_FOTOS + 2 * k * B, "shutter", -8)]
 SFX += [
     (T_BREAK - 0.27, "whoosh", -13),
     # Pausa → drop 2 (cierre)
@@ -393,8 +393,9 @@ def build_audio():
     sm = int(0.2 * SR)
     speaking = np.convolve(speaking, np.ones(sm) / sm, mode="same")
     gain = np.ones(n_total, np.float32)
-    v5 = VOICE[5]
-    talk = [(T_INTRO + 0.05, v5[3] + v5[2] - v5[1] + 0.05, -13),
+    v4, v5 = VOICE[4], VOICE[5]
+    talk = [(T_INTRO + 0.05, v4[3] + v4[2] - v4[1] + 0.05, -13),   # las fotos sin voz: la música sube
+            (v5[3] - 0.12, v5[3] + v5[2] - v5[1] + 0.05, -13),
             (T_CLOSE, T_WIPE + 0.1, -9)]  # en el cierre la música baja menos: es el clímax
     for a, b, db in talk:
         gain[(t > a) & (t < b)] = 10 ** (db / 20)
