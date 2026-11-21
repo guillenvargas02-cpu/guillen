@@ -1,0 +1,260 @@
+<template>
+  <style>
+    @font-face { font-family: "Hind Siliguri"; font-weight: 600; src: url("assets/fonts/hind-siliguri-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Hind Siliguri"; font-weight: 700; src: url("assets/fonts/hind-siliguri-latin-700-normal.woff2") format("woff2"); }
+    #sc-root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Montserrat", sans-serif;
+      color: #fff;
+    }
+    #sc-all {
+      position: absolute;
+      inset: 0;
+    }
+    #sc-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 120% 70% at 50% 40%, #ef1a8c 0%, #e4007c 55%, #c9006d 100%);
+      clip-path: circle(0% at 50% 55%);
+    }
+    /* Patrón de plecas (como la lona de prensa del manual), muy tenue */
+    #sc-pat {
+      position: absolute;
+      left: -700px;
+      top: -700px;
+      width: 2480px;
+      height: 3320px;
+      transform: rotate(-14deg);
+      opacity: 0.12;
+    }
+    #sc-pat .pleca {
+      width: 230px;
+      height: 64px;
+    }
+    #sc-chip {
+      position: absolute;
+      left: 0;
+      top: 300px;
+      width: 1080px;
+      text-align: center;
+      opacity: 0;
+    }
+    #sc-chip .c {
+      display: inline-block;
+      height: 104px;
+      line-height: 104px;
+      padding: 0 46px;
+      border-radius: 52px;
+      background: #fff;
+      color: #e4007c;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      font-size: 56px;
+      box-shadow: 0 14px 34px rgba(60, 0, 30, 0.28);
+    }
+    #sc-chip .s {
+      display: block;
+      margin-top: 18px;
+      font-family: "Hind Siliguri", sans-serif;
+      font-weight: 600;
+      font-size: 42px;
+      color: #fff;
+    }
+    #sc-stage {
+      position: absolute;
+      inset: 0;
+      perspective: 1800px;
+    }
+    #sc-card {
+      position: absolute;
+      left: 50px;
+      top: 560px;
+      width: 980px;
+      height: 735px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 40px 90px rgba(70, 0, 35, 0.42);
+      transform-origin: 489px 524px;
+      opacity: 0;
+    }
+    #sc-card img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 980px;
+      height: 735px;
+    }
+    .sc-mark {
+      position: absolute;
+      left: 56px;
+      height: 38px;
+      background: rgba(228, 0, 124, 0.3);
+      mix-blend-mode: multiply;
+      border-radius: 4px;
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+    }
+    #sc-flash {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+    }
+    /* Fotos */
+    .ph {
+      position: absolute;
+      border: 14px solid #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 30px 60px rgba(70, 0, 35, 0.38);
+      opacity: 0;
+    }
+    .ph img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #sc-vivimos {
+      position: absolute;
+      left: 0;
+      top: 120px;
+      width: 1080px;
+      text-align: center;
+      opacity: 0;
+      z-index: 20;
+    }
+    #sc-vivimos .c {
+      display: inline-block;
+      height: 104px;
+      line-height: 104px;
+      padding: 0 46px;
+      border-radius: 52px;
+      background: #e4007c;
+      color: #fff;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      font-size: 56px;
+      border: 6px solid #fff;
+      box-shadow: 0 14px 34px rgba(60, 0, 30, 0.3);
+    }
+  </style>
+  <div id="sc-root" data-composition-id="showcase" data-width="1080" data-height="1920">
+    <div id="sc-all">
+      <div id="sc-bg"><div id="sc-pat"></div></div>
+      <div id="sc-chip"><span class="c">En los medios</span><span class="s">Así lo contó InfoPoder</span></div>
+      <div id="sc-stage">
+        <div id="sc-card">
+          <img src="assets/img/nota-infopoder.png" alt="" />
+          <div class="sc-mark" id="sc-m1" style="top: 154px; width: 864px"></div>
+          <div class="sc-mark" id="sc-m2" style="top: 192px; width: 872px"></div>
+        </div>
+      </div>
+      <div id="sc-photos"></div>
+      <div id="sc-vivimos"><span class="c">Así lo vivimos</span></div>
+      <div id="sc-flash"></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const T0 = 16.9;
+      const B = 2.22233 / 4;
+      const at = (t) => t - T0;
+      const tl = gsap.timeline({ paused: true });
+
+      // patrón de plecas
+      const pat = document.getElementById("sc-pat");
+      for (let r = 0; r < 26; r++) {
+        for (let c = 0; c < 9; c++) {
+          const p = document.createElement("div");
+          p.className = "pleca";
+          p.style.left = c * 290 + (r % 2) * 145 + "px";
+          p.style.top = r * 128 + "px";
+          p.innerHTML = '<img src="assets/brand/somos.svg" alt="" />';
+          pat.appendChild(p);
+        }
+      }
+      tl.fromTo(pat, { x: 0, y: 0 }, { x: -290, y: -128, duration: 10, ease: "none" }, 0);
+
+      // 1) La nota entra (sobre la persona) y el fondo rosa se abre detrás
+      tl.fromTo(
+        "#sc-card",
+        { opacity: 0, y: 1250, rotationX: 38, rotation: -9, scale: 0.86 },
+        { opacity: 1, y: 0, rotationX: 0, rotation: -2.5, scale: 1, duration: 0.62, ease: "power3.out" },
+        at(16.95)
+      );
+      tl.to("#sc-bg", { clipPath: "circle(120% at 50% 55%)", duration: 0.55, ease: "power2.inOut" }, at(17.6));
+      tl.to("#sc-card", { rotation: 0, scale: 1.045, duration: 2.6, ease: "sine.inOut" }, at(17.57));
+      tl.fromTo("#sc-chip", { opacity: 0, y: -50, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.32, ease: "back.out(2.2)" }, at(18.1));
+      // 2) Se subraya el titular
+      tl.to("#sc-m1", { scaleX: 1, duration: 0.3, ease: "power2.out" }, at(19.05));
+      tl.to("#sc-m2", { scaleX: 1, duration: 0.3, ease: "power2.out" }, at(19.4));
+      // 3) Zoom a la foto de la nota (obturador)
+      tl.to("#sc-chip", { opacity: 0, y: -60, duration: 0.25, ease: "power2.in" }, at(20.2));
+      tl.to("#sc-card", { scale: 1.9, y: -124, duration: 0.55, ease: "power3.inOut" }, at(20.22));
+      tl.fromTo("#sc-flash", { opacity: 0.5 }, { opacity: 0, duration: 0.28, ease: "power1.out", immediateRender: false }, at(20.55));
+      tl.to("#sc-card", { scale: 1.98, duration: 1.0, ease: "none" }, at(20.77));
+      // 4) Sale la nota con giro
+      tl.to("#sc-card", { x: -1500, rotationY: -55, rotation: -8, duration: 0.42, ease: "power3.in" }, at(21.72));
+
+      // 5) Ráfaga de fotos, una por beat, con obturador y destello
+      const P = [
+        ["grupo-horizontal", 540, 600, 880, 1.778, -4],
+        ["letrero", 300, 1120, 470, 0.5625, 5],
+        ["anfitriones", 785, 1060, 470, 0.5625, -6],
+        ["mesa-larga", 320, 720, 470, 0.5625, -8],
+        ["cierre-cielo", 765, 1360, 470, 0.5625, 7],
+        ["terraza-panoramica", 540, 1500, 900, 1.778, 3],
+      ];
+      const box = document.getElementById("sc-photos");
+      const t0 = 22.57;
+      P.forEach(([name, cx, cy, w, ar, rot], k) => {
+        const h = Math.round(w / ar);
+        const el = document.createElement("div");
+        el.className = "ph";
+        el.style.left = cx - w / 2 + "px";
+        el.style.top = cy - h / 2 + "px";
+        el.style.width = w + "px";
+        el.style.height = h + "px";
+        el.style.zIndex = 2 + k;
+        el.innerHTML = `<img src="assets/photos/${name}.jpg" alt="" />`;
+        box.appendChild(el);
+        const t = at(t0 + k * B);
+        tl.fromTo(el, { opacity: 0, scale: 1.45, rotation: rot + (k % 2 ? 12 : -12), y: -40 }, { opacity: 1, scale: 1, rotation: rot, y: 0, duration: 0.22, ease: "power3.out" }, t);
+        tl.to(el, { scale: 1.03, duration: B * 2, ease: "sine.out" }, t + 0.22);
+        tl.fromTo("#sc-flash", { opacity: 0.3 }, { opacity: 0, duration: 0.16, ease: "power1.out", immediateRender: false }, t);
+      });
+      tl.fromTo("#sc-vivimos", { opacity: 0, y: -40, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2.2)" }, at(t0 + 0.05));
+
+      // 6) Foto final: crece a pantalla completa y la capa sube para revelar a la persona
+      const fin = document.createElement("div");
+      fin.className = "ph";
+      fin.style.left = "0px";
+      fin.style.top = "0px";
+      fin.style.width = "1080px";
+      fin.style.height = "1920px";
+      fin.style.zIndex = 30;
+      fin.innerHTML = '<img src="assets/photos/grupo-sonrisas.jpg" alt="" />';
+      box.appendChild(fin);
+      const tf = at(t0 + 6 * B);
+      tl.fromTo(
+        fin,
+        { scale: 0.42, rotation: -4, borderWidth: 30 },
+        { scale: 1, rotation: 0, borderWidth: 0, duration: 0.42, ease: "power3.inOut", immediateRender: false },
+        tf
+      );
+      tl.set(fin, { opacity: 1 }, tf);
+      tl.set(fin, { borderRadius: 0 }, tf + 0.42);
+      tl.to(fin.querySelector("img"), { scale: 1.08, duration: 1.2, ease: "none" }, tf);
+      tl.to("#sc-vivimos", { opacity: 0, y: -60, duration: 0.2, ease: "power2.in" }, tf + 0.1);
+      tl.to("#sc-all", { y: -1920, duration: 0.3, ease: "power3.in" }, at(26.4));
+      window.__timelines["showcase"] = tl;
+    })();
+  </script>
+</template>

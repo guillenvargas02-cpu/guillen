@@ -1,0 +1,10 @@
+{
+  "name": "albercada-recap",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.8.209 preview",
+    "check": "npx --yes hyperframes@0.8.209 check",
+    "render": "npx --yes hyperframes@0.8.209 render --format png-sequence --fps 30 --resolution portrait-4k -o renders/overlay"
+  }
+}

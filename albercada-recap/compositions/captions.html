@@ -1,0 +1,80 @@
+<template>
+  <style>
+    #cp-root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+      overflow: hidden;
+    }
+    .cap {
+      position: absolute;
+      left: 50px;
+      width: 980px;
+      top: 1440px;
+      text-align: center;
+      font-size: 70px;
+      line-height: 1.22;
+      font-weight: 800;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #fff;
+      opacity: 0;
+    }
+    .cap .w {
+      display: inline-block;
+      margin: 0 0.09em;
+      text-shadow: 0 3px 0 rgba(150, 0, 80, 0.55), 0 6px 22px rgba(30, 0, 15, 0.55);
+    }
+    /* Palabra clave en pleca: píldora blanca con texto rosa cívico */
+    .cap .w.hl {
+      color: #e4007c;
+      font-weight: 900;
+      background: #fff;
+      border-radius: 0.6em;
+      padding: 0.02em 0.32em 0.05em;
+      margin: 0.05em 0.06em;
+      text-shadow: none;
+      box-shadow: 0 8px 22px rgba(60, 0, 30, 0.3);
+    }
+  </style>
+  <div id="cp-root" data-composition-id="captions" data-width="1080" data-height="1920"></div>
+  <script>
+    (function () {
+      const T0 = 4.4; // inicio de esta composición en el video
+      // [texto (palabras clave entre *asteriscos*), inicio, fin] — tiempos absolutos (build.py captions)
+      const G = [["Oigan, les quiero platicar", 4.5446599999999995, 5.285], ["de una *actividad*", 5.305, 5.765], ["que acabamos de tener", 5.785, 6.805], ["*recientemente*,", 6.825, 7.685], ["fue de una *albercada*", 7.695, 8.315], ["que tuvimos con *jóvenes*,", 8.335, 9.305], ["justo para *conocernos*,", 9.385, 10.425], ["para dar a conocer", 10.445, 10.905], ["el proyecto de *SOMOS*,", 10.925, 11.945], ["entonces estuvimos", 11.925, 12.505], ["muy *contentos*,", 12.525, 13.345], ["fue nuestra *primera* *edición*", 13.365, 14.185], ["de *albercada*", 14.205, 14.805], ["y de *terraza*,", 14.825, 15.495], ["les queremos compartir", 15.455, 16.275], ["un par de *notas*,", 16.295, 17.355], ["un par de *fotos*,", 17.375, 18.115], ["para que la *próxima* *edición*,", 26.78, 27.84], ["que se viene", 27.86, 28.22], ["muy *próximamente*,", 28.24, 29.5], ["puedan *acompañarnos*.", 29.52, 30.2]];
+      const root = document.getElementById("cp-root");
+      const tl = gsap.timeline({ paused: true });
+      G.forEach(([text, a, b], gi) => {
+        const el = document.createElement("div");
+        el.className = "cap";
+        const words = text.split(" ");
+        el.innerHTML = words
+          .map((w) => (w.includes("*") ? `<span class="w hl">${w.replace(/\*/g, "")}</span>` : `<span class="w">${w}</span>`))
+          .join(" ");
+        root.appendChild(el);
+        const s = a - T0;
+        const e = b - T0;
+        const lens = words.map((w) => w.replace(/[*,.¿?…]/g, "").length + 2);
+        const total = lens.reduce((x, y) => x + y, 0);
+        const span = Math.max(0.2, (e - s) * 0.8);
+        tl.set(el, { opacity: 1 }, s);
+        let acc = 0;
+        el.querySelectorAll(".w").forEach((w, i) => {
+          const t = s + (acc / total) * span;
+          acc += lens[i];
+          const hl = w.classList.contains("hl");
+          tl.fromTo(
+            w,
+            { opacity: 0, y: 26, scale: hl ? 0.5 : 0.8, rotation: hl ? -5 : 0 },
+            { opacity: 1, y: 0, scale: 1, rotation: hl ? -2 : 0, duration: hl ? 0.24 : 0.14, ease: hl ? "back.out(2.6)" : "back.out(1.8)" },
+            t
+          );
+        });
+        tl.to(el, { opacity: 0, y: -10, duration: 0.07, ease: "power1.in" }, e - 0.07);
+      });
+      window.__timelines["captions"] = tl;
+    })();
+  </script>
+</template>
