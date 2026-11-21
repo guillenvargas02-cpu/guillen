@@ -2,6 +2,10 @@ PULSO 360° · Capacitación: IA aplicada a campañas electorales · v4
 ====================================================================
 Presentación animada con 3D en tiempo real (funciona sin internet)
 
+ARCHIVO ÚNICO (lo más sencillo)
+  dist/PULSO360_Presentacion.html contiene todo: videos, imágenes, fuentes y 3D.
+  Solo hay que hacer doble clic para abrirlo. Se regenera con:  python3 tools/build_single.py
+
 CÓMO PRESENTAR
 1. Copia la carpeta completa "presentacion-pulso360" a la computadora.
 2. Abre "index.html" con Google Chrome o Microsoft Edge (recomendados para el 3D).
