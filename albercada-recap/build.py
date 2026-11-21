@@ -46,81 +46,86 @@ def mbar(n):
     return 35.631 + (n - 12) * BAR
 
 
+T_INTRO = 2 * BAR            # 4.445  drop 1: entra la voz
+T_BREAK = 11 * BAR           # 24.446 pausa de la canción: "para que la próxima edición…"
+T_DROP2 = 13 * BAR           # 28.890 drop 2: "Somos amigos…" (cierre, video 2)
+TOTAL = 35.6
+
 # (salida inicio, salida fin, canción inicio) — empalmes siempre en downbeat
 MUSIC = [
-    (0.0, 2 * BAR, mbar(10)),            # breakdown sin bajo: cortinilla de entrada
-    (2 * BAR, 12 * BAR, mbar(12)),       # DROP 1: entra la voz (4.445)
-    (12 * BAR, 14 * BAR, mbar(46)),      # pausa antes del drop: "próxima edición…"
-    (14 * BAR, 18 * BAR + 2.6, mbar(48)),  # DROP 2 (31.113): frases SOMOS, logo; golpe final en 40.0
+    (0.0, T_INTRO, mbar(10)),        # breakdown sin bajo: cortinilla de entrada
+    (T_INTRO, T_BREAK, mbar(12)),    # DROP 1
+    (T_BREAK, T_DROP2, mbar(46)),    # pausa antes del drop
+    (T_DROP2, TOTAL, mbar(48)),      # DROP 2 → cierre y logo
 ]
-T_INTRO = 2 * BAR            # 4.445
-T_BREAK = 12 * BAR           # 26.668
-T_DROP2 = 14 * BAR           # 31.113
-T_LOGO = 16.5 * BAR          # 36.668 juego con el logo
-T_WHITE = 18 * BAR           # 40.002 logo sobre blanco
-TOTAL = 44.0
 
 # ------------------------------------------------------------------ voz
 SPK = {"a": "video/speaker-1150.mp4", "b": "video/speaker-1151.mp4"}
+T_FOTOS = 35 * BEAT              # 19.445 "fotos" cae en el beat: entran las fotos
+T_CLOSE = T_DROP2 - 0.10         # el "Somos" del video 2 (0.72 s) cae en el drop
 
 # (clip, src_in, src_out, salida_inicio)
 VOICE = [
-    ("a", 1.50, 4.72, T_INTRO),   # Oigan, les quiero platicar … recientemente,
-    ("a", 5.05, 6.65, 7.685),     # fue de una albercada que tuvimos con jóvenes,
-    ("a", 7.08, 9.70, 9.305),     # justo para conocernos … el proyecto de SOMOS,
-    ("a", 10.00, 13.53, 11.945),  # entonces estuvimos muy contentos … y de terraza,
-    ("a", 14.72, 17.32, 15.495),  # les queremos compartir un par de notas, un par de fotos,
-    ("a", 17.60, 20.98, 26.80),   # para que la próxima edición … puedan acompañarnos.
-    # Frases SOMOS sobre el drop 2: el inicio de cada "Somos" cae en el beat (cada 2 beats)
-    ("a", 21.57, 22.47, T_DROP2 - 0.03),             # Somos diversión,
-    ("a", 22.49, 23.30, T_DROP2 + 2 * BEAT - 0.03),  # somos albercada,
-    ("b", 0.69, 1.58, T_DROP2 + 4 * BEAT - 0.03),    # Somos amigos,
-    ("b", 1.71, 2.58, T_DROP2 + 6 * BEAT - 0.03),    # somos el futuro,
-    ("b", 2.71, 3.62, T_DROP2 + 8 * BEAT - 0.03),    # y somos México.
+    ("a", 1.50, 4.72, T_INTRO),             # 0 Oigan, les quiero platicar … recientemente,
+    ("a", 5.05, 6.65, 7.685),               # 1 fue de una albercada que tuvimos con jóvenes,
+    ("a", 7.08, 9.70, 9.305),               # 2 justo para conocernos … el proyecto de SOMOS,
+    ("a", 10.00, 13.53, 11.945),            # 3 entonces estuvimos muy contentos … y de terraza,
+    ("a", 14.72, 16.57, 15.495),            # 4 les queremos compartir un par de notas,  → sale la nota
+    ("a", 16.57, 17.36, T_FOTOS - 0.41),    # 5 un par de fotos,                        → salen las fotos
+    ("a", 17.60, 20.98, T_BREAK + 0.132),   # 6 para que la próxima edición … puedan acompañarnos.
+    ("b", 0.62, 3.62, T_CLOSE),             # 7 Somos amigos, somos el futuro, y somos México.
 ]
+T_MEXICO = T_CLOSE + (2.80 - 0.62)   # "…somos México": entra la cortinilla blanca con el logo
 
 # ------------------------------------------------------------------ video base
 EV = "clips/ev-{}.mp4"
-# (inicio salida, fin salida, fuente, src en el inicio, zoom0, zoom1, ancla_y)
-#  fuente: "a"/"b" = persona (src en segundos del clip), "ev:<id>" = toma del evento, "pink" = fondo
+# (inicio, fin, fuente, zoom0, zoom1, ancla_y)
+#   fuente: ("ev", id, src en el inicio) toma del evento · ("v", i) persona amarrada a VOICE[i]
+#           (misma correspondencia que su audio: la boca siempre va con la voz) · "pink" / "white"
 P = BEAT
 SHOTS = [
-    # Cortinilla: tomas del evento, cada vez más rápidas hacia el drop
-    (0.0, 2 * P, "ev:150439", 3.0, 1.10, 1.02, 0.5),
-    (2 * P, 4 * P, "ev:161532", 0.6, 1.00, 1.08, 0.5),
-    (4 * P, 5 * P, "ev:152227", 2.4, 1.12, 1.06, 0.5),
-    (5 * P, 6 * P, "ev:154211", 2.0, 1.00, 1.06, 0.5),
-    (6 * P, 6.5 * P, "ev:162506", 4.0, 1.10, 1.14, 0.5),
-    (6.5 * P, 7 * P, "ev:150428", 2.6, 1.04, 1.08, 0.5),
-    (7 * P, 8 * P, "ev:162027", 5.6, 1.00, 1.10, 0.5),
-    # Persona hablando + tomas de apoyo (la voz sigue corrida, ver VOICE)
-    (T_INTRO, 7.685, "a", 1.50, 1.00, 1.06, 0.30),
-    (7.685, 8.40, "a", 5.05, 1.30, 1.34, 0.26),
-    (8.40, 9.85, "ev:162145", 6.4, 1.00, 1.08, 0.5),
-    (9.85, 11.945, "a", 7.08 + (9.85 - 9.305), 1.02, 1.08, 0.30),
-    (11.945, 13.15, "ev:154211", 3.4, 1.06, 1.00, 0.5),
-    (13.15, 14.30, "ev:162427", 3.6, 1.00, 1.07, 0.5),
-    (14.30, 15.495, "ev:150428", 0.2, 1.00, 1.05, 0.5),
-    (15.495, 18.10, "a", 14.72, 1.20, 1.25, 0.28),
-    # Nota + fotos (la capa gráfica tapa todo; debajo, una toma por si se asoma)
-    (18.10, T_BREAK, "pink", 0, 1, 1, 0.5),
-    # Pausa antes del drop: la persona invita a la próxima edición (empuje lento = tensión)
-    (T_BREAK, T_DROP2, "a", 17.60 - (26.80 - T_BREAK), 1.00, 1.14, 0.30),
-    # Frases SOMOS: punch-ins alternados, en el beat
-    (T_DROP2, T_DROP2 + 2 * P, "a", 21.60, 1.28, 1.34, 0.26),
-    (T_DROP2 + 2 * P, T_DROP2 + 4 * P, "a", 22.52, 1.02, 1.07, 0.30),
-    (T_DROP2 + 4 * P, T_DROP2 + 6 * P, "b", 0.72, 1.30, 1.36, 0.26),
-    (T_DROP2 + 6 * P, T_DROP2 + 8 * P, "b", 1.74, 1.02, 1.08, 0.30),
-    (T_DROP2 + 8 * P, T_LOGO + 0.4, "b", 2.74, 1.14, 1.30, 0.27),
-    (T_LOGO + 0.4, TOTAL, "pink", 0, 1, 1, 0.5),
+    # Cortinilla: tres tomas del evento
+    (0.0, 3 * P, ("ev", "161532", 0.6), 1.00, 1.08, 0.5),
+    (3 * P, 6 * P, ("ev", "162027", 5.0), 1.06, 1.00, 0.5),
+    (6 * P, T_INTRO, ("ev", "162506", 3.6), 1.00, 1.06, 0.5),
+    # La persona (protagonista) + dos tomas de apoyo
+    (T_INTRO, 7.685, ("v", 0), 1.00, 1.06, 0.30),
+    (7.685, 8.40, ("v", 1), 1.22, 1.26, 0.27),
+    (8.40, 9.85, ("ev", "162145", 6.4), 1.00, 1.08, 0.5),
+    (9.85, 11.945, ("v", 2), 1.02, 1.08, 0.30),
+    (11.945, 13.35, ("v", 3), 1.22, 1.26, 0.27),
+    (13.35, 15.495, ("ev", "150428", 0.2), 1.00, 1.06, 0.5),
+    (15.495, 17.37, ("v", 4), 1.04, 1.10, 0.30),
+    # La nota y las fotos (la capa gráfica tapa todo)
+    (17.37, T_BREAK, "pink", 1, 1, 0.5),
+    (T_BREAK, T_DROP2 - 0.36, ("v", 6), 1.00, 1.12, 0.30),
+    # Cierre: video 2 corrido, punch-ins en el drop y en "y somos México"
+    (T_DROP2 - 0.36, T_DROP2, ("v", 7), 1.00, 1.03, 0.30),
+    (T_DROP2, T_CLOSE + 1.71 - 0.62, ("v", 7), 1.24, 1.28, 0.27),
+    (T_CLOSE + 1.71 - 0.62, T_CLOSE + 2.71 - 0.62, ("v", 7), 1.03, 1.07, 0.30),
+    (T_CLOSE + 2.71 - 0.62, T_MEXICO + 0.8, ("v", 7), 1.26, 1.32, 0.27),
+    (T_MEXICO + 0.8, TOTAL, "white", 1, 1, 0.5),
 ]
 
-# Origen de cada toma del evento usada (para el paso `clips`): id → (desde, hasta) en el original
+
+def fr(t):
+    """Tiempo → número de cuadro (todos los cortes caen en cuadros exactos)."""
+    return int(round(t * FPS))
+
+
+def shot_src(spec, t0):
+    """Segundo de la fuente que corresponde al cuadro de salida t0."""
+    if spec[0] == "ev":
+        return spec[2]
+    clip, a, b, v0 = VOICE[spec[1]]
+    return a + (t0 - v0)
+
+
 def ev_ranges():
     r = {}
-    for t0, t1, src, s0, *_ in SHOTS:
-        if src.startswith("ev:"):
-            i = src[3:]
+    for t0, t1, spec, *_ in SHOTS:
+        if isinstance(spec, tuple) and spec[0] == "ev":
+            i, s0 = spec[1], spec[2]
             a, b = r.get(i, (1e9, -1e9))
             r[i] = (min(a, s0), max(b, s0 + (t1 - t0)))
     return r
@@ -151,29 +156,33 @@ def build_clips():
 
 def build_base(w=W, h=H, out=None):
     parts, inputs, labels = [], [], []
-    for n, (t0, t1, src, s0, z0, z1, ay) in enumerate(SHOTS):
-        dur = t1 - t0
-        if src == "pink":
-            parts.append(f"color=c=0xE4007C:s={w}x{h}:r={FPS}:d={dur:.4f},format=yuv420p,setsar=1[s{n}]")
+    k = 0
+    for n, (t0, t1, spec, z0, z1, ay) in enumerate(SHOTS):
+        f0, f1 = fr(t0), fr(min(t1, TOTAL))
+        nf = f1 - f0
+        dur = nf / FPS
+        t0q = f0 / FPS  # inicio exacto en cuadros
+        if spec in ("pink", "white"):
+            c = "0xE4007C" if spec == "pink" else "white"
+            parts.append(f"color=c={c}:s={w}x{h}:r={FPS},trim=end_frame={nf},format=yuv420p,setsar=1[s{n}]")
             labels.append(f"[s{n}]")
             continue
-        if src.startswith("ev:"):
-            i = src[3:]
-            off = json.loads((A / "clips" / f"ev-{i}.json").read_text())["offset"]
-            path, ss, pre = A / EV.format(i), s0 - off, EV_GRADE
+        if spec[0] == "ev":
+            off = json.loads((A / "clips" / f"ev-{spec[1]}.json").read_text())["offset"]
+            path, ss, pre = A / EV.format(spec[1]), spec[2] - off, EV_GRADE
         else:
-            path, ss, pre = A / SPK[src], s0, HDR
+            path, ss, pre = A / SPK[VOICE[spec[1]][0]], shot_src(spec, t0q), HDR
         inputs += ["-ss", f"{max(0, ss):.4f}", "-t", f"{dur + 0.5:.4f}", "-i", str(path)]
-        k = len(inputs) // 6 - 1
         z = f"({z0}+({z1 - z0})*t/{dur:.4f})"
-        sharp = ",unsharp=5:5:0.6:5:5:0.0" if not src.startswith("ev:") else ""
+        sharp = ",unsharp=5:5:0.6:5:5:0.0" if spec[0] == "v" else ""
         parts.append(
-            f"[{k}:v]trim=duration={dur:.4f},setpts=PTS-STARTPTS,fps={FPS},{pre},"
+            f"[{k}:v]setpts=PTS-STARTPTS,fps={FPS},trim=end_frame={nf},setpts=PTS-STARTPTS,{pre},"
             f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h},"
             f"scale=w='2*trunc({w}*{z}/2)':h='2*trunc({h}*{z}/2)':eval=frame:flags=bicubic,"
             f"crop={w}:{h}:x='(iw-{w})/2':y='(ih-{h})*{ay}'{sharp},setsar=1,format=yuv420p[s{n}]")
         labels.append(f"[s{n}]")
-    graph = parts + [f"{''.join(labels)}concat=n={len(labels)}:v=1:a=0,trim=duration={TOTAL},setpts=PTS-STARTPTS[v]"]
+        k += 1
+    graph = parts + [f"{''.join(labels)}concat=n={len(labels)}:v=1:a=0[v]"]
     run(["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", ";".join(graph), "-map", "[v]",
          "-r", FPS, "-c:v", "libx264", "-crf", "12" if w == W else "18", "-preset", "medium",
          "-pix_fmt", "yuv420p", out or (OUT / "base.mp4")])
@@ -310,45 +319,34 @@ def _read(path, start=0.0, dur=None):
     return x.reshape(-1, 2).copy()
 
 
-# Efectos: (segundo, nombre, ganancia dB). Afinados con la capa gráfica.
+# Efectos: (segundo, nombre, ganancia dB). Afinados con la capa gráfica; discretos, sin exagerar.
 B = BEAT
 SFX = [
     # Cortinilla de entrada
-    (0.02, "pop", -10), (0.05, "ding", -20), (0.50, "whoosh", -10), (0.62, "boom", -14),
-    (0.95, "pop", -16), (1.03, "pop", -17), (1.11, "pop", -16), (1.19, "pop", -17), (1.27, "pop", -16),
-    (1.35, "pop", -17), (1.43, "pop", -16), (1.51, "pop", -17), (1.60, "pop", -15),
-    (2 * B, "swish", -15), (3 * B + 0.05, "pop", -12), (4 * B, "swish", -16),
-    (2.30, "riser", -13), (3.90, "whoosh", -8), (T_INTRO, "boom", -7), (T_INTRO + 0.02, "whip", -14),
+    (0.02, "pop", -11), (0.50, "whoosh", -11), (0.62, "boom", -15),
+    (0.95, "pop", -18), (1.11, "pop", -18), (1.27, "pop", -18), (1.43, "pop", -18), (1.60, "pop", -17),
+    (3 * B + 0.05, "pop", -13),
+    (2.30, "riser", -15), (3.90, "whoosh", -9), (T_INTRO, "boom", -9), (T_INTRO + 0.02, "whip", -16),
     # Parte hablada
-    (8.00, "splash", -15), (8.02, "pop", -12), (9.35, "whoosh", -13),          # invitación
-    (8.40, "whip", -18), (11.945, "whip", -19), (13.15, "whip", -19), (14.30, "whip", -19),
-    (11.62, "pop", -11), (11.66, "ding", -18),                                  # SOMOS
-    (13.22, "pop", -11), (13.26, "sparkle", -20),                               # 1ª edición
-    (14.40, "swish", -15),                                                      # ubicación
-    # La nota y las fotos
-    (16.95, "whoosh", -10), (17.15, "paper", -13), (17.75, "whip", -14), (18.10, "pop", -12),
-    (19.05, "swish", -14), (19.40, "swish", -14), (20.25, "whoosh", -14), (20.55, "shutter", -9),
-    (21.75, "whip", -12), (22.05, "whoosh", -10),
+    (8.00, "splash", -16), (8.02, "pop", -13), (9.35, "whoosh", -15),   # invitación
+    (8.40, "whip", -20), (13.35, "whip", -20),
+    # Sale la nota
+    (17.10, "whoosh", -11), (17.30, "paper", -14),
+    (T_FOTOS - 0.12, "whip", -14),
 ]
-for k in range(6):
-    SFX += [(22.57 + k * B, "shutter", -8), (22.57 + k * B + 0.01, "pop", -20)]
+for k in range(4):                        # salen las fotos: 4 fotos, una cada 2 beats, con su efecto de entrada
+    SFX += [(T_FOTOS + 2 * k * B - 0.09, "whip", -15), (T_FOTOS + 2 * k * B, "shutter", -8)]
 SFX += [
-    (22.57 + 6 * B, "shutter", -8), (22.57 + 6 * B, "whoosh", -14), (26.40, "whip", -9), (26.55, "whoosh", -11),
-    # Pausa → drop 2
-    (27.30, "pop", -12), (28.60, "pop", -12), (28.62, "ding", -20),
-    (29.10, "riser", -10), (T_DROP2, "boom", -5), (T_DROP2, "whip", -12),
+    (T_FOTOS + 7 * B - 0.09, "whip", -14), (T_FOTOS + 7 * B, "shutter", -8),   # foto protagonista
+    (T_BREAK - 0.27, "whoosh", -12),
+    # Pausa → drop 2 (cierre)
+    (T_DROP2 - 1.65, "riser", -15), (T_DROP2, "boom", -12),
+    # "y somos México": cortinilla blanca y el logo se arma letra por letra
+    (T_MEXICO - 0.05, "whoosh", -9),
 ]
 for k in range(5):
-    SFX += [(T_DROP2 + 2 * k * B, "pop", -10), (T_DROP2 + 2 * k * B + 0.02, "swish", -16)]
-SFX += [
-    (T_DROP2 + 8 * B, "sparkle", -15), (T_LOGO - 0.12, "whoosh", -9), (T_LOGO, "boom", -11),
-]
-for k in range(6):
-    SFX += [(T_LOGO + k * B, "swish", -17), (T_LOGO + k * B + 0.01, "pop", -16)]
-SFX += [
-    (T_WHITE - 0.25, "whoosh", -8), (T_WHITE, "boom", -5), (T_WHITE + 0.05, "ding", -12),
-    (T_WHITE + 0.35, "sparkle", -14), (T_WHITE + 1.3, "swish", -16), (41.25, "sparkle", -18),
-]
+    SFX += [(T_MEXICO + 0.40 + k * 0.075, "pop", -15)]
+SFX += [(T_MEXICO + 0.78, "boom", -10), (T_MEXICO + 0.80, "ding", -19)]
 
 
 def build_audio():
@@ -385,9 +383,9 @@ def build_audio():
         i0 = max(0, int(round(o0 * SR)) - xf)
         seg = seg[: n_total - i0]
         music[i0:i0 + len(seg)] += seg
-    # Final: después del golpe del logo (40.0) la canción se desvanece con una cola corta
+    # Final: con el logo en blanco la canción se desvanece suave hasta el último cuadro
     t = np.arange(n_total) / SR
-    fo = np.clip(1 - (t - (T_WHITE + 0.35)) / 2.4, 0, 1) ** 2
+    fo = np.clip(1 - (t - (T_MEXICO + 1.6)) / (TOTAL - T_MEXICO - 1.7), 0, 1) ** 1.6
     music *= fo[:, None]
 
     # Ducking bajo la voz (envolvente suave; dentro de cada tramo hablado se queda abajo)
@@ -398,10 +396,10 @@ def build_audio():
     sm = int(0.2 * SR)
     speaking = np.convolve(speaking, np.ones(sm) / sm, mode="same")
     gain = np.ones(n_total, np.float32)
-    talk = [(T_INTRO + 0.05, 18.10), (26.75, 30.30)]
-    for a, b in talk:
-        gain[(t > a) & (t < b)] = 10 ** (-13 / 20)
-    # frases SOMOS: la música baja menos (es el clímax), se mantiene la energía del drop
+    talk = [(T_INTRO + 0.05, 17.40, -13), (T_FOTOS - 0.45, T_FOTOS + 0.45, -11), (T_BREAK + 0.08, T_DROP2 - 0.85, -13),
+            (T_CLOSE, T_MEXICO + 0.7, -9)]  # en el cierre la música baja menos: es el clímax
+    for a, b, db in talk:
+        gain[(t > a) & (t < b)] = 10 ** (db / 20)
     gain = np.minimum(gain, 1 - (1 - 10 ** (-9 / 20)) * speaking)
     sm = int(0.12 * SR)
     gain = np.convolve(gain, np.ones(sm) / sm, mode="same")
@@ -427,13 +425,16 @@ CAPS = [
     ("fue de una *albercada*", 1), ("que tuvimos con *jóvenes*,", 1),
     ("justo para *conocernos*,", 2), ("para dar a conocer", 2), ("el proyecto de *SOMOS*,", 2),
     ("entonces estuvimos", 3), ("muy *contentos*,", 3), ("fue nuestra *primera* *edición*", 3), ("de *albercada*", 3), ("y de *terraza*,", 3),
-    ("les queremos compartir", 4), ("un par de *notas*,", 4), ("un par de *fotos*,", 4),
-    ("para que la *próxima* *edición*,", 5), ("que se viene", 5), ("muy *próximamente*,", 5), ("puedan *acompañarnos*.", 5),
+    ("les queremos compartir", 4), ("un par de *notas*,", 4),
+    ("un par de *fotos*,", 5),
+    ("para que la *próxima* *edición*,", 6), ("que se viene", 6), ("muy *próximamente*,", 6), ("puedan *acompañarnos*.", 6),
+    ("Somos *amigos*,", 7), ("somos el *futuro*,", 7), ("y somos *México*.", 7),
 ]
 
 
 def build_captions():
-    words = json.loads((ROOT / "transcript.json").read_text())["a1150"]
+    tr = json.loads((ROOT / "transcript.json").read_text())
+    words = tr["a1150"] + tr["a1151"]
     out = []
     used = 0
     for text, si in CAPS:
@@ -446,6 +447,11 @@ def build_captions():
         out.append([text, round(max(s, t0) - 0.04, 3), round(min(e, t0 + b - a) + 0.02, 3)])
     # cada grupo dura hasta que empieza el siguiente del mismo segmento
     out[0][1] = max(out[0][1], T_INTRO + 0.1)  # "Oigan" entra justo después de la cortinilla
+    # video 2: tiempos por energía (whisper llega tarde en este clip): Somos 0.72 · somos 1.74 · y 2.74
+    for g, src in zip(out[-3:], (0.72, 1.74, 2.74)):
+        g[1] = round(T_CLOSE + src - 0.62 - 0.04, 3)
+    out[-3][2], out[-2][2] = out[-2][1] - 0.02, out[-1][1] - 0.02
+    out[-1][2] = round(T_MEXICO + 0.32, 3)  # la cortinilla blanca lo cubre
     for i in range(len(out) - 1):
         if CAPS[i][1] == CAPS[i + 1][1]:
             out[i][2] = round(out[i + 1][1] - 0.02, 3)
@@ -482,10 +488,13 @@ def build_final(preview=False):
 
 
 def print_timeline():
-    for s in SHOTS:
-        print(f"{s[0]:7.3f}-{s[1]:7.3f}  {s[2]:<10} src {s[3]:.2f}  z {s[4]}→{s[5]}")
-    print(json.dumps(dict(T_INTRO=T_INTRO, T_BREAK=T_BREAK, T_DROP2=T_DROP2, T_LOGO=T_LOGO, T_WHITE=T_WHITE,
-                          TOTAL=TOTAL, BEAT=BEAT), indent=1))
+    for t0, t1, spec, z0, z1, ay in SHOTS:
+        src = "" if isinstance(spec, str) else f"src {shot_src(spec, fr(t0) / FPS):.3f}"
+        print(f"{fr(t0) / FPS:7.3f}-{fr(t1) / FPS:7.3f}  {str(spec):<26} {src}  z {z0}→{z1}")
+    for clip, a, b, t0 in VOICE:
+        print(f"voz {clip} {a:.2f}-{b:.2f} → {t0:.3f}-{t0 + b - a:.3f}")
+    print(json.dumps(dict(T_INTRO=T_INTRO, T_FOTOS=T_FOTOS, T_BREAK=T_BREAK, T_DROP2=T_DROP2, T_CLOSE=T_CLOSE,
+                          T_MEXICO=T_MEXICO, TOTAL=TOTAL, BEAT=BEAT), indent=1))
 
 
 if __name__ == "__main__":

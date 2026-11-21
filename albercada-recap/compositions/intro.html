@@ -31,18 +31,10 @@
       background: #fff;
       opacity: 0;
     }
-    #in-top {
-      left: 400px;
-      top: 560px;
-      width: 280px;
-      height: 77px;
-      opacity: 0;
-      box-shadow: 0 10px 30px rgba(60, 0, 30, 0.25);
-    }
     #in-title {
       position: absolute;
       left: 0;
-      top: 690px;
+      top: 770px;
       width: 1080px;
       text-align: center;
       font-weight: 900;
@@ -61,7 +53,7 @@
     #in-ed {
       position: absolute;
       left: 345px;
-      top: 900px;
+      top: 965px;
       width: 390px;
       height: 96px;
       border-radius: 48px;
@@ -76,22 +68,6 @@
       letter-spacing: -0.01em;
       box-shadow: 0 10px 30px rgba(60, 0, 30, 0.3);
       opacity: 0;
-    }
-    #in-date {
-      position: absolute;
-      left: 0;
-      top: 1030px;
-      width: 1080px;
-      text-align: center;
-      font-family: "Hind Siliguri", sans-serif;
-      font-weight: 600;
-      font-size: 44px;
-      line-height: 1.25;
-      text-shadow: 0 3px 16px rgba(30, 0, 15, 0.6);
-      opacity: 0;
-    }
-    #in-date b {
-      font-weight: 700;
     }
     /* Cortinilla de salida: tres franjas diagonales */
     #in-wipe {
@@ -115,10 +91,8 @@
   </style>
   <div id="in-root" data-composition-id="intro" data-width="1080" data-height="1920">
     <div id="in-shade"></div>
-    <div id="in-top" class="pleca"><img src="assets/brand/somos.svg" alt="SOMOS" /></div>
     <div id="in-title"></div>
     <div id="in-ed">1ª edición</div>
-    <div id="in-date">Domingo <b>15 de noviembre</b><br />Polanco, Miguel Hidalgo</div>
     <div id="in-pink"></div>
     <div id="in-pleca" class="pleca"><img src="assets/brand/somos.svg" alt="SOMOS" /></div>
     <div id="in-white"></div>
@@ -153,7 +127,6 @@
 
       // 2) Título
       tl.to("#in-shade", { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.8);
-      tl.fromTo("#in-top", { opacity: 0, y: -60, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2)" }, 0.84);
       L.forEach((el, i) => {
         tl.fromTo(
           el,
@@ -163,17 +136,14 @@
         );
       });
       tl.fromTo("#in-ed", { opacity: 0, scale: 0.2, rotation: 8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.3, ease: "back.out(2.4)" }, 3 * B + 0.05);
-      tl.fromTo("#in-date", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 4 * B);
       // leve respiración del título mientras suenan las tomas rápidas
       tl.to("#in-title", { scale: 1.04, duration: 1.4, ease: "sine.inOut" }, 1.9);
 
       // 3) Salida del título (hacia arriba, en cascada) y cortinilla de franjas
-      tl.to("#in-top", { opacity: 0, y: -80, duration: 0.22, ease: "power2.in" }, 3.42);
       L.forEach((el, i) => {
         tl.to(el, { opacity: 0, y: -120, rotation: 8, duration: 0.2, ease: "power2.in" }, 3.45 + i * 0.025);
       });
       tl.to("#in-ed", { opacity: 0, scale: 0.4, duration: 0.18, ease: "power2.in" }, 3.55);
-      tl.to("#in-date", { opacity: 0, y: 30, duration: 0.18, ease: "power2.in" }, 3.55);
       tl.to("#in-shade", { opacity: 0, duration: 0.3 }, 3.55);
 
       const T = 2.22233 * 2; // 4.445 drop
