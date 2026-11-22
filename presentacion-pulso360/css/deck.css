@@ -624,7 +624,9 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .s-vai { display: grid; grid-template-columns: 62rem 1fr; gap: 6rem; align-items: center; }
 .s-vai .txt { display: flex; flex-direction: column; gap: 3rem; }
 .vai-head { width: 54rem; aspect-ratio: 3 / 1; margin: -1rem 0 -1.4rem -1.6rem; }
-.vai-head video { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; display: block; }
+.vai-head video { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; display: block;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 80%, transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 80%, transparent 100%); }
 .browser { overflow: hidden; border-radius: 2.4rem; }
 .browser .bbar { display: flex; align-items: center; gap: 2rem; padding: 1.6rem 2.2rem; border-bottom: .1rem solid var(--line); }
 .browser .dots { display: flex; gap: .8rem; }
