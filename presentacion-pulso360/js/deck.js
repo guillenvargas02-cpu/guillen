@@ -141,7 +141,16 @@
 
   document.querySelectorAll(".segs[data-v]").forEach(s => { const v = Math.round(+s.dataset.v / 5); for (let k = 0; k < 20; k++) { const i = document.createElement("i"); i.style.setProperty("--k", k); if (k < v) i.className = "on"; s.appendChild(i); } });
 
-  document.querySelectorAll(".crowd[data-n]").forEach(c => { const nc = +(c.dataset.cols || 9); for (let k = 0; k < +c.dataset.n; k++) c.insertAdjacentHTML("beforeend", `<i class="ico" style="--c:${k % nc};--r:${Math.floor(k / nc)}"><svg viewBox="0 0 24 24">${I.user}</svg></i>`); });
+  document.querySelectorAll(".src2 .wv").forEach(w => { for (let i = 0; i < 40; i++) { const b = document.createElement("i"); b.style.setProperty("--h", Math.round(25 + Math.abs(Math.sin(i * 1.3) * 75)) + "%"); b.style.setProperty("--t", (-(i * .07) % 1).toFixed(2) + "s"); w.appendChild(b); } });
+
+  /* capturas pendientes: si el archivo aún no existe, se muestra un marcador elegante */
+  document.querySelectorAll(".shot img, .shot video").forEach(m => {
+    const miss = () => { const f = m.closest(".shot"); if (f) f.classList.add("missing"); };
+    if (m.tagName === "IMG") { if (m.complete && !m.naturalWidth) miss(); m.addEventListener("error", miss); }
+    else { m.addEventListener("error", miss); if (m.networkState === 3) miss(); }
+  });
+
+  document.querySelectorAll(".crowd[data-n], .crowd2[data-n]").forEach(c => { const nc = +(c.dataset.cols || 9); for (let k = 0; k < +c.dataset.n; k++) c.insertAdjacentHTML("beforeend", `<i class="ico" style="--c:${k % nc};--r:${Math.floor(k / nc)}"><svg viewBox="0 0 24 24">${I.user}</svg></i>`); });
 
   /* ------------------------------------------------------------ códigos QR */
   const CFG = window.PULSO_CONFIG || {};

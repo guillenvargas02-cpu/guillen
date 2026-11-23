@@ -448,6 +448,65 @@ function createEngine(canvas) {
     });
   }
 
+  /* ---------- constelación GPS sobre México */
+  const satGroup = new THREE.Group(); mapGroup.add(satGroup);
+  const sats = [], grounds = [];
+  {
+    // puntos en tierra: centroides de estados (brigadas)
+    stateMeshes.forEach((g, i) => { if (i % 2 === 0) grounds.push(new THREE.Vector3(g.userData.cx, g.userData.cy, MAP_Z)); });
+    const box = new THREE.Box3().setFromObject(mapGroup); const ctr = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
+    const bodyM = new THREE.MeshStandardMaterial({ color: 0x9fb0c6, metalness: .3, roughness: .55, emissive: 0x2ef2b5, emissiveIntensity: .35 });
+    const panelM = new THREE.MeshStandardMaterial({ color: 0x0a1424, metalness: .3, roughness: .6, emissive: 0x2a5fc4, emissiveIntensity: .18, side: THREE.DoubleSide });
+    const bodyG = new THREE.BoxGeometry(.05, .05, .03), panelG = new THREE.PlaneGeometry(.16, .045);
+    const planes = [[-.5, .32], [.05, .38], [.55, .3]];
+    planes.forEach(([off, tilt], pi) => {
+      for (let k = 0; k < 5; k++) {
+        const s = new THREE.Group();
+        s.add(new THREE.Mesh(bodyG, bodyM));
+        [-1, 1].forEach(d => { const pl = new THREE.Mesh(panelG, panelM); pl.position.x = d * .11; s.add(pl); });
+        s.userData = { pi, ph: k / 5 + pi * .11, off, tilt };
+        satGroup.add(s); sats.push(s);
+      }
+      // trayectoria orbital tenue
+      const pts = []; for (let i = 0; i <= 80; i++) { const u = i / 80 * 1.2 - .1; pts.push(new THREE.Vector3(ctr.x + (u - .5) * sz.x * 1.1, ctr.y + off * sz.y + (u - .5) * sz.y * tilt * 1.6, 1.7 + pi * .22)); }
+      const ln = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineDashedMaterial({ color: 0x8fb6ff, transparent: true, opacity: .22, dashSize: .05, gapSize: .05 }));
+      ln.computeLineDistances(); satGroup.add(ln);
+    });
+    satGroup.userData = { ctr, sz };
+  }
+  const linkGeo = new THREE.BufferGeometry(); const linkPos = new Float32Array(18 * 2 * 3); linkGeo.setAttribute("position", new THREE.BufferAttribute(linkPos, 3));
+  const linkCol = new Float32Array(18 * 2 * 3); linkGeo.setAttribute("color", new THREE.BufferAttribute(linkCol, 3));
+  const links = new THREE.LineSegments(linkGeo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .8, blending: THREE.AdditiveBlending, depthWrite: false }));
+  links.frustumCulled = false; satGroup.add(links);
+  const pingTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const g = c.getContext("2d"); g.strokeStyle = "#fff"; g.lineWidth = 3; g.beginPath(); g.arc(32, 32, 26, 0, Math.PI * 2); g.stroke(); return new THREE.CanvasTexture(c); })();
+  const pings = grounds.map((p, i) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(.2, .2), new THREE.MeshBasicMaterial({ map: pingTex, color: 0x2ef2b5, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending })); m.position.copy(p).setZ(MAP_Z + .01); m.userData.ph = i * .37; satGroup.add(m); return m; });
+  function updateSats(time, op) {
+    satGroup.visible = op > .01;
+    if (!satGroup.visible) return;
+    const { ctr, sz } = satGroup.userData;
+    sats.forEach(s => {
+      const { pi, ph, off, tilt } = s.userData;
+      const u = ((time * .028 + ph) % 1) * 1.2 - .1;
+      s.position.set(ctr.x + (u - .5) * sz.x * 1.1, ctr.y + off * sz.y + (u - .5) * sz.y * tilt * 1.6, 1.7 + pi * .22);
+      s.rotation.z = Math.atan2(tilt * sz.y * 1.6, sz.x * 1.1); s.rotation.x = .9; s.scale.setScalar(1.25);
+      const edge = Math.min(1, Math.min(u + .1, 1.1 - u) * 6);
+      s.traverse(o => { if (o.material) { o.material.transparent = true; o.material.opacity = op * edge; } });
+    });
+    // enlaces: cada punto en tierra se conecta al satélite más cercano dentro de alcance
+    let n = 0; const lit = new Set();
+    grounds.forEach((g, gi) => {
+      if (n >= 18) return;
+      let best = null, bd = 1e9; sats.forEach(s => { const d = Math.hypot(s.position.x - g.x, s.position.y - g.y); if (d < bd) { bd = d; best = s; } });
+      if (!best || bd > .9) return;
+      const a = Math.max(0, 1 - bd / .9) * op;
+      linkPos.set([best.position.x, best.position.y, best.position.z, g.x, g.y, g.z + .01], n * 6);
+      linkCol.set([.13 * a, .85 * a, .9 * a, .18 * a, .95 * a, .71 * a], n * 6); n++; lit.add(gi);
+    });
+    for (let i = n * 6; i < linkPos.length; i++) { linkPos[i] = 0; linkCol[i] = 0; }
+    linkGeo.attributes.position.needsUpdate = true; linkGeo.attributes.color.needsUpdate = true;
+    pings.forEach((m, i) => { const p = (time * .7 + m.userData.ph) % 1; m.scale.setScalar(.4 + p * 1.6); m.material.opacity = (lit.has(i) ? .9 : .25) * (1 - p) * op; });
+  }
+
   /* ---------- posprocesado */
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
@@ -456,11 +515,11 @@ function createEngine(canvas) {
   composer.addPass(new OutputPass());
 
   /* ---------- estado y transiciones */
-  const S = { dots: 0, shape: "dust", pos: [.5, .5], scale: 1, opacity: .35, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: 30, wave: 0, sweep: 0 };
+  const S = { sat: 0, dots: 0, shape: "dust", pos: [.5, .5], scale: 1, opacity: .35, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: 30, wave: 0, sweep: 0 };
   const T = { ...S };
   const presence = { bolt: 0, chip: 0, mexico: 0, brain: 0 };
   let morphStart = -10, morphDur = 2.2, spinAngle = 0, meshT = {};
-  const cur = new Float32Array(N * 3);
+  const cur = new Float32Array(N * 3); let satOp = 0;
 
   function currentPositions() {
     const t = clamp01((performance.now() / 1000 - morphStart) / morphDur);
@@ -481,7 +540,7 @@ function createEngine(canvas) {
   }
 
   function set(cfg) {
-    const c = Object.assign({ dots: 0, shape: "dust", pos: [.5, .5], scale: 1, opacity: null, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: null, wave: 0, sweep: 0 }, cfg || {});
+    const c = Object.assign({ sat: 0, dots: 0, shape: "dust", pos: [.5, .5], scale: 1, opacity: null, pulse: 0, flow: 0, rot: [0, 0], spin: 0, mesh: null, size: null, wave: 0, sweep: 0 }, cfg || {});
     if (c.opacity === null) c.opacity = c.shape === "dust" ? .3 : .95;
     if (c.size === null) c.size = c.shape === "dust" ? 15 : c.shape === "mexico" ? 16 : 30;
     if (c.shape !== T.shape) {
@@ -571,6 +630,7 @@ function createEngine(canvas) {
       b.userData.mat.uniforms.uOp.value = lerp(b.userData.mat.uniforms.uOp.value, tt, .2);
       b.scale.z = .05 + tt * .95;
     });
+    satOp += ((T.mesh === "mexico" && T.sat ? 1 : 0) * presence.mexico - satOp) * .05; updateSats(time, satOp);
     // cerebro
     U.uDots.value = T.dots;
     brainGroup.visible = presence.brain > .01;
