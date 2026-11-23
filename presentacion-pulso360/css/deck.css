@@ -1144,3 +1144,13 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .flow3 .fs b { font-size: 2.3rem; font-weight: 640; }
 .flow3 .fs b em { font-style: normal; color: var(--dim); font-weight: 500; }
 .flow3 .hub2 { width: auto; margin: 1rem 0 0; }
+
+/* barra superior: marca más visible */
+.topbar { top: 4.6rem; font-size: 1.5rem; }
+.topbar .brandmini { gap: 1.8rem; }
+.topbar .brandmini .mk { width: 4.6rem; height: 4.6rem; border-radius: 1.3rem; font-size: 2.4rem; border-width: .16rem;
+  box-shadow: 0 0 2.4rem -0.4rem rgba(19,228,171,.45); }
+.topbar .brandmini .mk svg { filter: drop-shadow(0 0 .5rem rgba(46,242,181,.6)); }
+.topbar .brandmini b { font-size: 2.2rem; letter-spacing: .14em; }
+.topbar .chap { font-size: 1.5rem; }
+.topbar .num { font-size: 1.6rem; }
