@@ -26,23 +26,30 @@ INTRO = 60 / FPS  # entrada: animación del logotipo SOMOS (2.0 s) y paso direct
 OUTRO = 108 / FPS  # cortinilla de cierre: logo SOMOS sobre fondo blanco (3.6 s)
 
 # (fuente, entrada, salida, zoom al inicio, zoom al final) — tramos de voz sin silencios
+# Acercamientos suaves para dejar libre la parte de arriba, donde van los íconos (sin tapar al conductor)
 CUTS = [
-    ("IMG_1147", 2.22, 4.52, 1.00, 1.07),  # ¿Quieres hacer algo que nunca habías visto en tu vida?
-    ("IMG_1147", 5.18, 8.20, 1.14, 1.19),  # Este próximo 29 de noviembre, domingo a las 10 de la mañana,
-    ("IMG_1147", 8.20, 10.64, 1.36, 1.42),  # te queremos invitar a un partido de exhibición de ULAMA,
-    ("IMG_1147", 11.44, 13.27, 1.02, 1.08),  # que es el juego de pelota prehispánico,
-    ("IMG_1147", 13.57, 16.08, 1.18, 1.23),  # donde va a haber un partido de exhibición y un taller
-    ("IMG_1147", 16.08, 18.28, 1.38, 1.44),  # para que puedas compartir con tu familia, tus amigos,
-    ("IMG_1147", 18.56, 20.66, 1.04, 1.10),  # nuestras tradiciones y nuestra cultura mexicana.
-    ("IMG_1147", 20.93, 24.22, 1.16, 1.28),  # Así que te esperamos este domingo en el parque de la reforma social.
-    ("IMG_1148", 1.95, 5.70, 1.00, 1.08),  # Somos cultura, somos tradición y somos México.
+    ("IMG_1147", 2.22, 4.52, 1.00, 1.04),  # ¿Quieres hacer algo que nunca habías visto en tu vida?
+    ("IMG_1147", 5.18, 8.20, 1.00, 1.04),  # Este próximo 29 de noviembre, domingo a las 10 de la mañana,
+    ("IMG_1147", 8.20, 10.64, 1.10, 1.14),  # te queremos invitar a un partido de exhibición de ULAMA,
+    ("IMG_1147", 11.44, 13.27, 1.00, 1.04),  # que es el juego de pelota prehispánico,
+    ("IMG_1147", 13.57, 16.08, 1.06, 1.10),  # donde va a haber un partido de exhibición y un taller
+    ("IMG_1147", 16.08, 18.28, 1.12, 1.16),  # para que puedas compartir con tu familia, tus amigos,
+    ("IMG_1147", 18.56, 20.66, 1.00, 1.04),  # nuestras tradiciones y nuestra cultura mexicana.
+    ("IMG_1147", 20.93, 24.22, 1.00, 1.03),  # Así que te esperamos este domingo en el parque de la reforma social.
+    ("IMG_1148", 1.95, 5.70, 1.00, 1.06),  # Somos cultura, somos tradición y somos México.
 ]
+BUMP = 0.08  # golpe de zoom al inicio de cada toma (se desvanece en ~0.25 s)
+# Las tomas del iPhone son HDR (HLG, BT.2020). Se convierten a SDR BT.709 con tone-mapping,
+# para que se vean como en el teléfono (sin esta conversión se ven lavadas y brillosas).
+TONEMAP = ("zscale=t=linear:npl=150,format=gbrpf32le,zscale=p=bt709,"
+           "tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p")
 
 MUSIC = A / "music" / "musica_ulama_3.m4a"
 # Tramo de tambores de la pista 3 (0:00–0:28), sin voces ni gritos (los gritos están en 1:06–1:20).
 # Con 0.373 s de entrada, el golpe de tambor de 0:01.04 cae justo cuando se forma la pleca (0.667 s).
 MUSIC_OFFSET = 0.373
 WORD_LAG = 0.10  # whisper marca las palabras un poco antes de que suenen
+VOICE_LATENCY = 0.030  # retraso medido del filtro afftdn (verificado por correlación contra el audio original)
 
 # Transcripción (faster-whisper, palabra por palabra) en tiempos de la fuente
 WORDS = {
@@ -120,13 +127,13 @@ def build_base(p):
         inputs += ["-i", A / "footage" / f"{s['src']}.mp4"]
         z0, z1 = s["z0"], s["z1"]
         # zoom lineal en el tiempo del tramo; escala por fotograma y recorte centrado
-        z = f"({z0}+({z1}-{z0})*t/{dur:.4f})"
+        z = f"({z0}+({z1}-{z0})*t/{dur:.4f}+{BUMP}*exp(-t*12))"
         chains.append(
-            f"[{i}:v]trim=start={s['in']:.4f}:duration={dur:.4f},setpts=PTS-STARTPTS,fps={FPS},"
+            f"[{i}:v]trim=start={s['in']:.4f}:duration={dur:.4f},setpts=PTS-STARTPTS,fps={FPS},{TONEMAP},"
             f"scale=w='trunc({W}*{z}/2)*2':h='trunc({H}*{z}/2)*2':eval=frame:flags=lanczos,"
             f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2,"
-            # color y brillo originales del video; solo un poco de nitidez para la subida a 4K
-            "unsharp=5:5:0.4:5:5:0.0,"
+            # sin gradación: solo un poco de nitidez para la subida a 4K
+            "unsharp=5:5:0.3:5:5:0.0,"
             f"format=yuv420p,setsar=1[s{i}]"
         )
     n = len(p["segments"]) + 1
@@ -153,6 +160,10 @@ def build_sfx():
          "-filter_complex",
          "[0:a]volume='exp(-6*t)':eval=frame[a];[1:a]lowpass=f=900,afade=t=out:st=0.02:d=0.22[b];"
          "[a][b]amix=inputs=2:normalize=0,volume=1.6,alimiter=limit=0.9", "-ac", "2", OUT / "impact.wav"])
+    # Pop corto para cada ícono o rótulo que aparece
+    run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi",
+         "-i", "aevalsrc='0.8*sin(2*PI*(320+700*exp(-38*t))*t)*exp(-26*t)':s=48000:d=0.18",
+         "-af", "volume=1.2", "-ac", "2", OUT / "pop.wav"])
     # Golpe de percusión dramático: bombo grave con caída de tono + ataque de ruido + tom + cola de reverberación
     run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi",
          "-i", "aevalsrc='0.9*sin(2*PI*(42+70*exp(-9*t))*t)*exp(-1.6*t)':s=48000:d=3.4",
@@ -173,7 +184,22 @@ def sfx_cues(p):
         ("whoosh", intro - 0.35, 0.5),  # entramos por la O del logotipo hacia el conductor
         ("riser", outro - 1.3, 0.55),  # la franja blanca se abre y las letras se separan
         ("boom", outro, 1.0),  # las letras se cierran de golpe sobre blanco
-    ]
+    ] + [("pop", intro + t, v) for t, v in POPS] + [("whoosh", intro + 17.45, 0.35)]  # el mapa entra
+
+
+# Pops sincronizados con icons.html (tiempo local = video − entrada del conductor)
+POPS = [
+    (0.15, 0.3), (0.35, 0.3),  # signos de interrogación
+    (2.95, 0.35), (3.2, 0.25),  # calendario y fecha
+    (4.6, 0.35), (4.68, 0.25),  # reloj y hora
+    (6.9, 0.35), (7.45, 0.3), (7.69, 0.4),  # aro, ¡ULAMA!, la pelota entra
+    (8.05, 0.35), (8.88, 0.25),  # jugadores
+    (10.2, 0.35), (10.62, 0.25), (11.62, 0.3),  # atleta, exhibición, taller
+    (13.08, 0.3), (13.86, 0.3),  # familia, amigos
+    (14.6, 0.35), (15.68, 0.25),  # sahumador
+    (16.8, 0.35),  # ¡te esperamos!
+    (18.55, 0.35), (18.68, 0.25),  # pin y rótulo del parque
+]
 
 
 def build_audio(p):
@@ -196,6 +222,8 @@ def build_audio(p):
         "".join(voices) + f"amix=inputs={len(voices)}:normalize=0,highpass=f=85,lowpass=f=13000,"
         "afftdn=nr=8:nf=-45,equalizer=f=3200:t=q:w=1.2:g=2.5,"
         "acompressor=threshold=-22dB:ratio=3:attack=5:release=120:makeup=5dB,"
+        # el reductor de ruido (afftdn) retrasa la señal 30 ms: se compensa para que voz y labios coincidan
+        f"atrim=start={VOICE_LATENCY},asetpts=PTS-STARTPTS,"
         f"volume=1.5,apad=whole_dur={total:.4f},aformat=channel_layouts=stereo[voice]"
     )
     m = len(srcs)
