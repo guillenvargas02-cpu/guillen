@@ -10,6 +10,7 @@ const { chromium } = createRequire(import.meta.url)("playwright");
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const FPS = 30;
 const WORKERS = 4;
+const DPR = parseFloat(process.env.DPR ?? "2"); // 2 = 4K (2160x3840)
 const url = pathToFileURL(path.join(ROOT, "overlay/index.html")).href;
 const outDir = path.join(ROOT, "renders/overlay");
 mkdirSync(outDir, { recursive: true });
@@ -17,7 +18,7 @@ mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch({ args: ["--allow-file-access-from-files"] });
 
 async function openPage() {
-  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: DPR });
   await page.goto(url);
   await page.evaluate(async () => {
     await window.READY;

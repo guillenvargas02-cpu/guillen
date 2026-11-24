@@ -24,7 +24,9 @@ A = ROOT / "assets"
 OUT = ROOT / "renders"
 OUT.mkdir(exist_ok=True)
 FPS = 30
-W, H = 1080, 1920
+W, H = 1080, 1920   # espacio de trabajo (la capa gráfica se diseña a 1080x1920)
+SCALE = 2           # entrega en 4K: 2160x3840 (footage reescalado con lanczos, gráficos a DPR 2)
+OW, OH = W * SCALE, H * SCALE
 SR = 48000
 
 SRC = {
@@ -36,30 +38,50 @@ SRC = {
 VOICE_LATENCY = 0.025  # medido por correlación cruzada contra el audio original
 VOICE_GAIN_DB = {"1145": 0.0, "1146": -0.4, "1149": -0.6}
 
-# (toma, entrada, salida, zoom inicial, zoom final, centro y del zoom)
+# (toma, entrada, salida, encuadre inicial, centro y del zoom)
 # Los cortes caen en silencios medidos con la envolvente de la voz.
-# Los punch-ins alternan el encuadre para que el plano largo se sienta dinámico.
 EDL = [
-    ("1145", 0.00, 5.22, 1.00, 1.05, 880),   # ¿Qué tal...? ... Eduardo Contró
-    ("1145", 5.58, 10.06, 1.12, 1.15, 820),  # para invitarlos ... 10 de la mañana
-    ("1145", 10.06, 12.62, 1.00, 1.04, 760), # a una jornada de salud integral
-    ("1145", 12.94, 14.14, 1.13, 1.15, 760), # asesoría jurídica
-    ("1145", 14.40, 17.60, 1.00, 1.06, 760), # y apoyo psicológico gratuito ... requiera
-    ("1146", 0.85, 4.50, 1.00, 1.03, 700),   # Te esperamos aquí ... Parque de la Reforma Social
-    ("1149", 0.21, 5.00, 1.00, 1.04, 700),   # Porque aquí somos justicia, salud y SOMOS México
+    ("1145", 0.00, 5.22, 1.00, 880),   # ¿Qué tal...? ... Eduardo Contró
+    ("1145", 5.58, 10.06, 1.00, 820),  # para invitarlos ... 10 de la mañana
+    ("1145", 10.06, 12.62, 1.14, 760), # a una jornada de salud integral
+    ("1145", 12.94, 14.14, 1.13, 760), # asesoría jurídica
+    ("1145", 14.40, 17.60, 1.00, 760), # y apoyo psicológico gratuito ... requiera
+    ("1146", 0.85, 4.50, 1.00, 700),   # Te esperamos aquí ... Parque de la Reforma Social
+    ("1149", 0.21, 5.00, 1.00, 700),   # Porque aquí somos justicia, salud y SOMOS México
 ]
 START = 0.70  # el footage arranca bajo la cortinilla de entrada
 # Huecos que la capa gráfica tapa por completo (mapa en blanco): tiempo extra con el último cuadro
 HOLD_AFTER = {5: 0.60}  # tras 1146: el mapa a pantalla completa tapa el video
+
+# Dinamismo: punch-ins (saltos de encuadre en el mismo instante, sin cortar tiempo: la voz no se toca)
+# y "golpes" de cámara cortos sobre las palabras clave. Tiempos en la fuente.
+JUMPS = {
+    0: [(2.44, 1.10), (4.50, 1.20, 625)],            # "Lo saluda…" / "Eduardo Contró" (encuadre centrado en él)
+    1: [(6.92, 1.13), (8.52, 1.03)],                 # "28 de noviembre" / "a partir de las 10…"
+    2: [(11.66, 1.00)],                              # "de salud integral" (aire arriba para el ícono)
+    4: [(15.50, 1.16), (16.18, 1.05)],               # "gratuito" / "para todo aquel…"
+    5: [(1.92, 1.09)],                               # "este sábado…"
+    6: [(1.50, 1.07), (2.68, 1.14), (3.74, 1.21)],   # cada "somos" acerca más: crescendo al cierre
+}
+BUMPS = {
+    0: [(4.50, 0.035)],
+    1: [(6.92, 0.04), (8.10, 0.05), (9.08, 0.04)],   # 28 / sábado / 10
+    2: [(11.80, 0.035)],                             # salud
+    3: [(13.00, 0.035)],                             # asesoría
+    4: [(14.70, 0.03), (15.50, 0.05)],               # apoyo / gratuito
+    5: [(2.86, 0.04)],                               # Parque
+    6: [(1.50, 0.035), (2.68, 0.04), (3.86, 0.05)],  # somos, somos, SOMOS
+}
+PUSH = 0.03  # acercamiento lento dentro de cada tramo
 
 
 def edl_out():
     """Devuelve la EDL con tiempos de salida [(toma, s_in, s_out, t0, t1, ...)]."""
     t = START
     res = []
-    for i, (c, s0, s1, z0, z1, cy) in enumerate(EDL):
+    for i, (c, s0, s1, z0, cy) in enumerate(EDL):
         d = s1 - s0
-        res.append(dict(clip=c, s0=s0, s1=s1, t0=t, t1=t + d, z0=z0, z1=z1, cy=cy))
+        res.append(dict(clip=c, s0=s0, s1=s1, t0=t, t1=t + d, z0=z0, cy=cy))
         t += d + HOLD_AFTER.get(i, 0.0)
     return res
 
@@ -159,15 +181,13 @@ def run(cmd):
     subprocess.run([str(c) for c in cmd], check=True)
 
 
-# Etalonado: luz natural de día, sin oscurecer ni "lavar". Ligero contraste, sombras
-# levantadas, un toque cálido y vibrance (protege la playera rosa ya saturada).
+# Color: el footage del iPhone viene en HDR (HLG, BT.2020, 10 bits). Se convierte a SDR BT.709 con
+# tone mapping suave (hable) para que se vea como el original, sin etalonado ni realce extra encima.
 GRADE = (
-    "eq=contrast=1.05:brightness=0.012:saturation=1.04:gamma=1.04,"
-    "curves=all='0/0.02 0.25/0.27 0.5/0.52 0.8/0.81 1/0.985',"
-    "colorbalance=rs=0.015:gs=0.004:bs=-0.02:rm=0.01:bm=-0.012:rh=0.006:bh=-0.008,"
-    "vibrance=intensity=0.10,"
-    "unsharp=5:5:0.35:5:5:0"
+    "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,"
+    "tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
 )
+COLOR_TAGS = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv"]
 
 
 def build_base():
@@ -177,25 +197,41 @@ def build_base():
         d = e["t1"] - e["t0"]
         inputs += ["-ss", f"{max(0, e['s0'] - 1.0):.3f}", "-i", SRC[e["clip"]]]
         pre = e["s0"] - max(0, e["s0"] - 1.0)
-        z0, z1, cy = e["z0"], e["z1"], e["cy"]
-        # zoom lineal con suavizado (ease in-out) a lo largo del tramo
-        zexpr = f"({z0}+({z1}-{z0})*(0.5-0.5*cos(PI*min(t/{d:.3f},1))))"
+        z0, cy = e["z0"], e["cy"]
+        # nivel de encuadre por tramos (punch-ins), acercamiento lento y golpes de cámara
+        jumps = JUMPS.get(i, [])
+        level = f"{jumps[-1][1]}" if jumps else f"{z0}"
+        for k in range(len(jumps) - 1, -1, -1):
+            prev = jumps[k - 1][1] if k > 0 else z0
+            level = f"if(lt(t,{jumps[k][0] - e['s0']:.3f}),{prev},{level})"
+        push = f"(1+{PUSH}*(0.5-0.5*cos(PI*min(t/{d:.3f},1))))"
+        bump = "0"
+        for ts, amp in BUMPS.get(i, []):
+            tb = ts - e["s0"]
+            bump += f"+{amp}*gte(t,{tb:.3f})*exp(-(t-{tb:.3f})*9)*min(1,(t-{tb:.3f})/0.05)"
+        zexpr = f"(({level})*{push}+({bump}))"
         if i == 0:
             # entrada: el plano llega desde 1.16 con ease-out justo cuando abre la cortinilla
             reveal = 1.10 - START  # tiempo local en que empieza la apertura
             zexpr = f"(if(lt(t,{reveal:.3f}),1.16,1.16-(1.16-{zexpr})*(1-pow(1-min((t-{reveal:.3f})/0.85,1),3))))"
         # zoom por cuadro: escalar y recortar al centro (y anclado cerca del rostro)
-        sw = f"2*trunc({W}*{zexpr}/2)"
-        sh = f"2*trunc({H}*{zexpr}/2)"
-        cx = f"(iw-{W})/2"
-        cyx = f"max(0,min(ih-{H},{cy}*ih/{H}-{cy}))"
+        sw = f"2*trunc({OW}*{zexpr}/2)"
+        sh = f"2*trunc({OH}*{zexpr}/2)"
+        # centro x por tramo (opcional, tercer valor del salto); por defecto, centro del cuadro
+        xs = [(j[0], j[2] if len(j) > 2 else W / 2) for j in jumps]
+        xc = f"{xs[-1][1]}" if xs else f"{W / 2}"
+        for k in range(len(xs) - 1, -1, -1):
+            prev = xs[k - 1][1] if k > 0 else W / 2
+            xc = f"if(lt(t,{xs[k][0] - e['s0']:.3f}),{prev},{xc})"
+        cx = f"max(0,min(iw-{OW},({xc})*{SCALE}*iw/{OW}-{OW}/2))"
+        cyx = f"max(0,min(ih-{OH},{cy * SCALE}*ih/{OH}-{cy * SCALE}))"
         hold = HOLD_AFTER.get(i, 0.0)
         tail = END - e["t1"] if i == len(edl) - 1 else hold
         chain = (
             f"[{i}:v]trim=start={pre:.3f}:duration={d:.3f},setpts=PTS-STARTPTS,fps={FPS},"
-            f"scale={W}:{H}:flags=lanczos,setsar=1,"
+            f"setsar=1,{GRADE},"
             f"scale=w='{sw}':h='{sh}':flags=lanczos:eval=frame,"
-            f"crop={W}:{H}:x='{cx}':y='{cyx}',setsar=1,{GRADE},format=yuv420p"
+            f"crop={OW}:{OH}:x='{cx}':y='{cyx}',setsar=1,format=yuv420p"
         )
         if i == 0:
             chain += f",tpad=start_duration={START:.3f}:start_mode=clone"
@@ -206,7 +242,7 @@ def build_base():
         labels.append(f"[v{i}]")
     fc = ";".join(chains) + ";" + "".join(labels) + f"concat=n={len(labels)}:v=1:a=0,fps={FPS},trim=duration={END:.3f}[out]"
     run(["ffmpeg", "-v", "error", "-stats", "-y", *inputs, "-filter_complex", fc, "-map", "[out]",
-         "-c:v", "libx264", "-preset", "medium", "-crf", "12", "-pix_fmt", "yuv420p", "-r", FPS, OUT / "base.mp4"])
+         "-c:v", "libx264", "-preset", "fast", "-crf", "13", "-pix_fmt", "yuv420p", *COLOR_TAGS, "-r", FPS, OUT / "base.mp4"])
 
 
 # ---------------------------------------------------------------- audio
@@ -452,9 +488,14 @@ def build_final():
          "-i", OUT / "mix.wav",
          "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]",
          "-map", "[v]", "-map", "2:a",
-         "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-profile:v", "high", "-pix_fmt", "yuv420p",
-         "-r", FPS, "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart",
-         "-t", f"{END:.3f}", OUT / "parque_reforma_social.mp4"])
+         "-c:v", "libx264", "-preset", "slow", "-crf", "17", "-profile:v", "high", "-level", "5.2",
+         "-pix_fmt", "yuv420p", *COLOR_TAGS, "-r", FPS, "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart",
+         "-t", f"{END:.3f}", OUT / "parque_reforma_social_4k.mp4"])
+    # versión 1080x1920 ligera para mensajería, a partir del máster 4K
+    run(["ffmpeg", "-v", "error", "-y", "-i", OUT / "parque_reforma_social_4k.mp4",
+         "-vf", f"scale={W}:{H}:flags=lanczos", "-c:v", "libx264", "-preset", "slow", "-crf", "20",
+         "-maxrate", "10M", "-bufsize", "20M", "-pix_fmt", "yuv420p", *COLOR_TAGS, "-c:a", "copy", "-movflags", "+faststart",
+         OUT / "parque_reforma_social_1080.mp4"])
 
 
 if __name__ == "__main__":
