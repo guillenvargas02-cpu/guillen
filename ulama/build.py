@@ -8,8 +8,8 @@ Pasos:
   python3 build.py final           # composición final -> renders/ulama-invitacion-4k.mp4
 
 Todo vive en una rejilla de 30 fps exactos (las fuentes son de 30 fps).
-La música (pista 2, ~90 BPM) se coloca para que su drop (1:09.30) caiga en la cortinilla de cierre; ahí entra
-un golpe de percusión cinematográfico y la música se apaga.
+La música es el tramo de tambores de la pista 3 (sin gritos); en la cortinilla de cierre entra un golpe de
+percusión cinematográfico y la música se apaga.
 """
 import json
 import subprocess
@@ -38,8 +38,10 @@ CUTS = [
     ("IMG_1148", 1.95, 5.70, 1.00, 1.08),  # Somos cultura, somos tradición y somos México.
 ]
 
-MUSIC = A / "music" / "musica_ulama_2.m4a"
-MUSIC_DROP = 69.30  # golpe de entrada después del break de la pista 2
+MUSIC = A / "music" / "musica_ulama_3.m4a"
+# Tramo de tambores de la pista 3 (0:00–0:28), sin voces ni gritos (los gritos están en 1:06–1:20).
+# Con 0.373 s de entrada, el golpe de tambor de 0:01.04 cae justo cuando se forma la pleca (0.667 s).
+MUSIC_OFFSET = 0.373
 WORD_LAG = 0.10  # whisper marca las palabras un poco antes de que suenen
 
 # Transcripción (faster-whisper, palabra por palabra) en tiempos de la fuente
@@ -96,7 +98,7 @@ def plan():
         "intro": frames(INTRO) / FPS,
         "outro_start": outro_start,
         "total": total,
-        "music_offset": round(MUSIC_DROP - outro_start, 3),
+        "music_offset": MUSIC_OFFSET,
         "segments": segs,
         "words": words,
     }
