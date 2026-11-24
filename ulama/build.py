@@ -186,10 +186,12 @@ def build_audio(p):
     m = len(srcs)
     inputs += ["-i", MUSIC]
     # Música: llena en la entrada, baja con la voz, regresa de golpe en el drop
+    # Al terminar la voz la música sube hacia el drop
     a, b = intro - 0.25, outro
-    lo, r = 0.16, 0.3
-    duck = (f"if(lt(t,{a}),1,if(lt(t,{a + r}),1-{1 - lo}*(t-{a})/{r},"
-            f"if(lt(t,{b}),{lo},1)))")
+    c = p["segments"][-1]["start"] + 3.05  # fin de "…y somos México"
+    hi, lo, r = 1.0, 0.16, 0.3
+    duck = (f"if(lt(t,{a}),{hi},if(lt(t,{a + r}),{hi}-{hi - lo}*(t-{a})/{r},"
+            f"if(lt(t,{c:.3f}),{lo},if(lt(t,{b}),{lo}+{0.6 - lo}*(t-{c:.3f})/{b - c:.3f},1))))")
     f.append(
         f"[{m}:a]atrim=start={p['music_offset']:.4f}:duration={total:.4f},asetpts=PTS-STARTPTS,"
         f"volume='{duck}':eval=frame,volume=0.6,"
