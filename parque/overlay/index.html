@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Capa gráfica – Parque Reforma Social</title>
+<script src="../assets/vendor/gsap.min.js"></script>
+<script src="timing.js"></script>
+<style>
+  /* Manual de identidad SOMOS: Rosa Cívico #E4007C, blanco, negro de acento.
+     Logo siempre rosa sobre blanco (o dentro de su pleca blanca); nunca girado ni deformado.
+     Tipografía secundaria: Hind Siliguri. */
+  @font-face { font-family: "Hind Siliguri"; font-weight: 500; src: url(../assets/fonts/hind-siliguri-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Hind Siliguri"; font-weight: 600; src: url(../assets/fonts/hind-siliguri-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Hind Siliguri"; font-weight: 700; src: url(../assets/fonts/hind-siliguri-latin-700-normal.woff2) format("woff2"); }
+  :root { --rosa: #e4007c; --rosa-dk: #b80064; --blanco: #fff; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: "Hind Siliguri", sans-serif; }
+  .abs { position: absolute; }
+  .full { position: absolute; inset: 0; }
+
+  /* ---------- pleca + logo ---------- */
+  .pleca { position: absolute; left: 0; top: 0; width: 510px; height: 128px; margin: -64px 0 0 -255px; }
+  .pleca .bg { position: absolute; left: 50%; top: 50%; width: 510px; height: 128px; transform: translate(-50%, -50%);
+               background: #fff; border-radius: 64px; }
+  #endBg { box-shadow: 0 10.7px 29px rgba(0,0,0,.28); }
+  .pleca .logo { position: absolute; left: 50%; top: 50%; width: 400px; transform: translate(-50%, -50%); }
+  .pleca .logo img { display: block; width: 100%; }
+  /* logotipo dividido en sus 5 letras (cortes siguiendo la inclinación de la itálica; la letra no se altera) */
+  .lts { position: absolute; left: 50%; top: 50%; width: 400px; height: 70.4px; transform: translate(-50%, -50%); }
+  .lt { position: absolute; inset: 0; }
+  .lt img { display: block; width: 100%; height: 100%; }
+  .clipbox { position: absolute; left: 0; top: 0; width: 510px; height: 128px; overflow: hidden; border-radius: 64px; }
+
+  /* ---------- intro ---------- */
+  #intro { z-index: 50; }
+  #intro .panel { position: absolute; top: -2px; width: 362px; height: 1924px; background: var(--rosa); }
+  #intro .streak { position: absolute; height: 26px; width: 1400px; background: rgba(255,255,255,.9); border-radius: 13px; transform: rotate(-24deg); }
+  #introWrap { -webkit-mask-image: radial-gradient(circle at var(--mx, 540px) var(--my, 960px), transparent 0, transparent var(--r, 0px), #000 calc(var(--r, 0px) + 2px)); }
+  #introScene { position: absolute; inset: 0; }
+  #intro .ring { position: absolute; left: 540px; top: 960px; width: 600px; height: 600px; margin: -300px 0 0 -300px; border-radius: 50%; border: 10px solid rgba(255,255,255,.85); opacity: 0; }
+  .sticker { position: absolute; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%; background: #fff;
+             box-shadow: 0 18px 40px rgba(60, 0, 30, .28), 0 0 0 8px rgba(255,255,255,.35); }
+  .sticker img { position: absolute; left: 50%; top: 50%; max-width: 72%; max-height: 72%; transform: translate(-50%, -50%); }
+  .sticker.sm { width: 230px; height: 230px; margin: -115px 0 0 -115px; }
+
+  /* ---------- subtítulos ---------- */
+  #caps { z-index: 30; }
+  .cap { position: absolute; left: 70px; width: 940px; top: 1196px; text-align: center; opacity: 0;
+         font-weight: 700; font-size: 74px; line-height: 1.16; text-transform: uppercase; color: #fff; letter-spacing: .5px; }
+  .cap .w { display: inline-block; position: relative; margin: 0 1px; white-space: nowrap;
+            text-shadow: 0 3px 0 rgba(0,0,0,.30), 0 4px 18px rgba(0,0,0,.55), 0 0 2px rgba(0,0,0,.5); }
+  .cap .w.hl { color: #fff; padding: 2px 16px 0; margin: 4px 0; text-shadow: none; }
+  .cap .w.hl::before { content: ""; position: absolute; inset: 0 0 4px 0; background: var(--rosa); border-radius: 16px; z-index: -1;
+                        box-shadow: 0 8px 20px rgba(80,0,40,.35); transform: scaleX(var(--sx, 1)); transform-origin: left center; }
+  .cap.name .w { color: var(--rosa); font-size: 92px; padding: 6px 26px 0; margin: 4px 6px; text-shadow: none; }
+  .cap.name .w::before { content: ""; position: absolute; inset: 0 0 6px 0; background: #fff; border-radius: 22px; z-index: -1;
+                         box-shadow: 0 10px 28px rgba(0,0,0,.3); transform: scaleX(var(--sx, 1)); transform-origin: left center; }
+  .cap.name .w.hl::before { background: #fff; }
+  /* "SOMOS" dentro del subtítulo = logotipo oficial en su pleca blanca */
+  .cap .w.logo { width: 382px; height: 96px; vertical-align: middle; margin: -10px 4px 0; text-shadow: none; }
+  .cap .w.logo .lpbg { position: absolute; inset: 0; background: #fff; border-radius: 48px; box-shadow: 0 8px 22px rgba(0,0,0,.28); }
+  .cap .w.logo .lpclip { position: absolute; inset: 0; overflow: hidden; border-radius: 48px; }
+  .cap .w.logo .lts { width: 300px; height: 52.8px; }
+
+  /* ---------- barrido de marca ---------- */
+  #wipe { z-index: 45; pointer-events: none; }
+  #wipe .band { position: absolute; left: -900px; top: -800px; width: 2900px; height: 3600px; transform-origin: center; }
+
+  /* ---------- mapa ---------- */
+  #mapWrap { z-index: 40; -webkit-mask-image: radial-gradient(circle at var(--mx, 540px) var(--my, 860px), transparent 0, transparent var(--r, 0px), #000 calc(var(--r, 0px) + 2px)); }
+  #mapScene { position: absolute; inset: 0; }
+  #mapVeil { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  #mapVeil .dot { position: absolute; border-radius: 50%; background: var(--rosa); opacity: .07; }
+  #mapCard { position: absolute; left: 152px; top: 84px; width: 776px; height: 430px; border-radius: 30px; overflow: hidden;
+             box-shadow: 0 0 0 10px #fff, 0 22px 50px rgba(0,0,0,.35); opacity: 0; }
+  #mapInner { position: absolute; left: 0; top: 0; width: 776px; height: 430px; }
+  #mapInner > img.map { position: absolute; left: 0; top: 0; width: 776px; height: 430px; }
+  #pin { position: absolute; width: 58px; height: 80px; margin-left: -29px; margin-top: -80px; transform-origin: 50% 100%; }
+  #pin img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 4px 3px rgba(0,0,0,.35)); }
+  .ripple { position: absolute; width: 60px; height: 24px; margin: -12px 0 0 -30px; border-radius: 50%; border: 4px solid var(--rosa); opacity: 0; }
+  #mapLabel { position: absolute; left: 90px; width: 900px; top: 1205px; text-align: center; opacity: 0; }
+  #mapLabel span { display: inline-block; background: var(--rosa); color: #fff; font-weight: 700; font-size: 62px; line-height: 1.1;
+                   text-transform: uppercase; padding: 20px 40px 10px; border-radius: 26px; box-shadow: 0 14px 34px rgba(120,0,60,.3); }
+
+  /* ---------- cierre ---------- */
+  #dim { z-index: 20; background: #000; opacity: 0; }
+  #closing { z-index: 60; }
+  #endPleca { left: 540px; top: 1580px; opacity: 0; }
+  .echo { position: absolute; left: 50%; top: 50%; width: 400px; transform: translate(-50%, -50%); opacity: 0; }
+  .echo img { width: 100%; display: block; }
+  .shock { position: absolute; left: 540px; top: 960px; width: 400px; height: 400px; margin: -200px 0 0 -200px; border-radius: 50%;
+           border: 14px solid var(--rosa); opacity: 0; }
+  .shine { position: absolute; inset: 0; -webkit-mask-image: url(../assets/brand/somos_logo.png); -webkit-mask-size: 100% 100%;
+           -webkit-mask-repeat: no-repeat; overflow: hidden; }
+  .shine i { position: absolute; top: -20%; left: -40%; width: 34%; height: 140%;
+             background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.9) 50%, rgba(255,255,255,0) 100%); }
+
+  #glow { position: absolute; left: 540px; top: 960px; width: 1500px; height: 1500px; margin: -750px 0 0 -750px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(228,0,124,.16) 0%, rgba(228,0,124,0) 60%); opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root">
+
+  <!-- ===== Cortinilla de entrada ===== -->
+  <div id="intro" class="full">
+   <div id="introWrap" class="full">
+    <div id="introScene" class="full">
+      <div class="panel" style="left:-1px"></div>
+      <div class="panel" style="left:359px"></div>
+      <div class="panel" style="left:719px"></div>
+      <div class="streak" style="left:-300px; top:520px"></div>
+      <div class="streak" style="left:-200px; top:1360px; height:14px"></div>
+      <div class="streak" style="left:-400px; top:980px; height:8px; opacity:.6"></div>
+      <div class="ring" id="ring1"></div>
+      <div class="ring" id="ring2"></div>
+      <div class="pleca" id="introPleca" style="left:540px; top:960px">
+        <div class="bg"></div>
+        <div class="clipbox"><div class="lts" data-letters><div class="shine"><i></i></div></div></div>
+      </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- ===== Íconos de servicios (franja superior, lejos del rostro) ===== -->
+  <div id="icons" class="full" style="z-index:25">
+    <div class="sticker" id="icSalud" style="left:540px; top:330px"><img src="../assets/icons/salud.png"></div>
+    <div class="sticker" id="icJur" style="left:330px; top:330px"><img src="../assets/icons/juridica.png"></div>
+    <div class="sticker" id="icMazo" style="left:750px; top:330px"><img src="../assets/icons/justicia.png"></div>
+    <div class="sticker" id="icPsi" style="left:540px; top:330px"><img src="../assets/icons/psicologia.png"></div>
+  </div>
+
+  <div id="dim" class="full"></div>
+
+  <!-- ===== Subtítulos ===== -->
+  <div id="caps" class="full"></div>
+
+  <!-- ===== Barrido de marca 1145 -> 1146 ===== -->
+  <div id="wipe" class="full">
+    <div class="band" id="wipeW" style="background:#fff"></div>
+    <div class="band" id="wipeP" style="background:var(--rosa)"></div>
+  </div>
+
+  <!-- ===== Ubicación ===== -->
+  <div id="mapWrap" class="full">
+    <div id="mapScene">
+      <div id="mapVeil">
+        <div class="dot" style="left:-260px; top:-200px; width:760px; height:760px"></div>
+        <div class="dot" style="left:640px; top:1420px; width:700px; height:700px"></div>
+      </div>
+      <div id="mapCard">
+        <div id="mapInner">
+          <img class="map" src="../assets/brand/mapa.png">
+          <div class="ripple" id="rip1"></div>
+          <div class="ripple" id="rip2"></div>
+          <div id="pin"><img src="../assets/icons/ubicacion.png"></div>
+        </div>
+      </div>
+      <div id="mapLabel"><span>Parque de la Reforma Social</span></div>
+    </div>
+  </div>
+
+  <!-- ===== Logo con los "somos" y cierre ===== -->
+  <div id="closing" class="full">
+    <div id="glow"></div>
+    <div class="shock" id="sh1"></div>
+    <div class="shock" id="sh2"></div>
+    <div class="pleca" id="endPleca">
+      <div class="bg" id="endBg"></div>
+      <div class="echo" id="ec1"><img src="../assets/brand/somos_logo.png"></div>
+      <div class="echo" id="ec2"><img src="../assets/brand/somos_logo.png"></div>
+      <div class="clipbox" id="endClip"><div class="lts" id="endLogo" data-letters><div class="shine" id="endShine"><i></i></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Se arma la línea de tiempo cuando la tipografía ya cargó (las medidas del subtítulo dependen de ella)
+function init() {
+const EV = window.EV, CAPS = window.CAPTIONS;
+const tl = gsap.timeline({ paused: true });
+// Cortes entre letras (px del logotipo de 1694x298) con la pendiente de la itálica
+const CUTS = [-40, 307, 642, 1051, 1387, 1740], SL = 0.10 * 149, LW = 1694;
+function buildLetters(box) {
+  const shine = box.querySelector(".shine");
+  for (let k = 0; k < 5; k++) {
+    const l = CUTS[k], r = CUTS[k + 1], pc = (x) => (x / LW) * 100 + "%";
+    const d = document.createElement("div");
+    d.className = "lt";
+    d.style.clipPath = `polygon(${pc(l + SL)} 0, ${pc(r + SL)} 0, ${pc(r - SL)} 100%, ${pc(l - SL)} 100%)`;
+    d.innerHTML = '<img src="../assets/brand/somos_logo.png">';
+    box.insertBefore(d, shine);
+  }
+}
+document.querySelectorAll("[data-letters]").forEach(buildLetters);
+const $ = (s) => document.querySelector(s);
+
+/* ================= INTRO (0 – 1.7 s): hook con las letras del logo, sobre la rejilla de la música (109 BPM) ================= */
+const B = 0.145, Q = 60 / 109, S16 = Q / 4;
+const IP = "#introPleca", IL = [...document.querySelectorAll("#introPleca .lt")];
+tl.set("#intro", { opacity: 1 }, 0);
+tl.fromTo("#intro .streak", { x: -1500 }, { x: 1700, duration: 0.5, ease: "power2.inOut", stagger: 0.06 }, 0);
+gsap.set(IP, { scale: 1.55 });
+tl.fromTo("#introPleca .bg", { scaleX: 0, scaleY: 0.25 }, { scaleX: 1, scaleY: 1, duration: 0.32, ease: "expo.out" }, 0.02);
+// cada letra sube desde abajo de la pleca en semicorcheas, con desenfoque de movimiento
+IL.forEach((l, k) => {
+  const t = B + k * S16;
+  tl.fromTo(l, { yPercent: 190, filter: "blur(10px)" }, { yPercent: 0, filter: "blur(0px)", duration: 0.26, ease: "back.out(1.9)" }, t);
+});
+// golpe al completar la palabra
+const TL = B + 4 * S16 + 0.12;
+tl.to(IP, { scale: 1.72, duration: 0.08, ease: "power2.out" }, TL);
+tl.to(IP, { scale: 1.6, duration: 0.5, ease: "elastic.out(1.1, 0.4)" }, TL + 0.08);
+[["#ring1", TL], ["#ring2", TL + 0.12]].forEach(([r, t]) => {
+  tl.fromTo(r, { scale: 0.5, opacity: 0.95 }, { scale: 2.2, opacity: 0, duration: 0.8, ease: "expo.out", immediateRender: false }, t);
+});
+tl.fromTo("#introPleca .shine i", { left: "-40%" }, { left: "110%", duration: 0.36, ease: "power2.inOut", immediateRender: false }, TL + 0.05);
+IL.forEach((l, k) => tl.to(l, { yPercent: -14, duration: 0.09, ease: "power2.out", yoyo: true, repeat: 1 }, TL + 0.14 + k * 0.035));
+// salida: la cámara atraviesa la primera O y aparece Eduardo
+const OZ = 1.12, OXF = 477.4 / LW, OYF = 147.9 / 298;
+const oX = 540 + (OXF - 0.5) * 400 * 1.6, oY = 960 + (OYF - 0.5) * 70.4 * 1.6;
+$("#introWrap").style.setProperty("--mx", oX + "px");
+$("#introWrap").style.setProperty("--my", oY + "px");
+$("#introScene").style.transformOrigin = `${oX}px ${oY}px`;
+tl.to("#introScene", { scale: 26, duration: 0.55, ease: "power3.in" }, OZ);
+tl.fromTo("#introWrap", { "--r": "0px" }, { "--r": "1900px", duration: 0.5, ease: "power3.in", immediateRender: false }, OZ + 0.12);
+tl.set("#intro", { opacity: 0 }, OZ + 0.64);
+
+/* ================= SUBTÍTULOS ================= */
+const capsEl = $("#caps");
+CAPS.forEach((c, i) => {
+  const d = document.createElement("div");
+  d.className = "cap" + (c.name ? " name" : "");
+  c.words.forEach((w, j) => {
+    const s = document.createElement("span");
+    if (w.w.toLowerCase() === "somos") {
+      s.className = "w logo";
+      s.innerHTML = '<span class="lpbg"></span><span class="lpclip"><span class="lts"><span class="shine"><i></i></span></span></span>';
+      buildLetters(s.querySelector(".lts"));
+    } else {
+      s.className = "w" + (w.hl ? " hl" : "");
+      s.textContent = w.w;
+    }
+    d.appendChild(s);
+    if (j < c.words.length - 1) d.appendChild(document.createTextNode(" "));
+  });
+  capsEl.appendChild(d);
+  // posición del último "SOMOS" (antes de cualquier transformación) para pasarle la estafeta a la cortinilla
+  const lw = d.querySelector(".w.logo");
+  if (lw && i === CAPS.length - 1) {
+    const r = lw.getBoundingClientRect();
+    window.LASTSOMOS = { el: lw, cap: d, x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
+  const next = CAPS[i + 1];
+  const end = next ? Math.min(c.end, next.start - 0.02) : c.end;
+  tl.set(d, { opacity: 1 }, c.start - 0.06);
+  [...d.querySelectorAll(".w")].forEach((s, j) => {
+    const t = Math.max(c.start - 0.06, c.words[j].t - 0.05);
+    if (s.classList.contains("logo")) {
+      // la pleca se abre y las letras del logo suben una a una
+      tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.01 }, t - 0.04);
+      tl.fromTo(s.querySelector(".lpbg"), { scaleX: 0, scaleY: 0.3 }, { scaleX: 1, scaleY: 1, duration: 0.24, ease: "expo.out" }, t - 0.04);
+      [...s.querySelectorAll(".lt")].forEach((l, k) =>
+        tl.fromTo(l, { yPercent: 190, filter: "blur(8px)" }, { yPercent: 0, filter: "blur(0px)", duration: 0.22, ease: "back.out(1.9)" }, t + k * 0.04));
+      tl.fromTo(s, { scale: 1 }, { scale: 1.1, duration: 0.08, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, t + 0.2);
+      tl.fromTo(s.querySelector(".shine i"), { left: "-40%" }, { left: "110%", duration: 0.4, ease: "power2.inOut", immediateRender: false }, t + 0.25);
+    } else if (c.name) {
+      tl.fromTo(s, { opacity: 0, y: 40, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2.6)" }, t);
+      tl.fromTo(s, { "--sx": 0 }, { "--sx": 1, duration: 0.25, ease: "expo.out" }, t);
+    } else {
+      tl.fromTo(s, { opacity: 0, y: 26, scale: 0.82 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.4)" }, t);
+      if (s.classList.contains("hl")) {
+        tl.fromTo(s, { "--sx": 0 }, { "--sx": 1, duration: 0.2, ease: "expo.out" }, t);
+        tl.fromTo(s, { scale: 1.18 }, { scale: 1, duration: 0.3, ease: "back.out(3)", immediateRender: false }, t + 0.16);
+      }
+    }
+  });
+  if (i === CAPS.length - 1) return; // el último subtítulo se despide en el cierre
+  tl.to(d, { opacity: 0, y: -14, duration: 0.09, ease: "power2.in" }, end - 0.09);
+  tl.set(d, { opacity: 0, y: 0 }, end);
+});
+
+/* ================= ÍCONOS ================= */
+function sticker(sel, tIn, tOut, opt = {}) {
+  tl.fromTo(sel, { scale: 0, rotation: opt.rot ?? -14, opacity: 1 },
+    { scale: 1, rotation: 0, duration: 0.42, ease: "back.out(2.2)" }, tIn);
+  tl.fromTo(sel, { y: 0 }, { y: -12, duration: (tOut - tIn - 0.4) / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, tIn + 0.4);
+  tl.to(sel, { scale: 0, rotation: opt.rotOut ?? 12, duration: 0.2, ease: "back.in(2)" }, tOut - 0.2);
+}
+gsap.set(".sticker", { scale: 0 });
+sticker("#icSalud", EV.salud - 0.08, EV.juridica - 0.08);
+sticker("#icJur", EV.juridica - 0.08, EV.psicologia - 0.06, { rot: -18 });
+sticker("#icMazo", EV.juridica + 0.12, EV.psicologia - 0.04, { rot: 18 });
+sticker("#icPsi", EV.psicologia - 0.04, EV.gratuito + 0.55);
+
+/* ================= BARRIDO DE MARCA (corte 1145 -> 1146) ================= */
+gsap.set("#wipe .band", { rotation: -28, xPercent: -110 });
+tl.fromTo("#wipeW", { xPercent: -110 }, { xPercent: 0, duration: 0.24, ease: "power3.in" }, EV.cut1146 - 0.26);
+tl.fromTo("#wipeP", { xPercent: -110 }, { xPercent: 0, duration: 0.24, ease: "power3.in" }, EV.cut1146 - 0.22);
+tl.to("#wipeW", { xPercent: 110, duration: 0.3, ease: "power3.out" }, EV.cut1146 + 0.06);
+tl.to("#wipeP", { xPercent: 110, duration: 0.3, ease: "power3.out" }, EV.cut1146 + 0.02);
+
+/* ================= UBICACIÓN ================= */
+// Pin del parque en el mapa original (1685x934): punta en (568.5, 582)
+const MS = 776 / 1685, PX = 568.5 * MS, PY = 582 * MS;
+const pin = $("#pin");
+pin.style.left = PX + "px"; pin.style.top = PY + "px";
+["#rip1", "#rip2"].forEach((r) => { $(r).style.left = PX + "px"; $(r).style.top = PY + "px"; });
+const T1 = EV.parque - 0.2;               // entra la tarjeta (arriba, sobre los árboles)
+const T2 = EV.speechEnd1146 + 0.05;       // pantalla blanca, tarjeta al centro
+const TZ = EV.mapZoom;                    // zoom a través del pin hacia 1149
+const CS = 1000 / 776, CY = 860, K = 1.4; // escala de tarjeta, centro y, acercamiento interno
+tl.set("#mapCard", { opacity: 1 }, T1);
+tl.fromTo("#mapCard", { y: -560, rotation: -6, scale: 0.9 }, { y: 0, rotation: 0, scale: 1, duration: 0.45, ease: "back.out(1.5)" }, T1);
+tl.fromTo(pin, { y: -260, scaleY: 1.2, opacity: 0 }, { y: 0, scaleY: 1, opacity: 1, duration: 0.32, ease: "power2.in" }, T1 + 0.13);
+tl.to(pin, { scaleY: 0.7, scaleX: 1.2, duration: 0.07, ease: "power1.out" }, T1 + 0.45);
+tl.to(pin, { scaleY: 1, scaleX: 1, duration: 0.35, ease: "elastic.out(1.2, 0.4)" }, T1 + 0.52);
+tl.fromTo("#rip1", { scale: 0.3, opacity: 1 }, { scale: 2.6, opacity: 0, duration: 0.7, ease: "expo.out", immediateRender: false }, T1 + 0.45);
+// fase pantalla completa
+tl.to("#mapVeil", { opacity: 1, duration: 0.3, ease: "power2.out" }, T2);
+tl.fromTo("#mapVeil .dot", { scale: 0.6 }, { scale: 1.1, duration: 1.6, ease: "sine.out" }, T2);
+tl.to("#mapCard", { y: CY - (84 + 215), scale: CS, duration: 0.5, ease: "expo.inOut" }, T2);
+$("#mapInner").style.transformOrigin = `${PX}px ${PY - 30}px`;
+tl.to("#mapInner", { scale: K, duration: TZ - T2 + 0.1, ease: "sine.inOut" }, T2 + 0.15);
+tl.fromTo("#mapLabel", { opacity: 0, y: 40, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(2)" }, T2 + 0.25);
+// rebote del pin + ondas
+tl.to(pin, { y: -48, duration: 0.16, ease: "power2.out" }, EV.mapPin - 0.16);
+tl.to(pin, { y: 0, duration: 0.14, ease: "power2.in" }, EV.mapPin);
+tl.to(pin, { scaleY: 0.75, scaleX: 1.15, duration: 0.06 }, EV.mapPin + 0.14);
+tl.to(pin, { scaleY: 1, scaleX: 1, duration: 0.4, ease: "elastic.out(1.2,0.4)" }, EV.mapPin + 0.2);
+tl.fromTo("#rip1", { scale: 0.3, opacity: 1 }, { scale: 3.2, opacity: 0, duration: 0.8, ease: "expo.out", immediateRender: false }, EV.mapPin + 0.14);
+tl.fromTo("#rip2", { scale: 0.3, opacity: 1 }, { scale: 3.2, opacity: 0, duration: 0.8, ease: "expo.out", immediateRender: false }, EV.mapPin + 0.34);
+// posición en pantalla del hueco del pin al iniciar el zoom
+const holeY = PY - 80 * 0.66;           // centro del círculo del pin (coord. de la tarjeta)
+const ox = PX, oy = PY - 30;            // origen del acercamiento interno
+const hx = ox + K * (PX - ox), hy = oy + K * (holeY - oy);
+const SX = 540 + CS * (hx - 388), SY = CY + CS * (hy - 215);
+$("#mapWrap").style.setProperty("--mx", SX + "px");
+$("#mapWrap").style.setProperty("--my", SY + "px");
+$("#mapScene").style.transformOrigin = `${SX}px ${SY}px`;
+tl.to("#mapLabel", { opacity: 0, y: 30, duration: 0.2, ease: "power2.in" }, TZ - 0.2);
+tl.to("#mapScene", { scale: 9, duration: 0.55, ease: "power3.in" }, TZ - 0.05);
+tl.fromTo("#mapWrap", { "--r": "0px" }, { "--r": "1800px", duration: 0.5, ease: "power3.in" }, TZ + 0.05);
+tl.set("#mapWrap", { opacity: 0 }, TZ + 0.56);
+
+/* ================= EL ÚLTIMO "SOMOS" DEL SUBTÍTULO ABRE LA CORTINILLA ================= */
+const P = "#endPleca", HIT = EV.hit, LS = window.LASTSOMOS;
+const EL = [...document.querySelectorAll("#endLogo .lt")];
+gsap.set(P, { left: LS.x, top: LS.y, scale: 382 / 510 });
+/* ================= CIERRE: sólo queda SOMOS, cortinilla blanca ================= */
+const C0 = EV.speechEnd + 0.01;
+// relevo invisible: la pleca del cierre ocupa exactamente el lugar del "SOMOS" del subtítulo
+tl.set(P, { opacity: 1 }, C0);
+tl.set(LS.el, { opacity: 0 }, C0);
+[...LS.cap.querySelectorAll(".w:not(.logo)")].forEach((w, k) => {
+  tl.to(w, { x: k === 0 ? -260 : 300, opacity: 0, filter: "blur(6px)", duration: 0.26, ease: "power3.in" }, C0);
+});
+tl.to("#dim", { opacity: 0.28, duration: HIT - C0, ease: "power1.in" }, C0);
+tl.to(P, { left: 540, top: 960, scale: 1.55, duration: HIT - C0, ease: "power3.inOut" }, C0);
+tl.set("#endClip", { overflow: "visible" }, C0);
+// tensión: las letras se separan... y se impactan juntas en el golpe
+EL.forEach((l, k) => {
+  tl.to(l, { x: (k - 2) * 46, duration: HIT - C0 - 0.06, ease: "power2.in" }, C0);
+  tl.to(l, { x: 0, duration: 0.2, ease: "expo.out" }, HIT - 0.04);
+  tl.fromTo(l, { yPercent: 0 }, { yPercent: k % 2 ? 22 : -22, duration: 0.07, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, HIT + 0.02);
+});
+EL.forEach((l, k) => tl.to(l, { yPercent: -16, duration: 0.11, ease: "power2.out", yoyo: true, repeat: 1 }, HIT + 1.35 + k * 0.05));
+// la pleca blanca crece hasta cubrir toda la pantalla: sólo queda el logotipo rosa
+tl.to("#endBg", { width: 1080 / 1.55 + 40, height: 1920 / 1.55 + 40, borderRadius: 0, duration: 0.42, ease: "expo.out" }, HIT);
+tl.set("#dim", { opacity: 0 }, HIT + 0.3);
+// golpe: el logo late con eco y onda expansiva
+tl.fromTo("#endLogo", { scale: 1 }, { scale: 0.86, duration: 0.08, ease: "power2.in" }, HIT - 0.08);
+tl.to("#endLogo", { scale: 1.24, duration: 0.16, ease: "power3.out" }, HIT);
+tl.to("#endLogo", { scale: 1.12, duration: 0.7, ease: "elastic.out(1, 0.5)" }, HIT + 0.16);
+tl.to("#endLogo", { scale: 1.18, duration: EV.end - HIT - 0.86, ease: "sine.inOut" }, HIT + 0.86);
+[["#ec1", 0], ["#ec2", 0.09]].forEach(([e, dt]) => {
+  tl.fromTo(e, { scale: 1.05, opacity: 0.45 }, { scale: 2.3, opacity: 0, duration: 0.75, ease: "expo.out", immediateRender: false }, HIT + dt);
+});
+[["#sh1", 0], ["#sh2", 0.12]].forEach(([s, dt]) => {
+  tl.fromTo(s, { scale: 0.5, opacity: 0.9 }, { scale: 4.2, opacity: 0, duration: 1.0, ease: "expo.out", immediateRender: false }, HIT + dt);
+});
+tl.fromTo("#glow", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out", immediateRender: false }, HIT);
+tl.to("#glow", { opacity: 0.45, duration: 1.5, ease: "sine.inOut" }, HIT + 0.6);
+tl.fromTo("#endShine i", { left: "-40%" }, { left: "110%", duration: 0.75, ease: "power2.inOut", immediateRender: false }, HIT + 0.55);
+
+tl.set({}, {}, EV.end);
+window.__tl = tl;
+}
+window.DURATION = window.EV.end;
+window.seek = (t) => { window.__tl.seek(t, false); };
+window.READY = Promise.all([
+  document.fonts.load('700 74px "Hind Siliguri"'), document.fonts.load('600 74px "Hind Siliguri"'),
+  ...[...document.images].map((i) => (i.complete ? 0 : new Promise((r) => (i.onload = i.onerror = r)))),
+]).then(() => document.fonts.ready).then(init);
+</script>
+</body>
+</html>
