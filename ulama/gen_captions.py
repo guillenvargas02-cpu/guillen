@@ -1,80 +1,81 @@
 #!/usr/bin/env python3
 """Genera compositions/captions.html a partir de timing.json (python3 build.py plan).
 
-Subtítulos palabra por palabra del conductor, en grupos cortos; las palabras clave van en oro.
-El grupo "de ULAMA" no se subtitula: ahí entra el golpe gráfico de ULAMA (cards.html).
+Estilo de los videos de SOMOS: mayúsculas blancas con sombra suave y las palabras clave
+en recuadros rosa cívico (#E4007C) con texto blanco. Las palabras aparecen cuando se dicen.
+"Somos cultura, somos tradición y somos México" no va aquí: lo lleva cierre.html con el logotipo.
 """
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 START = 3.233  # inicio de la composición en el video
-END = 22.933  # fin (entra "Somos cultura…")
+END = 22.933  # fin (entra el cierre con "Somos…")
 
-# Tamaño de cada grupo, en orden; None = grupo que no se muestra
-GROUPS = [3, 4, 3, 2, 3, 1, 3, 3, 3, 3, 2, (2, None), 4, 2, 1, 4, 2, 2, 3, 3, 1, 3, 2, 2, 3, 1, 4, 2, 3, 4]
-KEY = {"nunca", "29", "noviembre", "domingo", "10", "mañana", "exhibición", "pelota", "prehispánico", "taller",
-       "familia", "amigos", "tradiciones", "cultura", "mexicana", "parque", "reforma", "social", "esperamos",
-       "juego", "partido", "invitar"}
-
-
-def clean(w):
-    return w.strip("¿?,.").lower()
+# Tamaño de cada frase, en orden
+GROUPS = [3, 4, 3, 5, 7, 6, 4, 7, 6, 5, 4, 5, 6, 6, 7]
+# Índices (en la lista de palabras) que van en recuadro rosa
+KEY = {4, 9, 12, 13, 14, 15, 18, 21, 27, 29, 31, 37, 38, 44, 46, 49, 53, 56, 58, 60, 63, 64, 68, 70, 73, 76, 77}
 
 
 def main():
     p = json.loads((ROOT / "timing.json").read_text())
     words = [w for w in p["words"] if w["t"] < END - 0.05]
+    assert sum(GROUPS) == len(words), (sum(GROUPS), len(words))
     groups, i = [], 0
-    for g in GROUPS:
-        n, show = (g[0], False) if isinstance(g, tuple) else (g, True)
-        groups.append((words[i:i + n], show))
+    for n in GROUPS:
+        groups.append(list(range(i, i + n)))
         i += n
-    assert i == len(words), (i, len(words))
 
     html, js = [], []
-    for gi, (ws, show) in enumerate(groups):
-        t0 = ws[0]["t"] - START
-        t1 = (groups[gi + 1][0][0]["t"] - START) if gi + 1 < len(groups) else END - START
-        if not show:
-            continue
+    for gi, idx in enumerate(groups):
+        t0 = words[idx[0]]["t"] - START
+        t1 = (words[groups[gi + 1][0]]["t"] - START) if gi + 1 < len(groups) else END - START
         spans = []
-        for w in ws:
-            cls = "w k" if clean(w["w"]) in KEY else "w"
-            txt = w["w"].replace("¿", "¿").upper().rstrip(",.")
-            spans.append(f'<span class="{cls}" data-t="{w["t"] - START:.3f}">{txt}</span>')
+        for k in idx:
+            txt = words[k]["w"].upper().rstrip(",.")
+            cls = "w k" if k in KEY else "w"
+            spans.append(f'<span class="{cls}" data-t="{words[k]["t"] - START:.3f}">{txt}</span>')
         html.append(f'    <div id="cap-{gi}" class="cap">{" ".join(spans)}</div>')
         js.append(f'      ["#cap-{gi}", {max(0.0, t0 - 0.06):.3f}, {t1 - 0.04:.3f}],')
 
     out = f"""<template>
   <style>
+    @font-face {{
+      font-family: "Hind Siliguri";
+      src: url("assets/fonts/hind-siliguri-latin-700-normal.woff2") format("woff2");
+      font-weight: 700;
+    }}
     #root {{
       position: absolute;
       inset: 0;
-      font-family: "Poppins", sans-serif;
+      font-family: "Hind Siliguri", sans-serif;
     }}
     .cap {{
       position: absolute;
-      left: 0;
-      width: 1080px;
-      top: 1250px;
-      padding: 0 80px;
+      left: 60px;
+      width: 960px;
+      top: 1240px;
       text-align: center;
-      font-size: 84px;
-      line-height: 1.08;
-      font-weight: 900;
-      font-style: italic;
+      font-size: 76px;
+      line-height: 1.42;
+      font-weight: 700;
       color: #fff;
       opacity: 0;
       visibility: hidden;
-      text-shadow: 0 0 3px #140d0a, 0 5px 0 #140d0a, 0 8px 28px rgba(0, 0, 0, 0.65);
     }}
     .cap .w {{
       display: inline-block;
-      padding: 0 6px;
+      padding: 6px 6px 0;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.6);
     }}
     .cap .w.k {{
-      color: #f0b23a;
+      background: #e4007c;
+      border-radius: 14px;
+      padding: 8px 18px 0;
+      margin: 0 2px;
+      text-shadow: none;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
     }}
   </style>
   <div id="root" data-composition-id="captions" data-width="1080" data-height="1920">
@@ -91,9 +92,10 @@ def main():
       tl.set(g, {{ opacity: 1, visibility: "visible" }}, start);
       g.querySelectorAll(".w").forEach((w) => {{
         const t = Math.max(start, parseFloat(w.dataset.t) - 0.05);
-        tl.fromTo(w, {{ opacity: 0, y: 30, scale: 0.7 }}, {{ opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.6)" }}, t);
         if (w.classList.contains("k")) {{
-          tl.fromTo(w, {{ scale: 1 }}, {{ scale: 1.14, duration: 0.12, yoyo: true, repeat: 1, ease: "sine.inOut", immediateRender: false }}, t + 0.16);
+          tl.fromTo(w, {{ opacity: 0, scale: 0.4, y: 20 }}, {{ opacity: 1, scale: 1, y: 0, duration: 0.24, ease: "back.out(2.8)" }}, t);
+        }} else {{
+          tl.fromTo(w, {{ opacity: 0, y: 26 }}, {{ opacity: 1, y: 0, duration: 0.16, ease: "power3.out" }}, t);
         }}
       }});
       tl.to(g, {{ opacity: 0, duration: 0.06, ease: "power1.in" }}, end - 0.06);
@@ -104,7 +106,7 @@ def main():
 </template>
 """
     (ROOT / "compositions" / "captions.html").write_text(out)
-    print(f"{len(js)} grupos")
+    print(f"{len(js)} frases")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,91 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    /* Íconos en círculo blanco sobre la cabeza del conductor (como en los videos de SOMOS) */
+    .ic {
+      position: absolute;
+      top: 180px;
+      width: 290px;
+      height: 290px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+    }
+    .ic img {
+      max-width: 200px;
+      max-height: 200px;
+    }
+    .ic-c {
+      left: 395px;
+    }
+    .ic-l {
+      left: 185px;
+    }
+    .ic-r {
+      left: 605px;
+    }
+  </style>
+  <div id="root" data-composition-id="icons" data-width="1080" data-height="1920">
+    <div id="ic-cal" class="ic ic-c"><img src="assets/icons/calendario.png" alt="Calendario" /></div>
+    <div id="ic-aro" class="ic ic-l"><img src="assets/icons/aro.png" alt="Aro del juego de pelota" /></div>
+    <div id="ic-pel" class="ic ic-r"><img src="assets/icons/pelota.png" alt="Pelota de hule" /></div>
+    <div id="ic-jug" class="ic ic-c"><img src="assets/icons/jugadores.png" alt="Jugadores de ulama" /></div>
+    <div id="ic-atl" class="ic ic-r"><img src="assets/icons/atleta.png" alt="Jugador golpeando la pelota" /></div>
+    <div id="ic-sah" class="ic ic-c"><img src="assets/icons/sahumador.png" alt="Sahumador con copal" /></div>
+    <div id="ic-cal2" class="ic ic-c"><img src="assets/icons/calendario.png" alt="Calendario" /></div>
+    <div id="ic-pin" class="ic ic-r"><img src="assets/icons/ubicacion.png" alt="Ubicación" /></div>
+  </div>
+  <script>
+    // Tiempos locales = tiempo del video − 3.233 (palabras de timing.json)
+    const tl = gsap.timeline({ paused: true });
+    function popIn(sel, t) {
+      tl.set(sel, { visibility: "visible" }, t);
+      tl.fromTo(sel, { opacity: 0, scale: 0, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "back.out(2.2)" }, t);
+      tl.fromTo(`${sel} img`, { rotation: -14, scale: 0.6 }, { rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.5)" }, t + 0.06);
+    }
+    function popOut(sel, t) {
+      tl.to(sel, { opacity: 0, scale: 0.4, duration: 0.2, ease: "power2.in" }, t - 0.2);
+      tl.set(sel, { visibility: "hidden" }, t);
+    }
+    function float(sel, t0, t1) {
+      tl.to(sel, { y: -8, duration: (t1 - t0) / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, t0);
+    }
+    // "29 de noviembre"
+    popIn("#ic-cal", 2.97);
+    float("#ic-cal", 3.45, 5.3);
+    popOut("#ic-cal", 5.32);
+    // "ULAMA… juego de pelota prehispánico": aro y pelota
+    popIn("#ic-aro", 7.38);
+    popIn("#ic-pel", 7.5);
+    float("#ic-aro", 7.9, 9.5);
+    float("#ic-pel", 8.0, 9.55);
+    popOut("#ic-aro", 9.58);
+    popOut("#ic-pel", 9.6);
+    // "partido de exhibición" (jugadores) "y un taller" (atleta)
+    popIn("#ic-jug", 10.22);
+    tl.to("#ic-jug", { x: -210, duration: 0.35, ease: "power3.inOut" }, 11.6);
+    popIn("#ic-atl", 11.66);
+    popOut("#ic-jug", 12.28);
+    popOut("#ic-atl", 12.3);
+    // "nuestras tradiciones y nuestra cultura"
+    popIn("#ic-sah", 14.62);
+    float("#ic-sah", 15.1, 16.3);
+    popOut("#ic-sah", 16.38);
+    // "este domingo" (calendario) "en el parque de la reforma social" (ubicación)
+    popIn("#ic-cal2", 17.95);
+    tl.to("#ic-cal2", { x: -210, duration: 0.35, ease: "power3.inOut" }, 18.6);
+    popIn("#ic-pin", 18.66);
+    popOut("#ic-cal2", 19.68);
+    popOut("#ic-pin", 19.7);
+    window.__timelines["icons"] = tl;
+  </script>
+</template>

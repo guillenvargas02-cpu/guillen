@@ -8,7 +8,8 @@ Pasos:
   python3 build.py final           # composición final -> renders/ulama-invitacion-4k.mp4
 
 Todo vive en una rejilla de 30 fps exactos (las fuentes son de 30 fps).
-La música (pista 2, ~90 BPM) se coloca para que su drop (1:09.30) caiga justo en la cortinilla de cierre.
+La música (pista 2, ~90 BPM) se coloca para que su drop (1:09.30) caiga en la cortinilla de cierre; ahí entra
+un golpe de percusión cinematográfico y la música se apaga.
 """
 import json
 import subprocess
@@ -22,7 +23,7 @@ FPS = 30
 W, H = 2160, 3840  # salida 4K vertical
 
 INTRO = 97 / FPS  # cortinilla de entrada (3.233 s): el arranque de la música cae en un beat
-OUTRO = 7.0  # cortinilla de cierre
+OUTRO = 108 / FPS  # cortinilla de cierre: logo SOMOS sobre fondo blanco (3.6 s)
 
 # (fuente, entrada, salida, zoom al inicio, zoom al final) — tramos de voz sin silencios
 CUTS = [
@@ -110,7 +111,7 @@ def build_base(p):
     """Footage a 4K: fondo de cortinilla, tramos con push-in suave y fondo del cierre."""
     inputs, chains = [], []
     # Las cortinillas son gráficas (Hyperframes); debajo va un color de base
-    inputs += ["-f", "lavfi", "-i", f"color=c=0x140d0a:s={W}x{H}:r={FPS}:d={p['intro']:.4f}"]
+    inputs += ["-f", "lavfi", "-i", f"color=c=0xE4007C:s={W}x{H}:r={FPS}:d={p['intro']:.4f}"]
     chains.append("[0:v]format=yuv420p,setsar=1[s0]")
     for i, s in enumerate(p["segments"], start=1):
         dur = s["end"] - s["start"]
@@ -129,7 +130,7 @@ def build_base(p):
             f"format=yuv420p,setsar=1[s{i}]"
         )
     n = len(p["segments"]) + 1
-    inputs += ["-f", "lavfi", "-i", f"color=c=0x140d0a:s={W}x{H}:r={FPS}:d={p['total'] - p['outro_start']:.4f}"]
+    inputs += ["-f", "lavfi", "-i", f"color=c=white:s={W}x{H}:r={FPS}:d={p['total'] - p['outro_start']:.4f}"]
     chains.append(f"[{n}:v]format=yuv420p,setsar=1[s{n}]")
     chains.append("".join(f"[s{i}]" for i in range(n + 1)) + f"concat=n={n + 1}:v=1:a=0[v]")
     run(["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", ";".join(chains), "-map", "[v]",
@@ -138,26 +139,40 @@ def build_base(p):
 
 
 def build_sfx():
-    """Whoosh e impacto sintetizados (sin samples externos)."""
+    """Efectos sintetizados (sin samples externos): whoosh, riser, golpe de entrada y golpe cinematográfico final."""
     run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "anoisesrc=c=pink:d=0.9:a=0.9:r=48000",
          "-af", "highpass=f=300,lowpass=f=6000,"
          "afade=t=in:st=0:d=0.55:curve=exp,afade=t=out:st=0.55:d=0.35:curve=exp,"
          "aecho=0.6:0.4:60:0.3,volume=0.9", "-ac", "2", OUT / "whoosh.wav"])
+    # Riser (hush) de 1.3 s que crece hasta el golpe final
+    run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "anoisesrc=c=white:d=1.3:a=0.8:r=48000",
+         "-af", "highpass=f=900,lowpass=f=9000,afade=t=in:st=0:d=1.25:curve=cub,"
+         "afade=t=out:st=1.25:d=0.05,aecho=0.7:0.5:40|90:0.35|0.25,volume=0.8", "-ac", "2", OUT / "riser.wav"])
     run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi",
          "-i", "sine=f=58:d=0.7:r=48000", "-f", "lavfi", "-i", "anoisesrc=c=brown:d=0.25:a=0.8:r=48000",
          "-filter_complex",
          "[0:a]volume='exp(-6*t)':eval=frame[a];[1:a]lowpass=f=900,afade=t=out:st=0.02:d=0.22[b];"
          "[a][b]amix=inputs=2:normalize=0,volume=1.6,alimiter=limit=0.9", "-ac", "2", OUT / "impact.wav"])
+    # Golpe de percusión dramático: bombo grave con caída de tono + ataque de ruido + tom + cola de reverberación
+    run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi",
+         "-i", "aevalsrc='0.9*sin(2*PI*(42+70*exp(-9*t))*t)*exp(-1.6*t)':s=48000:d=3.4",
+         "-f", "lavfi", "-i", "anoisesrc=c=brown:d=0.5:a=0.9:r=48000",
+         "-f", "lavfi", "-i", "aevalsrc='0.5*sin(2*PI*(95+140*exp(-14*t))*t)*exp(-7*t)':s=48000:d=1.0",
+         "-filter_complex",
+         "[1:a]lowpass=f=2200,afade=t=out:st=0:d=0.45:curve=exp[n];"
+         "[0:a][n][2:a]amix=inputs=3:normalize=0:duration=longest,"
+         "aecho=0.8:0.75:70|140|260|420:0.45|0.35|0.28|0.2,"
+         "afade=t=out:st=2.2:d=1.2,volume=1.5,alimiter=limit=0.95", "-ac", "2", OUT / "boom.wav"])
 
 
-# Efectos: (archivo, momento en el video, volumen). Los whoosh terminan en el corte.
+# Efectos: (archivo, momento en el video, volumen)
 def sfx_cues(p):
     intro, outro = p["intro"], p["outro_start"]
     return [
-        ("impact", 0.667, 0.55),  # ULAMA golpea en el beat
-        ("whoosh", intro - 0.55, 0.45),  # barrido de la cortinilla hacia el conductor
-        ("whoosh", outro - 0.55, 0.5),  # barrido hacia el cierre
-        ("impact", outro, 0.7),  # drop
+        ("impact", 0.667, 0.55),  # la pleca se forma en el beat
+        ("whoosh", intro - 0.45, 0.45),  # la cortinilla se levanta y aparece el conductor
+        ("riser", outro - 1.3, 0.55),  # la pleca crece y el blanco llena la pantalla
+        ("boom", outro, 1.0),  # golpe final con el logo sobre blanco
     ]
 
 
@@ -195,7 +210,7 @@ def build_audio(p):
     f.append(
         f"[{m}:a]atrim=start={p['music_offset']:.4f}:duration={total:.4f},asetpts=PTS-STARTPTS,"
         f"volume='{duck}':eval=frame,volume=0.6,"
-        f"afade=t=in:d=0.03,afade=t=out:st={total - 1.6:.3f}:d=1.6[music]"
+        f"afade=t=in:d=0.03,afade=t=out:st={outro + 0.05:.3f}:d=1.1[music]"
     )
     sfx = []
     for j, (name, at, vol) in enumerate(sfx_cues(p)):
