@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Capa gráfica de la invitación a ULAMA. El footage (4K) y el audio los arma build.py;
+         esta capa se renderiza como png-sequence RGBA a 4K y se compone encima. */
+      @font-face {
+        font-family: "Anton";
+        src: url("assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-700-normal.woff2") format("woff2");
+        font-weight: 700;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-800-normal.woff2") format("woff2");
+        font-weight: 800;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-900-normal.woff2") format("woff2");
+        font-weight: 900;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-800-italic.woff2") format("woff2");
+        font-weight: 800;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-900-italic.woff2") format("woff2");
+        font-weight: 900;
+        font-style: italic;
+      }
+      :root {
+        --pink: #e6087a;
+        --obsidian: #140d0a;
+        --terra: #c4512a;
+        --gold: #f0b23a;
+        --jade: #1f8a70;
+        --cream: #f7e9cc;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: transparent;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="33.7" data-width="1080" data-height="1920">
+      <!-- Tiempos de timing.json (build.py plan): conductor 3.233–26.7, drop de la música en 26.7 -->
+      <div id="intro" class="clip" data-composition-id="intro" data-composition-src="compositions/intro.html" data-start="0" data-duration="3.233" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 1"></div>
+      <div id="cards" class="clip" data-composition-id="cards" data-composition-src="compositions/cards.html" data-start="3.233" data-duration="20.4" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="captions" class="clip" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="3.233" data-duration="19.7" data-track-index="3" data-track-kind="captions" data-width="1080" data-height="1920" style="z-index: 4"></div>
+      <div id="somos" class="clip" data-composition-id="somos" data-composition-src="compositions/somos.html" data-start="22.933" data-duration="3.767" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 5"></div>
+      <div id="outro" class="clip" data-composition-id="outro" data-composition-src="compositions/outro.html" data-start="26.667" data-duration="7.033" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 6"></div>
+      <div id="fx" class="clip" data-composition-id="fx" data-composition-src="compositions/fx.html" data-start="0" data-duration="33.7" data-track-index="4" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 20"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

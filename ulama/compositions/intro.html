@@ -1,0 +1,218 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Anton";
+      src: url("assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+      font-weight: 400;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+    }
+    #in-stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+    }
+    /* Fondo: obsidiana con brillo de copal (terracota y oro) */
+    #in-bg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      background:
+        radial-gradient(ellipse 900px 900px at 50% 44%, rgba(196, 81, 42, 0.55) 0%, rgba(196, 81, 42, 0.12) 45%, rgba(20, 13, 10, 0) 70%),
+        radial-gradient(ellipse 1200px 600px at 50% 110%, rgba(230, 8, 122, 0.35) 0%, rgba(20, 13, 10, 0) 70%),
+        #140d0a;
+    }
+    /* Rayos de sol que giran detrás del aro */
+    #in-rays {
+      position: absolute;
+      left: -460px;
+      top: -400px;
+      width: 2000px;
+      height: 2000px;
+      background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(240, 178, 58, 0.1) 0deg 7deg, rgba(240, 178, 58, 0) 7deg 18deg);
+      -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, #000 25%, transparent 60%);
+      mask-image: radial-gradient(circle at 50% 50%, #000 0%, #000 25%, transparent 60%);
+    }
+    .in-greca {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      height: 70px;
+    }
+    #in-greca-top {
+      top: 120px;
+    }
+    #in-greca-bot {
+      top: 1730px;
+      transform: scaleY(-1);
+    }
+    .in-greca path {
+      fill: none;
+      stroke: #f0b23a;
+      stroke-width: 6;
+      stroke-linejoin: miter;
+    }
+    #in-aro {
+      position: absolute;
+      left: 250px;
+      top: 330px;
+      width: 580px;
+      height: auto;
+      filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.55));
+    }
+    #in-ball {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 190px;
+      height: 190px;
+      filter: drop-shadow(0 20px 26px rgba(0, 0, 0, 0.6));
+    }
+    #in-ring {
+      position: absolute;
+      left: 371px;
+      top: 425px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 10px solid #f0b23a;
+      opacity: 0;
+    }
+    #in-title {
+      position: absolute;
+      left: 0;
+      top: 860px;
+      width: 1080px;
+      text-align: center;
+      font-family: "Anton", sans-serif;
+      font-size: 330px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: #f7e9cc;
+      text-shadow: 0 10px 0 #e6087a, 0 22px 50px rgba(0, 0, 0, 0.6);
+    }
+    #in-title .ch {
+      display: inline-block;
+    }
+    #in-sub {
+      position: absolute;
+      left: 0;
+      top: 1240px;
+      width: 1080px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 46px;
+      letter-spacing: 0.16em;
+      color: #f0b23a;
+      overflow: hidden;
+      height: 70px;
+    }
+    #in-sub span {
+      display: inline-block;
+    }
+    #in-pill {
+      position: absolute;
+      left: 140px;
+      top: 1350px;
+      width: 800px;
+      height: 104px;
+      border-radius: 52px;
+      background: #e6087a;
+      color: #fff;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 44px;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 40px rgba(230, 8, 122, 0.45);
+    }
+    #in-date {
+      position: absolute;
+      left: 0;
+      top: 1500px;
+      width: 1080px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 42px;
+      letter-spacing: 0.1em;
+      color: #f7e9cc;
+    }
+    #in-date b {
+      color: #f0b23a;
+      font-weight: 900;
+    }
+  </style>
+  <div id="root" data-composition-id="intro" data-width="1080" data-height="1920">
+    <div id="in-stage">
+      <div id="in-bg"></div>
+      <div id="in-rays" data-layout-ignore></div>
+      <svg id="in-greca-top" class="in-greca" viewBox="0 0 1080 70" data-layout-ignore><path id="in-greca-top-p" d=""></path></svg>
+      <svg id="in-greca-bot" class="in-greca" viewBox="0 0 1080 70" data-layout-ignore><path id="in-greca-bot-p" d=""></path></svg>
+      <img id="in-aro" src="assets/icons/aro.png" alt="Aro del juego de pelota" />
+      <div id="in-ring" data-layout-ignore></div>
+      <img id="in-ball" src="assets/icons/pelota.png" alt="Pelota de hule" data-layout-ignore />
+      <div id="in-title"><span class="ch">U</span><span class="ch">L</span><span class="ch">A</span><span class="ch">M</span><span class="ch">A</span></div>
+      <div id="in-sub"><span>EL JUEGO DE PELOTA PREHISPÁNICO</span></div>
+      <div id="in-pill">PARTIDO DE EXHIBICIÓN + TALLER</div>
+      <div id="in-date">DOMINGO <b>29 NOV</b> · <b>10:00 AM</b></div>
+    </div>
+  </div>
+  <script>
+    // Greca escalonada (xicalcoliuhqui simplificado): ganchos sobre una línea base
+    function greca(width) {
+      let d = "M0,64 L" + width + ",64 M0,6 L" + width + ",6 ";
+      for (let x = 0; x < width; x += 90) {
+        d += `M${x + 8},64 L${x + 8},22 L${x + 62},22 L${x + 62},50 L${x + 34},50 L${x + 34},36 L${x + 48},36 `;
+      }
+      return d;
+    }
+    document.querySelector("#in-greca-top-p").setAttribute("d", greca(1080));
+    document.querySelector("#in-greca-bot-p").setAttribute("d", greca(1080));
+
+    const tl = gsap.timeline({ paused: true });
+    const B = 0.6667; // un beat de la música (90 BPM)
+
+    // Fondo y rayos
+    tl.fromTo("#in-bg", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0);
+    tl.fromTo("#in-rays", { rotation: 0, opacity: 0 }, { rotation: 40, opacity: 1, duration: 3.3, ease: "none" }, 0);
+    ["#in-greca-top-p", "#in-greca-bot-p"].forEach((sel, i) => {
+      const len = document.querySelector(sel).getTotalLength();
+      tl.fromTo(sel, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" }, 0.05 + i * 0.1);
+    });
+
+    // El aro aparece y la pelota cruza en arco hasta el centro, justo en el beat
+    tl.fromTo("#in-aro", { scale: 0.4, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "back.out(1.8)" }, 0.08);
+    tl.fromTo("#in-ball", { x: -260, y: 80, rotation: -200, scale: 0.7 }, { x: 426, y: 480, rotation: 160, scale: 1.05, duration: B - 0.1, ease: "power2.in" }, 0.1);
+    tl.to("#in-ball", { x: 1180, y: 160, rotation: 420, scale: 0.6, duration: 0.55, ease: "power2.out" }, B);
+    tl.fromTo("#in-ring", { scale: 0.3, opacity: 1 }, { scale: 3.2, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, B);
+    // Sacudida del golpe
+    tl.fromTo("#in-stage", { x: 0, y: 0 }, { x: 14, y: -10, duration: 0.04, ease: "none" }, B);
+    tl.to("#in-stage", { x: -12, y: 8, duration: 0.05, ease: "none" }, B + 0.04);
+    tl.to("#in-stage", { x: 6, y: -4, duration: 0.05, ease: "none" }, B + 0.09);
+    tl.to("#in-stage", { x: 0, y: 0, duration: 0.06, ease: "none" }, B + 0.14);
+
+    // ULAMA golpea letra por letra en el beat
+    tl.fromTo("#in-title .ch", { scale: 2.6, opacity: 0, y: -40 }, { scale: 1, opacity: 1, y: 0, duration: 0.28, ease: "power4.out", stagger: 0.055 }, B - 0.02);
+    tl.to("#in-title", { scale: 1.06, duration: 2.0, ease: "none" }, B + 0.4);
+    tl.to("#in-aro", { y: -14, scale: 1.04, duration: 2.0, ease: "sine.inOut" }, B + 0.4);
+
+    // Subtítulo, etiqueta del evento y fecha en los beats siguientes
+    tl.fromTo("#in-sub span", { yPercent: 110 }, { yPercent: 0, duration: 0.4, ease: "power3.out" }, B + 0.25);
+    tl.fromTo("#in-pill", { scale: 0.2, opacity: 0, rotation: -6 }, { scale: 1, opacity: 1, rotation: -2, duration: 0.38, ease: "back.out(2.2)" }, 2 * B - 0.05);
+    tl.fromTo("#in-date", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2 * B + 0.28);
+
+    // Salida: todo empuja hacia la cámara mientras entra el barrido
+    tl.to("#in-stage", { scale: 1.12, duration: 0.45, ease: "power2.in" }, 3.233 - 0.45);
+    window.__timelines["intro"] = tl;
+  </script>
+</template>
