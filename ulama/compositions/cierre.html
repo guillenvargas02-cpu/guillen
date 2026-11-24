@@ -11,7 +11,18 @@
       overflow: hidden;
       font-family: "Hind Siliguri", sans-serif;
     }
-    /* "Somos cultura / tradición / México": pleca oficial (logo de 440 px) y palabra que cambia */
+    /* Franja blanca que se abre hasta llenar la pantalla (misma forma que la pleca) */
+    #cz-band {
+      position: absolute;
+      left: 0;
+      top: 843.25px;
+      width: 1080px;
+      height: 233.5px;
+      border-radius: 116.75px;
+      background: #fff;
+      visibility: hidden;
+    }
+    /* Pleca oficial con logotipo de 440 px, armado con sus 5 letras */
     #cz-pleca {
       position: absolute;
       left: 249px;
@@ -36,21 +47,41 @@
       width: 440px;
       height: 75.7px;
     }
-    .bx {
+    .cz-box {
       position: absolute;
       top: 0;
+      height: 75.7px;
       overflow: hidden;
     }
-    .bx img {
+    .cz-box img {
       position: absolute;
       left: 0;
       top: 0;
       width: 100%;
-      height: 100%;
-    }
-    #cz-logo .bx {
       height: 75.7px;
     }
+    #cz-sheen {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 440px;
+      height: 75.7px;
+      overflow: hidden;
+      -webkit-mask-image: url("assets/brand/somos-logo-rosa.png");
+      -webkit-mask-size: 100% 100%;
+      mask-image: url("assets/brand/somos-logo-rosa.png");
+      mask-size: 100% 100%;
+    }
+    #cz-shine {
+      position: absolute;
+      left: 0;
+      top: -30px;
+      width: 100px;
+      height: 140px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 100%);
+      transform: skewX(-20deg);
+    }
+    /* Palabra que cambia bajo la pleca */
     #cz-words {
       position: absolute;
       left: 0;
@@ -72,111 +103,18 @@
       text-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.6);
       visibility: hidden;
     }
-    /* Mosaico de la lona SOMOS que cubre la pantalla */
-    #cz-grid {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-    }
-    .tl {
-      position: absolute;
-      width: 271px;
-      height: 241px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      visibility: hidden;
-    }
-    .tl.p {
-      background: #e4007c;
-    }
-    .tl.w {
-      background: #fff;
-    }
-    .tl.p img {
-      width: 190px;
-      height: auto;
-    }
-    .tl.w img {
-      width: 150px;
-      height: auto;
-    }
-    /* Separador blanco del manual: fondo blanco, marco rosa, logotipo rosa grande y línea rosa */
-    #cz-white {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      background: #fff;
-      visibility: hidden;
-    }
-    #cz-frame {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1080px;
-      height: 1920px;
-      visibility: hidden;
-    }
-    #cz-frame rect {
-      fill: none;
-      stroke: #e4007c;
-      stroke-width: 6;
-    }
-    #cz-big {
-      position: absolute;
-      left: 80px;
-      top: 860px;
-      width: 920px;
-      height: 158.3px;
-      visibility: hidden;
-    }
-    #cz-big .bx {
-      height: 158.3px;
-    }
-    #cz-sheen {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 920px;
-      height: 158.3px;
-      overflow: hidden;
-      -webkit-mask-image: url("assets/brand/somos-logo-rosa.png");
-      -webkit-mask-size: 100% 100%;
-      mask-image: url("assets/brand/somos-logo-rosa.png");
-      mask-size: 100% 100%;
-    }
-    #cz-shine {
-      position: absolute;
-      left: 0;
-      top: -40px;
-      width: 200px;
-      height: 240px;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 210, 235, 0.9) 50%, rgba(255, 255, 255, 0) 100%);
-      transform: skewX(-20deg);
-    }
-    #cz-rule {
-      position: absolute;
-      left: 190px;
-      top: 1080px;
-      width: 700px;
-      height: 5px;
-      background: #e4007c;
-      visibility: hidden;
-    }
   </style>
   <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
+    <div id="cz-band" data-layout-ignore></div>
     <div id="cz-pleca">
       <div id="cz-plbg"></div>
       <div id="cz-logo">
-        <div id="cz-b1" class="bx" style="left: 0%; width: 17.3%"><img src="assets/brand/letra-s1.png" alt="S" /></div>
-        <div id="cz-b2" class="bx" style="left: 18.5%; width: 18.95%"><img src="assets/brand/letra-o1.png" alt="O" /></div>
-        <div id="cz-b3" class="bx" style="left: 37.7%; width: 24.55%"><img src="assets/brand/letra-m.png" alt="M" /></div>
-        <div id="cz-b4" class="bx" style="left: 62.65%; width: 18.95%"><img src="assets/brand/letra-o2.png" alt="O" /></div>
-        <div id="cz-b5" class="bx" style="left: 82.7%; width: 17.3%"><img src="assets/brand/letra-s2.png" alt="S" /></div>
+        <div id="cz-b1" class="cz-box" style="left: 0%; width: 17.3%"><img src="assets/brand/letra-s1.png" alt="S" /></div>
+        <div id="cz-b2" class="cz-box" style="left: 18.5%; width: 18.95%"><img src="assets/brand/letra-o1.png" alt="O" /></div>
+        <div id="cz-b3" class="cz-box" style="left: 37.7%; width: 24.55%"><img src="assets/brand/letra-m.png" alt="M" /></div>
+        <div id="cz-b4" class="cz-box" style="left: 62.65%; width: 18.95%"><img src="assets/brand/letra-o2.png" alt="O" /></div>
+        <div id="cz-b5" class="cz-box" style="left: 82.7%; width: 17.3%"><img src="assets/brand/letra-s2.png" alt="S" /></div>
+        <div id="cz-sheen" data-layout-ignore><div id="cz-shine"></div></div>
       </div>
     </div>
     <div id="cz-words">
@@ -184,56 +122,28 @@
       <div id="cz-w2" class="cz-w">TRADICIÓN</div>
       <div id="cz-w3" class="cz-w">MÉXICO</div>
     </div>
-
-    <div id="cz-white"></div>
-    <div id="cz-grid" data-layout-ignore></div>
-    <svg id="cz-frame" viewBox="0 0 1080 1920" data-layout-ignore><rect id="cz-frame-r" x="44" y="44" width="992" height="1832" rx="30" ry="30"></rect></svg>
-    <div id="cz-rule" data-layout-ignore></div>
-    <div id="cz-big">
-      <div id="cz-g1" class="bx" style="left: 0%; width: 17.3%"><img src="assets/brand/letra-s1.png" alt="S" /></div>
-      <div id="cz-g2" class="bx" style="left: 18.5%; width: 18.95%"><img src="assets/brand/letra-o1.png" alt="O" /></div>
-      <div id="cz-g3" class="bx" style="left: 37.7%; width: 24.55%"><img src="assets/brand/letra-m.png" alt="M" /></div>
-      <div id="cz-g4" class="bx" style="left: 62.65%; width: 18.95%"><img src="assets/brand/letra-o2.png" alt="O" /></div>
-      <div id="cz-g5" class="bx" style="left: 82.7%; width: 17.3%"><img src="assets/brand/letra-s2.png" alt="S" /></div>
-      <div id="cz-sheen" data-layout-ignore><div id="cz-shine"></div></div>
-    </div>
   </div>
   <script>
-    const grid = document.querySelector("#cz-grid");
-    for (let r = 0; r < 8; r++) {
-      for (let c = 0; c < 4; c++) {
-        const pink = (r + c) % 2 === 0;
-        const t = document.createElement("div");
-        t.className = "tl " + (pink ? "p" : "w");
-        t.style.left = c * 270 + "px";
-        t.style.top = r * 240 + "px";
-        const img = document.createElement("img");
-        img.src = pink ? "assets/brand/pleca-somos.png" : "assets/brand/somos-logo-rosa.png";
-        img.alt = "SOMOS";
-        t.appendChild(img);
-        grid.appendChild(t);
-      }
-    }
-
     // Local = video − 21.7. Voz: Somos (0.07) cultura (0.52) · somos (1.22) tradición (1.40) · y somos (2.30) México (2.62)
     const tl = gsap.timeline({ paused: true });
-    const HIT = 3.767; // golpe final (25.467 s)
-    const small = ["#cz-b1", "#cz-b2", "#cz-b3", "#cz-b4", "#cz-b5"];
-    const big = ["#cz-g1", "#cz-g2", "#cz-g3", "#cz-g4", "#cz-g5"];
+    const HIT = 3.767; // golpe final: cortinilla con el logotipo sobre blanco (25.467 s)
+    const boxes = ["#cz-b1", "#cz-b2", "#cz-b3", "#cz-b4", "#cz-b5"];
 
-    // "Somos": la pleca se abre y las letras suben; saltan con cada "somos"
+    // "Somos": la pleca se abre y las letras suben
     tl.fromTo("#cz-plbg", { scaleX: 0.05, scaleY: 0.6 }, { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(1.7)" }, 0.0);
-    small.forEach((b, i) => {
+    boxes.forEach((b, i) => {
       tl.fromTo(`${b} img`, { yPercent: 110 }, { yPercent: 0, duration: 0.26, ease: "power4.out" }, 0.12 + i * 0.05);
     });
+    // Las letras saltan cada vez que dice "somos"
     function ripple(t) {
-      small.forEach((b, i) => {
+      boxes.forEach((b, i) => {
         tl.to(b, { y: -14, duration: 0.1, ease: "power2.out" }, t + i * 0.04);
         tl.to(b, { y: 0, duration: 0.18, ease: "bounce.out" }, t + 0.1 + i * 0.04);
       });
     }
     ripple(1.16);
     ripple(2.24);
+    // La palabra cambia con un giro de máscara
     [
       ["#cz-w1", 0.46, 1.4],
       ["#cz-w2", 1.36, 2.52],
@@ -249,35 +159,29 @@
     tl.fromTo("#cz-w3", { yPercent: 100 }, { yPercent: 0, duration: 0.28, ease: "power3.out" }, 2.52);
     tl.to("#cz-w3", { yPercent: -100, duration: 0.22, ease: "power3.in" }, 3.12);
 
-    // Transición: la pleca sube y el mosaico de la lona cubre la pantalla, cuadro por cuadro
-    tl.to("#cz-pleca", { y: -60, scale: 1.15, duration: 0.3, ease: "power2.out" }, 3.0);
-    tl.set("#cz-grid .tl", { visibility: "visible" }, 3.05);
-    tl.fromTo("#cz-grid .tl", { scale: 0 }, { scale: 1, duration: 0.2, ease: "back.out(2)", stagger: { grid: [8, 4], from: "end", amount: 0.38 } }, 3.05);
-    tl.set("#cz-white", { visibility: "visible" }, 3.5);
-    tl.set("#cz-pleca", { visibility: "hidden" }, 3.62);
-    // Golpe final: los cuadros se van, queda el blanco y las letras de SOMOS se cierran de golpe
-    tl.to("#cz-grid .tl", { scale: 0, duration: 0.16, ease: "power3.in", stagger: { grid: [8, 4], from: "center", amount: 0.1 } }, HIT - 0.2);
-    tl.set("#cz-big", { visibility: "visible" }, HIT - 0.02);
-    const spread = [-260, -130, 0, 130, 260];
-    big.forEach((b, i) => {
-      tl.fromTo(b, { x: spread[i] * 1.0, opacity: 0, scale: 1.5 }, { x: 0, opacity: 1, scale: 1, duration: 0.34, ease: "power4.out" }, HIT - 0.02 + Math.abs(i - 2) * 0.03);
+    // Transición: la pleca sube al centro y crece
+    tl.to("#cz-pleca", { y: -300.5, scale: 1.4542, duration: 0.42, ease: "power3.inOut" }, 3.02);
+    // La franja blanca toma su lugar, se estira a todo lo ancho y luego se abre a pantalla completa
+    tl.set("#cz-band", { visibility: "visible", scaleX: 0.7815 }, 3.44);
+    tl.set("#cz-plbg", { opacity: 0 }, 3.44);
+    tl.to("#cz-band", { scaleX: 1.08, duration: 0.14, ease: "power2.out" }, 3.44);
+    tl.to("#cz-band", { scaleY: 8.8, duration: 0.2, ease: "power3.in" }, HIT - 0.2);
+    // Las letras se separan con el whoosh y se cierran de golpe en el golpe de percusión
+    const spread = [-70, -34, 0, 34, 70];
+    boxes.forEach((b, i) => {
+      tl.to(b, { x: spread[i], duration: 0.42, ease: "power2.in" }, HIT - 0.44);
+      tl.to(b, { x: 0, duration: 0.32, ease: "power4.out" }, HIT);
     });
-    tl.fromTo("#cz-big", { x: 0, y: 0 }, { x: 10, y: -7, duration: 0.04, ease: "none", immediateRender: false }, HIT + 0.05);
-    tl.to("#cz-big", { x: -8, y: 5, duration: 0.05, ease: "none" }, HIT + 0.09);
-    tl.to("#cz-big", { x: 0, y: 0, duration: 0.06, ease: "none" }, HIT + 0.14);
-    // Marco rosa que se dibuja y línea bajo el logotipo
-    const len = document.querySelector("#cz-frame-r").getTotalLength();
-    tl.set("#cz-frame", { visibility: "visible" }, HIT);
-    tl.fromTo("#cz-frame-r", { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, HIT + 0.05);
-    tl.set("#cz-rule", { visibility: "visible" }, HIT + 0.35);
-    tl.fromTo("#cz-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.out" }, HIT + 0.35);
-    // Pulso de letras, brillo y acercamiento lento
-    big.forEach((b, i) => {
-      tl.to(b, { scale: 1.1, duration: 0.12, ease: "power2.out" }, HIT + 1.0 + i * 0.06);
-      tl.to(b, { scale: 1, duration: 0.22, ease: "power2.inOut" }, HIT + 1.12 + i * 0.06);
-    });
-    tl.fromTo("#cz-shine", { x: -260 }, { x: 1100, duration: 0.8, ease: "power2.inOut" }, HIT + 1.6);
-    tl.fromTo("#cz-big", { scale: 1 }, { scale: 1.04, duration: 2.0, ease: "sine.out", immediateRender: false }, HIT + 1.5);
+    tl.fromTo("#cz-logo", { scale: 1.12 }, { scale: 1, duration: 0.5, ease: "power3.out", immediateRender: false }, HIT);
+    // en el golpe el logotipo crece a casi todo el ancho (920 px)
+    tl.to("#cz-pleca", { scale: 920 / 440, duration: 0.4, ease: "power4.out" }, HIT);
+    tl.fromTo("#cz-pleca", { x: 0 }, { x: 8, duration: 0.04, ease: "none", immediateRender: false }, HIT);
+    tl.to("#cz-pleca", { x: -6, duration: 0.05, ease: "none" }, HIT + 0.04);
+    tl.to("#cz-pleca", { x: 0, duration: 0.06, ease: "none" }, HIT + 0.09);
+    // Acercamiento lento y brillo sobre las letras
+    tl.to("#cz-logo", { scale: 1.05, duration: 3.0, ease: "sine.out" }, HIT + 0.5);
+    tl.fromTo("#cz-shine", { x: -200 }, { x: 560, duration: 0.7, ease: "power2.inOut" }, HIT + 0.9);
+    tl.fromTo("#cz-shine", { x: -200 }, { x: 560, duration: 0.7, ease: "power2.inOut", immediateRender: false }, HIT + 2.1);
     window.__timelines["cierre"] = tl;
   </script>
 </template>

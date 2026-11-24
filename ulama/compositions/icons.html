@@ -126,10 +126,6 @@
       height: 150px;
       filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.4));
     }
-    .heart {
-      position: absolute;
-      top: 1150px;
-    }
     .smoke {
       position: absolute;
       width: 110px;
@@ -224,7 +220,6 @@
     <div id="v-atl-t3" class="stk wh vis" style="left: 40px; top: 380px; font-size: 64px">+ TALLER</div>
 
     <!-- Familia y amigos -->
-    <div id="v-hearts"></div>
     <div id="v-fam" class="stk pk vis" style="left: 40px; top: 200px; font-size: 64px">EN FAMILIA</div>
     <div id="v-ami" class="stk wh vis" style="left: 590px; top: 320px; font-size: 64px">CON AMIGOS</div>
 
@@ -251,23 +246,6 @@
     <div id="v-map-t" class="stk pk vis" style="left: 200px; top: 70px; font-size: 54px">PARQUE REFORMA SOCIAL</div>
   </div>
   <script>
-    // Corazones que suben por los costados
-    const hearts = document.querySelector("#v-hearts");
-    const HX = [40, 900, 150, 820, 70, 950, 190, 860, 30, 780, 120, 930];
-    const HS = [90, 110, 70, 80, 120, 70, 80, 100, 70, 90, 100, 80];
-    HX.forEach((x, i) => {
-      const s = HS[i];
-      const d = document.createElement("div");
-      d.className = "heart";
-      d.id = `v-h${i}`;
-      d.style.left = x + "px";
-      d.style.opacity = "0";
-      const fill = i % 2 === 0 ? "#e4007c" : "#ffffff";
-      const stroke = i % 2 === 0 ? "#ffffff" : "#e4007c";
-      d.innerHTML = `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2A5.4 5.4 0 0 1 12 5.6a5.4 5.4 0 0 1 9.6 6.2C19.5 16.4 12 21 12 21z" fill="${fill}" stroke="${stroke}" stroke-width="1.4"/></svg>`;
-      hearts.appendChild(d);
-    });
-
     // Tiempos locales = tiempo del video − 2.0 (entra el conductor); palabras de timing.json
     const tl = gsap.timeline({ paused: true });
     function show(sel, t) {
@@ -341,13 +319,7 @@
     tl.fromTo("#v-atl img", { rotation: 0 }, { rotation: -8, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 10.7);
     out(["#v-atl", "#v-atl-t1", "#v-atl-t2", "#v-atl-t3"], 12.25);
 
-    // Familia (13.13) amigos (13.91): corazones
-    HX.forEach((x, i) => {
-      const t = 12.95 + i * 0.1;
-      tl.fromTo(`#v-h${i}`, { y: 0, opacity: 0, scale: 0.4 }, { y: -900, opacity: 1, scale: 1, duration: 1.3, ease: "power1.out" }, t);
-      tl.to(`#v-h${i}`, { opacity: 0, duration: 0.3, ease: "power1.in" }, t + 1.0);
-      tl.to(`#v-h${i}`, { x: i % 2 === 0 ? 24 : -24, duration: 0.32, ease: "sine.inOut", yoyo: true, repeat: 3 }, t);
-    });
+    // Familia (13.13) amigos (13.91)
     popStk("#v-fam", 13.08, -4);
     popStk("#v-ami", 13.86, 3);
     out(["#v-fam", "#v-ami"], 14.35);
