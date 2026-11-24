@@ -5,12 +5,12 @@
       inset: 0;
       overflow: hidden;
     }
-    /* Íconos en círculo blanco sobre la cabeza del conductor (como en los videos de SOMOS) */
+    /* Íconos en círculo blanco en las esquinas superiores: ilustran lo que dice sin taparlo */
     .ic {
       position: absolute;
-      top: 180px;
-      width: 290px;
-      height: 290px;
+      top: 190px;
+      width: 230px;
+      height: 230px;
       border-radius: 50%;
       background: #fff;
       box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
@@ -21,31 +21,28 @@
       visibility: hidden;
     }
     .ic img {
-      max-width: 200px;
-      max-height: 200px;
-    }
-    .ic-c {
-      left: 395px;
+      max-width: 160px;
+      max-height: 160px;
     }
     .ic-l {
-      left: 185px;
+      left: 44px;
     }
     .ic-r {
-      left: 605px;
+      left: 806px;
     }
   </style>
   <div id="root" data-composition-id="icons" data-width="1080" data-height="1920">
-    <div id="ic-cal" class="ic ic-c"><img src="assets/icons/calendario.png" alt="Calendario" /></div>
+    <div id="ic-cal" class="ic ic-r"><img src="assets/icons/calendario.png" alt="Calendario" /></div>
     <div id="ic-aro" class="ic ic-l"><img src="assets/icons/aro.png" alt="Aro del juego de pelota" /></div>
     <div id="ic-pel" class="ic ic-r"><img src="assets/icons/pelota.png" alt="Pelota de hule" /></div>
-    <div id="ic-jug" class="ic ic-c"><img src="assets/icons/jugadores.png" alt="Jugadores de ulama" /></div>
+    <div id="ic-jug" class="ic ic-l"><img src="assets/icons/jugadores.png" alt="Jugadores de ulama" /></div>
     <div id="ic-atl" class="ic ic-r"><img src="assets/icons/atleta.png" alt="Jugador golpeando la pelota" /></div>
-    <div id="ic-sah" class="ic ic-c"><img src="assets/icons/sahumador.png" alt="Sahumador con copal" /></div>
-    <div id="ic-cal2" class="ic ic-c"><img src="assets/icons/calendario.png" alt="Calendario" /></div>
+    <div id="ic-sah" class="ic ic-r"><img src="assets/icons/sahumador.png" alt="Sahumador con copal" /></div>
+    <div id="ic-cal2" class="ic ic-l"><img src="assets/icons/calendario.png" alt="Calendario" /></div>
     <div id="ic-pin" class="ic ic-r"><img src="assets/icons/ubicacion.png" alt="Ubicación" /></div>
   </div>
   <script>
-    // Tiempos locales = tiempo del video − 3.233 (palabras de timing.json)
+    // Tiempos locales = tiempo del video − inicio del conductor (palabras de timing.json)
     const tl = gsap.timeline({ paused: true });
     function popIn(sel, t) {
       tl.set(sel, { visibility: "visible" }, t);
@@ -72,7 +69,6 @@
     popOut("#ic-pel", 9.6);
     // "partido de exhibición" (jugadores) "y un taller" (atleta)
     popIn("#ic-jug", 10.22);
-    tl.to("#ic-jug", { x: -210, duration: 0.35, ease: "power3.inOut" }, 11.6);
     popIn("#ic-atl", 11.66);
     popOut("#ic-jug", 12.28);
     popOut("#ic-atl", 12.3);
@@ -82,7 +78,6 @@
     popOut("#ic-sah", 16.38);
     // "este domingo" (calendario) "en el parque de la reforma social" (ubicación)
     popIn("#ic-cal2", 17.95);
-    tl.to("#ic-cal2", { x: -210, duration: 0.35, ease: "power3.inOut" }, 18.6);
     popIn("#ic-pin", 18.66);
     popOut("#ic-cal2", 19.68);
     popOut("#ic-pin", 19.7);

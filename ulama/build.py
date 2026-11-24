@@ -22,7 +22,7 @@ OUT = ROOT / "renders"
 FPS = 30
 W, H = 2160, 3840  # salida 4K vertical
 
-INTRO = 97 / FPS  # cortinilla de entrada (3.233 s): el arranque de la música cae en un beat
+INTRO = 60 / FPS  # entrada: animación del logotipo SOMOS (2.0 s) y paso directo al conductor
 OUTRO = 108 / FPS  # cortinilla de cierre: logo SOMOS sobre fondo blanco (3.6 s)
 
 # (fuente, entrada, salida, zoom al inicio, zoom al final) — tramos de voz sin silencios
@@ -113,7 +113,7 @@ def build_base(p):
     """Footage a 4K: fondo de cortinilla, tramos con push-in suave y fondo del cierre."""
     inputs, chains = [], []
     # Las cortinillas son gráficas (Hyperframes); debajo va un color de base
-    inputs += ["-f", "lavfi", "-i", f"color=c=0xE4007C:s={W}x{H}:r={FPS}:d={p['intro']:.4f}"]
+    inputs += ["-f", "lavfi", "-i", f"color=c=white:s={W}x{H}:r={FPS}:d={p['intro']:.4f}"]
     chains.append("[0:v]format=yuv420p,setsar=1[s0]")
     for i, s in enumerate(p["segments"], start=1):
         dur = s["end"] - s["start"]
@@ -125,10 +125,8 @@ def build_base(p):
             f"[{i}:v]trim=start={s['in']:.4f}:duration={dur:.4f},setpts=PTS-STARTPTS,fps={FPS},"
             f"scale=w='trunc({W}*{z}/2)*2':h='trunc({H}*{z}/2)*2':eval=frame:flags=lanczos,"
             f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2,"
-            # gradación: un poco más de contraste y color, cálido; nitidez para la subida a 4K
-            "eq=contrast=1.07:saturation=1.16:brightness=0.005,"
-            "colorbalance=rs=0.03:gs=0.0:bs=-0.03:rm=0.02:bm=-0.02,"
-            "unsharp=5:5:0.55:5:5:0.0,vignette=angle=PI/5,"
+            # color y brillo originales del video; solo un poco de nitidez para la subida a 4K
+            "unsharp=5:5:0.4:5:5:0.0,"
             f"format=yuv420p,setsar=1[s{i}]"
         )
     n = len(p["segments"]) + 1
@@ -171,10 +169,10 @@ def build_sfx():
 def sfx_cues(p):
     intro, outro = p["intro"], p["outro_start"]
     return [
-        ("impact", 0.667, 0.55),  # la pleca se forma en el beat
-        ("whoosh", intro - 0.45, 0.45),  # la cortinilla se levanta y aparece el conductor
-        ("riser", outro - 1.3, 0.55),  # la pleca crece y el blanco llena la pantalla
-        ("boom", outro, 1.0),  # golpe final con el logo sobre blanco
+        ("impact", 0.667, 0.55),  # la última letra de SOMOS cae en el golpe de tambor
+        ("whoosh", intro - 0.35, 0.5),  # entramos por la O del logotipo hacia el conductor
+        ("riser", outro - 1.3, 0.55),  # la franja blanca se abre y las letras se separan
+        ("boom", outro, 1.0),  # las letras se cierran de golpe sobre blanco
     ]
 
 

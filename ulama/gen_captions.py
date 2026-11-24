@@ -9,8 +9,6 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-START = 3.233  # inicio de la composición en el video
-END = 22.933  # fin (entra el cierre con "Somos…")
 
 # Tamaño de cada frase, en orden
 GROUPS = [3, 4, 3, 5, 7, 6, 4, 7, 6, 5, 4, 5, 6, 6, 7]
@@ -20,6 +18,9 @@ KEY = {4, 9, 12, 13, 14, 15, 18, 21, 27, 29, 31, 37, 38, 44, 46, 49, 53, 56, 58,
 
 def main():
     p = json.loads((ROOT / "timing.json").read_text())
+    global START, END
+    START = p["intro"]  # inicio de la composición en el video (entra el conductor)
+    END = p["segments"][-1]["start"]  # fin: entra el cierre con "Somos…"
     words = [w for w in p["words"] if w["t"] < END - 0.05]
     assert sum(GROUPS) == len(words), (sum(GROUPS), len(words))
     groups, i = [], 0
