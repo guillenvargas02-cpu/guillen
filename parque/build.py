@@ -42,10 +42,10 @@ VOICE_GAIN_DB = {"1145": 0.0, "1146": -0.4, "1149": -0.6}
 # Los cortes caen en silencios medidos con la envolvente de la voz.
 EDL = [
     ("1145", 0.00, 5.22, 1.00, 880),   # ¿Qué tal...? ... Eduardo Contró
-    ("1145", 5.58, 10.06, 1.00, 820),  # para invitarlos ... 10 de la mañana
-    ("1145", 10.06, 12.62, 1.14, 760), # a una jornada de salud integral
-    ("1145", 12.94, 14.14, 1.13, 760), # asesoría jurídica
-    ("1145", 14.40, 17.60, 1.00, 760), # y apoyo psicológico gratuito ... requiera
+    ("1145", 5.58, 10.06, 1.12, 820),  # para invitarlos ... 10 de la mañana
+    ("1145", 10.06, 12.62, 1.1648, 760), # a una jornada de salud integral (continúa el tramo anterior, sin salto)
+    ("1145", 12.94, 14.14, 1.00, 760), # asesoría jurídica (corte real: cambia el encuadre)
+    ("1145", 14.40, 17.60, 1.12, 760), # y apoyo psicológico gratuito ... requiera (corte real)
     ("1146", 0.85, 4.50, 1.00, 700),   # Te esperamos aquí ... Parque de la Reforma Social
     ("1149", 0.21, 5.00, 1.00, 700),   # Porque aquí somos justicia, salud y SOMOS México
 ]
@@ -53,26 +53,12 @@ START = 0.70  # el footage arranca bajo la cortinilla de entrada
 # Huecos que la capa gráfica tapa por completo (mapa en blanco): tiempo extra con el último cuadro
 HOLD_AFTER = {5: 0.60}  # tras 1146: el mapa a pantalla completa tapa el video
 
-# Dinamismo: punch-ins (saltos de encuadre en el mismo instante, sin cortar tiempo: la voz no se toca)
-# y "golpes" de cámara cortos sobre las palabras clave. Tiempos en la fuente.
-JUMPS = {
-    0: [(2.44, 1.10), (4.50, 1.20, 625)],            # "Lo saluda…" / "Eduardo Contró" (encuadre centrado en él)
-    1: [(6.92, 1.13), (8.52, 1.03)],                 # "28 de noviembre" / "a partir de las 10…"
-    2: [(11.66, 1.00)],                              # "de salud integral" (aire arriba para el ícono)
-    4: [(15.50, 1.16), (16.18, 1.05)],               # "gratuito" / "para todo aquel…"
-    5: [(1.92, 1.09)],                               # "este sábado…"
-    6: [(1.50, 1.07), (2.68, 1.14), (3.74, 1.21)],   # cada "somos" acerca más: crescendo al cierre
-}
-BUMPS = {
-    0: [(4.50, 0.035)],
-    1: [(6.92, 0.04), (8.10, 0.05), (9.08, 0.04)],   # 28 / sábado / 10
-    2: [(11.80, 0.035)],                             # salud
-    3: [(13.00, 0.035)],                             # asesoría
-    4: [(14.70, 0.03), (15.50, 0.05)],               # apoyo / gratuito
-    5: [(2.86, 0.04)],                               # Parque
-    6: [(1.50, 0.035), (2.68, 0.04), (3.86, 0.05)],  # somos, somos, SOMOS
-}
-PUSH = 0.03  # acercamiento lento dentro de cada tramo
+# Movimiento de cámara: sin saltos ni golpes sobre las palabras (se sentía que la cámara brincaba).
+# El encuadre sólo cambia en los cortes reales y, dentro de cada tramo, hay un acercamiento lento
+# y continuo; en el cierre (1149) el acercamiento es mayor para crear un crescendo suave.
+JUMPS = {}   # (tiempo en la fuente, encuadre[, centro x]) — vacío a propósito
+BUMPS = {}   # (tiempo en la fuente, amplitud) — vacío a propósito
+PUSH = {0: 0.05, 1: 0.04, 2: 0.0, 3: 0.03, 4: 0.04, 5: 0.05, 6: 0.15}
 
 
 def edl_out():
@@ -204,7 +190,7 @@ def build_base():
         for k in range(len(jumps) - 1, -1, -1):
             prev = jumps[k - 1][1] if k > 0 else z0
             level = f"if(lt(t,{jumps[k][0] - e['s0']:.3f}),{prev},{level})"
-        push = f"(1+{PUSH}*(0.5-0.5*cos(PI*min(t/{d:.3f},1))))"
+        push = f"(1+{PUSH.get(i, 0.04)}*(0.5-0.5*cos(PI*min(t/{d:.3f},1))))"
         bump = "0"
         for ts, amp in BUMPS.get(i, []):
             tb = ts - e["s0"]
