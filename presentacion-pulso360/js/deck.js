@@ -244,6 +244,8 @@
     if (prev && prev !== next) seqStop(prev);
     seqStart(next);
     if (next.querySelector(".hexgrid")) hexRun(next); else clearInterval(hexTimer);
+    if (prev && prev !== next) swarmStop(prev);
+    if (prev !== next) swarmStart(next);
     if (next._enter) next._enter(step, prev);
   }
   function nextStep() {
@@ -312,6 +314,108 @@
     vid.addEventListener("playing", () => { started = true; hint.classList.remove("on"); });
     vid.addEventListener("ended", () => { if (slides[cur] === intro && step === 0) { step = 1; apply(intro, 1); } });
   }
+
+
+  /* ------------------------------------------------------------ enjambre de drones (bandera, mapa→fecha, red de casillas) */
+  const SPR = {};
+  function sprite(col) {
+    if (SPR[col]) return SPR[col];
+    const c = document.createElement("canvas"); c.width = c.height = 48; const g = c.getContext("2d");
+    const gr = g.createRadialGradient(24, 24, 0, 24, 24, 24);
+    gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.14, col); gr.addColorStop(.42, col.replace(/[\d.]+\)$/, ".22)")); gr.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, 48, 48); return (SPR[col] = c);
+  }
+  const ease3 = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function textPoints(txt, n, W, H) {
+    const c = document.createElement("canvas"); c.width = 900; c.height = 220; const g = c.getContext("2d");
+    g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "middle"; let fs = 160; g.font = `800 ${fs}px "Archivo", "Geist", sans-serif`;
+    const tw = g.measureText(txt).width; if (tw > 860) { fs = Math.floor(fs * 860 / tw); g.font = `800 ${fs}px "Archivo", "Geist", sans-serif`; }
+    g.fillText(txt, 450, 115);
+    const d = g.getImageData(0, 0, 900, 220).data, pts = [];
+    for (let y = 0; y < 220; y += 3) for (let x = 0; x < 900; x += 3) if (d[(y * 900 + x) * 4 + 3] > 128) pts.push([x / 900, y / 220]);
+    const out = []; for (let i = 0; i < n; i++) out.push(pts[Math.floor(i * pts.length / n)]);
+    return out;
+  }
+  function makeSwarm(cv) {
+    const kind = cv.dataset.swarm, ctx = cv.getContext("2d");
+    let W = 0, H = 0, dpr = 1, drones = [], t0 = 0, raf = 0, on = false, dateP = null;
+    const size = () => { const r = cv.getBoundingClientRect(); dpr = Math.min(window.devicePixelRatio || 1, 2); W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); };
+    function build() {
+      size(); drones = [];
+      const R = (a, b) => a + Math.random() * (b - a);
+      if (kind === "flag") {
+        const cols = 52, rows = 26, cw = 7 / 13 * rows;   // 13 franjas × 2 filas
+        for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+          const u = i / (cols - 1), v = j / (rows - 1), stripe = Math.floor(j / 2);
+          let col = stripe % 2 ? "rgba(242,246,255,1)" : "rgba(232,52,74,1)", a = 1;
+          if (i < cols * .4 && j < cw) { col = "rgba(88,128,255,1)"; a = .9; if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) { col = "rgba(242,246,255,1)"; a = 1; } }
+          drones.push({ u, v, col, a, sx: R(.05, .95), sy: R(1.02, 1.12), d: R(0, 1.4) + u * .5 });
+        }
+      } else if (kind === "mxdate") {
+        const P = (window.MX_PTS && window.MX_PTS.pts) || [];
+        const n = Math.min(1400, P.length); const pts = P.slice(0, n).sort((a, b) => a[0] - b[0]);
+        dateP = textPoints("6 JUN 2027", n).map(p => p || [.5, .5]).sort((a, b) => a[0] - b[0]);
+        for (let i = 0; i < n; i++) drones.push({ mx: pts[i][0], my: pts[i][1], dx: dateP[i][0], dy: dateP[i][1], sx: R(0, 1), sy: R(1.02, 1.15), d: R(0, 1.2), ph: R(0, 6.28) });
+      } else if (kind === "net") {
+        const P = (window.MX_PTS && window.MX_PTS.pts) || [];
+        for (let i = 0; i < 160; i++) { const p = P[(i * 9) % P.length]; drones.push({ x: p[0], y: p[1], d: R(0, 5), k: i }); }
+      }
+    }
+    function frame() {
+      if (!on) return; raf = requestAnimationFrame(frame);
+      const t = (performance.now() - t0) / 1000;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = "lighter";
+      if (kind === "flag") {
+        const fw = W * .86, fh = fw * 10 / 19 * .82, ox = W * .07, oy = H * .5 - fh / 2;
+        drones.forEach(d => {
+          const p = ease3(Math.min(1, Math.max(0, (t - d.d) / 2.2)));
+          const wave = Math.sin(d.u * 5.5 - t * 1.6) * fh * .035 * p;
+          const persp = 1 - (1 - d.u) * .12;                       // leve perspectiva
+          const tx = ox + d.u * fw, ty = oy + fh / 2 + (d.v - .5) * fh * persp + wave;
+          const x = d.sx * W + (tx - d.sx * W) * p, y = d.sy * H + (ty - d.sy * H) * p - Math.sin(p * Math.PI) * H * .06;
+          const tw = .75 + .25 * Math.sin(t * 3 + d.u * 20 + d.v * 13);
+          const s = (p < 1 ? 7 : 9) * (.85 + .15 * persp);
+          ctx.globalAlpha = d.a * tw * (.35 + .65 * p); ctx.drawImage(sprite(d.col), x - s, y - s, s * 2, s * 2);
+        });
+      } else if (kind === "mxdate") {
+        const asp = (window.MX_PTS && window.MX_PTS.aspect) || 1.56;
+        const mw = Math.min(W * .9, H * .82 * asp), mh = mw / asp, mx0 = (W - mw) / 2, my0 = H * .08;
+        const dw = W * .92, dh = dw * 220 / 900, dx0 = (W - dw) / 2, dy0 = H * .42 - dh / 2;
+        const m = ease3(Math.min(1, Math.max(0, (t - 3.6) / 2.4)));     // mapa → fecha
+        drones.forEach(d => {
+          const p = ease3(Math.min(1, Math.max(0, (t - d.d * .6) / 1.8)));
+          const ax = mx0 + d.mx * mw, ay = my0 + d.my * mh, bx = dx0 + d.dx * dw, by = dy0 + d.dy * dh;
+          const tx = ax + (bx - ax) * m, ty = ay + (by - ay) * m - Math.sin(m * Math.PI) * H * .08;
+          const x = d.sx * W + (tx - d.sx * W) * p, y = d.sy * H + (ty - d.sy * H) * p;
+          const col = m > .5 ? "rgba(46,242,181,1)" : (d.mx > .5 ? "rgba(34,216,230,1)" : "rgba(46,242,181,1)");
+          const s = 5.5 + 1.5 * Math.sin(t * 2.4 + d.ph);
+          ctx.globalAlpha = (.3 + .7 * p) * .9; ctx.drawImage(sprite(col), x - s, y - s, s * 2, s * 2);
+        });
+      } else if (kind === "net") {
+        const ns = drones.map(d => ({ x: d.x * W, y: d.y * H, a: Math.max(0, Math.sin((t - d.d) * .9)) }));
+        ctx.lineWidth = 1;
+        for (let i = 0; i < ns.length; i++) { const a = ns[i]; if (a.a < .2) continue;
+          for (let j = i + 1; j < ns.length; j++) { const b = ns[j]; const dd = Math.hypot(a.x - b.x, a.y - b.y); if (dd < W * .07 && b.a > .2) { ctx.globalAlpha = Math.min(a.a, b.a) * .35 * (1 - dd / (W * .07)); ctx.strokeStyle = "#22d8e6"; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } } }
+        ns.forEach(n => { const s = 4 + n.a * 6; ctx.globalAlpha = .25 + n.a * .75; ctx.drawImage(sprite(n.a > .7 ? "rgba(46,242,181,1)" : "rgba(34,216,230,1)"), n.x - s, n.y - s, s * 2, s * 2); });
+      }
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+    }
+    return {
+      start() { if (on) return; build(); t0 = performance.now(); on = true; frame(); },
+      stop() { on = false; cancelAnimationFrame(raf); }
+    };
+  }
+  document.querySelectorAll("canvas.swarm").forEach(cv => { cv._swarm = makeSwarm(cv); });
+  function swarmStart(s) { s.querySelectorAll("canvas.swarm").forEach(cv => cv._swarm.start()); }
+  function swarmStop(s) { if (s) s.querySelectorAll("canvas.swarm").forEach(cv => cv._swarm.stop()); }
+
+  /* cuenta regresiva a la elección */
+  document.querySelectorAll(".cdown[data-to]").forEach(el => {
+    const to = new Date(el.dataset.to).getTime(), u = k => el.querySelector(`[data-u="${k}"]`);
+    const tick = () => { let ms = Math.max(0, to - Date.now()); const d = Math.floor(ms / 864e5); ms -= d * 864e5; const h = Math.floor(ms / 36e5); ms -= h * 36e5; const m = Math.floor(ms / 6e4); ms -= m * 6e4; const s = Math.floor(ms / 1e3);
+      u("d").textContent = String(d); u("h").textContent = String(h).padStart(2, "0"); u("m").textContent = String(m).padStart(2, "0"); u("s").textContent = String(s).padStart(2, "0"); };
+    tick(); setInterval(tick, 1000);
+  });
 
   /* ------------------------------------------------------------ controles */
   let jumpBuf = "", jumpTo; const jumpEl = document.querySelector(".jump"), help = document.querySelector(".help");

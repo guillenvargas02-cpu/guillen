@@ -1182,3 +1182,177 @@ svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashof
 .s-brig2 .phv { grid-row: 1; } .s-brig2 .ttl { grid-row: 2; }
 .phv video { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 2.4%, #000 97.4%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 10%, #000 90%, transparent 100%);
   -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent 0, #000 2.4%, #000 97.4%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 10%, #000 90%, transparent 100%); mask-composite: intersect; }
+
+/* =========================================================================
+   v7 · contexto EE. UU. → México 2027, marco legal, Colosio, Red de Casillas
+   ========================================================================= */
+canvas.swarm { position: absolute; pointer-events: none; }
+
+/* ponentes 2 × 2, mismo tamaño */
+.s-spk2 { display: flex; flex-direction: column; justify-content: center; gap: 3.6rem; }
+.sp2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3.2rem; perspective: 220rem; }
+.sc { display: grid; grid-template-columns: 30rem 1fr; gap: 3.6rem; padding: 3.2rem; border-radius: 3rem; min-height: 50rem; align-items: center; }
+.sph { width: 30rem; height: 38rem; border-radius: 2.4rem; overflow: hidden; background: linear-gradient(160deg, #10284a, #071226); box-shadow: 0 0 0 .14rem rgba(46,242,181,.35), 0 2.4rem 6rem -2rem rgba(0,0,0,.8); }
+.sph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+.sinfo { display: flex; flex-direction: column; gap: 2.2rem; align-items: flex-start; }
+.sname { font-size: 4.4rem; font-weight: 740; letter-spacing: -.035em; line-height: 1.04; }
+.sbio { list-style: none; display: flex; flex-direction: column; gap: 1.3rem; }
+.sbio li { position: relative; padding-left: 2.4rem; font-size: 2.2rem; line-height: 1.35; color: var(--mute); }
+.sbio li::before { content: ""; position: absolute; left: 0; top: .8em; width: .9rem; height: .9rem; border-radius: 50%; background: var(--mint); box-shadow: 0 0 1rem var(--mint); transform: translateY(-50%); }
+
+/* EE. UU. 1 · drones */
+.s-usa1 { display: grid; grid-template-columns: 70rem 1fr; align-items: center; }
+.s-usa1 .col { display: flex; flex-direction: column; gap: 3rem; position: relative; z-index: 2; }
+.usa-bg { position: absolute; inset: 0; z-index: 0; }
+.usa-bg img { position: absolute; right: 0; top: 0; height: 100%; width: 70%; object-fit: cover; opacity: .16; filter: saturate(.5) brightness(.8);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%); mask-image: linear-gradient(90deg, transparent, #000 40%); }
+.s-usa1 canvas.swarm { left: 84rem; top: 18rem; width: 96rem; height: 66rem; z-index: 1; }
+.ustats { display: flex; gap: 2.4rem; }
+.us { display: flex; flex-direction: column; gap: .8rem; padding: 2.4rem 2.8rem; border-radius: 2.2rem; background: rgba(255,255,255,.03); border: .1rem solid var(--line); }
+.us .v { font-family: var(--disp); font-stretch: 120%; font-weight: 800; font-size: 6.4rem; letter-spacing: -.02em; line-height: 1; }
+.us .k { font-size: 1.9rem; color: var(--mute); max-width: 26rem; }
+.uchips { display: flex; flex-wrap: wrap; gap: 1rem; }
+.uchips span { font-family: var(--mono); font-size: 1.4rem; letter-spacing: .08em; padding: .8rem 1.4rem; border-radius: 1rem; color: #ffd0da; background: rgba(232,52,74,.1); border: .12rem solid rgba(232,52,74,.38); }
+
+/* EE. UU. 2 · regulación y mapa */
+.s-usa2 { display: grid; grid-template-columns: 62rem 1fr; gap: 5rem; align-items: center; }
+.s-usa2 .col { display: flex; flex-direction: column; gap: 2.4rem; }
+.big31 { display: flex; align-items: baseline; gap: 2rem; font-family: var(--disp); font-stretch: 125%; font-weight: 800; font-size: 16rem; line-height: .9; letter-spacing: -.03em; }
+.big31 small { font-size: 4rem; color: var(--mute); font-family: var(--sans); font-stretch: 100%; font-weight: 600; letter-spacing: -.02em; }
+.ulist { list-style: none; display: flex; flex-direction: column; gap: 1.6rem; margin-top: 1rem; }
+.ulist li { display: flex; align-items: center; gap: 1.8rem; font-size: 2.2rem; color: var(--mute); line-height: 1.35; }
+.smap { padding: 2.4rem; border-radius: 2.6rem; background: #f6f8fc; }
+.smap .mapimg { display: block; width: 100%; border-radius: 1.2rem; }
+.smap .parties { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; padding: 0 1rem; }
+.smap .caps { color: #4a5568; }
+.smap .pt { display: flex; align-items: center; gap: 1.2rem; font-weight: 700; font-size: 2rem; }
+.smap .pt img { width: 6.4rem; height: 6.4rem; object-fit: contain; }
+.smap .pt.dem { color: #1f3fbf; } .smap .pt.gop { color: #c4161c; }
+
+/* adopción en México */
+.s-adopt { display: flex; flex-direction: column; justify-content: center; gap: 5rem; }
+.ad3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; perspective: 220rem; }
+.adc { padding: 4rem; display: flex; flex-direction: column; gap: 2rem; min-height: 34rem; }
+.adi { position: relative; width: 9rem; height: 9rem; border-radius: 2.6rem; display: grid; place-items: center; font-size: 4.2rem; color: var(--mint);
+  background: linear-gradient(160deg, rgba(46,242,181,.18), rgba(46,242,181,.02)); border: .14rem solid rgba(46,242,181,.4); }
+.adi.blue { color: #9cc0ff; border-color: rgba(77,139,255,.45); background: linear-gradient(160deg, rgba(77,139,255,.2), rgba(77,139,255,.02)); }
+.adi.gold { color: var(--gold); border-color: rgba(246,190,79,.45); background: linear-gradient(160deg, rgba(246,190,79,.18), rgba(246,190,79,.02)); }
+.adi .ring { position: absolute; inset: -.8rem; border-radius: 3.2rem; border: .14rem solid currentColor; opacity: 0; }
+.s-adopt.active .adi .ring { animation: ring 2.6s ease-out infinite; }
+@keyframes ring { 0% { opacity: .5; transform: scale(.92); } 100% { opacity: 0; transform: scale(1.25); } }
+.adc h4 { font-size: 3.8rem; font-weight: 720; letter-spacing: -.03em; }
+.adc p { font-size: 2.3rem; color: var(--mute); line-height: 1.35; }
+.adbanner { align-self: center; display: flex; align-items: center; gap: 2.4rem; padding: 2.4rem 4rem; border-radius: 2.4rem; }
+.adbanner .mk, .gapbox .mk, .pgift .mk { flex: none; width: 6.4rem; height: 6.4rem; border-radius: 1.8rem; display: grid; place-items: center; font-size: 3.2rem; color: var(--mint); border: .14rem solid rgba(46,242,181,.45); background: rgba(46,242,181,.08); }
+.adbanner .mk svg, .gapbox .mk svg { fill: currentColor; stroke: none; }
+.adbanner b { font-size: 4.4rem; font-weight: 740; letter-spacing: -.035em; }
+
+/* reto 2027: mapa → fecha + cuenta regresiva */
+.s-reto { display: grid; grid-template-columns: 62rem 1fr; align-items: center; }
+.s-reto .col { display: flex; flex-direction: column; gap: 3rem; z-index: 2; }
+.s-reto canvas.swarm { left: 76rem; top: 16rem; width: 104rem; height: 76rem; }
+.cdown { display: flex; align-items: flex-end; gap: 1.4rem; margin-top: 1rem; flex-wrap: wrap; }
+.cdown .caps { width: 100%; }
+.cdown .cd { display: flex; flex-direction: column; align-items: center; gap: .6rem; min-width: 11rem; padding: 1.8rem 1.4rem 1.4rem; border-radius: 1.8rem; background: rgba(46,242,181,.06); border: .12rem solid rgba(46,242,181,.32); }
+.cdown .cd b { font-family: var(--mono); font-size: 5.4rem; font-weight: 600; color: var(--mint); letter-spacing: .02em; text-shadow: 0 0 2rem rgba(46,242,181,.4); line-height: 1; }
+.cdown .cd em { font-style: normal; font-family: var(--mono); font-size: 1.25rem; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+.cdown > i { font-family: var(--mono); font-size: 4rem; color: var(--dim); font-style: normal; padding-bottom: 3.4rem; }
+
+/* 19,600 cargos + casilla del INE */
+.s-cargos { display: grid; grid-template-columns: 1fr 66rem; gap: 5rem; align-items: center; }
+.s-cargos .col { display: flex; flex-direction: column; gap: 2.4rem; }
+.big196 { font-family: var(--disp); font-stretch: 125%; font-weight: 800; font-size: 15rem; line-height: .92; letter-spacing: -.03em; color: var(--mint); }
+.gapbox { display: flex; align-items: center; gap: 2.4rem; padding: 2.6rem 3rem; border-radius: 2.4rem; margin-top: 1.6rem; max-width: 86rem; }
+.gapbox b { display: block; font-size: 3.4rem; font-weight: 740; letter-spacing: -.03em; }
+.gapbox span { display: block; margin-top: .6rem; font-size: 2.2rem; color: var(--mute); line-height: 1.35; }
+.casilla { position: relative; height: 68rem; }
+.casilla .mph { position: absolute; inset: 0; border-radius: 3rem; overflow: hidden;
+  -webkit-mask-image: radial-gradient(75% 72% at 50% 50%, #000 55%, transparent 100%); mask-image: radial-gradient(75% 72% at 50% 50%, #000 55%, transparent 100%); }
+.casilla .mph img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.82) contrast(1.05); }
+.s-cargos.active .casilla .mph img { animation: mpZoom 14s ease-out both; }
+@keyframes mpZoom { from { transform: scale(1.12); } to { transform: scale(1); } }
+.casilla::after { content: ""; position: absolute; inset: 0; border-radius: 3rem; background: linear-gradient(115deg, transparent 30%, rgba(46,242,181,.16) 48%, transparent 62%); background-size: 260% 100%; pointer-events: none; }
+.s-cargos.active .casilla::after { animation: sweep 5s ease-in-out 1s infinite; }
+@keyframes sweep { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+.ballot2 { position: absolute; left: 50%; bottom: 8%; width: 0; }
+.ballot2 i { position: absolute; left: -6rem; bottom: 0; width: 12rem; height: 15rem; border-radius: .8rem; background: linear-gradient(180deg, #f4f8ff, #cfdcf0); box-shadow: 0 1.2rem 3rem rgba(0,0,0,.5); opacity: 0; }
+.ballot2 i::after { content: ""; position: absolute; right: 2.2rem; bottom: 2.4rem; width: 3.2rem; height: 1.6rem; border-left: .5rem solid #0fae95; border-bottom: .5rem solid #0fae95; transform: rotate(-45deg); }
+.s-cargos.active .ballot2 i { animation: ballotIn 6s cubic-bezier(.55,0,.35,1) 1.6s infinite; }
+@keyframes ballotIn { 0% { opacity: 0; transform: translateY(-34rem) rotate(-6deg); } 15% { opacity: 1; } 55% { opacity: 1; transform: translateY(-4rem) rotate(0); } 70%, 100% { opacity: 0; transform: translateY(2rem) scaleY(.6); } }
+
+/* marco legal 1/3 */
+.s-just2 { display: grid; grid-template-columns: 1fr 56rem; gap: 5rem; align-items: center; }
+.s-just2 .col { display: flex; flex-direction: column; gap: 2.4rem; }
+.s-just2 .scales path, .s-just2 .scales circle { stroke: url(#jg2); }
+.s-just2.active .scales path, .s-just2.active .scales circle { stroke-dashoffset: 0; }
+.s-just2.active .scales .beam { animation: balance 4.8s var(--ease) 1.2s both; }
+.s-just2.active .scales .pan { animation: counter 4.8s var(--ease) 1.2s both; }
+.s-just2 .scales { width: 54rem; height: 54rem; }
+.gen4 { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+.gen4 span { display: flex; align-items: center; gap: 1rem; font-size: 2.2rem; font-weight: 600; padding: 1.2rem 1.8rem; border-radius: 1.4rem; background: rgba(46,242,181,.06); border: .12rem solid rgba(46,242,181,.32); }
+.gen4 .ico { color: var(--mint); font-size: 2.6rem; }
+.q3 { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+.q3 span { font-size: 2.1rem; font-weight: 600; padding: 1.1rem 1.6rem; border-radius: 1.2rem; color: #ddd6ff; background: rgba(143,124,255,.12); border: .12rem solid rgba(143,124,255,.38); }
+.lgipe { font-size: 1.9rem; line-height: 1.45; color: var(--mute); padding: 1.8rem 2.2rem; border-radius: 1.6rem; background: rgba(255,255,255,.03); border: .1rem solid var(--line); max-width: 92rem; }
+.lgipe .ref { display: block; font-family: var(--mono); font-size: 1.3rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mint); margin-bottom: .6rem; }
+
+/* marco legal 2/3: cinco pestañas */
+.s-legal5 .lg .tb { padding: 1.5rem 2.2rem; }
+.s-legal5:not(.g1) .t0, .s-legal5.g1:not(.g2) .t1, .s-legal5.g2:not(.g3) .t2, .s-legal5.g3:not(.g4) .t3, .s-legal5.g4 .t4 { opacity: 1; border-color: rgba(46,242,181,.45); background: rgba(46,242,181,.06); transform: translateX(1.4rem); }
+.s-legal5.g3 .t2, .s-legal5.g4 .t2, .s-legal5.g4 .t3 { opacity: .42; border-color: var(--line); background: rgba(255,255,255,.02); transform: none; }
+.s-legal5:not(.g1) .p0, .s-legal5.g1:not(.g2) .p1, .s-legal5.g2:not(.g3) .p2, .s-legal5.g3:not(.g4) .p3, .s-legal5.g4 .p4 { opacity: 1; transform: none; transition-delay: .25s; }
+.s-legal5.g3 .p2, .s-legal5.g4 .p2, .s-legal5.g4 .p3 { opacity: 0; transform: translateY(2rem); transition-delay: 0s; }
+
+/* marco legal 3/3 */
+.s-lconc { display: flex; flex-direction: column; justify-content: center; gap: 4.4rem; }
+.lc3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; perspective: 220rem; }
+.lcc { position: relative; padding: 4rem; display: flex; flex-direction: column; gap: 1.8rem; min-height: 32rem; }
+.lcc .n { position: absolute; right: 3.4rem; top: 3rem; font-family: var(--disp); font-stretch: 125%; font-weight: 800; font-size: 4.4rem; color: transparent; -webkit-text-stroke: .12rem rgba(46,242,181,.5); }
+.lci { width: 8.4rem; height: 8.4rem; border-radius: 2.4rem; display: grid; place-items: center; font-size: 4rem; color: var(--mint); background: linear-gradient(160deg, rgba(46,242,181,.18), rgba(46,242,181,.02)); border: .14rem solid rgba(46,242,181,.4); }
+.lci.violet { color: #c0b4ff; border-color: rgba(143,124,255,.45); background: linear-gradient(160deg, rgba(143,124,255,.2), rgba(143,124,255,.02)); }
+.lci.gold { color: var(--gold); border-color: rgba(246,190,79,.45); background: linear-gradient(160deg, rgba(246,190,79,.18), rgba(246,190,79,.02)); }
+.s-lconc.active .lci .ico { animation: icoPulse 3s ease-in-out infinite; }
+@keyframes icoPulse { 50% { transform: scale(1.12); filter: drop-shadow(0 0 1rem currentColor); } }
+.lcc h4 { font-size: 3.8rem; font-weight: 720; letter-spacing: -.03em; }
+.lcc p { font-size: 2.3rem; color: var(--mute); line-height: 1.35; }
+.lcfoot { display: flex; align-items: center; gap: 1.6rem; font-size: 2.4rem; color: var(--ink); }
+.lcfoot .ico { color: var(--mint); font-size: 3rem; }
+
+/* prompts entregados por PULSO */
+.pgift { display: flex; align-items: center; gap: 2.2rem; padding: 2rem 2.8rem; border-radius: 2.2rem; margin-top: 3rem; text-align: left; }
+.pgift b { display: block; font-size: 2.6rem; font-weight: 700; letter-spacing: -.02em; }
+.pgift span { display: block; font-size: 2.2rem; color: var(--mint); margin-top: .4rem; }
+.pgift .mk svg { fill: none; }
+
+/* caso Colosio */
+.s-colosio { display: grid; grid-template-columns: 50rem 1fr; grid-template-rows: auto 1fr; column-gap: 4rem; row-gap: 2.4rem; padding-top: 11rem; }
+.s-colosio .phv { grid-column: 1 / span 2; }
+.who3 { grid-column: 1; grid-row: 2; align-self: start; padding: 2.2rem; border-radius: 2.6rem; display: flex; flex-direction: column; gap: 2rem; }
+.who3 .cph { height: 36rem; border-radius: 1.8rem; overflow: hidden; }
+.who3 .cph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; display: block; }
+.cinfo { display: flex; flex-direction: column; gap: .6rem; padding: 0 .6rem; }
+.cinfo b { font-size: 3.2rem; font-weight: 720; letter-spacing: -.03em; margin: .4rem 0 .4rem; }
+.cinfo > span:not(.tag2) { font-size: 1.9rem; color: var(--mute); line-height: 1.35; }
+.party { display: flex; align-items: center; gap: 1.4rem; margin-top: 1.2rem; }
+.party img { width: 8rem; height: 7rem; object-fit: cover; border-radius: 1.2rem; }
+.party em { font-style: normal; font-weight: 700; font-size: 2rem; color: #ff8a3d; }
+.s-colosio .stk { grid-column: 2; grid-row: 2; align-self: start; }
+.strips .sv2 { display: flex; flex-direction: column; gap: 1.2rem; padding: 1.4rem; background: #071020; }
+.strip { position: relative; border-radius: 1.2rem; overflow: hidden; box-shadow: inset 0 0 0 .1rem var(--line); }
+.strip .sl { position: absolute; left: 1.2rem; top: 1rem; z-index: 1; font-family: var(--mono); font-size: 1.2rem; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); background: rgba(3,7,15,.75); padding: .4rem .8rem; border-radius: .6rem; }
+.s-colosio.c1 .strip { animation: stripIn .9s var(--ease) both; }
+.s-colosio.c1 .strip:nth-child(2) { animation-delay: .2s; } .s-colosio.c1 .strip:nth-child(3) { animation-delay: .4s; }
+@keyframes stripIn { from { opacity: 0; transform: translateY(2rem); } }
+
+/* Red de Casillas */
+.s-rdc { display: grid; grid-template-columns: 62rem 1fr; grid-template-rows: auto 1fr; column-gap: 4rem; row-gap: 2rem; padding-top: 11rem; }
+.phv.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.s-rdc .phv { grid-column: 1; grid-row: 1; width: 58rem; }
+.s-rdc .col { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; gap: 2.4rem; }
+.rdcshot { margin-top: 1.2rem; }
+.rmap { grid-column: 2; grid-row: 1 / span 2; position: relative; align-self: center; aspect-ratio: 1870 / 1195; }
+.rmap img { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 0 1.6rem rgba(46,242,181,.18)); }
+.rmap canvas.swarm { left: 0; top: 0; width: 100%; height: 100%; }
+.us .v { font-size: 5.6rem; white-space: nowrap; }
+.phv.img { width: 58rem; }
+.phv.img { aspect-ratio: 1867 / 301; }

@@ -59,8 +59,9 @@ boot = """<script>
 deck_js = deck_js.replace('vid.src = big ? "assets/video/pulso360-4k.mp4" : "assets/video/pulso360-1080.mp4";',
                           'vid.src = (window.__A || {})[big ? "assets/video/pulso360-4k.mp4" : "assets/video/pulso360-1080.mp4"];')
 
-scripts = "\n".join(blocks) + "\n" + boot + "\n<script>\n" + engine_js.replace("</script", "<\\/script") + "\n</script>\n<script>\n" + deck_js.replace("</script", "<\\/script") + "\n</script>"
-html = html.replace('<script src="js/engine.js"></script>\n<script src="js/deck.js"></script>', scripts)
+mx_js = open(os.path.join(ROOT, "js/mxpts.js"), encoding="utf-8").read()
+scripts = "\n".join(blocks) + "\n" + boot + "\n<script>\n" + mx_js + "\n</script>\n<script>\n" + engine_js.replace("</script", "<\\/script") + "\n</script>\n<script>\n" + deck_js.replace("</script", "<\\/script") + "\n</script>"
+html = html.replace('<script src="js/mxpts.js"></script>\n<script src="js/engine.js"></script>\n<script src="js/deck.js"></script>', scripts)
 assert "js/deck.js" not in html and "css/deck.css" not in html
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
