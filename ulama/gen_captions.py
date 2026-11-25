@@ -32,6 +32,10 @@ def main():
     for gi, idx in enumerate(groups):
         t0 = words[idx[0]]["t"] - START
         t1 = (words[groups[gi + 1][0]]["t"] - START) if gi + 1 < len(groups) else END - START
+        # la frase no rebasa el final de su toma (así cada parte del video empieza limpia)
+        last = words[idx[-1]]["t"]
+        seg_end = next(s["end"] for s in p["segments"] if s["start"] <= last < s["end"])
+        t1 = min(t1, seg_end - START + 0.04)
         spans = []
         for k in idx:
             txt = words[k]["w"].upper().rstrip(",.")

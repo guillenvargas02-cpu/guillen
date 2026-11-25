@@ -274,6 +274,38 @@ def build_final(p):
          OUT / "ulama-invitacion-4k.mp4"])
 
 
+# Partes para compartir (< 10 MB): se corta donde termina una frase y cambia la toma
+SPLITS = [11.6, 18.4]  # 1) intro … "juego de pelota prehispánico"  2) "donde va a haber…" … "cultura mexicana"  3) "Así que te esperamos…" + cierre
+PART_BYTES = 9_400_000  # margen bajo 10 MB
+AUDIO_KBPS = 192
+
+
+def build_parts(p):
+    src = OUT / "ulama-invitacion-4k.mp4"
+    cuts = [0.0] + SPLITS + [p["total"]]
+    for k in range(3):
+        a, b = cuts[k], cuts[k + 1]
+        dur = b - a
+        vk = int(PART_BYTES * 8 / dur / 1000 - AUDIO_KBPS - 40)  # kbps de video (40 kbps para el contenedor)
+        dst = OUT / f"ulama-parte-{k + 1}-de-3.mp4"
+        af = []
+        if k > 0:
+            af.append("afade=t=in:d=0.05")
+        if k < 2:
+            af.append(f"afade=t=out:st={dur - 0.08:.3f}:d=0.08")
+        common = ["-ss", f"{a:.4f}", "-i", src, "-t", f"{dur:.4f}",
+                  "-vf", "scale=1080:1920:flags=lanczos,format=yuv420p",
+                  "-c:v", "libx264", "-preset", "slow", "-profile:v", "high", "-level", "4.1",
+                  "-b:v", f"{vk}k", "-maxrate", f"{int(vk * 1.6)}k", "-bufsize", f"{vk * 2}k", "-g", "60",
+                  "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
+        log = str(OUT / f"x264-parte{k + 1}")
+        run(["ffmpeg", "-v", "error", "-y", *common, "-pass", "1", "-passlogfile", log, "-an", "-f", "mp4", "/dev/null"])
+        run(["ffmpeg", "-v", "error", "-y", *common, "-pass", "2", "-passlogfile", log,
+             *(["-af", ",".join(af)] if af else []),
+             "-c:a", "aac", "-b:a", f"{AUDIO_KBPS}k", "-ar", "48000", "-ac", "2", "-movflags", "+faststart", dst])
+        print(f"{dst.name}: {a:.3f}-{b:.3f} s, video {vk} kbps, {dst.stat().st_size / 1e6:.2f} MB")
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     p = plan()
@@ -285,4 +317,4 @@ if __name__ == "__main__":
                 print(f"{s['start']:7.3f}-{s['end']:7.3f}  {s['src']} {s['in']:.3f}-{s['out']:.3f}")
             print("outro", p["outro_start"], "total", p["total"], "music_offset", p["music_offset"])
         else:
-            {"base": build_base, "audio": build_audio, "final": build_final}[step](p)
+            {"base": build_base, "audio": build_audio, "final": build_final, "parts": build_parts}[step](p)
