@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script src="brand.js"></script>
+<style>
+@font-face{font-family:Hind;font-weight:400;src:url(../fonts/hind-siliguri-latin-400-normal.woff2)}
+@font-face{font-family:Hind;font-weight:500;src:url(../fonts/hind-siliguri-latin-500-normal.woff2)}
+@font-face{font-family:Hind;font-weight:600;src:url(../fonts/hind-siliguri-latin-600-normal.woff2)}
+@font-face{font-family:Hind;font-weight:700;src:url(../fonts/hind-siliguri-latin-700-normal.woff2)}
+html,body{margin:0;padding:0;width:1080px;height:1920px;overflow:hidden;background:transparent}
+#stage{position:absolute;inset:0;overflow:hidden}
+.abs{position:absolute}
+*{box-sizing:border-box}
+body{font-family:Hind, sans-serif;-webkit-font-smoothing:antialiased}
+/* phone */
+#panel{position:absolute;left:0;top:0;width:1080px;height:1920px;background:#E4007C}
+#phoneWrap{position:absolute;left:290px;top:217px;width:500px;height:1085px;perspective:2200px;transform:scale(1.2);transform-origin:50% 50%}
+#phone{position:absolute;inset:0;border-radius:82px;background:linear-gradient(145deg,#3a3a3e,#111114 45%,#2a2a2e);
+  box-shadow:0 60px 120px rgba(60,0,30,.45),0 18px 40px rgba(60,0,30,.35), inset 0 0 0 3px #55555a, inset 0 0 0 5px #0b0b0d;transform-style:preserve-3d}
+#screen{position:absolute;left:15px;top:15px;width:470px;height:1055px;border-radius:68px;overflow:hidden;background:#fff}
+#island{position:absolute;left:50%;top:26px;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#050505;z-index:50}
+.status{position:absolute;left:0;right:0;top:0;height:76px;font-weight:600;font-size:22px;color:#111;padding:27px 44px 0 52px;display:flex;justify-content:space-between;z-index:40}
+.view{position:absolute;inset:0}
+#chat{background:#F1F1F4}
+.chatHead{position:absolute;left:0;right:0;top:0;height:170px;background:#fff;border-bottom:1px solid #e6e6ea}
+.avatar{position:absolute;left:30px;top:92px;width:62px;height:62px;border-radius:50%;background:#fff;border:2px solid #f0d0e2;display:flex;align-items:center;justify-content:center}
+.chatName{position:absolute;left:108px;top:94px;font-weight:700;font-size:25px;color:#111}
+.chatSub{position:absolute;left:108px;top:126px;font-weight:500;font-size:18px;color:#8a8a90}
+.bubble{position:absolute;left:28px;max-width:360px;background:#fff;border-radius:26px 26px 26px 8px;padding:16px 22px 14px;font-size:23px;line-height:1.28;color:#1b1b1d;font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,.06);transform-origin:0% 100%}
+.card{position:absolute;left:28px;width:372px;background:#fff;border-radius:26px 26px 26px 8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.06);transform-origin:0% 100%}
+.cardTop{height:176px;background:#E4007C;display:flex;align-items:center;justify-content:center}
+.pleca{background:#fff;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.cardBody{padding:16px 22px 18px}
+.cardTitle{font-weight:700;font-size:24px;color:#111}
+.cardUrl{font-weight:600;font-size:20px;color:#E4007C;margin-top:2px}
+.touch{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:rgba(40,40,45,.28);border:3px solid rgba(255,255,255,.75);z-index:60}
+#web{background:#fff}
+.addr{position:absolute;left:24px;right:24px;top:84px;height:58px;border-radius:18px;background:#F1F1F4;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;font-size:21px;color:#222}
+.h1{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:38px;color:#111;letter-spacing:-.3px}
+.p{position:absolute;left:46px;right:46px;text-align:center;font-weight:500;font-size:21px;line-height:1.35;color:#5b5b62}
+.pad{position:absolute;left:34px;right:34px;top:560px;height:250px;border-radius:26px;border:2.5px dashed #d9d9df;background:#FBFBFC}
+.padLbl{position:absolute;left:24px;top:16px;font-weight:600;font-size:18px;color:#a3a3aa;letter-spacing:.5px}
+.padLine{position:absolute;left:34px;right:34px;bottom:56px;height:2px;background:#e2e2e7}
+.padX{position:absolute;left:34px;bottom:62px;font-weight:600;font-size:26px;color:#c4c4ca}
+.btn{position:absolute;left:34px;right:34px;top:850px;height:92px;border-radius:999px;background:#E4007C;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;letter-spacing:2px;box-shadow:0 10px 24px rgba(228,0,124,.28)}
+#success{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.okTxt{font-weight:700;font-size:40px;color:#111;margin-top:34px;text-align:center;line-height:1.15}
+.okSub{font-weight:500;font-size:22px;color:#6b6b72;margin-top:12px}
+</style></head>
+<body><div id="stage"></div>
+<script>
+const B=window.BRAND, W=1080, H=1920, PINK='#E4007C';
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const pr=(t,a,b)=>clamp((t-a)/(b-a));
+const eOutCubic=t=>1-Math.pow(1-t,3), eInCubic=t=>t*t*t, eInOutCubic=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const eOutExpo=t=>t>=1?1:1-Math.pow(2,-10*t), eInExpo=t=>t<=0?0:Math.pow(2,10*t-10);
+const eOutBack=(t,s=1.70158)=>1+(s+1)*Math.pow(t-1,3)+s*Math.pow(t-1,2);
+const eOutQuint=t=>1-Math.pow(1-t,5);
+const svgNS='http://www.w3.org/2000/svg';
+const stage=document.getElementById('stage');
+function rng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+
+// ---------- logo scene (intro/outro) ----------
+const LB=B.logoBB, logoW=LB[1]-LB[0];
+let LOGO_PX=860; // logo width on 1080 canvas (protagonista)
+function buildLogoScene(withHole){
+  stage.innerHTML='';
+  const svg=document.createElementNS(svgNS,'svg');
+  svg.setAttribute('width',W);svg.setAttribute('height',H);svg.style.position='absolute';
+  const defs=document.createElementNS(svgNS,'defs');
+  defs.innerHTML=`<filter id="mb0" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="0"/></filter>`+
+    [0,1,2,3,4].map(i=>`<filter id="bl${i}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur id="gb${i}" stdDeviation="0"/></filter>`).join('')+
+    `<clipPath id="lemaClip"><rect id="lemaClipR" x="${B.lemaBB[0]-20}" y="${B.lemaBB[2]-30}" width="0" height="${B.lemaBB[3]-B.lemaBB[2]+60}"/></clipPath>`;
+  svg.appendChild(defs);
+  const g=document.createElementNS(svgNS,'g'); g.id='world'; svg.appendChild(g);
+  // background white with optional hole (counter of first O)
+  const bg=document.createElementNS(svgNS,'path');
+  bg.setAttribute('d',`M -40000 -40000 L 40000 -40000 L 40000 40000 L -40000 40000 Z ${B.counter}`);
+  bg.setAttribute('fill','#fff'); bg.setAttribute('fill-rule','evenodd'); g.appendChild(bg);
+  const bf=document.createElementNS(svgNS,'rect'); bf.id='bgFull'; bf.setAttribute('x',-40000);bf.setAttribute('y',-40000);bf.setAttribute('width',80000);bf.setAttribute('height',80000);bf.setAttribute('fill','#fff'); g.appendChild(bf);
+  const cf=document.createElementNS(svgNS,'path'); cf.id='counterFill'; cf.setAttribute('d',B.counter); cf.setAttribute('fill','#fff'); g.appendChild(cf);
+  B.letters.forEach((d,i)=>{const p=document.createElementNS(svgNS,'path');p.setAttribute('d',d);p.setAttribute('fill',PINK);p.id='L'+i;p.setAttribute('filter',`url(#bl${i})`);g.appendChild(p)});
+  const lg=document.createElementNS(svgNS,'g'); lg.id='lema'; lg.setAttribute('clip-path','url(#lemaClip)');
+  B.lema.forEach(d=>{const p=document.createElementNS(svgNS,'path');p.setAttribute('d',d);p.setAttribute('fill',PINK);lg.appendChild(p)});
+  /* lema intentionally not used (logo only) */
+  stage.appendChild(svg);
+}
+// world transform: logo unit (ux,uy) -> screen
+function setWorld(scale, cx, cy, ux, uy){ // place logo-space point (ux,uy) at screen (cx,cy) with px-per-unit 'scale'
+  document.getElementById('world').setAttribute('transform',`translate(${cx} ${cy}) scale(${scale}) translate(${-ux} ${-uy})`);
+}
+const baseK=()=>LOGO_PX/logoW;
+// visual center of logo+lema block
+const blockCX=(LB[0]+LB[1])/2, blockCY=(LB[2]+LB[3])/2;
+const LOGO_SCREEN_Y=930;
+
+function letterXform(i,s,dy){ // scale letter about its own center
+  const b=B.letterBB[i], cx=(b[0]+b[1])/2, cy=(b[2]+b[3])/2;
+  document.getElementById('L'+i).setAttribute('transform',`translate(${cx} ${cy+dy}) scale(${s}) translate(${-cx} ${-cy})`);
+}
+
+// ---------- INTRO ----------
+const INTRO={dur:3.0, hits:[0.10,0.22,0.34,0.46,0.58]};
+function renderIntro(t){
+  const k=baseK();
+  // letters slam in
+  let kick=0;
+  INTRO.hits.forEach((ti,i)=>{
+    const p=pr(t,ti,ti+0.24), e=eOutExpo(p);
+    const op=pr(t,ti,ti+0.045);
+    const s=1+1.25*(1-e);
+    letterXform(i,s,0);
+    const L=document.getElementById('L'+i); L.setAttribute('opacity',op);
+    document.getElementById('gb'+i).setAttribute('stdDeviation',(10*(1-e)*(1-e)).toFixed(3));
+    const land=ti+0.06; if(t>=land) kick+=0.022*Math.exp(-(t-land)/0.07);
+  });
+  // counter becomes a window
+  document.getElementById('counterFill').setAttribute('opacity',1-pr(t,1.70,1.92));
+  document.getElementById('bgFull').setAttribute('opacity',t<1.70?1:0);
+  // camera
+  const push=1+0.06*eInOutCubic(pr(t,0.62,1.9));
+  let scale=k*push*(1+kick);
+  // zoom through counter
+  const zc=B.counterBB, ux0=(zc[0]+zc[1])/2, uy0=(zc[2]+zc[3])/2;
+  const zp=pr(t,1.78,3.0);
+  const ze=Math.pow(zp,2.6); // accelerate into the drop
+  const Zend=60;
+  scale*=Math.exp(Math.log(Zend)*ze);
+  // anchor: blend from block center to counter center
+  const a=eInOutCubic(clamp(zp*1.6));
+  const ux=lerp(blockCX,ux0,a), uy=lerp(blockCY,uy0,a);
+  const cy=lerp(LOGO_SCREEN_Y,960,a);
+  setWorld(scale,540,cy,ux,uy);
+}
+
+// ---------- OUTRO ----------
+const OUTRO={dur:4.84};
+// flicker plan (outro-relative seconds) synced with SFX placement (see audio script)
+const FLK={glim:[0.34,0.60], bursts:[[0.62,0.74],[0.80,1.08],[1.12,1.20]], stable:1.20, late:[[1.50,1.533],[1.60,1.633]]};
+function renderOutro(t,frame){
+  const k=baseK();
+  const OFF=0.07;
+  const r=rng(1000+frame*7919);
+  const vals=[0,1,2,3,4].map(i=>{
+    let v=OFF;
+    if(t>=FLK.glim[0]&&t<FLK.glim[1]){ if(r()<0.35) v=OFF+0.25*r(); }
+    for(const [a,b] of FLK.bursts){ if(t>=a&&t<b){ v = r()<0.62?1:(r()<0.5?OFF:0.35); } }
+    if(t>=FLK.bursts[0][1]&&t<FLK.bursts[1][0]) v=(i==2&&r()<0.5)?0.4:OFF;
+    if(t>=FLK.bursts[1][1]&&t<FLK.bursts[2][0]) v=OFF;
+    if(t>=FLK.stable) v=1;
+    if(i==4) for(const [a,b] of FLK.late) if(t>=a&&t<b) v=0.18;
+    return v;
+  });
+  vals.forEach((v,i)=>{const L=document.getElementById('L'+i); L.setAttribute('opacity',v); letterXform(i,1,0); document.getElementById('gb'+i).setAttribute('stdDeviation',0)});
+  document.getElementById('counterFill').setAttribute('opacity',1);
+  document.getElementById('bgFull').setAttribute('opacity',1);
+  const kick= t>=FLK.stable? 0.014*Math.exp(-(t-FLK.stable)/0.12):0;
+  const push=1+0.04*eInOutCubic(pr(t,0.0,OUTRO.dur));
+  const scale=k*push*(1+kick);
+  setWorld(scale,540,LOGO_SCREEN_Y,blockCX,blockCY);
+  // fade-in white from video
+  stage.style.opacity=eOutCubic(pr(t,0,0.16));
+}
+
+// ---------- PHONE ----------
+const PH={dur:6.5};
+function logoSVG(w,color){ // official logo, width w px
+  const s=w/logoW, h=(LB[3]-LB[2])*s;
+  return `<svg width="${w}" height="${h}" viewBox="${LB[0]} ${LB[2]} ${logoW} ${LB[3]-LB[2]}">${B.letters.map(d=>`<path d="${d}" fill="${color}"/>`).join('')}</svg>`;
+}
+function lemaSVG(w,color){const s=w/(B.lemaBB[1]-B.lemaBB[0]);const h=(B.lemaBB[3]-B.lemaBB[2])*s;
+  return `<svg width="${w}" height="${h}" viewBox="${B.lemaBB[0]} ${B.lemaBB[2]} ${B.lemaBB[1]-B.lemaBB[0]} ${B.lemaBB[3]-B.lemaBB[2]}">${B.lema.map(d=>`<path d="${d}" fill="${color}"/>`).join('')}</svg>`}
+function plecaHTML(logoW_){ // pleca proportions per manual: side pad = S width, vertical pad = 2/3 M height
+  const s=logoW_/logoW, sw=(B.letterBB[0][1]-B.letterBB[0][0])*s, lh=(LB[3]-LB[2])*s;
+  const padX=sw*1.0, padY=lh*0.55;
+  return `<div class="pleca" style="padding:${padY}px ${padX}px">${logoSVG(logoW_,PINK)}</div>`;
+}
+const SIG="M 40 150 C 55 95, 70 60, 82 62 C 96 64, 78 150, 70 168 C 92 120, 118 88, 128 100 C 138 112, 112 150, 122 154 C 134 158, 150 110, 160 112 C 170 114, 152 156, 166 156 C 182 156, 196 96, 212 70 C 222 54, 230 66, 222 96 C 214 126, 204 158, 214 160 C 226 162, 236 124, 250 122 C 262 120, 252 158, 268 156 C 284 154, 296 118, 312 120 C 326 122, 310 160, 328 158 C 350 156, 372 120, 392 110 M 70 128 C 160 120, 260 112, 380 96";
+function buildPhone(){
+  stage.innerHTML=`
+  <div id="panel"></div>
+  <div id="phoneWrap"><div id="phone">
+    <div id="screen">
+      <div class="status"><span>9:41</span><span style="display:flex;gap:7px;align-items:center">
+        <svg width="30" height="18" viewBox="0 0 30 18"><rect x="0" y="12" width="5" height="6" rx="1" fill="#111"/><rect x="8" y="8" width="5" height="10" rx="1" fill="#111"/><rect x="16" y="4" width="5" height="14" rx="1" fill="#111"/><rect x="24" y="0" width="5" height="18" rx="1" fill="#111"/></svg>
+        <svg width="40" height="20" viewBox="0 0 40 20"><rect x="1" y="1" width="33" height="18" rx="5" fill="none" stroke="#111" stroke-width="2" opacity=".5"/><rect x="4" y="4" width="25" height="12" rx="3" fill="#111"/><rect x="36" y="7" width="3" height="6" rx="1.5" fill="#111" opacity=".5"/></svg></span></div>
+      <div id="web" class="view">
+        <div class="h1" style="top:300px">Firma aquí</div>
+        <div class="pad" style="top:390px;height:330px"><div class="padX" style="bottom:70px">×</div><div class="padLine" style="bottom:66px"></div>
+          <svg id="sig" class="abs" style="left:4px;top:40px" width="400" height="230" viewBox="0 0 420 220"><path id="sigp" d="${SIG}" fill="none" stroke="#141418" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/><circle id="pen" r="7" fill="#E4007C"/></svg></div>
+        <div id="btn" class="btn" style="top:790px">ENVIAR</div>
+        <div id="success"><svg width="200" height="200" viewBox="0 0 190 190"><circle id="okc" cx="95" cy="95" r="88" fill="#E4007C"/><path id="okp" d="M 55 98 L 84 126 L 138 68" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="okTxt" id="okT">¡Gracias por<br>sumarte!</div></div>
+      </div>
+      <div id="touch" class="touch"></div>
+    </div>
+    <div id="island"></div>
+  </div></div>`;
+  const sp=document.getElementById('sigp'); window.SIGLEN=sp.getTotalLength();
+  const ok=document.getElementById('okp'); window.OKLEN=ok.getTotalLength();
+}
+const PT={sig0:1.85,sig1:3.05,tap:3.22,ok:3.42,out:4.72,end:5.2};
+function renderPhone(t){
+  const pin=eOutExpo(pr(t,0.0,0.42)), pout=eInExpo(pr(t,PT.out+0.08,PT.out+0.48));
+  document.getElementById('panel').style.transform=`translateY(${(1-pin)*1920 - pout*1920}px)`;
+  const fin=pr(t,0.10,0.78), fe=eOutBack(fin,1.2);
+  const fout=eInExpo(pr(t,PT.out,PT.out+0.40));
+  const yIn=(1-fe)*1500, rx=(1-eOutCubic(fin))*28;
+  const fl=Math.sin(t*2.1)*5, ry=Math.sin(t*0.9)*3.5-1;
+  document.getElementById('phone').style.transform=`translateY(${yIn+fl-fout*1900}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${1+0.02*Math.sin(t*1.3)})`;
+  // signature
+  const sp=document.getElementById('sigp'), L=window.SIGLEN;
+  const sg=pr(t,PT.sig0,PT.sig1); const sge=sg<1?(sg*0.15+0.85*eInOutCubic(sg)):1;
+  sp.style.strokeDasharray=L; sp.style.strokeDashoffset=L*(1-sge);
+  const pen=document.getElementById('pen');
+  if(sg>0&&sg<1){const q=sp.getPointAtLength(L*sge);pen.setAttribute('cx',q.x);pen.setAttribute('cy',q.y);pen.style.opacity=1}else pen.style.opacity=0;
+  // tap on ENVIAR
+  const touch=document.getElementById('touch');
+  const ta=PT.tap-0.06, tb=ta+0.40;
+  if(t>=ta&&t<tb){touch.style.opacity=Math.sin(Math.PI*clamp((t-ta)/0.40)); touch.style.transform=`scale(${0.8+0.25*eOutCubic(pr(t,ta,tb))})`}else touch.style.opacity=0;
+  touch.style.left='235px'; touch.style.top='836px';
+  const bp=(t>=PT.tap-0.04&&t<PT.tap+0.18)?Math.sin(Math.PI*clamp((t-PT.tap+0.04)/0.22)):0;
+  document.getElementById('btn').style.transform=`scale(${1-0.05*bp})`;
+  // success
+  document.getElementById('success').style.opacity=pr(t,PT.ok,PT.ok+0.2);
+  const cs=eOutBack(pr(t,PT.ok+0.04,PT.ok+0.40),2.2); document.getElementById('okc').setAttribute('r',88*cs);
+  const ok=document.getElementById('okp'); ok.style.strokeDasharray=window.OKLEN; ok.style.strokeDashoffset=window.OKLEN*(1-eOutCubic(pr(t,PT.ok+0.22,PT.ok+0.55)));
+  const tt=eOutCubic(pr(t,PT.ok+0.30,PT.ok+0.62)); const okT=document.getElementById('okT');
+  okT.style.opacity=tt; okT.style.transform=`translateY(${(1-tt)*24}px)`;
+}
+window.setup=(mode)=>{ if(mode==='phone') buildPhone(); else buildLogoScene(); window.MODE=mode; };
+window.renderAt=(t,frame)=>{ if(MODE==='intro') renderIntro(t); else if(MODE==='outro') renderOutro(t,frame); else renderPhone(t); };
+</script></body></html>

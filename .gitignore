@@ -10,3 +10,8 @@ __pycache__/
 reel/renders/*.mp4
 teaser/.hyperframes/
 teaser/renders/
+entrega/
+video-somos/work/*
+!video-somos/work/words.json
+video-somos/render/
+video-somos/final/
