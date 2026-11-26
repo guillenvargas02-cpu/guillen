@@ -35,9 +35,10 @@ m, _ = sf.read('work/music_st.wav', dtype='float64')
 m = m[int(T.MUSIC_START * SR):int(T.MUSIC_START * SR) + N]
 if len(m) < N: m = np.vstack([m, np.zeros((N - len(m), 2))])
 outro0 = T.OUTRO_START_F / T.FPS
-last_word_out = T.src_time_to_out(41.36)
-pts = [(0, 0.0), (2.95, 0.0), (3.0, 0.0), (3.10, -2.0), (3.40, -24.0),
-       (last_word_out + 0.05, -24.0), (last_word_out + 0.6, -14.0), (outro0, -12.0),
+D0 = T.INTRO_F / T.FPS
+TU = T.src_time_to_out(T.TU_SRC)
+pts = [(0, 0.0), (D0, 0.0), (D0 + 0.10, -2.0), (D0 + 0.40, -28.0),
+       (TU - 0.05, -28.0), (TU + 0.25, -18.0), (outro0, -11.0),
        (outro0 + 1.25, -10.5), (DUR - 1.6, -10.5), (DUR - 0.02, -45)]
 tt = np.arange(N) / SR
 g_db = np.interp(tt, [p[0] for p in pts], [p[1] for p in pts])
@@ -53,17 +54,20 @@ for k, (th, pit) in enumerate(zip([0.10, 0.22, 0.34, 0.46, 0.58], [1.0, 1.06, 0.
 # soft air whoosh under the reveal
 place(fx, peak(S.reverb(S.whoosh(0.9, 3000, 900, peak_at=0.18, pan0=0.4, pan1=-0.4), 0.7, 0.2), -22), 0.02)
 # riser into the drop + impact
-r = S.riser(1.25); place(fx, peak(r, -9.0), 3.0 - 1.25)
-place(fx, peak(S.reverb(S.stereo(S.boom(), 0, 1.0), 1.4, 0.22), -3.5), 3.0)
+r = S.riser(0.85); place(fx, peak(r, -9.0), D0 - 0.85)
+place(fx, peak(S.reverb(S.stereo(S.boom(), 0, 1.0), 1.4, 0.22), -3.5), D0)
 # phone section
 ph0 = T.src_to_out(T.PHONE_SRC0) / T.FPS
-place(fx, peak(S.reverb(S.whoosh(0.6, 500, 4200, peak_at=0.45, pan0=-0.2, pan1=0.2), 0.6, 0.15), -13), ph0 - 0.05)
-place(fx, peak(S.stereo(S.scribble(1.2), 0.1), -21), ph0 + 1.85)
-place(fx, peak(S.stereo(S.tap(), 0.05), -16), ph0 + 3.20)
-place(fx, peak(S.reverb(S.stereo(S.pop(), 0, 0.6), 0.7, 0.18), -15), ph0 + 3.46)
-place(fx, peak(S.reverb(S.whoosh(0.55, 4000, 600, peak_at=0.4, pan0=0.2, pan1=-0.3), 0.6, 0.15), -14), ph0 + 4.62)
+place(fx, peak(S.reverb(S.whoosh(0.45, 500, 4200, peak_at=0.5, pan0=-0.2, pan1=0.2), 0.6, 0.15), -13), ph0 - 0.08)
+place(fx, peak(S.stereo(S.scribble(0.97), 0.1), -20), ph0 + 1.28)
+place(fx, peak(S.stereo(S.tap(), 0.05), -16), ph0 + 2.43)
+place(fx, peak(S.reverb(S.stereo(S.pop(), 0, 0.6), 0.7, 0.18), -15), ph0 + 2.68)
+place(fx, peak(S.reverb(S.whoosh(0.5, 4000, 600, peak_at=0.4, pan0=0.2, pan1=-0.3), 0.6, 0.15), -14), ph0 + 3.92)
+# finale: impact on "TÚ" and whoosh as the white pill fills the screen
+place(fx, peak(S.reverb(S.stereo(S.hit(0.8, 1.4), 0, 1.0), 0.9, 0.2), -6.0), TU)
+place(fx, peak(S.reverb(S.stereo(S.boom(), 0, 1.0), 1.2, 0.2), -11.0), TU)
 # outro: whoosh to white, then electric ignition (user SFX)
-place(fx, peak(S.reverb(S.whoosh(0.5, 900, 5000, peak_at=0.55), 0.7, 0.2), -13), outro0 - 0.27)
+place(fx, peak(S.reverb(S.whoosh(0.55, 700, 6000, peak_at=0.85), 0.7, 0.2), -12), outro0 - 0.47)
 elec, _ = sf.read('work/elec_st.wav', dtype='float64')
 e2, _ = sf.read('work/efecto2_st.wav', dtype='float64')
 elec = S.fade(elec, 0.002, 0.15); e2 = S.fade(e2, 0.001, 0.05)

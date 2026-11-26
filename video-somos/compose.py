@@ -35,24 +35,24 @@ for i, ch in enumerate(chunks):
     ch_end = end
     for w in ch: w['cs'], w['ce'] = start, ch_end
 
-FONT = ImageFont.truetype('fonts/HindSiliguri-700.ttf', 152)
-SP = 38          # space between words
+FONT = ImageFont.truetype('fonts/HindSiliguri-700.ttf', 168)
+SP = 42          # space between words
 CY = 2960        # caption centre y
-PADX, PADY = 26, 4
+PADX, PADY = 28, 4
 
 def word_img(text, key):
     bb = FONT.getbbox(text)
     tw, th = bb[2] - bb[0], 120
     asc = 0
-    w = tw + 2 * PADX; h = 186
+    w = tw + 2 * PADX; h = 204
     im = Image.new('RGBA', (w + 60, h + 60), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     ox, oy = 30, 30
     if key:
         d.rounded_rectangle([ox, oy, ox + w, oy + h], radius=h // 2, fill=(255, 255, 255, 255))
-        d.text((ox + PADX - bb[0], oy + 93), text, font=FONT, fill=PINK + (255,), anchor='lm')
+        d.text((ox + PADX - bb[0], oy + 102), text, font=FONT, fill=PINK + (255,), anchor='lm')
     else:
-        d.text((ox + PADX - bb[0], oy + 93), text, font=FONT, fill=(255, 255, 255, 255), anchor='lm')
+        d.text((ox + PADX - bb[0], oy + 102), text, font=FONT, fill=(255, 255, 255, 255), anchor='lm')
     # soft shadow
     a = im.split()[3]
     sh = Image.new('RGBA', im.size, (0, 0, 0, 0))
@@ -72,6 +72,7 @@ def eob(x, s=1.9):
 
 def draw_captions(canvas, t):
     for ch in chunks:
+        if ch[0]['text'] == 'tú': continue
         if not (ch[0]['cs'] <= t < ch[0]['ce']): continue
         imgs = [get_word(w) for w in ch]
         total = sum(wd for _, wd in imgs) + SP * (len(ch) - 1)
@@ -92,6 +93,51 @@ def draw_captions(canvas, t):
                 canvas.alpha_composite(sim, (int(cx - sim.width / 2), int(CY + dy - sim.height / 2)))
             x += wd + SP
         break
+
+# ---------------- finale: big "TÚ" pill that becomes the white outro ----------------
+BIGF = ImageFont.truetype('fonts/HindSiliguri-700.ttf', 600)
+def _big():
+    txt = 'TÚ'; bb = BIGF.getbbox(txt); tw = bb[2] - bb[0]
+    h = 700; w = tw + 2 * 170
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(im).text((170 - bb[0], h / 2 + 45), txt, font=BIGF, fill=PINK + (255,), anchor='lm')
+    return im, w, h
+BIG_TXT, BIG_W, BIG_H = _big()
+TU_T = T.src_time_to_out(T.TU_SRC); FIN_T = T.src_time_to_out(T.FINALE_SRC)
+FIN_END = T.OUTRO_START_F / T.FPS
+BIG_CY = 3010
+def eoq(x): x = min(max(x, 0), 1); return 1 - (1 - x) ** 5
+def eiq(x): x = min(max(x, 0), 1); return x ** 3
+def draw_finale(canvas, t):
+    if t < TU_T - 0.03: return
+    p = (t - (TU_T - 0.03)) / 0.20
+    s = (0.35 + 0.65 * eob(p, 2.2)) * (1 + 0.07 * min(1, max(0, (t - TU_T) / (FIN_T - TU_T))))
+    e = eiq((t - FIN_T) / (FIN_END - 1 / T.FPS - FIN_T)) if t >= FIN_T else 0.0
+    # pill rect (grows to full frame on e)
+    w0, h0 = BIG_W * s, BIG_H * s
+    cx, cy = W / 2, BIG_CY + (H / 2 - BIG_CY) * e
+    w = w0 + (W * 1.25 - w0) * e; h = h0 + (H * 1.15 - h0) * e
+    r = (h0 / 2) * (1 - e) + 0
+    layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    a = int(255 * min(1, max(p, 0) * 2.2))
+    d.rounded_rectangle([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], radius=max(0, r), fill=(255, 255, 255, a))
+    if e < 1:
+        # soft drop shadow only while it is a pill
+        if e == 0:
+            sh = layer.split()[3].filter(ImageFilter.GaussianBlur(28)).point(lambda v: int(v * 0.35))
+            shl = Image.new('RGBA', (W, H), (0, 0, 0, 0)); shl.putalpha(sh)
+            canvas.alpha_composite(shl, (0, 14))
+        canvas.alpha_composite(layer)
+        ta = max(0.0, 1 - e * 4) * min(1, max(p, 0) * 2.2)
+        if ta > 0:
+            ts = s * (1 + 0.25 * e)
+            tim = BIG_TXT.resize((int(BIG_W * ts), int(BIG_H * ts)), Image.BICUBIC)
+            if ta < 1:
+                al = tim.split()[3].point(lambda v: int(v * ta)); tim.putalpha(al)
+            canvas.alpha_composite(tim, (int(cx - tim.width / 2), int(cy - tim.height / 2)))
+    else:
+        canvas.alpha_composite(layer)
 
 # ---------------- easing ----------------
 def eoc(x): x = min(max(x, 0), 1); return 1 - (1 - x) ** 3
@@ -145,7 +191,8 @@ def ov_blur(kind, i, n=4):
     out = np.concatenate([rgb, acc[..., 3:4] * 255], -1).clip(0, 255).astype(np.uint8)
     return Image.fromarray(out, 'RGBA')
 
-BLUR_INTRO = set(range(76, 90))   # fast zoom frames rendered with sub-frames
+BLUR_INTRO = set(range(50, 59))   # fast zoom frames rendered with sub-frames
+INTRO_INFO = {int(k): v for k, v in json.load(open('render/intro/info_0.json')).items()}
 
 def main():
     fmap = T.build_map()
@@ -165,14 +212,22 @@ def main():
         kind, i = fmap[of]
         t = of / T.FPS
         if kind == 'intro':
-            base = None
-            if i >= 50:
+            frame = Image.new('RGBA', (W, H), (255, 255, 255, 255))
+            if i >= 32:
                 vid = src.get(first_src)
-                p = eoc((i / 30 - 1.78) / 1.22)
-                base = transform(vid, 1.22 - 0.22 * p).convert('RGBA')
+                inf = INTRO_INFO[i]; w0 = INTRO_INFO[32]['h'] * 2
+                v0 = w0 / (0.42 * H)
+                v = min(1.0, v0 * (inf['h'] * 2) / w0)
+                f = (v - v0) / (1 - v0)
+                ax, ay = T.ANCHOR[0] * W, T.ANCHOR[1] * H
+                px = inf['x'] * 2 + (ax - inf['x'] * 2) * f; py = inf['y'] * 2 + (ay - inf['y'] * 2) * f
+                if v >= 0.999 and abs(px - ax) < 1 and abs(py - ay) < 1:
+                    frame = vid.convert('RGBA')
+                else:
+                    sw, sh = max(1, int(W * v)), max(1, int(H * v))
+                    sm = vid.resize((sw, sh), Image.LANCZOS if v > 0.5 else Image.BILINEAR)
+                    frame.paste(sm, (int(px - ax * v), int(py - ay * v)))
             o = ov_blur('intro', i) if i in BLUR_INTRO else ov('intro', i)
-            if base is None: frame = Image.new('RGBA', (W, H), (255, 255, 255, 255))
-            else: frame = base
             frame.alpha_composite(o)
         elif kind == 'src':
             vid = src.get(i)
@@ -183,10 +238,9 @@ def main():
             if phone_out0 <= of < phone_out0 + T.PHONE_F:
                 frame.alpha_composite(ov('phone', of - phone_out0))
             draw_captions(frame, t)
+            draw_finale(frame, t)
         else:
-            last_src = T.SEGS[-1][1] - 1
-            vid = src.get(min(last_src + i, 1315))
-            frame = transform(vid, 1.065).convert('RGBA')
+            frame = Image.new('RGBA', (W, H), (255, 255, 255, 255))
             frame.alpha_composite(ov('outro', i))
         rgb = frame.convert('RGB')
         if PREVIEW:

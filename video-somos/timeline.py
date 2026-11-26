@@ -1,7 +1,7 @@
 """Single source of truth for the edit (30 fps)."""
 import math
 FPS = 30
-INTRO_F = 90           # 3.0 s
+INTRO_F = 59           # 1.967 s
 OUTRO_F = 145          # 4.833 s
 # source frame ranges [a, b) kept, in order, with zoom spec (z0, z1, kind)
 SEGS = [
@@ -9,17 +9,19 @@ SEGS = [
     (88, 228),    # Cuando los ciudadanos ... sucedan
     (242, 417),   # Hoy ... cruzados
     (428, 1120),  # Tenemos ... comunidad (contains phone section)
-    (1160, 1272), # Muchos ya dimos ese paso. Solo faltas tú (+ smile)
+    (1160, 1262), # Muchos ya dimos ese paso. Solo faltas TÚ (+ finale)
 ]
 # zoom "shots": source-frame start -> (z_start, z_end); applies until next shot
 SHOTS = [
     (21, 1.00, 1.03), (88, 1.10, 1.12), (242, 1.00, 1.03), (428, 1.10, 1.12),
-    (574, 1.00, 1.025), (654, 1.12, 1.14), (934, 1.00, 1.03), (1023, 1.10, 1.12),
-    (1160, 1.00, 1.065),
+    (574, 1.00, 1.025), (654, 1.12, 1.14), (927, 1.00, 1.03), (1023, 1.10, 1.12),
+    (1160, 1.00, 1.05), (1235, 1.17, 1.22),
 ]
 ANCHOR = (0.5, 0.47)    # face-centred zoom anchor (fraction of frame)
-PHONE_SRC0 = 777        # src frame where phone overlay starts (25.9 s)
-PHONE_F = 156           # 5.2 s
+PHONE_SRC0 = 792        # src frame where phone overlay starts (26.4 s)
+PHONE_F = 135           # 4.5 s
+TU_SRC = 41.16          # 'tú' onset (src s)
+FINALE_SRC = 41.80      # white pill starts expanding to the outro
 MUSIC_DROP = 107.733    # s in music file
 MUSIC_START = MUSIC_DROP - INTRO_F / FPS
 

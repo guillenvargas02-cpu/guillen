@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8">
 <script src="brand.js"></script>
+<script src="sig.js"></script>
 <style>
 @font-face{font-family:Hind;font-weight:400;src:url(../fonts/hind-siliguri-latin-400-normal.woff2)}
 @font-face{font-family:Hind;font-weight:500;src:url(../fonts/hind-siliguri-latin-500-normal.woff2)}
@@ -100,7 +101,7 @@ function letterXform(i,s,dy){ // scale letter about its own center
 }
 
 // ---------- INTRO ----------
-const INTRO={dur:3.0, hits:[0.10,0.22,0.34,0.46,0.58]};
+const INTRO={dur:1.967, hits:[0.10,0.22,0.34,0.46,0.58]};
 function renderIntro(t){
   const k=baseK();
   // letters slam in
@@ -115,15 +116,15 @@ function renderIntro(t){
     const land=ti+0.06; if(t>=land) kick+=0.022*Math.exp(-(t-land)/0.07);
   });
   // counter becomes a window
-  document.getElementById('counterFill').setAttribute('opacity',1-pr(t,1.70,1.92));
-  document.getElementById('bgFull').setAttribute('opacity',t<1.70?1:0);
+  document.getElementById('counterFill').setAttribute('opacity',1-pr(t,1.08,1.22));
+  document.getElementById('bgFull').setAttribute('opacity',t<1.08?1:0);
   // camera
-  const push=1+0.06*eInOutCubic(pr(t,0.62,1.9));
+  const push=1+0.05*eInOutCubic(pr(t,0.62,1.35));
   let scale=k*push*(1+kick);
   // zoom through counter
   const zc=B.counterBB, ux0=(zc[0]+zc[1])/2, uy0=(zc[2]+zc[3])/2;
-  const zp=pr(t,1.78,3.0);
-  const ze=Math.pow(zp,2.6); // accelerate into the drop
+  const zp=pr(t,1.20,INTRO.dur);
+  const ze=Math.pow(zp,2.3); // accelerate into the drop
   const Zend=60;
   scale*=Math.exp(Math.log(Zend)*ze);
   // anchor: blend from block center to counter center
@@ -131,6 +132,7 @@ function renderIntro(t){
   const ux=lerp(blockCX,ux0,a), uy=lerp(blockCY,uy0,a);
   const cy=lerp(LOGO_SCREEN_Y,960,a);
   setWorld(scale,540,cy,ux,uy);
+  return {x:540+(ux0-ux)*scale, y:cy+(uy0-uy)*scale, w:(zc[1]-zc[0])*scale, h:(zc[3]-zc[2])*scale};
 }
 
 // ---------- OUTRO ----------
@@ -159,7 +161,6 @@ function renderOutro(t,frame){
   const scale=k*push*(1+kick);
   setWorld(scale,540,LOGO_SCREEN_Y,blockCX,blockCY);
   // fade-in white from video
-  stage.style.opacity=eOutCubic(pr(t,0,0.16));
 }
 
 // ---------- PHONE ----------
@@ -186,8 +187,8 @@ function buildPhone(){
         <svg width="40" height="20" viewBox="0 0 40 20"><rect x="1" y="1" width="33" height="18" rx="5" fill="none" stroke="#111" stroke-width="2" opacity=".5"/><rect x="4" y="4" width="25" height="12" rx="3" fill="#111"/><rect x="36" y="7" width="3" height="6" rx="1.5" fill="#111" opacity=".5"/></svg></span></div>
       <div id="web" class="view">
         <div class="h1" style="top:300px">Firma aquí</div>
-        <div class="pad" style="top:390px;height:330px"><div class="padX" style="bottom:70px">×</div><div class="padLine" style="bottom:66px"></div>
-          <svg id="sig" class="abs" style="left:4px;top:40px" width="400" height="230" viewBox="0 0 420 220"><path id="sigp" d="${SIG}" fill="none" stroke="#141418" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/><circle id="pen" r="7" fill="#E4007C"/></svg></div>
+        <div class="pad" style="top:390px;height:300px"><div class="padX" style="bottom:58px">×</div><div class="padLine" style="bottom:54px"></div>
+          <svg id="sig" class="abs" style="left:14px;top:30px" width="370" height="${370*SIGN.vb[3]/SIGN.vb[2]}" viewBox="${SIGN.vb.join(' ')}">${SIGN.strokes.map((d,i)=>`<path class="sgA" d="${d}" fill="none" stroke="#E4007C" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path class="sgB" d="${d}" transform="translate(16 -16)" fill="none" stroke="#E4007C" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>`).join('')}<circle id="pen" r="40" fill="#E4007C"/></svg></div>
         <div id="btn" class="btn" style="top:790px">ENVIAR</div>
         <div id="success"><svg width="200" height="200" viewBox="0 0 190 190"><circle id="okc" cx="95" cy="95" r="88" fill="#E4007C"/><path id="okp" d="M 55 98 L 84 126 L 138 68" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="okTxt" id="okT">¡Gracias por<br>sumarte!</div></div>
@@ -196,24 +197,30 @@ function buildPhone(){
     </div>
     <div id="island"></div>
   </div></div>`;
-  const sp=document.getElementById('sigp'); window.SIGLEN=sp.getTotalLength();
+  const A=[...document.querySelectorAll('.sgA')], Bq=[...document.querySelectorAll('.sgB')];
+  window.SG=A.map((p,i)=>({a:p,b:Bq[i],L:p.getTotalLength()}));
+  let acc=0; const GAP=0.035*1; window.SGTOT=SG.reduce((s,x)=>s+x.L,0);
   const ok=document.getElementById('okp'); window.OKLEN=ok.getTotalLength();
 }
-const PT={sig0:1.85,sig1:3.05,tap:3.22,ok:3.42,out:4.72,end:5.2};
+const PT={sig0:1.28,sig1:2.25,tap:2.45,ok:2.64,out:4.02,end:4.5};
 function renderPhone(t){
-  const pin=eOutExpo(pr(t,0.0,0.42)), pout=eInExpo(pr(t,PT.out+0.08,PT.out+0.48));
+  const pin=eOutExpo(pr(t,0.0,0.30)), pout=eInExpo(pr(t,PT.out+0.08,PT.out+0.45));
   document.getElementById('panel').style.transform=`translateY(${(1-pin)*1920 - pout*1920}px)`;
-  const fin=pr(t,0.10,0.78), fe=eOutBack(fin,1.2);
-  const fout=eInExpo(pr(t,PT.out,PT.out+0.40));
+  const fin=pr(t,0.04,0.52), fe=eOutBack(fin,1.3);
+  const fout=eInExpo(pr(t,PT.out,PT.out+0.38));
+  const push=0.13*eInOutCubic(pr(t,0.85,1.45))*(1-eInOutCubic(pr(t,2.40,2.85)));
+  document.getElementById('phoneWrap').style.transform=`translateY(${-push*230}px) scale(${1.2+push*1.2})`;
   const yIn=(1-fe)*1500, rx=(1-eOutCubic(fin))*28;
   const fl=Math.sin(t*2.1)*5, ry=Math.sin(t*0.9)*3.5-1;
   document.getElementById('phone').style.transform=`translateY(${yIn+fl-fout*1900}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${1+0.02*Math.sin(t*1.3)})`;
-  // signature
-  const sp=document.getElementById('sigp'), L=window.SIGLEN;
-  const sg=pr(t,PT.sig0,PT.sig1); const sge=sg<1?(sg*0.15+0.85*eInOutCubic(sg)):1;
-  sp.style.strokeDasharray=L; sp.style.strokeDashoffset=L*(1-sge);
+  // signature: sequential strokes, quick pen lifts
+  const sg=pr(t,PT.sig0,PT.sig1); const prog=(0.1*sg+0.9*eInOutCubic(sg))*SGTOT;
+  let rem=prog, tip=null;
+  for(const x of SG){ const d=clamp(rem,0,x.L); rem-=x.L;
+    for(const el of [x.a,x.b]){ el.style.strokeDasharray=x.L+' '+(x.L+10); el.style.strokeDashoffset=x.L-d; el.style.opacity=d>0.5?1:0; }
+    if(d>0&&d<x.L) tip=x.a.getPointAtLength(d); }
   const pen=document.getElementById('pen');
-  if(sg>0&&sg<1){const q=sp.getPointAtLength(L*sge);pen.setAttribute('cx',q.x);pen.setAttribute('cy',q.y);pen.style.opacity=1}else pen.style.opacity=0;
+  if(tip&&sg<1){pen.setAttribute('cx',tip.x+3);pen.setAttribute('cy',tip.y-3);pen.style.opacity=1}else pen.style.opacity=0;
   // tap on ENVIAR
   const touch=document.getElementById('touch');
   const ta=PT.tap-0.06, tb=ta+0.40;
@@ -229,5 +236,5 @@ function renderPhone(t){
   okT.style.opacity=tt; okT.style.transform=`translateY(${(1-tt)*24}px)`;
 }
 window.setup=(mode)=>{ if(mode==='phone') buildPhone(); else buildLogoScene(); window.MODE=mode; };
-window.renderAt=(t,frame)=>{ if(MODE==='intro') renderIntro(t); else if(MODE==='outro') renderOutro(t,frame); else renderPhone(t); };
+window.renderAt=(t,frame)=>{ if(MODE==='intro') return renderIntro(t); else if(MODE==='outro') renderOutro(t,frame); else renderPhone(t); };
 </script></body></html>
