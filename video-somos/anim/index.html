@@ -116,8 +116,8 @@ function renderIntro(t){
     const land=ti+0.06; if(t>=land) kick+=0.022*Math.exp(-(t-land)/0.07);
   });
   // counter becomes a window
-  document.getElementById('counterFill').setAttribute('opacity',1-pr(t,1.08,1.22));
-  document.getElementById('bgFull').setAttribute('opacity',t<1.08?1:0);
+  document.getElementById('counterFill').setAttribute('opacity',t<1.885?1:0);
+  document.getElementById('bgFull').setAttribute('opacity',t<1.885?1:0);
   // camera
   const push=1+0.05*eInOutCubic(pr(t,0.62,1.35));
   let scale=k*push*(1+kick);
@@ -202,13 +202,13 @@ function buildPhone(){
   let acc=0; const GAP=0.035*1; window.SGTOT=SG.reduce((s,x)=>s+x.L,0);
   const ok=document.getElementById('okp'); window.OKLEN=ok.getTotalLength();
 }
-const PT={sig0:1.28,sig1:2.25,tap:2.45,ok:2.64,out:4.02,end:4.5};
+const PT={sig0:0.62,sig1:1.55,tap:1.72,ok:1.90,out:2.95,end:3.43};
 function renderPhone(t){
-  const pin=eOutExpo(pr(t,0.0,0.30)), pout=eInExpo(pr(t,PT.out+0.08,PT.out+0.45));
+  const pin=eOutExpo(pr(t,0.0,0.28)), pout=eInExpo(pr(t,PT.out+0.08,PT.out+0.45));
   document.getElementById('panel').style.transform=`translateY(${(1-pin)*1920 - pout*1920}px)`;
-  const fin=pr(t,0.04,0.52), fe=eOutBack(fin,1.3);
+  const fin=pr(t,0.02,0.45), fe=eOutBack(fin,1.3);
   const fout=eInExpo(pr(t,PT.out,PT.out+0.38));
-  const push=0.13*eInOutCubic(pr(t,0.85,1.45))*(1-eInOutCubic(pr(t,2.40,2.85)));
+  const push=0.13*eInOutCubic(pr(t,0.30,0.62))*(1-eInOutCubic(pr(t,1.66,2.0)));
   document.getElementById('phoneWrap').style.transform=`translateY(${-push*230}px) scale(${1.2+push*1.2})`;
   const yIn=(1-fe)*1500, rx=(1-eOutCubic(fin))*28;
   const fl=Math.sin(t*2.1)*5, ry=Math.sin(t*0.9)*3.5-1;
@@ -235,6 +235,23 @@ function renderPhone(t){
   const tt=eOutCubic(pr(t,PT.ok+0.30,PT.ok+0.62)); const okT=document.getElementById('okT');
   okT.style.opacity=tt; okT.style.transform=`translateY(${(1-tt)*24}px)`;
 }
-window.setup=(mode)=>{ if(mode==='phone') buildPhone(); else buildLogoScene(); window.MODE=mode; };
-window.renderAt=(t,frame)=>{ if(MODE==='intro') return renderIntro(t); else if(MODE==='outro') renderOutro(t,frame); else renderPhone(t); };
+
+// ---------- LINK BADGE ----------
+function buildLink(){
+  stage.innerHTML=`<div id="badge" style="position:absolute;left:540px;top:1300px;transform-origin:50% 50%">
+    <div style="position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;gap:26px;padding:20px 46px 20px 40px;background:#fff;border-radius:999px;box-shadow:0 14px 34px rgba(0,0,0,.28)">
+      <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#E4007C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span id="emo" style="display:inline-block;font-family:'Noto Color Emoji';font-size:92px;line-height:1">👇</span>
+    </div></div>`;
+}
+function renderLink(t){
+  const b=document.getElementById('badge');
+  const p=pr(t,0.0,0.30); const s=eOutBack(p,2.0);
+  b.style.transform=`scale(${(0.2+0.8*s)*1.55})`; b.style.opacity=pr(t,0,0.06);
+  const e=document.getElementById('emo');
+  const bt=t-0.22; const bounce= (bt>0&&bt<0.84)? Math.abs(Math.sin(Math.PI*bt/0.42))*16 : 0;
+  e.style.transform=`translateY(${bounce}px)`;
+}
+window.setup=(mode)=>{ if(mode==='phone') buildPhone(); else if(mode==='link') buildLink(); else buildLogoScene(); window.MODE=mode; };
+window.renderAt=(t,frame)=>{ if(MODE==='intro') return renderIntro(t); else if(MODE==='outro') renderOutro(t,frame); else if(MODE==='link') renderLink(t); else renderPhone(t); };
 </script></body></html>

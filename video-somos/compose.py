@@ -18,9 +18,23 @@ for c in T.CHUNKS:
         a, b, w = words[wi]; wi += 1
         clean = tok.strip(',.')
         if clean.lower() == 'somos': clean = 'SOMOS'
+        if clean in ('Contó', 'Contro', 'Contó'): clean = 'Contró'
         ws.append(dict(t=a, e=b, text=clean, key=clean in T.KEYWORDS))
     chunks.append(ws)
 assert wi == len(words), (wi, len(words))
+_F = ImageFont.truetype('fonts/HindSiliguri-700.ttf', 168)
+def _ww(w): bb = _F.getbbox(w['text']); return bb[2] - bb[0] + 56
+MAXW = 1760
+_new = []
+for ch in chunks:
+    cur = []; cw = 0
+    for w in ch:
+        add = _ww(w) + (42 if cur else 0)
+        if cur and cw + add > MAXW:
+            _new.append(cur); cur = []; cw = 0; add = _ww(w)
+        cur.append(w); cw += add
+    _new.append(cur)
+chunks = _new
 # map to output time
 for ch in chunks:
     for w in ch:
@@ -207,34 +221,23 @@ def main():
             '-x264-params', 'aq-mode=3:deblock=-1,-1', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709',
             '-color_range', 'tv', f'{OUTDIR}/video_noaudio.mp4'], stdin=subprocess.PIPE)
     phone_out0 = T.src_to_out(T.PHONE_SRC0)
+    link_out0 = T.src_to_out(T.LINK_SRC0)
     t0 = time.time()
     for of in range(RANGE[0], RANGE[1]):
         kind, i = fmap[of]
         t = of / T.FPS
         if kind == 'intro':
             frame = Image.new('RGBA', (W, H), (255, 255, 255, 255))
-            if i >= 32:
-                vid = src.get(first_src)
-                inf = INTRO_INFO[i]; w0 = INTRO_INFO[32]['h'] * 2
-                v0 = w0 / (0.42 * H)
-                v = min(1.0, v0 * (inf['h'] * 2) / w0)
-                f = (v - v0) / (1 - v0)
-                ax, ay = T.ANCHOR[0] * W, T.ANCHOR[1] * H
-                px = inf['x'] * 2 + (ax - inf['x'] * 2) * f; py = inf['y'] * 2 + (ay - inf['y'] * 2) * f
-                if v >= 0.999 and abs(px - ax) < 1 and abs(py - ay) < 1:
-                    frame = vid.convert('RGBA')
-                else:
-                    sw, sh = max(1, int(W * v)), max(1, int(H * v))
-                    sm = vid.resize((sw, sh), Image.LANCZOS if v > 0.5 else Image.BILINEAR)
-                    frame.paste(sm, (int(px - ax * v), int(py - ay * v)))
+            if i >= 57:
+                frame = src.get(first_src).convert('RGBA')
             o = ov_blur('intro', i) if i in BLUR_INTRO else ov('intro', i)
             frame.alpha_composite(o)
         elif kind == 'src':
             vid = src.get(i)
             z = zoom_for_src(i, t)
-            if i < T.SEGS[0][1]:  # punch at the drop
-                z *= 1 + 0.06 * math.exp(-(i - first_src) / 4.0)
             frame = transform(vid, z).convert('RGBA')
+            if link_out0 <= of < link_out0 + T.LINK_F:
+                frame.alpha_composite(ov('link', of - link_out0))
             if phone_out0 <= of < phone_out0 + T.PHONE_F:
                 frame.alpha_composite(ov('phone', of - phone_out0))
             draw_captions(frame, t)
