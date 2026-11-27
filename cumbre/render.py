@@ -51,29 +51,25 @@ CLIPS = {
 # tr = transición de entrada; g = ajuste de color (exp, temp, sat)
 # La música (opción 1, 120 BPM) tiene beats en múltiplos de 0.5 s del video: todos los cortes caen en beat.
 EDL = [
-    dict(t0=3.0, t1=5.5, c="B1", src=0.00, z=(1.00, 1.07), a=(0.50, 0.56), tr="portal"),
-    dict(t0=5.5, t1=7.5, c="SP", src=3.00, z=(1.16, 1.24), a=(0.36, 0.42), tr="cut"),
-    dict(t0=7.5, t1=8.5, c="B2", src=2.40, z=(1.00, 1.06), a=(0.50, 0.55), tr="whip"),
-    dict(t0=8.5, t1=9.5, c="B3", src=0.20, z=(1.07, 1.00), a=(0.45, 0.55), tr="cut"),
-    dict(t0=9.5, t1=12.0, c="P1", src=9.50, z=(1.12, 1.22), a=(0.40, 0.38), tr="punch"),
-    dict(t0=12.0, t1=13.0, c="AU", src=0.20, z=(1.10, 1.16), a=(0.40, 0.50), tr="cut"),
-    dict(t0=13.0, t1=15.0, c="P2", src=0.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),
-    dict(t0=15.0, t1=17.0, c="P3", src=9.20, z=(1.00, 1.07), a=(0.45, 0.50), tr="cut"),
-    dict(t0=17.0, t1=18.0, c="B2", src=1.00, z=(1.00, 1.05), a=(0.50, 0.55), tr="whip"),
-    dict(t0=18.0, t1=19.0, c="P4", src=0.00, z=(1.04, 1.10), a=(0.30, 0.40), tr="cut"),
-    dict(t0=19.0, t1=20.0, c="B2", src=0.00, z=(1.06, 1.00), a=(0.50, 0.55), tr="cut"),
-    dict(t0=20.0, t1=22.0, c="SP", src=7.60, z=(1.12, 1.20), a=(0.30, 0.42), tr="cut"),
-    dict(t0=22.0, t1=22.5, c="P5", src=9.00, z=(1.10, 1.14), a=(0.40, 0.70), tr="cut"),
-    dict(t0=22.5, t1=23.0, c="B3", src=1.30, z=(1.00, 1.04), a=(0.50, 0.55), tr="cut"),
-    dict(t0=23.0, t1=25.0, c="P1", src=21.00, z=(1.12, 1.20), a=(0.45, 0.38), tr="punch"),
-    dict(t0=25.0, t1=25.5, c="B2", src=3.40, z=(1.04, 1.08), a=(0.50, 0.55), tr="cut"),
-    dict(t0=25.5, t1=26.0, c="B3", src=1.90, z=(1.08, 1.04), a=(0.50, 0.55), tr="cut"),
-    dict(t0=26.0, t1=28.0, c="P2", src=3.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),
-    dict(t0=28.0, t1=28.5, c="B1", src=2.50, z=(1.04, 1.00), a=(0.50, 0.55), tr="whip"),
-    dict(t0=28.5, t1=29.0, c="AU", src=1.40, z=(1.10, 1.14), a=(0.40, 0.50), tr="cut"),
-    dict(t0=29.0, t1=30.5, c="P1", src=3.50, z=(1.10, 1.18), a=(0.45, 0.36), tr="cut"),
-    dict(t0=30.5, t1=31.5, c="P4", src=2.20, z=(1.02, 1.08), a=(0.45, 0.38), tr="cut"),
-    dict(t0=31.5, t1=34.5, c="SP", src=12.00, z=(1.10, 1.22), a=(0.36, 0.40), tr="cut", fx="fadeout"),
+    dict(t0=3.0, t1=5.5, c="B1", src=0.00, z=(1.00, 1.07), a=(0.50, 0.56), tr="portal"),       # salón lleno (única vez)
+    dict(t0=5.5, t1=7.5, c="SP", src=3.00, z=(1.16, 1.24), a=(0.36, 0.42), tr="cut"),          # ponente: presentación
+    dict(t0=7.5, t1=8.5, c="B2", src=2.40, z=(1.00, 1.06), a=(0.50, 0.55), tr="whip"),         # salón lleno, plano general
+    dict(t0=8.5, t1=10.0, c="P3", src=1.50, z=(1.04, 1.10), a=(0.40, 0.50), tr="cut"),         # panel hablando
+    dict(t0=10.0, t1=12.5, c="P1", src=9.50, z=(1.12, 1.22), a=(0.40, 0.38), tr="punch"),      # ponente señala
+    dict(t0=12.5, t1=13.5, c="P5", src=3.00, speed=1.5, z=(1.04, 1.08), a=(0.45, 0.45), tr="cut"),  # paneo panel + pantalla
+    dict(t0=13.5, t1=15.5, c="P2", src=0.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),        # ponente, brazos abiertos
+    dict(t0=15.5, t1=16.5, c="P2", src=7.00, speed=2.0, z=(1.04, 1.08), a=(0.50, 0.40), tr="whip"),  # paneo a "PULSO 360"
+    dict(t0=16.5, t1=18.0, c="P3", src=9.20, z=(1.00, 1.07), a=(0.45, 0.50), tr="cut"),        # "Video con IA" + ponente
+    dict(t0=18.0, t1=19.0, c="AU", src=4.20, speed=1.5, z=(1.04, 1.08), a=(0.50, 0.55), tr="cut"),  # paneo del público al escenario
+    dict(t0=19.0, t1=20.0, c="P4", src=0.00, z=(1.04, 1.10), a=(0.30, 0.40), tr="cut"),        # ponente, plano cercano
+    dict(t0=20.0, t1=22.0, c="SP", src=7.60, z=(1.12, 1.20), a=(0.30, 0.42), tr="cut"),        # ponente entrevistado
+    dict(t0=22.0, t1=23.0, c="P3", src=3.50, speed=2.0, z=(1.04, 1.08), a=(0.45, 0.50), tr="cut"),  # paneo del panel a la pantalla
+    dict(t0=23.0, t1=25.0, c="P1", src=21.00, z=(1.12, 1.20), a=(0.45, 0.38), tr="punch"),     # ponente, mano arriba
+    dict(t0=25.0, t1=26.0, c="B3", src=0.20, z=(1.07, 1.00), a=(0.45, 0.55), tr="cut"),        # salón principal, mesas
+    dict(t0=26.0, t1=28.0, c="P2", src=3.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),        # ponente explicando
+    dict(t0=28.0, t1=29.0, c="P4", src=2.20, z=(1.02, 1.08), a=(0.45, 0.38), tr="whip"),       # ponente escuchando
+    dict(t0=29.0, t1=30.5, c="P1", src=3.50, z=(1.10, 1.18), a=(0.45, 0.36), tr="cut"),        # ponente, gesto
+    dict(t0=30.5, t1=32.0, c="SP", src=12.00, z=(1.10, 1.18), a=(0.36, 0.40), tr="cut", fx="blinds"),  # sonrisa -> cortinilla
 ]
 
 
@@ -714,12 +710,99 @@ def brackets(frame, box, prog, alpha):
     return over(frame, gold_bgr() * 1.1, a)
 
 
+# ------------------------------------------------------------------ cortinilla final
+BLIND_T0, CARD_T = 31.55, 32.0
+
+
+def blinds(frame, t):
+    """Persianas negras que entran alternando lados, escalonadas desde el centro, con un filo dorado fino."""
+    if t < BLIND_T0:
+        return frame
+    n = 8
+    hb = H / n
+    out = frame
+    xx = np.arange(W, dtype=np.float32)[None, :]
+    for i in range(n):
+        order = abs(i - (n - 1) / 2)  # del centro hacia afuera
+        t0 = BLIND_T0 + order * 0.045
+        p = ease_io((t - t0) / 0.26)
+        if p <= 0:
+            continue
+        y0, y1 = int(round(i * hb)), int(round((i + 1) * hb))
+        if i % 2 == 0:
+            edge = p * (W + 60) - 30
+            m = np.clip((edge - xx) / 26.0, 0, 1)
+            line = np.exp(-((xx - edge) / 3.0) ** 2)
+        else:
+            edge = W - p * (W + 60) + 30
+            m = np.clip((xx - edge) / 26.0, 0, 1)
+            line = np.exp(-((xx - edge) / 3.0) ** 2)
+        band = out[y0:y1]
+        band = band * (1 - m[..., None]) + 0.008 * m[..., None]
+        la = (line * 0.75 * (1 - p))[..., None]
+        band = band * (1 - la) + gold_bgr() * 1.1 * la
+        out[y0:y1] = band
+    return out
+
+
+_emblem = None
+
+
+def emblem_rgba():
+    """Emblema (figura dorada + arcos) sin texto, centrado en el cuadro."""
+    global _emblem
+    if _emblem is None:
+        rgb = np.zeros((H, W, 3), np.float32)
+        A = np.zeros((H, W), np.float32)
+        for name in ("gold", "green", "red"):
+            L = layer(name)
+            a = L[..., 3]
+            rgb = rgb * (1 - a[..., None]) + L[..., :3] * a[..., None]
+            A = A + a * (1 - A)
+        cx, cy, R = circle()
+        dy = H * 0.46 - 1120.0  # centro visual del emblema -> centro del cuadro
+        M = np.float32([[1, 0, 0], [0, 1, dy]])
+        _emblem = cv2.warpAffine(np.dstack([rgb * A[..., None], A]), M, (W, H), flags=cv2.INTER_LINEAR)
+    return _emblem
+
+
+def endcard(t):
+    frame = np.full((H, W, 3), 0.008, np.float32)
+    u = t - CARD_T
+    p = ease_out((u - 0.12) / 0.80, 3)
+    if p <= 0:
+        return frame
+    E = emblem_rgba()
+    cy = H * 0.46
+    k = (1.06 - 0.06 * p) * 1.22
+    M = np.float32([[k, 0, W / 2 - W / 2 * k], [0, k, cy - cy * k]])
+    E = cv2.warpAffine(E, M, (W, H), flags=cv2.INTER_LINEAR)
+    if p < 1:
+        E = cv2.GaussianBlur(E, (0, 0), 0.3 + 7 * (1 - p))
+    # revelado diagonal + brillo que recorre el emblema
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    d = (xx * 0.55 + yy) / (W * 0.55 + H)  # 0 arriba-izquierda -> 1 abajo-derecha
+    d = (d - 0.18) / 0.45
+    reveal = np.clip((p * 1.4 - d) / 0.25, 0, 1)
+    sweep_c = -0.3 + 1.6 * ease_io((u - 0.45) / 0.9)
+    shine = np.exp(-((d - sweep_c) / 0.06) ** 2) * 0.55 * (1 - smooth((u - 1.3) / 0.2))
+    a = E[..., 3] * reveal
+    col = E[..., :3] / np.maximum(E[..., 3:4], 1e-4)
+    col = col + shine[..., None] * (gold_bgr() * 0.5 + 0.5)
+    glow = cv2.GaussianBlur(a, (0, 0), 40) * 0.25 * p
+    frame = over(frame, gold_bgr() * 0.6, np.clip(glow, 0, 1))
+    frame = over(frame, col, a)
+    return frame * (1 - smooth((t - 34.05) / 0.42))
+
+
 # ------------------------------------------------------------------ frame
 def render_frame(fidx):
     t = fidx / FPS
     if t < CLICK_T:
         return finish(intro_frame(t), fidx)
     i, s = shot_at(t)
+    if s is None:  # cortinilla final
+        return finish(endcard(t), fidx)
     u = t - s["t0"]
     shake = (0, 0)
     zoom_mul = 1.0
@@ -764,8 +847,8 @@ def render_frame(fidx):
             prog = u / 0.35
             a = smooth(u / 0.12) * (1 - smooth((u - 1.55) / 0.30))
             frame = brackets(frame, tr_[fidx], prog, a)
-    if s.get("fx") == "fadeout":  # cierre limpio: fundido a negro con el decaimiento de la música
-        frame = frame * (1 - smooth((t - 33.5) / 0.95))
+    if s.get("fx") == "blinds":
+        frame = blinds(frame, t)
     # cursor de la intro desapareciendo tras el click + onda dorada
     if t < 3.6:
         cx, cy = CUR_TARGET

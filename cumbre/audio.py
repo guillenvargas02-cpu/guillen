@@ -104,6 +104,25 @@ def tone_sweep(dur, f0, f1, a=0.02, d=None):
     return (np.sin(ph) * 0.8 + np.sin(ph * 3) * 0.1) .astype(np.float32) * e.astype(np.float32)
 
 
+def reverb(x, dur=2.0, wet=0.4, seed=0):
+    """Reverb simple: convolución con ruido estéreo de caída exponencial (filtrado). Devuelve seco + húmedo."""
+    from scipy.signal import fftconvolve
+    if x.ndim == 1:
+        x = np.stack([x, x], 1)
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    rng = np.random.default_rng(100 + seed)
+    ir = rng.normal(0, 1, (n, 2)).astype(np.float32) * np.exp(-t / (dur / 6.9))[:, None]
+    ir[:, 0] = onepole_lp(ir[:, 0], 6000.0)
+    ir[:, 1] = onepole_lp(ir[:, 1], 6000.0)
+    ir /= np.sqrt((ir ** 2).sum(0))
+    wetsig = np.stack([fftconvolve(x[:, c], ir[:, c]) for c in range(2)], 1).astype(np.float32)
+    out = np.zeros_like(wetsig)
+    out[: len(x)] += x * (1 - wet * 0.5)
+    out += wetsig * wet
+    return out
+
+
 def main():
     out = SC / "work"
     music = load(SC / "audio" / "opt1_full.wav")
@@ -134,33 +153,33 @@ def main():
     mus *= fade[:, None]
     mix += mus * 0.92
 
-    # ---------------- diseño sonoro de la intro
-    # cama grave que crece hacia el click
+    # ---------------- diseño sonoro de la intro (cinematográfico: sin bips ni tonos)
+    # cama grave oscura que crece hacia el click
     n = int(3.0 * SR)
     t = np.arange(n) / SR
-    drone = (np.sin(2 * np.pi * 46 * t) + 0.35 * np.sin(2 * np.pi * 92 * t + 0.4)) * (t / 3.0) ** 2.2
-    air = whoosh(3.0, 300, 5000, 11) * (t / 3.0) ** 3
-    place(mix, stereo((drone * 0.22 + air * 0.05).astype(np.float32), 0.4, 1), 0.0)
-    # caret: dos tics suaves
-    place(mix, stereo(blip(1800, 0.035)), 0.0, 0.10)
-    place(mix, stereo(blip(1800, 0.035)), 0.30, 0.10)
-    # línea de escaneo que se abre
-    place(mix, stereo(tone_sweep(0.55, 420, 1400, 0.01) * 0.5, 0.5, 2), 0.45, 0.10)
-    place(mix, stereo(whoosh(0.6, 800, 6000, 3), 0.6, 3), 0.48, 0.10)
-    # "difusión": tics de datos en cada paso del mosaico (8 pasos entre 0.55 y 1.65 s)
-    for i in range(8):
-        tt = 0.55 + i * 1.10 / 8
-        place(mix, stereo(blip(2400 + i * 260, 0.03), 0.3, 10 + i), tt, 0.075 * (0.6 + 0.4 * i / 7))
-    # anillo de carga verde/rojo
-    place(mix, stereo(tone_sweep(0.62, 260, 780, 0.05) * 0.45, 0.5, 4), 1.05, 0.12)
-    place(mix, stereo(tone_sweep(0.55, 330, 990, 0.05) * 0.45, 0.5, 5), 1.18, 0.09)
-    # tecleo del texto (caret)
-    for i in range(7):
-        place(mix, stereo(blip(3200 + (i % 3) * 300, 0.022)), 1.47 + i * 0.05, 0.05)
-    for i in range(6):
-        place(mix, stereo(blip(3000 + (i % 3) * 300, 0.022)), 1.68 + i * 0.055, 0.05)
+    drone = (np.sin(2 * np.pi * 43 * t) + 0.3 * np.sin(2 * np.pi * 86.3 * t + 0.4)) * (t / 3.0) ** 1.8
+    rumble = onepole_lp(noise(n, 31), 180.0) * 3.0 * (t / 3.0) ** 2
+    place(mix, stereo((drone * 0.20 + rumble * 0.10).astype(np.float32), 0.4, 1), 0.0)
+    # golpe reverso: la cola de un impacto con reverb, invertida, que desemboca exactamente en el click
+    hit = np.zeros(int(0.5 * SR), np.float32)
+    hit[: int(0.4 * SR)] += sub_boom(0.4, 90, 45) * 0.6
+    hit[: int(0.25 * SR)] += onepole_lp(noise(int(0.25 * SR), 41), 2500.0) * env(int(0.25 * SR), 0.001, 0.05) * 1.5
+    rev_tail = reverb(np.stack([hit, hit], 1), 2.6, 0.9, seed=5)[: int(2.4 * SR)]
+    rev_tail = rev_tail[::-1] * np.linspace(0.2, 1, len(rev_tail))[:, None] ** 1.5
+    rev_tail /= np.abs(rev_tail).max() + 1e-9
+    place(mix, rev_tail.astype(np.float32), 3.0 - len(rev_tail) / SR, 0.30)
+    # la línea de escaneo se abre: aire suave
+    place(mix, reverb(stereo(whoosh(0.7, 300, 2500, 3), 0.6, 3), 1.6, 0.35, seed=6), 0.42, 0.10)
+    # el emblema se forma: pulso grave con reverb al empezar y "aire" al quedar nítido
+    place(mix, reverb(stereo(sub_boom(0.9, 70, 40)), 2.0, 0.4, seed=7), 0.55, 0.20)
+    puff = onepole_lp(noise(int(0.5 * SR), 51), 1800.0) * env(int(0.5 * SR), 0.06, 0.12)
+    place(mix, reverb(stereo(puff.astype(np.float32), 0.5, 8), 2.2, 0.6, seed=8), 1.55, 0.18)
+    # arcos verde y rojo: un solo barrido que cruza de izquierda a derecha
+    sw = whoosh(0.75, 350, 3500, 4)
+    pan = np.linspace(0, 1, len(sw), dtype=np.float32)
+    place(mix, reverb(np.stack([sw * (1 - pan * 0.7), sw * (0.3 + pan * 0.7)], 1), 1.4, 0.3, seed=9), 1.02, 0.12)
     # entrada del cursor
-    place(mix, stereo(whoosh(0.55, 500, 3000, 6), 0.5, 6), 1.92, 0.13)
+    place(mix, stereo(whoosh(0.55, 500, 2500, 6), 0.5, 6), 1.92, 0.07)
     # CLICK (el usuario lo proporcionó): presión exactamente en 3.0 s, sobre el golpe de la música
     place(mix, click, 3.0, 1.15)
     place(mix, stereo(sub_boom(1.4, 80, 36), 0.0), 3.0, 0.42)
@@ -169,7 +188,7 @@ def main():
     place(mix, stereo(sub_boom(1.6, 64, 32)), 4.0, 0.38)
 
     # ---------------- transiciones del cuerpo (discretas)
-    for tt in (7.5, 17.0, 28.0):  # whip
+    for tt in (7.5, 15.5, 28.0):  # whip
         place(mix, stereo(whoosh(0.32, 900, 7000, int(tt * 10)), 0.6, int(tt)), tt - 0.16, 0.10)
     for tt in ():  # línea de escaneo (quitada)
         place(mix, stereo(tone_sweep(0.40, 1800, 600, 0.01) * 0.5 + whoosh(0.40, 2000, 8000, int(tt)) * 0.3, 0.5, int(tt)), tt, 0.07)
@@ -178,6 +197,23 @@ def main():
         g = np.sign(g) * np.minimum(np.abs(g), 0.6)
         place(mix, stereo(g.astype(np.float32), 0.5, 3), tt, 0.06)
     # seguimiento de rostro: dos tics de "fijación"
+
+    # ---------------- cortinilla final
+    # persianas: un roce corto por franja (alternando lados), del centro hacia afuera
+    for i in range(8):
+        order = abs(i - 3.5)
+        tt = 31.55 + order * 0.045 + 0.06
+        w = whoosh(0.20, 1500, 9000, 60 + i)
+        l, r = (1.0, 0.35) if i % 2 == 0 else (0.35, 1.0)
+        place(mix, np.stack([w * l, w * r], 1).astype(np.float32), tt, 0.05)
+    # golpe a negro: sub + cuerpo grave con cola de reverb
+    thud = sub_boom(1.2, 85, 34) * 0.8
+    body = onepole_lp(noise(int(0.3 * SR), 71), 900.0) * env(int(0.3 * SR), 0.002, 0.06) * 2.0
+    thud[: len(body)] += body
+    place(mix, reverb(stereo(thud.astype(np.float32)), 2.8, 0.55, seed=12), 32.0, 0.42)
+    # aparece el emblema: aire que sube y brillo suave cuando lo recorre la luz
+    place(mix, reverb(stereo(whoosh(0.9, 250, 2200, 72), 0.6, 13), 2.4, 0.5, seed=13), 32.05, 0.09)
+    place(mix, reverb(stereo(whoosh(0.9, 2500, 11000, 73), 0.7, 14), 2.4, 0.6, seed=14), 32.45, 0.05)
 
     # ---------------- master: normaliza a pico -1 dBFS (la sonoridad final -14 LUFS se fija al unir con el video)
     peak = np.abs(mix).max()
