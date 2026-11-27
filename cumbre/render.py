@@ -20,7 +20,7 @@ import numpy as np
 
 cv2.setNumThreads(4)
 W, H, FPS = 2160, 3840, 30
-DUR = 35.0
+DUR = 34.5
 NFR = int(round(DUR * FPS))
 
 UP = Path("/root/.claude/uploads/e79892bd-5db3-5f50-b81b-f961e67b318d")
@@ -57,7 +57,7 @@ EDL = [
     dict(t0=8.5, t1=9.5, c="B3", src=0.20, z=(1.07, 1.00), a=(0.45, 0.55), tr="cut"),
     dict(t0=9.5, t1=12.0, c="P1", src=9.50, z=(1.12, 1.22), a=(0.40, 0.38), tr="punch"),
     dict(t0=12.0, t1=13.0, c="AU", src=0.20, z=(1.10, 1.16), a=(0.40, 0.50), tr="scan"),
-    dict(t0=13.0, t1=15.0, c="P2", src=0.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="glitch"),
+    dict(t0=13.0, t1=15.0, c="P2", src=0.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),
     dict(t0=15.0, t1=17.0, c="P3", src=9.20, z=(1.00, 1.07), a=(0.45, 0.50), tr="mosaic"),
     dict(t0=17.0, t1=18.0, c="B2", src=1.00, z=(1.00, 1.05), a=(0.50, 0.55), tr="whip"),
     dict(t0=18.0, t1=19.0, c="P4", src=0.00, z=(1.04, 1.10), a=(0.30, 0.40), tr="cut"),
@@ -68,12 +68,12 @@ EDL = [
     dict(t0=23.0, t1=25.0, c="P1", src=21.00, z=(1.12, 1.20), a=(0.45, 0.38), tr="punch"),
     dict(t0=25.0, t1=25.5, c="B2", src=3.40, z=(1.04, 1.08), a=(0.50, 0.55), tr="cut"),
     dict(t0=25.5, t1=26.0, c="B3", src=1.90, z=(1.08, 1.04), a=(0.50, 0.55), tr="cut"),
-    dict(t0=26.0, t1=28.0, c="P2", src=3.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="scan"),
+    dict(t0=26.0, t1=28.0, c="P2", src=3.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),
     dict(t0=28.0, t1=28.5, c="B1", src=2.50, z=(1.04, 1.00), a=(0.50, 0.55), tr="whip"),
     dict(t0=28.5, t1=29.0, c="AU", src=1.40, z=(1.10, 1.14), a=(0.40, 0.50), tr="cut"),
-    dict(t0=29.0, t1=30.5, c="P1", src=3.50, z=(1.10, 1.18), a=(0.45, 0.36), tr="glitch"),
+    dict(t0=29.0, t1=30.5, c="P1", src=3.50, z=(1.10, 1.18), a=(0.45, 0.36), tr="cut"),
     dict(t0=30.5, t1=31.5, c="P4", src=2.20, z=(1.02, 1.08), a=(0.45, 0.38), tr="cut"),
-    dict(t0=31.5, t1=34.5, c="SP", src=12.00, z=(1.10, 1.22), a=(0.36, 0.40), tr="flash", fx="outro"),
+    dict(t0=31.5, t1=34.5, c="SP", src=12.00, z=(1.10, 1.22), a=(0.36, 0.40), tr="cut", fx="fadeout"),
 ]
 
 
@@ -714,61 +714,12 @@ def brackets(frame, box, prog, alpha):
     return over(frame, gold_bgr() * 1.1, a)
 
 
-# ------------------------------------------------------------------ cierre (cursor + iris)
-END_CLICK = 34.0
-
-
-_outro_pt = None
-
-
-def outro_point():
-    """El click final cae sobre el rostro del ponente (detectado en el último plano)."""
-    global _outro_pt
-    if _outro_pt is None:
-        s = EDL[-1]
-        tr = face_track(s)
-        f = int(round(END_CLICK * FPS))
-        x, y, w, h = tr.get(f, tr[max(tr)])
-        _outro_pt = (x + w * 0.5, y + h * 0.55)
-    return _outro_pt
-
-
-def outro(frame, t):
-    cx, cy = outro_point()  # punto de click (sobre el ponente)
-    if t >= 33.05 and t < END_CLICK + 0.30:
-        u = ease_out((t - 33.05) / 0.70, 3)
-        p0 = np.array([2300.0, 2600.0])
-        p1 = np.array([1500.0, 1700.0])
-        p2 = np.array([cx, cy])
-        pos = (1 - u) ** 2 * p0 + 2 * (1 - u) * u * p1 + u ** 2 * p2
-        press = 1.0 if END_CLICK <= t < END_CLICK + 0.165 else 0.0
-        a = 1 - smooth((t - END_CLICK - 0.05) / 0.22)
-        frame = draw_cursor(frame, pos[0], pos[1], press, a)
-    if t >= END_CLICK:
-        u = (t - END_CLICK) / 0.55
-        r = 2600 * (1 - ease_in(min(u, 1), 2))
-        yy, xx = np.ogrid[0:H, 0:W]
-        rr = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2).astype(np.float32)
-        m = np.clip((r - rr) / 5.0, 0, 1)
-        frame = frame * m[..., None] + 0.008 * (1 - m[..., None])
-        if u < 1:
-            frame = ring(frame, cx, cy, r, 5, gold_bgr() * 1.1, 0.9)
-        else:
-            # vuelve el caret del inicio: parpadea y se apaga
-            v = t - (END_CLICK + 0.55)
-            on = 1.0 if (v < 0.15 or 0.27 <= v < 0.40) else 0.0
-            frame = caret(frame, cx, cy, 120, 12, on)
-    return frame
-
-
 # ------------------------------------------------------------------ frame
 def render_frame(fidx):
     t = fidx / FPS
     if t < CLICK_T:
         return finish(intro_frame(t), fidx)
     i, s = shot_at(t)
-    if s is None:  # final: negro + caret
-        return finish(outro(np.full((H, W, 3), 0.008, np.float32), t), fidx)
     u = t - s["t0"]
     shake = (0, 0)
     zoom_mul = 1.0
@@ -813,8 +764,8 @@ def render_frame(fidx):
             prog = u / 0.35
             a = smooth(u / 0.12) * (1 - smooth((u - 1.55) / 0.30))
             frame = brackets(frame, tr_[fidx], prog, a)
-    if s.get("fx") == "outro":
-        frame = outro(frame, t)
+    if s.get("fx") == "fadeout":  # cierre limpio: fundido a negro con el decaimiento de la música
+        frame = frame * (1 - smooth((t - 33.5) / 0.95))
     # cursor de la intro desapareciendo tras el click + onda dorada
     if t < 3.6:
         cx, cy = CUR_TARGET

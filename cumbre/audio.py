@@ -15,7 +15,7 @@ import numpy as np
 import soundfile as sf
 
 SR = 48000
-DUR = 35.0
+DUR = 34.5
 SC = Path("/tmp/claude-0/-home-user-guillen/e79892bd-5db3-5f50-b81b-f961e67b318d/scratchpad")
 N = int(DUR * SR)
 
@@ -129,7 +129,7 @@ def main():
     mus[j0:j0 + len(m2)] += m2[: N - j0] * np.concatenate([ramp, np.ones((len(m2) - xf, 1), np.float32)])[: N - j0]
     # el decaimiento natural termina en ~163; desvanecer los últimos 0.6 s por limpieza
     fade = np.ones(N, np.float32)
-    k0 = int(34.3 * SR)
+    k0 = int(33.5 * SR)
     fade[k0:] = np.linspace(1, 0, N - k0) ** 2
     mus *= fade[:, None]
     mix += mus * 0.92
@@ -171,9 +171,9 @@ def main():
     # ---------------- transiciones del cuerpo (discretas)
     for tt in (7.5, 17.0, 28.0):  # whip
         place(mix, stereo(whoosh(0.32, 900, 7000, int(tt * 10)), 0.6, int(tt)), tt - 0.16, 0.10)
-    for tt in (12.0, 26.0):  # línea de escaneo
+    for tt in (12.0,):  # línea de escaneo
         place(mix, stereo(tone_sweep(0.40, 1800, 600, 0.01) * 0.5 + whoosh(0.40, 2000, 8000, int(tt)) * 0.3, 0.5, int(tt)), tt, 0.07)
-    for tt in (13.0, 29.0):  # glitch
+    for tt in ():  # glitch (quitado)
         g = noise(int(0.08 * SR), int(tt)) * env(int(0.08 * SR), 0.001, 0.02)
         g = np.sign(g) * np.minimum(np.abs(g), 0.6)
         place(mix, stereo(g.astype(np.float32), 0.5, 3), tt, 0.06)
@@ -181,14 +181,6 @@ def main():
     # seguimiento de rostro: dos tics de "fijación"
     place(mix, stereo(blip(2200, 0.03)), 5.62, 0.07)
     place(mix, stereo(blip(2900, 0.04)), 5.85, 0.08)
-
-    # ---------------- cierre
-    place(mix, stereo(whoosh(0.6, 500, 2500, 21), 0.5, 21), 33.05, 0.10)
-    place(mix, click, 34.0, 1.05)
-    place(mix, stereo(whoosh(0.55, 6000, 300, 22), 0.5, 22), 34.0, 0.12)
-    place(mix, stereo(sub_boom(1.0, 70, 34)), 34.53, 0.30)
-    place(mix, stereo(blip(1800, 0.035)), 34.55, 0.08)
-    place(mix, stereo(blip(1800, 0.035)), 34.82, 0.08)
 
     # ---------------- master: normaliza a pico -1 dBFS (la sonoridad final -14 LUFS se fija al unir con el video)
     peak = np.abs(mix).max()

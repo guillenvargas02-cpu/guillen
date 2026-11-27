@@ -1,6 +1,6 @@
 # Cumbre México — highlights 4K
 
-Video vertical 2160x3840, 30 fps, 35 s. Música: opción de audio 1 (120 BPM), editada en frase.
+Video vertical 2160x3840, 30 fps, 34.5 s. Música: opción de audio 1 (120 BPM), editada en frase.
 
 Pasos:
 
@@ -18,7 +18,7 @@ Estructura:
 - 3.0 s: click (sonido del usuario) sobre el golpe de la música; el círculo del emblema se vuelve portal.
 - 4.0 s: drop; salón lleno a pantalla completa.
 - 5.5–34.0 s: el ponente (planos de inicio, desarrollo y cierre) intercalado con el salón lleno; cortes en beat.
-- 34.0 s: el cursor vuelve, click sobre el ponente, el iris se cierra en su rostro y queda el caret del inicio.
+- 31.5–34.5 s: cierre limpio con el ponente sonriendo y fundido a negro con el decaimiento de la música.
 
 Ningún frame de las fuentes se repite (`check_no_repeats()` lo verifica antes de cada render); las tomas
 no llevan audio, solo música.
