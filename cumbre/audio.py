@@ -171,16 +171,13 @@ def main():
     # ---------------- transiciones del cuerpo (discretas)
     for tt in (7.5, 17.0, 28.0):  # whip
         place(mix, stereo(whoosh(0.32, 900, 7000, int(tt * 10)), 0.6, int(tt)), tt - 0.16, 0.10)
-    for tt in (12.0,):  # línea de escaneo
+    for tt in ():  # línea de escaneo (quitada)
         place(mix, stereo(tone_sweep(0.40, 1800, 600, 0.01) * 0.5 + whoosh(0.40, 2000, 8000, int(tt)) * 0.3, 0.5, int(tt)), tt, 0.07)
     for tt in ():  # glitch (quitado)
         g = noise(int(0.08 * SR), int(tt)) * env(int(0.08 * SR), 0.001, 0.02)
         g = np.sign(g) * np.minimum(np.abs(g), 0.6)
         place(mix, stereo(g.astype(np.float32), 0.5, 3), tt, 0.06)
-    place(mix, stereo(np.concatenate([blip(2600 - i * 300, 0.03) for i in range(5)])), 15.0, 0.05)  # mosaico
     # seguimiento de rostro: dos tics de "fijación"
-    place(mix, stereo(blip(2200, 0.03)), 5.62, 0.07)
-    place(mix, stereo(blip(2900, 0.04)), 5.85, 0.08)
 
     # ---------------- master: normaliza a pico -1 dBFS (la sonoridad final -14 LUFS se fija al unir con el video)
     peak = np.abs(mix).max()

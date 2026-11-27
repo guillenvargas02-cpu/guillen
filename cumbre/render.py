@@ -52,17 +52,17 @@ CLIPS = {
 # La música (opción 1, 120 BPM) tiene beats en múltiplos de 0.5 s del video: todos los cortes caen en beat.
 EDL = [
     dict(t0=3.0, t1=5.5, c="B1", src=0.00, z=(1.00, 1.07), a=(0.50, 0.56), tr="portal"),
-    dict(t0=5.5, t1=7.5, c="SP", src=3.00, z=(1.16, 1.24), a=(0.36, 0.42), tr="flash", fx="track"),
+    dict(t0=5.5, t1=7.5, c="SP", src=3.00, z=(1.16, 1.24), a=(0.36, 0.42), tr="cut"),
     dict(t0=7.5, t1=8.5, c="B2", src=2.40, z=(1.00, 1.06), a=(0.50, 0.55), tr="whip"),
     dict(t0=8.5, t1=9.5, c="B3", src=0.20, z=(1.07, 1.00), a=(0.45, 0.55), tr="cut"),
     dict(t0=9.5, t1=12.0, c="P1", src=9.50, z=(1.12, 1.22), a=(0.40, 0.38), tr="punch"),
-    dict(t0=12.0, t1=13.0, c="AU", src=0.20, z=(1.10, 1.16), a=(0.40, 0.50), tr="scan"),
+    dict(t0=12.0, t1=13.0, c="AU", src=0.20, z=(1.10, 1.16), a=(0.40, 0.50), tr="cut"),
     dict(t0=13.0, t1=15.0, c="P2", src=0.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),
-    dict(t0=15.0, t1=17.0, c="P3", src=9.20, z=(1.00, 1.07), a=(0.45, 0.50), tr="mosaic"),
+    dict(t0=15.0, t1=17.0, c="P3", src=9.20, z=(1.00, 1.07), a=(0.45, 0.50), tr="cut"),
     dict(t0=17.0, t1=18.0, c="B2", src=1.00, z=(1.00, 1.05), a=(0.50, 0.55), tr="whip"),
     dict(t0=18.0, t1=19.0, c="P4", src=0.00, z=(1.04, 1.10), a=(0.30, 0.40), tr="cut"),
     dict(t0=19.0, t1=20.0, c="B2", src=0.00, z=(1.06, 1.00), a=(0.50, 0.55), tr="cut"),
-    dict(t0=20.0, t1=22.0, c="SP", src=7.60, z=(1.12, 1.20), a=(0.30, 0.42), tr="flash"),
+    dict(t0=20.0, t1=22.0, c="SP", src=7.60, z=(1.12, 1.20), a=(0.30, 0.42), tr="cut"),
     dict(t0=22.0, t1=22.5, c="P5", src=9.00, z=(1.10, 1.14), a=(0.40, 0.70), tr="cut"),
     dict(t0=22.5, t1=23.0, c="B3", src=1.30, z=(1.00, 1.04), a=(0.50, 0.55), tr="cut"),
     dict(t0=23.0, t1=25.0, c="P1", src=21.00, z=(1.12, 1.20), a=(0.45, 0.38), tr="punch"),
@@ -201,7 +201,7 @@ def measure(im):
 
 
 GRADE = {  # por clip: (exposición, balance r, balance b, saturación, mezcla de sombras)
-    "B1": (1.06, 1.05, 0.90, 1.00), "B2": (1.04, 1.05, 0.90, 0.98), "B3": (1.06, 1.05, 0.90, 1.00),
+    "B1": (1.04, 1.05, 0.90, 0.92), "B2": (1.02, 1.05, 0.90, 0.90), "B3": (1.04, 1.05, 0.90, 0.92),
     "SP": (1.00, 0.98, 1.03, 1.02), "AU": (1.08, 0.98, 1.02, 1.04),
     "P1": (1.03, 1.00, 1.00, 1.03), "P2": (1.03, 1.00, 1.00, 1.03), "P3": (1.06, 1.00, 1.00, 1.04),
     "P4": (1.04, 1.00, 1.00, 1.02), "P5": (1.06, 0.99, 1.01, 1.03),
@@ -739,9 +739,9 @@ def render_frame(fidx):
     if tr == "flash" and u < 0.20:
         frame = frame + (gold_bgr() * 0.35 + 0.65) * (0.55 * math.exp(-u / 0.05))
     if i == 0 and 4.0 <= t < 4.25:
-        frame = frame + (gold_bgr() * 0.35 + 0.65) * (0.65 * math.exp(-(t - 4.0) / 0.06))
+        frame = frame + (gold_bgr() * 0.35 + 0.65) * (0.35 * math.exp(-(t - 4.0) / 0.05))
     if tr == "whip" and u < 0.12:
-        frame = motion_blur(frame, 160 * (1 - u / 0.12))
+        frame = motion_blur(frame, 90 * (1 - u / 0.10)) if u < 0.10 else frame
     if tr == "glitch" and u < 0.10:
         n = int(u * FPS)
         frame = slices(rgb_split(frame, 22 - n * 9), 31 + fidx, 60 - n * 25)
@@ -754,7 +754,7 @@ def render_frame(fidx):
     # ---- salida en whip: el plano anterior se barre al irse
     nxt = EDL[i + 1] if i + 1 < len(EDL) else None
     if nxt and nxt["tr"] == "whip" and s["t1"] - t <= 0.07:
-        frame = motion_blur(frame, 160 * (1 - (s["t1"] - t) / 0.07 * 0.5))
+        frame = motion_blur(frame, 90 * (1 - (s["t1"] - t) / 0.07 * 0.5))
     if nxt and nxt["tr"] == "glitch" and s["t1"] - t <= 0.034:
         frame = rgb_split(frame, 12)
     # ---- seguimiento de rostro (solo en la presentación del ponente)
