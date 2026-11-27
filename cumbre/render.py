@@ -727,11 +727,10 @@ def brackets(frame, box, prog, alpha):
 FONT = SC.parent / "fonts" / "Montserrat-VF.ttf"
 TEXTS = [
     dict(t0=5.62, t1=7.42, lines=[[("Compartiendo", "l")], [("nuestra", "b"), ("visión", "g")]]),
-    dict(t0=10.12, t1=12.42, lines=[[("Hablamos de cómo", "l")], [("vamos a", "b"), ("cambiar", "b")], [("México", "g")]]),
+    dict(t0=10.12, t1=12.42, lines=[[("Ideas para", "l")], [("cambiar", "b"), ("México", "g")]]),
     dict(t0=20.12, t1=21.92, lines=[[("Abrimos", "l")], [("nuevos", "b"), ("diálogos", "g")]]),
-    dict(t0=26.12, t1=27.92, lines=[[("Ideas que", "l")], [("construyen", "b"), ("país", "g")]]),
-    dict(t0=31.62, t1=32.45, lines=[[("Gracias por", "l")], [("ser", "b"), ("parte", "g")]]),
-    dict(t0=34.12, t1=35.70, lines=[[("Esto apenas", "l")], [("comienza", "g")]]),
+    dict(t0=26.08, t1=27.95, lines=[[("La nueva forma", "l")], [("de hacer", "b"), ("política", "g")]]),
+    dict(t0=34.12, t1=35.70, cy=0.205 * H, lines=[[("Esto apenas", "l")], [("comienza", "g")]]),  # arriba: zona limpia de la foto
 ]
 TX_X = 170            # margen izquierdo
 TX_CY = 0.635 * H     # centro vertical del bloque (fuera de la zona de botones de Reels/TikTok)
@@ -768,7 +767,8 @@ def text_layout(item):
         hmax = max(SIZE[st] for _, st in line)
         lh.append(hmax * 1.08)
     total = sum(lh)
-    y = TX_CY - total / 2
+    cy = item.get("cy", TX_CY)
+    y = cy - total / 2
     for li, line in enumerate(item["lines"]):
         x = TX_X
         base = y + lh[li] * 0.86
@@ -777,7 +777,7 @@ def text_layout(item):
             out.append((li, word, st, x, base - asc - 4, spr))
             x += spr.shape[1] - 8 + SIZE[st] * 0.26
         y += lh[li]
-    return out, TX_CY - total / 2, total
+    return out, cy - total / 2, total
 
 
 def text_layer(frame, t):
@@ -787,10 +787,11 @@ def text_layer(frame, t):
         u_in = t - item["t0"]
         u_out = item["t1"] - t
         words, top, total = text_layout(item)
+        cy = top + total / 2
         # sombra/viñeta local muy suave detrás del bloque (sin cajas)
         a_blk = smooth(u_in / 0.25) * smooth(u_out / 0.25)
         yy, xx = np.ogrid[0:H, 0:W]
-        g = np.exp(-(((xx - TX_X - 380) / 900.0) ** 2 + ((yy - TX_CY) / (total * 0.9 + 160)) ** 2)).astype(np.float32)
+        g = np.exp(-(((xx - TX_X - 380) / 900.0) ** 2 + ((yy - cy) / (total * 0.9 + 160)) ** 2)).astype(np.float32)
         frame = frame * (1 - 0.38 * a_blk * g[..., None])
         # barra dorada corta que se dibuja sobre el bloque
         bw = 120 * ease_out(u_in / 0.35, 3) * smooth(u_out / 0.20)
@@ -825,7 +826,7 @@ def text_layer(frame, t):
 
 # ------------------------------------------------------------------ photo dump
 PHOTO_DIR = SC / "photos"
-PHOTOS = [  # una foto por beat; la 1 y la 5 llevan texto
+PHOTOS = [  # una foto por beat; solo la última lleva texto
     dict(t0=31.5, t1=32.5, n=1), dict(t0=32.5, t1=33.0, n=2), dict(t0=33.0, t1=33.5, n=3),
     dict(t0=33.5, t1=34.0, n=4), dict(t0=34.0, t1=36.0, n=5),
 ]
@@ -867,7 +868,7 @@ def photo_frame(t):
             fw = int(W * 0.92 * pop * drift)
             fh = int(fw * img.shape[0] / img.shape[1])
             fg = cv2.resize(img, (fw, fh), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
-            x0, y0 = (W - fw) // 2, int(H * 0.42 - fh / 2)
+            x0, y0 = (W - fw) // 2, int(H * 0.40 - fh / 2)
             frame = bg
             xs, ys = max(0, x0), max(0, y0)
             frame[ys:ys + fh, xs:xs + fw] = fg[ys - y0:ys - y0 + min(fh, H - ys), xs - x0:xs - x0 + min(fw, W - xs)]
