@@ -15,7 +15,8 @@ import numpy as np
 import soundfile as sf
 
 SR = 48000
-DUR = 34.5
+DUR = 38.5          # tiempo de línea; al final se acelera 4 % (SPEED) sin cambiar el tono
+SPEED = 1.04
 SC = Path("/tmp/claude-0/-home-user-guillen/e79892bd-5db3-5f50-b81b-f961e67b318d/scratchpad")
 N = int(DUR * SR)
 
@@ -134,7 +135,7 @@ def main():
     def seg(a, b):
         return music[int(round(a * SR)): int(round(b * SR))].copy()
     m1 = seg(106.76, 124.26 + 0.01)
-    m2 = seg(148.26 - 0.01, 163.26)
+    m2 = seg(144.26 - 0.01, 162.76)  # empalme en compás: el photo dump cae en la parte alta y la cortinilla en el decaimiento (160.26)
     xf = int(0.01 * SR)  # crossfade de 10 ms en el beat
     ramp = np.linspace(0, 1, xf, dtype=np.float32)[:, None]
     mus = np.zeros((N, 2), np.float32)
@@ -148,7 +149,7 @@ def main():
     mus[j0:j0 + len(m2)] += m2[: N - j0] * np.concatenate([ramp, np.ones((len(m2) - xf, 1), np.float32)])[: N - j0]
     # el decaimiento natural termina en ~163; desvanecer los últimos 0.6 s por limpieza
     fade = np.ones(N, np.float32)
-    k0 = int(33.5 * SR)
+    k0 = int(37.4 * SR)
     fade[k0:] = np.linspace(1, 0, N - k0) ** 2
     mus *= fade[:, None]
     mix += mus * 0.92
@@ -202,7 +203,7 @@ def main():
     # persianas: un roce corto por franja (alternando lados), del centro hacia afuera
     for i in range(8):
         order = abs(i - 3.5)
-        tt = 31.55 + order * 0.045 + 0.06
+        tt = 35.55 + order * 0.045 + 0.06
         w = whoosh(0.20, 1500, 9000, 60 + i)
         l, r = (1.0, 0.35) if i % 2 == 0 else (0.35, 1.0)
         place(mix, np.stack([w * l, w * r], 1).astype(np.float32), tt, 0.05)
@@ -210,18 +211,32 @@ def main():
     thud = sub_boom(1.2, 85, 34) * 0.8
     body = onepole_lp(noise(int(0.3 * SR), 71), 900.0) * env(int(0.3 * SR), 0.002, 0.06) * 2.0
     thud[: len(body)] += body
-    place(mix, reverb(stereo(thud.astype(np.float32)), 2.8, 0.55, seed=12), 32.0, 0.42)
+    place(mix, reverb(stereo(thud.astype(np.float32)), 2.8, 0.55, seed=12), 36.0, 0.42)
     # aparece el emblema: aire que sube y brillo suave cuando lo recorre la luz
-    place(mix, reverb(stereo(whoosh(0.9, 250, 2200, 72), 0.6, 13), 2.4, 0.5, seed=13), 32.05, 0.09)
-    place(mix, reverb(stereo(whoosh(0.9, 2500, 11000, 73), 0.7, 14), 2.4, 0.6, seed=14), 32.45, 0.05)
+    place(mix, reverb(stereo(whoosh(0.9, 250, 2200, 72), 0.6, 13), 2.4, 0.5, seed=13), 36.05, 0.09)
+    place(mix, reverb(stereo(whoosh(0.9, 2500, 11000, 73), 0.7, 14), 2.4, 0.6, seed=14), 36.45, 0.05)
 
-    # ---------------- master: normaliza a pico -1 dBFS (la sonoridad final -14 LUFS se fija al unir con el video)
+    # ---------------- photo dump: obturador suave en cada foto
+    for k, tt in enumerate((31.5, 32.5, 33.0, 33.5, 34.0)):
+        sh = np.zeros(int(0.12 * SR), np.float32)
+        for off, g in ((0, 1.0), (0.045, 0.6)):
+            n_ = int(0.03 * SR)
+            c = onepole_lp(noise(n_, 80 + k * 3 + int(off * 100)), 5000.0) * env(n_, 0.0005, 0.006)
+            sh[int(off * SR):int(off * SR) + n_] += c * g
+        place(mix, reverb(stereo(sh, 0.4, 20 + k), 0.8, 0.25, seed=20 + k), tt - 0.01, 0.10)
+
+    # ---------------- master: normaliza a pico -1 dBFS
     peak = np.abs(mix).max()
     print("peak pre", peak)
     x = mix / max(peak, 1e-9) * 0.89
     # fade-in de 10 ms / fade-out final
     x[: int(0.01 * SR)] *= np.linspace(0, 1, int(0.01 * SR))[:, None]
-    sf.write(out / "audio.wav", x, SR, subtype="PCM_24")
+    sf.write(out / "audio_tl.wav", x, SR, subtype="PCM_24")
+    # +4 % de velocidad sin cambiar el tono (rubberband), igual que el video
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(out / "audio_tl.wav"), "-af",
+                    f"rubberband=tempo={SPEED}:transients=crisp:detector=percussive:formant=preserved,"
+                    f"atrim=0:{DUR / SPEED:.4f},afade=t=out:st={DUR / SPEED - 0.05:.4f}:d=0.05",
+                    "-c:a", "pcm_s24le", str(out / "audio.wav")], check=True)
     print("ok", out / "audio.wav")
 
 

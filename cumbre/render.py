@@ -20,8 +20,15 @@ import numpy as np
 
 cv2.setNumThreads(4)
 W, H, FPS = 2160, 3840, 30
-DUR = 34.5
+SPEED = 1.04        # todo el video va 4 % más rápido (la música se acelera igual, sin cambiar de tono)
+TL = 38.5           # duración en "tiempo de línea" (antes de acelerar)
+DUR = TL / SPEED    # ~37.0 s reales
 NFR = int(round(DUR * FPS))
+
+
+def tl(f):
+    """tiempo de la línea de edición para el frame de salida f."""
+    return f * SPEED / FPS
 
 UP = Path("/root/.claude/uploads/e79892bd-5db3-5f50-b81b-f961e67b318d")
 SC = Path(os.environ.get("CUMBRE_WORK", "/tmp/claude-0/-home-user-guillen/e79892bd-5db3-5f50-b81b-f961e67b318d/scratchpad/work"))
@@ -69,7 +76,7 @@ EDL = [
     dict(t0=26.0, t1=28.0, c="P2", src=3.00, z=(1.06, 1.14), a=(0.42, 0.36), tr="cut"),        # ponente explicando
     dict(t0=28.0, t1=29.0, c="P4", src=2.20, z=(1.02, 1.08), a=(0.45, 0.38), tr="whip"),       # ponente escuchando
     dict(t0=29.0, t1=30.5, c="P1", src=3.50, z=(1.10, 1.18), a=(0.45, 0.36), tr="cut"),        # ponente, gesto
-    dict(t0=30.5, t1=32.0, c="SP", src=12.00, z=(1.10, 1.18), a=(0.36, 0.40), tr="cut", fx="blinds"),  # sonrisa -> cortinilla
+    dict(t0=30.5, t1=31.5, c="SP", src=12.00, z=(1.10, 1.18), a=(0.36, 0.40), tr="cut"),        # sonrisa -> photo dump
 ]
 
 
@@ -115,18 +122,22 @@ def src_frame(shot, t):
     return int(round(src_time(shot, t) * fps + 1e-6))
 
 
+def shot_out_frames(s):
+    return [f for f in range(NFR) if s["t0"] - 1e-6 <= tl(f) < s["t1"] - 1e-6]
+
+
 def needed_frames():
     need = {}
     for s in EDL:
-        for f in range(int(round(s["t0"] * FPS)), int(round(s["t1"] * FPS))):
-            need.setdefault(s["c"], set()).add(src_frame(s, f / FPS))
+        for f in shot_out_frames(s):
+            need.setdefault(s["c"], set()).add(src_frame(s, tl(f)))
     return need
 
 
 def check_no_repeats():
     need, seen = {}, {}
     for i, s in enumerate(EDL):
-        idx = [src_frame(s, f / FPS) for f in range(int(round(s["t0"] * FPS)), int(round(s["t1"] * FPS)))]
+        idx = [src_frame(s, tl(f)) for f in shot_out_frames(s)]
         assert len(idx) == len(set(idx)), f"frames repetidos dentro del plano {i}"
         for k in idx:
             assert (s["c"], k) not in seen, f"frame {s['c']}:{k} repetido en planos {seen[(s['c'], k)]} y {i}"
@@ -710,8 +721,166 @@ def brackets(frame, box, prog, alpha):
     return over(frame, gold_bgr() * 1.1, a)
 
 
+# ------------------------------------------------------------------ textos
+# Un plano con texto y el siguiente sin texto; frases cortas, tono político e inspirador.
+# Estilo: Montserrat (la tipografía del logo), línea ligera + línea en negrita con la palabra clave en dorado.
+FONT = SC.parent / "fonts" / "Montserrat-VF.ttf"
+TEXTS = [
+    dict(t0=5.62, t1=7.42, lines=[[("Compartiendo", "l")], [("nuestra", "b"), ("visión", "g")]]),
+    dict(t0=10.12, t1=12.42, lines=[[("Hablamos de cómo", "l")], [("vamos a", "b"), ("cambiar", "b")], [("México", "g")]]),
+    dict(t0=20.12, t1=21.92, lines=[[("Abrimos", "l")], [("nuevos", "b"), ("diálogos", "g")]]),
+    dict(t0=26.12, t1=27.92, lines=[[("Ideas que", "l")], [("construyen", "b"), ("país", "g")]]),
+    dict(t0=31.62, t1=32.45, lines=[[("Gracias por", "l")], [("ser", "b"), ("parte", "g")]]),
+    dict(t0=34.12, t1=35.70, lines=[[("Esto apenas", "l")], [("comienza", "g")]]),
+]
+TX_X = 170            # margen izquierdo
+TX_CY = 0.635 * H     # centro vertical del bloque (fuera de la zona de botones de Reels/TikTok)
+SIZE = {"l": 118, "b": 150, "g": 150}
+WEIGHT = {"l": 300, "b": 800, "g": 800}
+_word_cache = {}
+
+
+def word_sprite(word, style):
+    """Palabra como sprite BGRA float (blanco o dorado) con sombra suave para leerse sobre cualquier toma."""
+    key = (word, style)
+    if key in _word_cache:
+        return _word_cache[key]
+    from PIL import Image, ImageDraw, ImageFont
+    f = ImageFont.truetype(str(FONT), SIZE[style])
+    f.set_variation_by_axes([WEIGHT[style]])
+    asc, desc = f.getmetrics()
+    w = int(math.ceil(f.getlength(word))) + 8
+    h = asc + desc + 8
+    im = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(im).text((4, 4), word, font=f, fill=255)
+    a = np.asarray(im, np.float32) / 255
+    col = gold_bgr() * 1.08 if style == "g" else np.float32([0.97, 0.97, 0.97])
+    spr = (np.dstack([np.broadcast_to(col, (h, w, 3)), a]).astype(np.float32), asc)
+    _word_cache[key] = spr
+    return spr
+
+
+def text_layout(item):
+    """Posiciones (x, y_top) de cada palabra y alto de cada línea."""
+    out, y = [], 0.0
+    lh = []
+    for line in item["lines"]:
+        hmax = max(SIZE[st] for _, st in line)
+        lh.append(hmax * 1.08)
+    total = sum(lh)
+    y = TX_CY - total / 2
+    for li, line in enumerate(item["lines"]):
+        x = TX_X
+        base = y + lh[li] * 0.86
+        for word, st in line:
+            spr, asc = word_sprite(word, st)
+            out.append((li, word, st, x, base - asc - 4, spr))
+            x += spr.shape[1] - 8 + SIZE[st] * 0.26
+        y += lh[li]
+    return out, TX_CY - total / 2, total
+
+
+def text_layer(frame, t):
+    for item in TEXTS:
+        if not (item["t0"] <= t < item["t1"] + 0.01):
+            continue
+        u_in = t - item["t0"]
+        u_out = item["t1"] - t
+        words, top, total = text_layout(item)
+        # sombra/viñeta local muy suave detrás del bloque (sin cajas)
+        a_blk = smooth(u_in / 0.25) * smooth(u_out / 0.25)
+        yy, xx = np.ogrid[0:H, 0:W]
+        g = np.exp(-(((xx - TX_X - 380) / 900.0) ** 2 + ((yy - TX_CY) / (total * 0.9 + 160)) ** 2)).astype(np.float32)
+        frame = frame * (1 - 0.38 * a_blk * g[..., None])
+        # barra dorada corta que se dibuja sobre el bloque
+        bw = 120 * ease_out(u_in / 0.35, 3) * smooth(u_out / 0.20)
+        if bw > 1:
+            y0 = int(top - 46)
+            frame[y0:y0 + 8, TX_X:TX_X + int(bw)] = frame[y0:y0 + 8, TX_X:TX_X + int(bw)] * 0.1 + gold_bgr() * 1.1 * 0.9
+        for n, (li, word, st, x, y, spr) in enumerate(words):
+            d_in = 0.07 * n
+            p_in = ease_out((u_in - d_in) / 0.45, 4)
+            p_out = ease_in((0.30 - u_out + 0.03 * n) / 0.30, 2) if u_out < 0.30 + 0.03 * n else 0.0
+            if p_in <= 0:
+                continue
+            h, w = spr.shape[:2]
+            # la palabra sube desde detrás de una línea de corte (máscara) y sale hacia arriba
+            dy = (1 - p_in) * h * 0.9 - p_out * h * 0.9
+            yi = int(round(y + dy))
+            xi = int(round(x))
+            clip_top, clip_bot = int(y) - 2, int(y) + h + 2
+            y0, y1 = max(yi, clip_top, 0), min(yi + h, clip_bot, H)
+            x0, x1 = max(xi, 0), min(xi + w, W)
+            if y1 <= y0 or x1 <= x0:
+                continue
+            sub = spr[y0 - yi:y1 - yi, x0 - xi:x1 - xi]
+            a = sub[..., 3:4] * (1 - p_out)
+            # sombra
+            sh = cv2.GaussianBlur(sub[..., 3], (0, 0), 10)[..., None] * 0.45 * (1 - p_out)
+            region = frame[y0:y1, x0:x1]
+            region = region * (1 - sh)
+            frame[y0:y1, x0:x1] = region * (1 - a) + sub[..., :3] * a
+    return frame
+
+
+# ------------------------------------------------------------------ photo dump
+PHOTO_DIR = SC / "photos"
+PHOTOS = [  # una foto por beat; la 1 y la 5 llevan texto
+    dict(t0=31.5, t1=32.5, n=1), dict(t0=32.5, t1=33.0, n=2), dict(t0=33.0, t1=33.5, n=3),
+    dict(t0=33.5, t1=34.0, n=4), dict(t0=34.0, t1=36.0, n=5),
+]
+_photos = {}
+
+
+def load_photo(n):
+    if n in _photos:
+        return _photos[n]
+    from PIL import Image, ImageOps
+    cands = sorted(PHOTO_DIR.glob(f"{n}.*"))
+    if not cands:
+        im = np.full((H, W, 3), 30, np.uint8)  # marcador mientras llegan las fotos
+        cv2.putText(im, f"FOTO {n}", (600, 1900), cv2.FONT_HERSHEY_SIMPLEX, 6, (120, 120, 120), 12)
+        _photos[n] = ("cover", im)
+        return _photos[n]
+    pim = ImageOps.exif_transpose(Image.open(cands[0])).convert("RGB")
+    a = np.asarray(pim)[:, :, ::-1].copy()
+    mode = "cover" if a.shape[1] / a.shape[0] < 0.75 else "framed"
+    _photos[n] = (mode, a)
+    return _photos[n]
+
+
+def photo_frame(t):
+    ph = next(p for p in PHOTOS if p["t0"] - 1e-6 <= t < p["t1"] - 1e-6)
+    u = t - ph["t0"]
+    d = ph["t1"] - ph["t0"]
+    mode, img = load_photo(ph["n"])
+    pop = 1 + 0.10 * (1 - ease_out(u / 0.18, 3))       # entra con un pequeño golpe de escala
+    drift = 1.0 + 0.05 * (u / max(d, 0.5))              # y sigue acercándose suave
+    if img.dtype != np.float32:
+        if mode == "cover":
+            out, _ = place(img, pop * drift, (0.5, 0.45))
+            frame = tone(out.astype(np.float32) / 255 * 1.02)
+        else:
+            # foto horizontal: fondo desenfocado de la misma foto + foto completa encima
+            bg, _ = place(img, 1.0, (0.5, 0.5))
+            bg = cv2.GaussianBlur(bg, (0, 0), 40).astype(np.float32) / 255 * 0.45
+            fw = int(W * 0.92 * pop * drift)
+            fh = int(fw * img.shape[0] / img.shape[1])
+            fg = cv2.resize(img, (fw, fh), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+            x0, y0 = (W - fw) // 2, int(H * 0.42 - fh / 2)
+            frame = bg
+            xs, ys = max(0, x0), max(0, y0)
+            frame[ys:ys + fh, xs:xs + fw] = fg[ys - y0:ys - y0 + min(fh, H - ys), xs - x0:xs - x0 + min(fw, W - xs)]
+            frame = tone(frame)
+    else:
+        frame = img.copy()
+    # destello breve de cámara al entrar cada foto
+    frame = frame + 0.30 * math.exp(-u / 0.05)
+    return frame
+
+
 # ------------------------------------------------------------------ cortinilla final
-BLIND_T0, CARD_T = 31.55, 32.0
+BLIND_T0, CARD_T = 35.55, 36.0
 
 
 def blinds(frame, t):
@@ -792,16 +961,20 @@ def endcard(t):
     glow = cv2.GaussianBlur(a, (0, 0), 40) * 0.25 * p
     frame = over(frame, gold_bgr() * 0.6, np.clip(glow, 0, 1))
     frame = over(frame, col, a)
-    return frame * (1 - smooth((t - 34.05) / 0.42))
+    return frame * (1 - smooth((t - (CARD_T + 2.05)) / 0.42))
 
 
 # ------------------------------------------------------------------ frame
 def render_frame(fidx):
-    t = fidx / FPS
+    t = tl(fidx)
     if t < CLICK_T:
         return finish(intro_frame(t), fidx)
     i, s = shot_at(t)
-    if s is None:  # cortinilla final
+    if s is None:
+        if t < CARD_T:  # photo dump (+ persianas sobre la última foto)
+            frame = photo_frame(t)
+            frame = text_layer(frame, t)
+            return finish(blinds(frame, t), fidx)
         return finish(endcard(t), fidx)
     u = t - s["t0"]
     shake = (0, 0)
@@ -847,8 +1020,7 @@ def render_frame(fidx):
             prog = u / 0.35
             a = smooth(u / 0.12) * (1 - smooth((u - 1.55) / 0.30))
             frame = brackets(frame, tr_[fidx], prog, a)
-    if s.get("fx") == "blinds":
-        frame = blinds(frame, t)
+    frame = text_layer(frame, t)
     # cursor de la intro desapareciendo tras el click + onda dorada
     if t < 3.6:
         cx, cy = CUR_TARGET
@@ -871,7 +1043,7 @@ _render_frame = render_frame
 
 
 def render(fidx):
-    t = fidx / FPS
+    t = tl(fidx)
     fr = _render_frame(fidx)
     if t < CLICK_T:
         fr = render_intro_cursor(fr, t)
@@ -891,7 +1063,7 @@ def main():
         out = SC / "snaps"
         out.mkdir(exist_ok=True)
         for v in sys.argv[2:]:
-            f = int(round(float(v) * FPS))
+            f = int(round(float(v) / SPEED * FPS))  # v en tiempo de línea
             img = to8(render(f))
             cv2.imwrite(str(out / f"s_{float(v):06.2f}.jpg"), cv2.resize(img, (540, 960), interpolation=cv2.INTER_AREA))
             cv2.imwrite(str(out / f"full_{float(v):06.2f}.png"), img)
