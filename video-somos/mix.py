@@ -12,15 +12,16 @@ def place(buf, x, t, gain_db=0.0):
 def peak(x, p_db): return x / (np.max(np.abs(x)) + 1e-12) * db2(p_db)
 
 # ---------------- voice (cleaned) ----------------
-v, sr = sf.read('work/voice_df_lim18.wav', dtype='float64'); assert sr == SR
+v, sr = sf.read('work/voice_df_x108.wav', dtype='float64'); assert sr == SR
 voice = np.zeros(N)
 o = T.INTRO_F / T.FPS
 fd = int(0.006 * SR)
 for a, b in T.SEGS:
-    seg = v[int(round(a / T.FPS * SR)):int(round(b / T.FPS * SR))].copy()
+    n = T.seg_len(a, b); s0 = int(round(a / T.FPS / T.SPEED * SR))
+    seg = v[s0:s0 + int(round(n / T.FPS * SR))].copy()
     seg[:fd] *= np.linspace(0, 1, fd); seg[-fd:] *= np.linspace(1, 0, fd)
     i = int(round(o * SR)); voice[i:i + len(seg)] += seg
-    o += (b - a) / T.FPS
+    o += n / T.FPS
 sf.write('work/stem_voice_raw.wav', voice, SR, subtype='FLOAT')
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', 'work/stem_voice_raw.wav', '-af',
     'highpass=f=75:poles=2,equalizer=f=220:t=q:w=1.1:g=-2.5,equalizer=f=3400:t=q:w=0.9:g=2.5,'
@@ -60,12 +61,12 @@ place(fx, peak(S.reverb(S.stereo(S.boom(), 0, 1.0), 1.4, 0.22), -3.5), D0)
 ph0 = T.src_to_out(T.PHONE_SRC0) / T.FPS
 lk0 = T.src_to_out(T.LINK_SRC0) / T.FPS
 place(fx, peak(S.reverb(S.stereo(S.pop(), 0, 0.6), 0.6, 0.15), -17), lk0)
-for k in range(2): place(fx, peak(S.stereo(S.tap(), 0.0), -24), lk0 + 0.22 + 0.21 + k * 0.42)
+for k in range(2): place(fx, peak(S.stereo(S.tap(), 0.0), -24), lk0 + (0.22 + 0.21 + k * 0.42) / T.SPEED)
 place(fx, peak(S.reverb(S.whoosh(0.42, 500, 4200, peak_at=0.5, pan0=-0.2, pan1=0.2), 0.6, 0.15), -13), ph0 - 0.10)
-place(fx, peak(S.stereo(S.scribble(0.93), 0.1), -20), ph0 + 0.62)
-place(fx, peak(S.stereo(S.tap(), 0.05), -16), ph0 + 1.70)
-place(fx, peak(S.reverb(S.stereo(S.pop(), 0, 0.6), 0.7, 0.18), -15), ph0 + 1.94)
-place(fx, peak(S.reverb(S.whoosh(0.5, 4000, 600, peak_at=0.4, pan0=0.2, pan1=-0.3), 0.6, 0.15), -14), ph0 + 2.85)
+place(fx, peak(S.stereo(S.scribble(0.93 / T.SPEED), 0.1), -20), ph0 + 0.62 / T.SPEED)
+place(fx, peak(S.stereo(S.tap(), 0.05), -16), ph0 + 1.70 / T.SPEED)
+place(fx, peak(S.reverb(S.stereo(S.pop(), 0, 0.6), 0.7, 0.18), -15), ph0 + 1.94 / T.SPEED)
+place(fx, peak(S.reverb(S.whoosh(0.5, 4000, 600, peak_at=0.4, pan0=0.2, pan1=-0.3), 0.6, 0.15), -14), ph0 + 2.85 / T.SPEED)
 # finale: impact on "TÚ" and whoosh as the white pill fills the screen
 place(fx, peak(S.reverb(S.stereo(S.hit(0.8, 1.4), 0, 1.0), 0.9, 0.2), -6.0), TU)
 place(fx, peak(S.reverb(S.stereo(S.boom(), 0, 1.0), 1.2, 0.2), -11.0), TU)

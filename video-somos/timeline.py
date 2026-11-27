@@ -20,26 +20,29 @@ SHOTS = [
 ANCHOR = (0.5, 0.47)    # face-centred zoom anchor (fraction of frame)
 PHONE_SRC0 = 815        # src frame where phone overlay starts (27.17 s)
 LINK_SRC0 = 785         # link icon + pointing-down emoji (26.17 s, 'una liga')
-LINK_F = 34
-PHONE_F = 103           # 3.43 s
+LINK_F = 32
+PHONE_F = 96            # 3.43 s of phone time at 1.08x
 TU_SRC = 41.16          # 'tú' onset (src s)
 FINALE_SRC = 41.80      # white pill starts expanding to the outro
 MUSIC_DROP = 107.733    # s in music file
 MUSIC_START = MUSIC_DROP - INTRO_F / FPS
 
+SPEED = 1.08            # speaker segments play 8% faster (pitch-preserving voice stretch)
+def seg_len(a, b): return int(round((b - a) / SPEED))
+
 def build_map():
     """list of output frames -> ('intro', i) | ('src', srcframe) | ('outro', i)"""
     m = [('intro', i) for i in range(INTRO_F)]
     for a, b in SEGS:
-        m += [('src', f) for f in range(a, b)]
+        m += [('src', min(b - 1, a + int(round(k * SPEED)))) for k in range(seg_len(a, b))]
     m += [('outro', i) for i in range(OUTRO_F)]
     return m
 
 def src_to_out(srcf):
     o = INTRO_F
     for a, b in SEGS:
-        if a <= srcf < b: return o + (srcf - a)
-        o += b - a
+        if a <= srcf < b: return o + int(round((srcf - a) / SPEED))
+        o += seg_len(a, b)
     return None
 
 def src_time_to_out(t):
@@ -47,11 +50,11 @@ def src_time_to_out(t):
     o = INTRO_F / FPS
     for a, b in SEGS:
         ta, tb = a / FPS, b / FPS
-        if ta <= t < tb: return o + (t - ta)
-        o += tb - ta
+        if ta <= t < tb: return o + (t - ta) / SPEED
+        o += seg_len(a, b) / FPS
     return None
 
-TOTAL_F = INTRO_F + sum(b - a for a, b in SEGS) + OUTRO_F
+TOTAL_F = INTRO_F + sum(seg_len(a, b) for a, b in SEGS) + OUTRO_F
 OUTRO_START_F = TOTAL_F - OUTRO_F
 
 KEYWORDS = {"Eduardo", "Contró", "ciudadanos", "organizamos", "sucedan", "México", "brazos", "cruzados",
